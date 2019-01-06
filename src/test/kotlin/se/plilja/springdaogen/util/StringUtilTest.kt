@@ -1,7 +1,9 @@
-package se.plilja.springdaogen
+package se.plilja.springdaogen.util
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import se.plilja.springdaogen.util.camelCase
+import se.plilja.springdaogen.util.snakeCase
 
 class StringUtilTest {
 

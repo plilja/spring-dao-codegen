@@ -1,4 +1,4 @@
-package se.plilja.springdaogen
+package se.plilja.springdaogen.util
 
 
 fun camelCase(s: String): String {
@@ -8,7 +8,11 @@ fun camelCase(s: String): String {
         // Looks like it's already camel
         s
     } else {
-        lowerCaseFirst(s.split("_").map { capitalizeFirst(it.toLowerCase()) }.joinToString(""))
+        lowerCaseFirst(
+            s.split("_").map { capitalizeFirst(it.toLowerCase()) }.joinToString(
+                ""
+            )
+        )
     }
 }
 

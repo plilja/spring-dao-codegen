@@ -1,4 +1,4 @@
-package se.plilja.springdaogen
+package se.plilja.springdaogen.model
 
 import java.util.*
 

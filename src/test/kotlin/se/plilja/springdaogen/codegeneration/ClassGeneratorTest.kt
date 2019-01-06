@@ -1,4 +1,4 @@
-package se.plilja.springdaogen
+package se.plilja.springdaogen.codegeneration
 
 import org.junit.Assert.*
 import org.junit.Test
@@ -69,7 +69,7 @@ public class Foo {
         // then
         val exp = """package se.plilja.test;
 
-import se.plilja.springdaogen.ClassGeneratorTest.A;
+import se.plilja.springdaogen.codegeneration.ClassGeneratorTest.A;
 
 public class Foo extends A {
 
@@ -93,7 +93,7 @@ public class Foo extends A {
         // then
         val exp = """package se.plilja.test;
 
-import se.plilja.springdaogen.ClassGeneratorTest.B;
+import se.plilja.springdaogen.codegeneration.ClassGeneratorTest.B;
 
 public class Foo extends B<Integer> {
 

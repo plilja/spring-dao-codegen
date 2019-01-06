@@ -1,9 +1,13 @@
-package se.plilja.springdaogen
+package se.plilja.springdaogen.bootstrap
 
 import schemacrawler.schema.Catalog
 import schemacrawler.schemacrawler.IncludeAll
 import schemacrawler.schemacrawler.SchemaCrawlerOptionsBuilder
 import schemacrawler.utility.SchemaCrawlerUtility
+import se.plilja.springdaogen.model.Column
+import se.plilja.springdaogen.model.Config
+import se.plilja.springdaogen.model.Schema
+import se.plilja.springdaogen.model.Table
 import java.sql.Connection
 import java.sql.DriverManager
 
@@ -24,7 +28,10 @@ fun catalogToSchema(catalog: Catalog): Schema {
 }
 
 fun convertTable(table: schemacrawler.schema.Table): Table {
-    return Table(table.name, convertColumn(table.primaryKey.columns[0]), table.columns.map { convertColumn(it) })
+    return Table(
+        table.name,
+        convertColumn(table.primaryKey.columns[0]),
+        table.columns.map { convertColumn(it) })
 }
 
 fun convertColumn(column: schemacrawler.schema.Column): Column {

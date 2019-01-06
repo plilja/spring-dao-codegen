@@ -1,19 +1,27 @@
-package se.plilja.springdaogen
+package se.plilja.springdaogen.daogeneration
 
 import com.nurkiewicz.jdbcrepository.JdbcRepository
 import com.nurkiewicz.jdbcrepository.RowUnmapper
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.stereotype.Repository
+import se.plilja.springdaogen.model.Column
+import se.plilja.springdaogen.model.Config
+import se.plilja.springdaogen.model.Table
+import se.plilja.springdaogen.codegeneration.ClassGenerator
 
 
-fun generateRepository(config: Config,  table: Table): ClassGenerator {
+fun generateRepository(config: Config, table: Table): ClassGenerator {
     val g = ClassGenerator(table.repositoryName(), config.outputPackage)
     g.addClassAnnotation("@Repository")
     g.addImport(Repository::class.java)
     g.extends = "JdbcRepository<${table.entityName()}, Integer>" // TODO resolve from PK
     g.addImport(JdbcRepository::class.java)
-    g.addConstant("ROW_MAPPER", "RowMapper<${table.entityName()}>", rowMapper(table))
-    g.addConstant("ROW_UNMAPPER", "RowUnmapper<${table.entityName()}>", rowUnmapper(table))
+    g.addConstant("ROW_MAPPER", "RowMapper<${table.entityName()}>",
+        rowMapper(table)
+    )
+    g.addConstant("ROW_UNMAPPER", "RowUnmapper<${table.entityName()}>",
+        rowUnmapper(table)
+    )
     g.addImport(RowMapper::class.java)
     g.addImport(RowUnmapper::class.java)
     g.addImport(Map::class.java)
@@ -38,7 +46,10 @@ fun generateRepository(config: Config,  table: Table): ClassGenerator {
 }
 
 fun rowMapper(table: Table): String {
-    val setters = table.columns.map { "                ${setterForColumn(table, it)}" }.joinToString("\n")
+    val setters = table.columns.map { "                ${setterForColumn(
+        table,
+        it
+    )}" }.joinToString("\n")
     return """(rs, i) -> {
         |        return new ${table.entityName()}()
         |$setters;

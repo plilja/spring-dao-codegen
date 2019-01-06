@@ -1,9 +1,12 @@
-package se.plilja.springdaogen
+package se.plilja.springdaogen.daogeneration
 
 import org.springframework.data.domain.Persistable
+import se.plilja.springdaogen.model.Config
+import se.plilja.springdaogen.model.Table
+import se.plilja.springdaogen.codegeneration.ClassGenerator
 
 
-fun generateEntity(config: Config,  table: Table) : ClassGenerator {
+fun generateEntity(config: Config, table: Table) : ClassGenerator {
     val g = ClassGenerator(table.entityName(), config.outputPackage)
     g.implements = "Persistable<Integer>" // TODO resolve from PK
     g.addImport(Persistable::class.java)

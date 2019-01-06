@@ -1,7 +1,11 @@
-package se.plilja.springdaogen
+package se.plilja.springdaogen.daogeneration
+
+import se.plilja.springdaogen.model.Config
+import se.plilja.springdaogen.model.Table
+import se.plilja.springdaogen.codegeneration.ClassGenerator
 
 
-fun generateConstants(config: Config,  table: Table): ClassGenerator {
+fun generateConstants(config: Config, table: Table): ClassGenerator {
     val g = ClassGenerator(table.constantsName(), config.outputPackage)
     for (column in table.columns) {
         g.addConstant(column.constantsName(), String::class.java, "\"${column.name}\"")

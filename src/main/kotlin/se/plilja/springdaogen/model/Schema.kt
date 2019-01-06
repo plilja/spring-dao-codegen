@@ -1,4 +1,8 @@
-package se.plilja.springdaogen
+package se.plilja.springdaogen.model
+
+import se.plilja.springdaogen.util.camelCase
+import se.plilja.springdaogen.util.capitalizeFirst
+import se.plilja.springdaogen.util.snakeCase
 
 
 data class Schema(val tables: List<Table>)

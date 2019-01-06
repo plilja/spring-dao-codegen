@@ -1,5 +1,6 @@
-package se.plilja.springdaogen
+package se.plilja.springdaogen.codegeneration
 
+import se.plilja.springdaogen.util.capitalizeFirst
 import java.util.*
 import kotlin.collections.ArrayList
 
