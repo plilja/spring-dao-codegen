@@ -18,8 +18,6 @@ class ClassGeneratorTest {
         // then
         val exp = """package se.plilja.test;
 
-import java.lang.Integer;
-import java.lang.String;
 import java.sql.Connection;
 
 public class Foo {
@@ -116,8 +114,6 @@ public class Foo extends B<Integer> {
 
         // then
         val exp = """package se.plilja.test;
-
-import java.lang.String;
 
 public class Foo {
 

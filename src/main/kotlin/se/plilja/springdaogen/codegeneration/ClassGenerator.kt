@@ -47,7 +47,9 @@ class ClassGenerator(
     }
 
     fun addImport(type: Class<out Any>) {
-        imports.add(type)
+        if (!type.packageName.startsWith("java.lang")) {
+            imports.add(type)
+        }
     }
 
     fun setExtends(clazz: Class<out Any>) {
