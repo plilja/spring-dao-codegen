@@ -3,8 +3,8 @@ package se.plilja.springdaogen
 import org.springframework.data.domain.Persistable
 
 
-fun generateEntity(table: Table) : ClassGenerator {
-    val g = ClassGenerator(table.entityName(), "generated")
+fun generateEntity(config: Config,  table: Table) : ClassGenerator {
+    val g = ClassGenerator(table.entityName(), config.outputPackage)
     g.implements = "Persistable<Integer>" // TODO resolve from PK
     g.addImport(Persistable::class.java)
     for (column in table.columns) {

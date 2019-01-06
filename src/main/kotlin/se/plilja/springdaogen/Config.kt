@@ -3,7 +3,8 @@ package se.plilja.springdaogen
 import java.util.*
 
 
-class Config {
+data class Config(val outputFolder: String, val outputPackage: String) {
+
     companion object {
         private val properties: Properties by lazy {
             val r = Properties()
@@ -13,13 +14,21 @@ class Config {
             r
         }
 
-        fun outputFolder(): String {
+        fun readConfig(): Config {
+            return Config(outputFolder(), outputPackage())
+        }
+
+        private fun outputFolder(): String {
             val f = properties.getProperty("output.folder")
             if (f.last() != '/') {
                 return "$f/"
             } else {
                 return f
             }
+        }
+
+        private fun outputPackage(): String {
+            return properties.getProperty("output.package")
         }
     }
 }

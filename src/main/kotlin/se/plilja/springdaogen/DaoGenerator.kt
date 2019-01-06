@@ -1,11 +1,11 @@
 package se.plilja.springdaogen
 
-fun generateDaos(schema: Schema): List<ClassGenerator> {
+fun generateDaos(config: Config, schema: Schema): List<ClassGenerator> {
     return schema.tables.flatMap {
         listOf(
-            generateEntity(it),
-            generateConstants(it),
-            generateRepository(it)
+            generateEntity(config, it),
+            generateConstants(config, it),
+            generateRepository(config, it)
         )
     }
 }

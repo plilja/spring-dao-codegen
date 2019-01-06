@@ -6,8 +6,8 @@ import org.springframework.jdbc.core.RowMapper
 import org.springframework.stereotype.Repository
 
 
-fun generateRepository(table: Table): ClassGenerator {
-    val g = ClassGenerator(table.repositoryName(), "generated")
+fun generateRepository(config: Config,  table: Table): ClassGenerator {
+    val g = ClassGenerator(table.repositoryName(), config.outputPackage)
     g.addClassAnnotation("@Repository")
     g.addImport(Repository::class.java)
     g.extends = "JdbcRepository<${table.entityName()}, Integer>" // TODO resolve from PK
