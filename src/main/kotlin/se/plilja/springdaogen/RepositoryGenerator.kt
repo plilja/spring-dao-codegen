@@ -3,10 +3,13 @@ package se.plilja.springdaogen
 import com.nurkiewicz.jdbcrepository.JdbcRepository
 import com.nurkiewicz.jdbcrepository.RowUnmapper
 import org.springframework.jdbc.core.RowMapper
+import org.springframework.stereotype.Repository
 
 
 fun generateRepository(table: Table): ClassGenerator {
     val g = ClassGenerator(table.repositoryName(), "generated")
+    g.addClassAnnotation("@Repository")
+    g.addImport(Repository::class.java)
     g.extends = "JdbcRepository<${table.entityName()}, Integer>" // TODO resolve from PK
     g.addImport(JdbcRepository::class.java)
     g.addConstant("ROW_MAPPER", "RowMapper<${table.entityName()}>", rowMapper(table))

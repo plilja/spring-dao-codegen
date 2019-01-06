@@ -9,6 +9,7 @@ class ClassGenerator(
     val packageName: String
 ) {
     private val imports = TreeSet<Class<out Any>> { a, b -> a.canonicalName.compareTo(b.canonicalName) }
+    private val classAnnotations = ArrayList<String>()
     private val constants = ArrayList<Pair<Field, String>>()
     private val fields = ArrayList<Field>()
     private val customMethods = ArrayList<String>()
@@ -17,6 +18,10 @@ class ClassGenerator(
     var implements: String? = null
     var isConstantsClass = false
     private val customConstructors = ArrayList<String>()
+
+    fun addClassAnnotation(annotation: String) {
+        classAnnotations.add(annotation)
+    }
 
     fun addConstant(name: String, type: Class<out Any>, initialization: String) {
         constants.add(Pair(Field(name, type.simpleName), initialization))
@@ -52,8 +57,15 @@ class ClassGenerator(
     fun generate(): String {
         val packageDeclaration = "package $packageName;"
         val importsDeclaration = imports.map { "import ${it.canonicalName};" }.joinToString("\n")
-        val classDeclaration =
+        val joinedClassAnnotation = classAnnotations.joinToString("\n")
+        val classHeader =
             "public${if (isFinal) " final" else ""} class $name${if (extends != null) " extends $extends" else ""}${if (implements != null) " implements $implements" else ""} {"
+        val classDeclaration =
+            if (joinedClassAnnotation.isEmpty()) {
+                classHeader
+            } else {
+                joinedClassAnnotation + "\n" + classHeader
+            }
         val constantsDeclaration =
             constants.map { "    public static final ${it.first.type} ${it.first.name} = ${it.second};" }
                 .joinToString("\n")
