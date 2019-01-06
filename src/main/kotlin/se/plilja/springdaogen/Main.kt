@@ -14,14 +14,7 @@ fun main(args: Array<String>) {
         .includeSchemas(IncludeAll())
         .toOptions()
     val catalog = SchemaCrawlerUtility.getCatalog(conn, options)
-    for (table in catalog.tables) {
-        println(table.name)
-        for (column in table.columns) {
-            println("${column.name} ${column.type}")
-        }
-    }
-    println(catalog.tables)
-    println("Hello, World")
+    generateEntities(catalog)
 }
 
 fun getConnection(): Connection {

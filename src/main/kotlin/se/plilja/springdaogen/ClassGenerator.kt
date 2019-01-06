@@ -9,8 +9,10 @@ class ClassGenerator(
 ) {
     val imports = TreeSet<Class<out Any>> { a, b -> a.canonicalName.compareTo(b.canonicalName) }
     val fields = ArrayList<Field>()
+    val customMethods = ArrayList<String>()
     var isFinal = false
     var extends: String? = null
+    var implements: String? = null
 
     fun addField(name: String, type: Class<out Any>) {
         fields.add(Field(name, type))
@@ -26,19 +28,24 @@ class ClassGenerator(
         addImport(clazz)
     }
 
+    fun addCustomMethod(methodCode: String) {
+        customMethods.add(methodCode)
+    }
+
     fun generate(): String {
-        val packageDeclaration = "package ${packageName};"
+        val packageDeclaration = "package $packageName;"
         val importsDeclaration = imports.map { "import ${it.canonicalName};" }.joinToString("\n")
         val classDeclaration =
-            "public${if (isFinal) " final" else ""} class ${name}${if (extends != null) " extends ${extends}" else ""} {"
+            "public${if (isFinal) " final" else ""} class $name${if (extends != null) " extends $extends" else ""}${if (implements != null) " implements $implements" else ""} {"
         val fieldsDeclaration = fields.map { "    private ${it.type.simpleName} ${it.name};" }.joinToString("\n")
-        val noArgsConstructor = """    public ${name}() {
+        val noArgsConstructor = """    public $name() {
     }"""
         val allArgsConstructor =
-            """    public ${name}(${fields.map { "${it.type.simpleName} ${it.name}" }.joinToString(", ")}) {
+            """    public $name(${fields.map { "${it.type.simpleName} ${it.name}" }.joinToString(", ")}) {
 ${fields.map { "        this.${it.name} = ${it.name};" }.joinToString("\n")}
     }"""
         val gettersAndSetters = fields.map { getterAndSetter(it) }.joinToString("\n\n")
+        val joinedCustomMethods = customMethods.joinToString("\n\n")
         val classClose = "}\n"
 
         val classParts = listOf(
@@ -49,6 +56,7 @@ ${fields.map { "        this.${it.name} = ${it.name};" }.joinToString("\n")}
             noArgsConstructor,
             if (!fields.isEmpty()) allArgsConstructor else "",
             gettersAndSetters,
+            joinedCustomMethods,
             classClose
         )
         return classParts.filter { !it.trim().isEmpty() }
@@ -61,19 +69,12 @@ ${fields.map { "        this.${it.name} = ${it.name};" }.joinToString("\n")}
         return ${field.name};
     }
 
-    public ${name} set${capitalizeFirst(field.name)}(${field.type.simpleName} ${field.name}) {
+    public $name set${capitalizeFirst(field.name)}(${field.type.simpleName} ${field.name}) {
         this.${field.name} = ${field.name};
         return this;
     }"""
     }
 
-    private fun capitalizeFirst(s: String): String {
-        if (s.isEmpty()) {
-            return ""
-        } else {
-            return s.get(0).toUpperCase() + s.substring(1)
-        }
-    }
 }
 
 data class Field(val name: String, val type: Class<out Any>) {
