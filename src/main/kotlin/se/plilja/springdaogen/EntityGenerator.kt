@@ -14,7 +14,7 @@ fun generateEntities(catalog: Catalog) {
 }
 
 fun generateEntityForTable(table: Table) {
-    val g = ClassGenerator(capitalizeFirst(camelCase(table.name)), "generated")
+    val g = ClassGenerator(capitalizeFirst(camelCase(table.name)) + "Entity", "generated")
     g.implements = "Persistable<Integer>" // TODO resolve from PK
     g.addImport(Persistable::class.java)
     for (column in table.columns) {

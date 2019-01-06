@@ -105,6 +105,32 @@ public class Foo extends B<Integer> {
         assertEquals(exp, act)
     }
 
+    @Test
+    fun testGenExtendsWithConstant() {
+        val g = ClassGenerator("Foo", "se.plilja.test")
+        g.addConstant("BAR", String::class.java, "\"BAZ\"")
+        g.isConstantsClass = true
+
+        // when
+        val act = g.generate()
+
+        // then
+        val exp = """package se.plilja.test;
+
+import java.lang.String;
+
+public class Foo {
+
+    public static final String BAR = "BAZ";
+
+    private Foo() {
+    }
+
+}
+"""
+        assertEquals(exp, act)
+    }
+
     class A
     class B<T>
 }
