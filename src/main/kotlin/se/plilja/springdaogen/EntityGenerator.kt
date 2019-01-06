@@ -32,18 +32,16 @@ fun generateEntityForTable(table: Table) {
         return ${camelCase(table.primaryKey.columns[0].name)};
     }
     """.trimMargin())
+    g.addCustomMethod("""
+    public ${g.name} setId(Integer id) {
+        return set${capitalizeFirst(camelCase(table.primaryKey.columns[0].name))}(id);
+    }
+    """.trimMargin())
 
     File(Config.outputFolder()).mkdirs()
     File(Config.outputFolder() + g.name + ".java").writeText(g.generate())
 }
 
-private fun resolveType(column: Column): Class<out Any> {
-    return if (column.type.name.toLowerCase().contains("char") && column.type.typeMappedClass.simpleName == "Array") {
-        // Varchar
-        String::class.java
-    } else {
-        column.type.typeMappedClass
-    }
-}
+
 
 

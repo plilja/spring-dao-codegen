@@ -1,29 +1,39 @@
 package se.plilja.springdaogen
 
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class ClassGenerator(
     val name: String,
     val packageName: String
 ) {
-    val imports = TreeSet<Class<out Any>> { a, b -> a.canonicalName.compareTo(b.canonicalName) }
-    val constants = ArrayList<Pair<Field, String>>()
-    val fields = ArrayList<Field>()
-    val customMethods = ArrayList<String>()
+    private val imports = TreeSet<Class<out Any>> { a, b -> a.canonicalName.compareTo(b.canonicalName) }
+    private val constants = ArrayList<Pair<Field, String>>()
+    private val fields = ArrayList<Field>()
+    private val customMethods = ArrayList<String>()
     var isFinal = false
     var extends: String? = null
     var implements: String? = null
     var isConstantsClass = false
+    private val customConstructors = ArrayList<String>()
 
     fun addConstant(name: String, type: Class<out Any>, initialization: String) {
-        constants.add(Pair(Field(name, type), initialization))
+        constants.add(Pair(Field(name, type.simpleName), initialization))
         addImport(type)
     }
 
+    fun addConstant(name: String, type: String, initialization: String) {
+        constants.add(Pair(Field(name, type), initialization))
+    }
+
     fun addField(name: String, type: Class<out Any>) {
-        fields.add(Field(name, type))
+        fields.add(Field(name, type.simpleName))
         addImport(type)
+    }
+
+    fun addCustomConstructor(constructor: String) {
+        customConstructors.add(constructor)
     }
 
     fun addImport(type: Class<out Any>) {
@@ -44,14 +54,27 @@ class ClassGenerator(
         val importsDeclaration = imports.map { "import ${it.canonicalName};" }.joinToString("\n")
         val classDeclaration =
             "public${if (isFinal) " final" else ""} class $name${if (extends != null) " extends $extends" else ""}${if (implements != null) " implements $implements" else ""} {"
-        val constantsDeclaration = constants.map { "    public static final ${it.first.type.simpleName} ${it.first.name} = ${it.second};" }.joinToString("\n")
-        val fieldsDeclaration = fields.map { "    private ${it.type.simpleName} ${it.name};" }.joinToString("\n")
-        val noArgsConstructor = """    ${if (isConstantsClass) "private" else "public"} $name() {
+        val constantsDeclaration =
+            constants.map { "    public static final ${it.first.type} ${it.first.name} = ${it.second};" }
+                .joinToString("\n")
+        val fieldsDeclaration = fields.map { "    private ${it.type} ${it.name};" }.joinToString("\n")
+
+        val noArgsConstructor =
+            if (customConstructors.isEmpty())
+                """    ${if (isConstantsClass) "private" else "public"} $name() {
     }"""
-        val allArgsConstructor = if (!isConstantsClass)
-            """    public $name(${fields.map { "${it.type.simpleName} ${it.name}" }.joinToString(", ")}) {
+            else
+                ""
+
+        val allArgsConstructor = if (!isConstantsClass and customConstructors.isEmpty() and !fields.isEmpty())
+            """    public $name(${fields.map { "${it.type} ${it.name}" }.joinToString(", ")}) {
 ${fields.map { "        this.${it.name} = ${it.name};" }.joinToString("\n")}
-    }""" else ""
+    }"""
+        else
+            ""
+
+        val joinedCustomConstructors = customConstructors.joinToString("\n\n")
+
         val gettersAndSetters = fields.map { getterAndSetter(it) }.joinToString("\n\n")
         val joinedCustomMethods = customMethods.joinToString("\n\n")
         val classClose = "}\n"
@@ -63,7 +86,8 @@ ${fields.map { "        this.${it.name} = ${it.name};" }.joinToString("\n")}
             constantsDeclaration,
             fieldsDeclaration,
             noArgsConstructor,
-            if (!fields.isEmpty()) allArgsConstructor else "",
+            allArgsConstructor,
+            joinedCustomConstructors,
             gettersAndSetters,
             joinedCustomMethods,
             classClose
@@ -74,11 +98,11 @@ ${fields.map { "        this.${it.name} = ${it.name};" }.joinToString("\n")}
     }
 
     private fun getterAndSetter(field: Field): String {
-        return """    public ${field.type.simpleName} get${capitalizeFirst(field.name)}() {
+        return """    public ${field.type} get${capitalizeFirst(field.name)}() {
         return ${field.name};
     }
 
-    public $name set${capitalizeFirst(field.name)}(${field.type.simpleName} ${field.name}) {
+    public $name set${capitalizeFirst(field.name)}(${field.type} ${field.name}) {
         this.${field.name} = ${field.name};
         return this;
     }"""
@@ -86,5 +110,5 @@ ${fields.map { "        this.${it.name} = ${it.name};" }.joinToString("\n")}
 
 }
 
-data class Field(val name: String, val type: Class<out Any>) {
+data class Field(val name: String, val type: String) {
 }

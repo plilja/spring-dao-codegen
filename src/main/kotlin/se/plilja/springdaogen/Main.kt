@@ -16,6 +16,7 @@ fun main(args: Array<String>) {
     val catalog = SchemaCrawlerUtility.getCatalog(conn, options)
     generateEntities(catalog)
     generateConstants(catalog)
+    generateRepositories(catalog)
 }
 
 fun getConnection(): Connection {
