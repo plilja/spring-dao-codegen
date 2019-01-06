@@ -5,7 +5,11 @@ import se.plilja.springdaogen.model.Config
 import java.io.File
 
 fun main(args: Array<String>) {
-    val config = Config.readConfig()
+    val config = if (args.isNotEmpty()) {
+        Config.readConfig(File(args[0]))
+    } else {
+        Config.readConfig()
+    }
     val schema = readSchema(config)
     val classes = generateDaos(config, schema)
     for (classGenerator in classes) {
