@@ -8,7 +8,6 @@ fun generateDaos(config: Config, schema: Schema): List<ClassGenerator> {
     return schema.tables.flatMap {
         listOf(
             generateEntity(config, it),
-            generateConstants(config, it),
             generateRepository2(config, it)
         )
     }

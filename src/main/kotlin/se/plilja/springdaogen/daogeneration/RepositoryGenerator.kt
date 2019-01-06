@@ -34,7 +34,7 @@ fun generateRepository2(config: Config, table: Table): ClassGenerator {
     g.addCustomConstructor(
         """
         |    @Autowired
-        |    public ${g.name}( NamedParameterJdbcTemplate jdbcTemplate) {
+        |    public ${g.name}(NamedParameterJdbcTemplate jdbcTemplate) {
         |        super(${table.primaryKey.javaType.simpleName}.class, jdbcTemplate, ROW_MAPPER);
         |    }
     """.trimMargin()
@@ -93,10 +93,7 @@ fun generateRepository2(config: Config, table: Table): ClassGenerator {
 
 private fun rowMapper(table: Table): String {
     val setters = table.columns.map {
-        "                ${setterForColumn(
-            table,
-            it
-        )}"
+        "                ${setterForColumn(table, it)}"
     }.joinToString("\n")
     return """(rs, i) -> {
         |        return new ${table.entityName()}()
@@ -106,7 +103,7 @@ private fun rowMapper(table: Table): String {
 }
 
 private fun setterForColumn(table: Table, column: Column): String {
-    return ".${column.setter()}((${column.javaType.simpleName}) rs.getObject(${table.constantsName()}.${column.constantsName()}))"
+    return ".${column.setter()}((${column.javaType.simpleName}) rs.getObject(\"${column.name}\"))"
 }
 
 private fun rowUnmapper(table: Table): String {

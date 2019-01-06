@@ -12,10 +12,6 @@ data class Table(val name: String, val primaryKey: Column, val columns: List<Col
         return capitalizeFirst(camelCase(name)) + "Entity"
     }
 
-    fun constantsName(): String {
-        return capitalizeFirst(camelCase(name)) + "Db"
-    }
-
     fun repositoryName(): String {
         return capitalizeFirst(camelCase(name)) + "Repository"
     }
@@ -35,9 +31,5 @@ data class Column(
 
     fun fieldName() : String {
         return camelCase(name)
-    }
-
-    fun constantsName() : String {
-        return snakeCase(name).toUpperCase()
     }
 }
