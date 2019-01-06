@@ -1,20 +1,18 @@
 package se.plilja.springdaogen
 
-import schemacrawler.schema.Catalog
-import schemacrawler.schema.Table
 import java.io.File
 
 
-fun generateConstants(catalog: Catalog) {
-    for (table in catalog.tables) {
+fun generateConstants(schema: Schema) {
+    for (table in schema.tables) {
         generateConstantsForTable(table)
     }
 }
 
 fun generateConstantsForTable(table: Table) {
-    val g = ClassGenerator(capitalizeFirst(camelCase(table.name)) + "Db", "generated")
+    val g = ClassGenerator(table.constantsName(), "generated")
     for (column in table.columns) {
-        g.addConstant(snakeCase(column.name).toUpperCase(), String::class.java, "\"${column.name}\"")
+        g.addConstant(column.constantsName(), String::class.java, "\"${column.name}\"")
     }
     g.isFinal = true
     g.isConstantsClass = true

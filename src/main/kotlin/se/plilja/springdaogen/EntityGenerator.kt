@@ -1,25 +1,21 @@
 package se.plilja.springdaogen
 
 import org.springframework.data.domain.Persistable
-import schemacrawler.schema.Catalog
-import schemacrawler.schema.Column
-import schemacrawler.schema.Table
 import java.io.File
 
 
-fun generateEntities(catalog: Catalog) {
-    for (table in catalog.tables) {
+fun generateEntities(schema: Schema) {
+    for (table in schema.tables) {
         generateEntityForTable(table)
     }
 }
 
 fun generateEntityForTable(table: Table) {
-    val g = ClassGenerator(capitalizeFirst(camelCase(table.name)) + "Entity", "generated")
+    val g = ClassGenerator(table.entityName(), "generated")
     g.implements = "Persistable<Integer>" // TODO resolve from PK
     g.addImport(Persistable::class.java)
     for (column in table.columns) {
-        val type = resolveType(column)
-        g.addField(camelCase(column.name), type)
+        g.addField(column.fieldName(), column.javaType)
     }
     g.addCustomMethod("""
     public boolean isNew() {
@@ -29,12 +25,12 @@ fun generateEntityForTable(table: Table) {
 
     g.addCustomMethod("""
     public Integer getId() {
-        return ${camelCase(table.primaryKey.columns[0].name)};
+        return ${table.primaryKey.fieldName()};
     }
     """.trimMargin())
     g.addCustomMethod("""
     public ${g.name} setId(Integer id) {
-        return set${capitalizeFirst(camelCase(table.primaryKey.columns[0].name))}(id);
+        return ${table.primaryKey.setter()}(id);
     }
     """.trimMargin())
 
