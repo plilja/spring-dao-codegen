@@ -25,16 +25,20 @@ class ClassGenerator(
     }
 
     fun addConstant(name: String, type: Class<out Any>, initialization: String) {
-        constants.add(Pair(Field(name, type.simpleName), initialization))
+        constants.add(Pair(Field(name, type.simpleName, false), initialization))
         addImport(type)
     }
 
+    fun addPrivateConstant(name: String, type: String, initialization: String) {
+        constants.add(Pair(Field(name, type, true), initialization))
+    }
+
     fun addConstant(name: String, type: String, initialization: String) {
-        constants.add(Pair(Field(name, type), initialization))
+        constants.add(Pair(Field(name, type, false), initialization))
     }
 
     fun addField(name: String, type: Class<out Any>) {
-        fields.add(Field(name, type.simpleName))
+        fields.add(Field(name, type.simpleName, false))
         addImport(type)
     }
 
@@ -68,7 +72,7 @@ class ClassGenerator(
                 joinedClassAnnotation + "\n" + classHeader
             }
         val constantsDeclaration =
-            constants.map { "    public static final ${it.first.type} ${it.first.name} = ${it.second};" }
+            constants.map { "    ${it.first.getVisibility()} static final ${it.first.type} ${it.first.name} = ${it.second};" }
                 .joinToString("\n")
         val fieldsDeclaration = fields.map { "    private ${it.type} ${it.name};" }.joinToString("\n")
 
@@ -88,7 +92,7 @@ ${fields.map { "        this.${it.name} = ${it.name};" }.joinToString("\n")}
 
         val joinedCustomConstructors = customConstructors.joinToString("\n\n")
 
-        val gettersAndSetters = fields.map { getterAndSetter(it) }.joinToString("\n\n")
+        val gettersAndSetters = fields.filter { !it.private }.map { getterAndSetter(it) }.joinToString("\n\n")
         val joinedCustomMethods = customMethods.joinToString("\n\n")
         val classClose = "}\n"
 
@@ -123,5 +127,13 @@ ${fields.map { "        this.${it.name} = ${it.name};" }.joinToString("\n")}
 
 }
 
-data class Field(val name: String, val type: String) {
+data class Field(val name: String, val type: String, val private: Boolean) {
+    fun getVisibility(): String {
+        return if (private) {
+            "private"
+        } else {
+            "public"
+        }
+
+    }
 }

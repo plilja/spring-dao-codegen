@@ -1,55 +1,103 @@
 package se.plilja.springdaogen.daogeneration
 
-import com.nurkiewicz.jdbcrepository.JdbcRepository
-import com.nurkiewicz.jdbcrepository.RowUnmapper
+
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.RowMapper
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
+import org.springframework.jdbc.core.namedparam.SqlParameterSource
 import org.springframework.stereotype.Repository
+import se.plilja.springdaogen.codegeneration.ClassGenerator
 import se.plilja.springdaogen.model.Column
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Table
-import se.plilja.springdaogen.codegeneration.ClassGenerator
+import se.plilja.springdaogen.sqlgeneration.insert
+import se.plilja.springdaogen.sqlgeneration.selectMany
+import se.plilja.springdaogen.sqlgeneration.selectOne
+import se.plilja.springdaogen.sqlgeneration.update
 
 
-fun generateRepository(config: Config, table: Table): ClassGenerator {
+fun generateRepository2(config: Config, table: Table): ClassGenerator {
     val g = ClassGenerator(table.repositoryName(), config.outputPackage)
     g.addClassAnnotation("@Repository")
     g.addImport(Repository::class.java)
-    g.extends = "JdbcRepository<${table.entityName()}, Integer>" // TODO resolve from PK
-    g.addImport(JdbcRepository::class.java)
-    g.addConstant("ROW_MAPPER", "RowMapper<${table.entityName()}>",
+    g.extends = "BaseRepository<${table.entityName()}, ${table.primaryKey.javaType.simpleName}>"
+    g.addPrivateConstant(
+        "ROW_MAPPER", "RowMapper<${table.entityName()}>",
         rowMapper(table)
     )
-    g.addConstant("ROW_UNMAPPER", "RowUnmapper<${table.entityName()}>",
-        rowUnmapper(table)
-    )
+    g.addCustomMethod(rowUnmapper(table))
     g.addImport(RowMapper::class.java)
-    g.addImport(RowUnmapper::class.java)
-    g.addImport(Map::class.java)
-    g.addImport(HashMap::class.java)
+    g.addImport(Autowired::class.java)
+    g.addImport(MapSqlParameterSource::class.java)
+    g.addImport(SqlParameterSource::class.java)
     g.addCustomConstructor(
         """
-        |    public ${g.name}() {
-        |        super(ROW_MAPPER, ROW_UNMAPPER, "${table.name}", "${table.primaryKey.name}");
+        |    @Autowired
+        |    public ${g.name}( NamedParameterJdbcTemplate jdbcTemplate) {
+        |        super(${table.primaryKey.javaType.simpleName}.class, jdbcTemplate, ROW_MAPPER);
+        |    }
+    """.trimMargin()
+    )
+    g.addImport(NamedParameterJdbcTemplate::class.java)
+    g.addCustomMethod(
+        """
+        |    @Override
+        |    protected String getSelectOneSql() {
+        |        return ${selectOne(table)};
         |    }
     """.trimMargin()
     )
     g.addCustomMethod(
         """
         |    @Override
-        |    protected <S extends ${table.entityName()}> S postCreate(S entity, Number generatedId) {
-        |        entity.setId(generatedId.intValue());
-        |        return entity;
+        |    protected String getSelectManySql(int maxSelectCount) {
+        |        return String.format(${selectMany(table, config)}, maxSelectCount);
+        |    }
+    """.trimMargin()
+    )
+    g.addCustomMethod(
+        """
+        |    @Override
+        |    protected String getInsertSql() {
+        |        return ${insert(table)};
+        |    }
+    """.trimMargin()
+    )
+    g.addCustomMethod(
+        """
+        |    @Override
+        |    protected String getUpdateSql() {
+        |        return ${update(table)};
+        |    }
+    """.trimMargin()
+    )
+    g.addCustomMethod(
+        """
+        |    @Override
+        |    protected String getPrimaryKeyColumnName() {
+        |        return "${table.primaryKey.name}";
+        |    }
+    """.trimMargin()
+    )
+    g.addCustomMethod(
+        """
+        |    @Override
+        |    protected int getSelectAllDefaultMaxCount() {
+        |        return ${config.maxSelectAllCount};
         |    }
     """.trimMargin()
     )
     return g
 }
 
-fun rowMapper(table: Table): String {
-    val setters = table.columns.map { "                ${setterForColumn(
-        table,
-        it
-    )}" }.joinToString("\n")
+private fun rowMapper(table: Table): String {
+    val setters = table.columns.map {
+        "                ${setterForColumn(
+            table,
+            it
+        )}"
+    }.joinToString("\n")
     return """(rs, i) -> {
         |        return new ${table.entityName()}()
         |$setters;
@@ -57,17 +105,18 @@ fun rowMapper(table: Table): String {
     """.trimMargin()
 }
 
-fun setterForColumn(table: Table, column: Column): String {
+private fun setterForColumn(table: Table, column: Column): String {
     return ".${column.setter()}((${column.javaType.simpleName}) rs.getObject(${table.constantsName()}.${column.constantsName()}))"
 }
 
-fun rowUnmapper(table: Table): String {
-    val attributes = table.columns.map { "        m.put(\"${it.name}\", o.${it.getter()}());" }.joinToString("\n")
-    return """o -> {
-        |        Map<String, Object> m = new HashMap<>();
+private fun rowUnmapper(table: Table): String {
+    val attributes = table.columns.map { "        m.addValue(\"${it.name}\", o.${it.getter()}());" }.joinToString("\n")
+    return """
+        |    @Override
+        |    public SqlParameterSource getParams(${table.entityName()} o) {
+        |        MapSqlParameterSource m = new MapSqlParameterSource();
         |$attributes
         |        return m;
         |    }
     """.trimMargin()
 }
-

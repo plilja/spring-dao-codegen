@@ -9,7 +9,7 @@ fun generateDaos(config: Config, schema: Schema): List<ClassGenerator> {
         listOf(
             generateEntity(config, it),
             generateConstants(config, it),
-            generateRepository(config, it)
+            generateRepository2(config, it)
         )
     }
 }

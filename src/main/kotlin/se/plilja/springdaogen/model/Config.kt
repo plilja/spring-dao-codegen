@@ -4,12 +4,14 @@ import java.util.*
 
 
 data class Config(
+    val databaseDialect: DatabaseDialect,
     val databaseUrl: String,
     val databaseUser: String,
     val databasePassword: String,
     val databaseDriver: String,
     val outputFolder: String,
-    val outputPackage: String
+    val outputPackage: String,
+    val maxSelectAllCount: Int
 ) {
 
     companion object {
@@ -23,13 +25,19 @@ data class Config(
 
         fun readConfig(): Config {
             return Config(
+                databaseDialect(),
                 databaseUrl(),
                 databaseUser(),
                 databasePassword(),
                 databaseDriver(),
                 outputFolder(),
-                outputPackage()
+                outputPackage(),
+                maxSelectAllCount()
             )
+        }
+
+        private fun databaseDialect() : DatabaseDialect {
+           return DatabaseDialect.valueOf(properties.getProperty("database.dialect"))
         }
 
         private fun outputFolder(): String {
@@ -59,6 +67,10 @@ data class Config(
 
         private fun databasePassword(): String {
             return properties.getProperty("database.password")
+        }
+
+        private fun maxSelectAllCount(): Int {
+            return properties.getProperty("max.select.all.count").toInt()
         }
     }
 }
