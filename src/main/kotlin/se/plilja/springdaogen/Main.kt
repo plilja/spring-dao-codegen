@@ -4,7 +4,7 @@ import java.io.File
 
 fun main(args: Array<String>) {
     val config = Config.readConfig()
-    val schema = readSchema("jdbc:postgresql://localhost:3003/foo", "user", "password", "org.postgresql.Driver")
+    val schema = readSchema(config)
     val classes = generateDaos(config, schema)
     for (classGenerator in classes) {
         val dir = File("${config.outputFolder}${classGenerator.packageName.replace(".", "/")}")

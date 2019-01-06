@@ -3,7 +3,14 @@ package se.plilja.springdaogen
 import java.util.*
 
 
-data class Config(val outputFolder: String, val outputPackage: String) {
+data class Config(
+    val databaseUrl: String,
+    val databaseUser: String,
+    val databasePassword: String,
+    val databaseDriver: String,
+    val outputFolder: String,
+    val outputPackage: String
+) {
 
     companion object {
         private val properties: Properties by lazy {
@@ -15,7 +22,14 @@ data class Config(val outputFolder: String, val outputPackage: String) {
         }
 
         fun readConfig(): Config {
-            return Config(outputFolder(), outputPackage())
+            return Config(
+                databaseUrl(),
+                databaseUser(),
+                databasePassword(),
+                databaseDriver(),
+                outputFolder(),
+                outputPackage()
+            )
         }
 
         private fun outputFolder(): String {
@@ -29,6 +43,22 @@ data class Config(val outputFolder: String, val outputPackage: String) {
 
         private fun outputPackage(): String {
             return properties.getProperty("output.package")
+        }
+
+        private fun databaseUrl(): String {
+            return properties.getProperty("database.url")
+        }
+
+        private fun databaseDriver(): String {
+            return properties.getProperty("database.driver")
+        }
+
+        private fun databaseUser(): String {
+            return properties.getProperty("database.user")
+        }
+
+        private fun databasePassword(): String {
+            return properties.getProperty("database.password")
         }
     }
 }

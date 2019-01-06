@@ -8,8 +8,8 @@ import java.sql.Connection
 import java.sql.DriverManager
 
 
-fun readSchema(connString: String, user: String, pass: String, driver: String): Schema {
-    val conn = getConnection(connString, user, pass, driver)
+fun readSchema(config: Config): Schema {
+    val conn = getConnection(config)
     val options = SchemaCrawlerOptionsBuilder.builder()
         .includeColumns(IncludeAll())
         .includeTables(IncludeAll())
@@ -40,8 +40,7 @@ fun resolveType(column: schemacrawler.schema.Column): Class<out Any> {
     }
 }
 
-fun getConnection(connString: String, user: String, pass: String, driver: String): Connection {
-    Class.forName(driver)
-    val conn = DriverManager.getConnection(connString, user, pass)
-    return conn
+fun getConnection(config: Config): Connection {
+    Class.forName(config.databaseDriver)
+    return DriverManager.getConnection(config.databaseUrl, config.databaseUser, config.databasePassword)
 }
