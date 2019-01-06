@@ -17,7 +17,7 @@ import se.plilja.springdaogen.sqlgeneration.selectOne
 import se.plilja.springdaogen.sqlgeneration.update
 
 
-fun generateRepository2(config: Config, table: Table): ClassGenerator {
+fun generateRepository(config: Config, table: Table): ClassGenerator {
     val g = ClassGenerator(table.repositoryName(), config.outputPackage)
     g.addClassAnnotation("@Repository")
     g.addImport(Repository::class.java)
@@ -33,60 +33,60 @@ fun generateRepository2(config: Config, table: Table): ClassGenerator {
     g.addImport(SqlParameterSource::class.java)
     g.addCustomConstructor(
         """
-        |    @Autowired
-        |    public ${g.name}(NamedParameterJdbcTemplate jdbcTemplate) {
-        |        super(${table.primaryKey.javaType.simpleName}.class, jdbcTemplate, ROW_MAPPER);
-        |    }
-    """.trimMargin()
+            @Autowired
+            public ${g.name}(NamedParameterJdbcTemplate jdbcTemplate) {
+                super(${table.primaryKey.javaType.simpleName}.class, jdbcTemplate, ROW_MAPPER);
+            }
+        """
     )
     g.addImport(NamedParameterJdbcTemplate::class.java)
     g.addCustomMethod(
         """
-        |    @Override
-        |    protected String getSelectOneSql() {
-        |        return ${selectOne(table)};
-        |    }
-    """.trimMargin()
+            @Override
+            protected String getSelectOneSql() {
+                return ${selectOne(table)};
+            }
+        """
     )
     g.addCustomMethod(
         """
-        |    @Override
-        |    protected String getSelectManySql(int maxSelectCount) {
-        |        return String.format(${selectMany(table, config)}, maxSelectCount);
-        |    }
-    """.trimMargin()
+            @Override
+            protected String getSelectManySql(int maxSelectCount) {
+                return String.format(${selectMany(table, config)}, maxSelectCount);
+            }
+        """
     )
     g.addCustomMethod(
         """
-        |    @Override
-        |    protected String getInsertSql() {
-        |        return ${insert(table)};
-        |    }
-    """.trimMargin()
+            @Override
+            protected String getInsertSql() {
+                return ${insert(table)};
+            }
+        """
     )
     g.addCustomMethod(
         """
-        |    @Override
-        |    protected String getUpdateSql() {
-        |        return ${update(table)};
-        |    }
-    """.trimMargin()
+            @Override
+            protected String getUpdateSql() {
+                return ${update(table)};
+            }
+        """
     )
     g.addCustomMethod(
         """
-        |    @Override
-        |    protected String getPrimaryKeyColumnName() {
-        |        return "${table.primaryKey.name}";
-        |    }
-    """.trimMargin()
+            @Override
+            protected String getPrimaryKeyColumnName() {
+                return "${table.primaryKey.name}";
+            }
+        """
     )
     g.addCustomMethod(
         """
-        |    @Override
-        |    protected int getSelectAllDefaultMaxCount() {
-        |        return ${config.maxSelectAllCount};
-        |    }
-    """.trimMargin()
+            @Override
+            protected int getSelectAllDefaultMaxCount() {
+                return ${config.maxSelectAllCount};
+            }
+        """
     )
     return g
 }
@@ -96,10 +96,9 @@ private fun rowMapper(table: Table): String {
         "                ${setterForColumn(table, it)}"
     }.joinToString("\n")
     return """(rs, i) -> {
-        |        return new ${table.entityName()}()
-        |$setters;
-        |    }
-    """.trimMargin()
+                return new ${table.entityName()}()
+                $setters;
+              }"""
 }
 
 private fun setterForColumn(table: Table, column: Column): String {
@@ -107,13 +106,13 @@ private fun setterForColumn(table: Table, column: Column): String {
 }
 
 private fun rowUnmapper(table: Table): String {
-    val attributes = table.columns.map { "        m.addValue(\"${it.name}\", o.${it.getter()}());" }.joinToString("\n")
+    val attributes = table.columns.map { "m.addValue(\"${it.name}\", o.${it.getter()}());" }.joinToString("\n")
     return """
-        |    @Override
-        |    public SqlParameterSource getParams(${table.entityName()} o) {
-        |        MapSqlParameterSource m = new MapSqlParameterSource();
-        |$attributes
-        |        return m;
-        |    }
+            @Override
+            public SqlParameterSource getParams(${table.entityName()} o) {
+                MapSqlParameterSource m = new MapSqlParameterSource();
+                $attributes
+                return m;
+            }
     """.trimMargin()
 }

@@ -15,11 +15,11 @@ fun generateEntity(config: Config, table: Table) : ClassGenerator {
     public Integer getId() {
         return ${table.primaryKey.fieldName()};
     }
-    """.trimMargin())
+    """)
     g.addCustomMethod("""
     public void setId(Integer id) {
         ${table.primaryKey.setter()}(id);
     }
-    """.trimMargin())
+    """)
     return g
 }

@@ -78,15 +78,15 @@ class ClassGenerator(
 
         val noArgsConstructor =
             if (customConstructors.isEmpty())
-                """    ${if (isConstantsClass) "private" else "public"} $name() {
-    }"""
+                """${if (isConstantsClass) "private" else "public"} $name() {
+                }"""
             else
                 ""
 
         val allArgsConstructor = if (!isConstantsClass and customConstructors.isEmpty() and !fields.isEmpty())
-            """    public $name(${fields.map { "${it.type} ${it.name}" }.joinToString(", ")}) {
-${fields.map { "        this.${it.name} = ${it.name};" }.joinToString("\n")}
-    }"""
+            """public $name(${fields.map { "${it.type} ${it.name}" }.joinToString(", ")}) {
+                ${fields.map { "this.${it.name} = ${it.name};" }.joinToString("\n")}
+            }"""
         else
             ""
 
@@ -109,22 +109,85 @@ ${fields.map { "        this.${it.name} = ${it.name};" }.joinToString("\n")}
             joinedCustomMethods,
             classClose
         )
-        return classParts.filter { !it.trim().isEmpty() }
+        return rightTrimLines(indent(classParts.filter { !it.trim().isEmpty() }
             .joinToString("\n\n")
+            .replace("    ", "")))
 
     }
 
     private fun getterAndSetter(field: Field): String {
-        return """    public ${field.type} get${capitalizeFirst(field.name)}() {
-        return ${field.name};
-    }
+        return """public ${field.type} get${capitalizeFirst(field.name)}() {
+                      return ${field.name};
+                  }
 
-    public $name set${capitalizeFirst(field.name)}(${field.type} ${field.name}) {
-        this.${field.name} = ${field.name};
-        return this;
-    }"""
+                  public $name set${capitalizeFirst(field.name)}(${field.type} ${field.name}) {
+                      this.${field.name} = ${field.name};
+                      return this;
+                  }"""
     }
+}
 
+fun indent(code: String): String {
+    val lines = code.split("\n").map { it.trim() }
+    val tab = "    "
+    var indent = 0
+    var res = lines[0]
+    for (i in 1 until lines.size) {
+        val prevLine = lines[i - 1]
+        val line = lines[i]
+        if (prevLine.trim() == "" && line == "") {
+            continue
+        }
+        val extraIndent = if (prevLine != "" && !(prevLine.last() in listOf(';', '{', '}')) && prevLine[0] != '@') {
+            tab + tab
+        } else {
+            ""
+        }
+
+        if (line.endsWith("}") || line.endsWith("};")) {
+            indent -= 1
+        }
+
+        var spaces = ""
+        for (j in 1..indent) {
+            spaces += tab
+        }
+        if (line.endsWith("{")) {
+            indent += 1
+        }
+
+        res += "\n" + extraIndent + spaces + line
+    }
+    return res
+
+//        var res = ""
+//    var ind = 0
+//    var prevStatementTerminated = false
+//    val tab = "    "
+//    for (i in 0 until s.length) {
+//        val c = s[i]
+//        val lookAhead = if (i + 1 < s.length) s[i + 1] else '-'
+//        if (c == '{') {
+//            ind += 1
+//        } else if (c == '}') {
+//            ind = Math.max(0, ind - 1)
+//        } else if (c == ';') {
+//            prevStatementTerminated = true
+//        }
+//        res += c
+//        if (c == '\n') {
+//            val lim = if (lookAhead != '}') ind else Math.max(0, ind - 1)
+//            for (j in 1..lim) {
+//                res += tab
+//            }
+//            prevStatementTerminated = true;
+//        }
+//    }
+//    return res
+}
+
+fun rightTrimLines(s: String): String {
+    return s.split("\n").map { it.trimEnd() }.joinToString("\n")
 }
 
 data class Field(val name: String, val type: String, val private: Boolean) {
@@ -134,6 +197,5 @@ data class Field(val name: String, val type: String, val private: Boolean) {
         } else {
             "public"
         }
-
     }
 }

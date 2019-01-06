@@ -1,7 +1,7 @@
 package se.plilja.springdaogen.bootstrap
 
-import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.daogeneration.generateDaos
+import se.plilja.springdaogen.model.Config
 import java.io.File
 
 fun main(args: Array<String>) {
