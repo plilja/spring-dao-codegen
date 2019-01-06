@@ -1,16 +1,9 @@
 package se.plilja.springdaogen
 
 import org.springframework.data.domain.Persistable
-import java.io.File
 
 
-fun generateEntities(schema: Schema) {
-    for (table in schema.tables) {
-        generateEntityForTable(table)
-    }
-}
-
-fun generateEntityForTable(table: Table) {
+fun generateEntity(table: Table) : ClassGenerator {
     val g = ClassGenerator(table.entityName(), "generated")
     g.implements = "Persistable<Integer>" // TODO resolve from PK
     g.addImport(Persistable::class.java)
@@ -33,11 +26,5 @@ fun generateEntityForTable(table: Table) {
         return ${table.primaryKey.setter()}(id);
     }
     """.trimMargin())
-
-    File(Config.outputFolder()).mkdirs()
-    File(Config.outputFolder() + g.name + ".java").writeText(g.generate())
+    return g
 }
-
-
-
-

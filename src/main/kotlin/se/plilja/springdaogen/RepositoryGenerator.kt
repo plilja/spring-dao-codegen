@@ -3,16 +3,9 @@ package se.plilja.springdaogen
 import com.nurkiewicz.jdbcrepository.JdbcRepository
 import com.nurkiewicz.jdbcrepository.RowUnmapper
 import org.springframework.jdbc.core.RowMapper
-import java.io.File
 
 
-fun generateRepositories(schema: Schema) {
-    for (table in schema.tables) {
-        generateRepositoryForTable(table)
-    }
-}
-
-fun generateRepositoryForTable(table: Table) {
+fun generateRepository(table: Table): ClassGenerator {
     val g = ClassGenerator(table.repositoryName(), "generated")
     g.extends = "JdbcRepository<${table.entityName()}, Integer>" // TODO resolve from PK
     g.addImport(JdbcRepository::class.java)
@@ -38,10 +31,7 @@ fun generateRepositoryForTable(table: Table) {
         |    }
     """.trimMargin()
     )
-
-    File(Config.outputFolder()).mkdirs()
-    File(Config.outputFolder() + g.name + ".java").writeText(g.generate())
-
+    return g
 }
 
 fun rowMapper(table: Table): String {
@@ -53,7 +43,7 @@ fun rowMapper(table: Table): String {
     """.trimMargin()
 }
 
-fun setterForColumn(table: Table, column: Column) : String {
+fun setterForColumn(table: Table, column: Column): String {
     return ".${column.setter()}((${column.javaType.simpleName}) rs.getObject(${table.constantsName()}.${column.constantsName()}))"
 }
 
