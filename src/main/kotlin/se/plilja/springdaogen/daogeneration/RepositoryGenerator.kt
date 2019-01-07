@@ -88,6 +88,9 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
             }
         """
     )
+    for (column in table.columns) {
+        g.addImport(column.javaType)
+    }
     return g
 }
 

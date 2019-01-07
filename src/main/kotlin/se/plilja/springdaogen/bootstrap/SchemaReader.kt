@@ -10,6 +10,10 @@ import se.plilja.springdaogen.model.Schema
 import se.plilja.springdaogen.model.Table
 import java.sql.Connection
 import java.sql.DriverManager
+import java.sql.SQLXML
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.util.*
 
 
 fun readSchema(config: Config): Schema {
@@ -41,6 +45,14 @@ fun convertColumn(column: schemacrawler.schema.Column): Column {
 fun resolveType(column: schemacrawler.schema.Column): Class<out Any> {
     return if (column.type.name.toLowerCase().contains("char") && column.type.typeMappedClass.simpleName == "Array") {
         // Varchar
+        String::class.java
+    } else if (column.type.typeMappedClass == java.sql.Date::class.java) {
+        LocalDate::class.java
+    } else if (column.type.typeMappedClass == java.sql.Timestamp::class.java) {
+        LocalDateTime::class.java
+    } else if (column.type.name == "uuid") {
+        UUID::class.java
+    } else if (column.type.typeMappedClass == SQLXML::class.java) {
         String::class.java
     } else {
         column.type.typeMappedClass
