@@ -7,9 +7,10 @@ import kotlin.collections.ArrayList
 
 class ClassGenerator(
     val name: String,
-    val packageName: String
+    val packageName: String,
+    val sourceBaseFolder: String
 ) {
-    private val imports = TreeSet<Class<out Any>> { a, b -> a.canonicalName.compareTo(b.canonicalName) }
+    private val imports = TreeSet<String>()
     private val classAnnotations = ArrayList<String>()
     private val constants = ArrayList<Pair<Field, String>>()
     private val fields = ArrayList<Field>()
@@ -48,7 +49,13 @@ class ClassGenerator(
 
     fun addImport(type: Class<out Any>) {
         if (!type.packageName.startsWith("java.lang")) {
-            imports.add(type)
+            imports.add(type.canonicalName)
+        }
+    }
+
+    fun addImport(canonicalName: String) {
+        if (!canonicalName.startsWith("java.lang.")) {
+            imports.add(canonicalName)
         }
     }
 
@@ -61,9 +68,17 @@ class ClassGenerator(
         customMethods.add(methodCode)
     }
 
+    fun getOutputFolder() : String {
+        return "${sourceBaseFolder}${packageName.replace(".", "/")}"
+    }
+
+    fun getOutputFileName() : String {
+        return "${getOutputFolder()}/${name}.java"
+    }
+
     fun generate(): String {
         val packageDeclaration = "package $packageName;"
-        val importsDeclaration = imports.map { "import ${it.canonicalName};" }.joinToString("\n")
+        val importsDeclaration = imports.map { "import $it;" }.joinToString("\n")
         val joinedClassAnnotation = classAnnotations.joinToString("\n")
         val classHeader =
             "public${if (isFinal) " final" else ""} class $name${if (extends != null) " extends $extends" else ""}${if (implements != null) " implements $implements" else ""} {"

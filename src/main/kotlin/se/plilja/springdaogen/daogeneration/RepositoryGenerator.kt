@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.core.namedparam.SqlParameterSource
 import org.springframework.stereotype.Repository
 import se.plilja.springdaogen.codegeneration.ClassGenerator
+import se.plilja.springdaogen.generatedframework.baseRepository
 import se.plilja.springdaogen.model.Column
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Table
@@ -18,7 +19,7 @@ import se.plilja.springdaogen.sqlgeneration.update
 
 
 fun generateRepository(config: Config, table: Table): ClassGenerator {
-    val g = ClassGenerator(table.repositoryName(), config.outputPackage)
+    val g = ClassGenerator(table.repositoryName(), config.repositoryOutputPackage, config.repositoryOutputFolder)
     g.addClassAnnotation("@Repository")
     g.addImport(Repository::class.java)
     g.extends = "BaseRepository<${table.entityName()}, ${table.primaryKey.javaType.simpleName}>"
@@ -90,6 +91,12 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
     )
     for (column in table.columns) {
         g.addImport(column.javaType)
+    }
+    if (config.entityOutputPackage != config.repositoryOutputPackage) {
+        g.addImport("${config.entityOutputPackage}.${table.entityName()}")
+    }
+    if (config.frameworkOutputPackage != config.repositoryOutputPackage) {
+        g.addImport("${config.frameworkOutputPackage}.${baseRepository(config.frameworkOutputPackage).first}")
     }
     return g
 }

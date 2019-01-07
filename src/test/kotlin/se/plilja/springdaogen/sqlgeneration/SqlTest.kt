@@ -75,7 +75,7 @@ class SqlTest {
     @Test
     fun testSelectManyMysqlAndPostgres() {
         for (dialect in listOf(DatabaseDialect.MYSQL, DatabaseDialect.POSTGRES)) {
-            val config = Config(dialect, "", "", "", "", "", "", 0)
+            val config = Config(dialect, "", "", "", "", "", "", "", "", "", "", 0)
             val pk = Column("FOO_ID", Integer::class.java)
             val name = Column("NAME", String::class.java)
 
@@ -98,7 +98,7 @@ class SqlTest {
 
     @Test
     fun testSelectManyOracle() {
-        val config = Config(DatabaseDialect.ORACLE, "", "", "", "", "", "", 0)
+        val config = Config(DatabaseDialect.ORACLE, "", "", "", "", "", "", "", "", "", "",  0)
         val pk = Column("FOO_ID", Integer::class.java)
         val name = Column("NAME", String::class.java)
 
@@ -119,7 +119,7 @@ class SqlTest {
 
     @Test
     fun testSelectManyMsSqlServer() {
-        val config = Config(DatabaseDialect.MSSQL_SERVER, "", "", "", "", "", "", 0)
+        val config = Config(DatabaseDialect.MSSQL_SERVER, "", "", "", "", "", "", "", "", "", "", 0)
         val pk = Column("FOO_ID", Integer::class.java)
         val name = Column("NAME", String::class.java)
 

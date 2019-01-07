@@ -7,7 +7,7 @@ import java.sql.Connection
 class ClassGeneratorTest {
     @Test
     fun testGen() {
-        val g = ClassGenerator("Foo", "se.plilja.test")
+        val g = ClassGenerator("Foo", "se.plilja.test", "")
         g.addImport(Connection::class.java)
         g.addField("bar", String::class.java)
         g.addField("baz", Integer::class.java)
@@ -58,7 +58,7 @@ public class Foo {
 
     @Test
     fun testGenExtends() {
-        val g = ClassGenerator("Foo", "se.plilja.test")
+        val g = ClassGenerator("Foo", "se.plilja.test", "")
         g.setExtends(A::class.java)
 
         // when
@@ -81,7 +81,7 @@ public class Foo extends A {
 
     @Test
     fun testGenExtendsWithGenerics() {
-        val g = ClassGenerator("Foo", "se.plilja.test")
+        val g = ClassGenerator("Foo", "se.plilja.test", "")
         g.extends = "B<Integer>"
         g.addImport(B::class.java)
 
@@ -105,7 +105,7 @@ public class Foo extends B<Integer> {
 
     @Test
     fun testGenExtendsWithConstant() {
-        val g = ClassGenerator("Foo", "se.plilja.test")
+        val g = ClassGenerator("Foo", "se.plilja.test", "")
         g.addConstant("BAR", String::class.java, "\"BAZ\"")
         g.isConstantsClass = true
 

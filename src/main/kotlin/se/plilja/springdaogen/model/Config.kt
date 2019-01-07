@@ -10,8 +10,12 @@ data class Config(
     val databaseUser: String,
     val databasePassword: String,
     val databaseDriver: String,
-    val outputFolder: String,
-    val outputPackage: String,
+    val entityOutputFolder: String,
+    val entityOutputPackage: String,
+    val repositoryOutputFolder: String,
+    val repositoryOutputPackage: String,
+    val frameworkOutputFolder: String,
+    val frameworkOutputPackage: String,
     val maxSelectAllCount: Int
 ) {
 
@@ -45,8 +49,12 @@ private class ConfigReader {
             databaseUser(),
             databasePassword(),
             databaseDriver(),
-            outputFolder(),
-            outputPackage(),
+            entityOutputFolder(),
+            entityOutputPackage(),
+            repositoryOutputFolder(),
+            repositoryOutputPackage(),
+            frameworkOutputFolder(),
+            frameworkOutputPackage(),
             maxSelectAllCount()
         )
     }
@@ -55,8 +63,8 @@ private class ConfigReader {
         return DatabaseDialect.valueOf(properties.getProperty("database.dialect"))
     }
 
-    private fun outputFolder(): String {
-        val f = properties.getProperty("output.folder")
+    private fun getFolderProperty(property: String): String {
+        val f = properties.getProperty(property)
         if (f.last() != '/') {
             return "$f/"
         } else {
@@ -64,8 +72,28 @@ private class ConfigReader {
         }
     }
 
-    private fun outputPackage(): String {
-        return properties.getProperty("output.package")
+    private fun entityOutputFolder(): String {
+        return getFolderProperty("entity.output.folder")
+    }
+
+    private fun entityOutputPackage(): String {
+        return properties.getProperty("entity.output.package")
+    }
+
+    private fun repositoryOutputFolder(): String {
+        return getFolderProperty("repository.output.folder")
+    }
+
+    private fun repositoryOutputPackage(): String {
+        return properties.getProperty("repository.output.package")
+    }
+
+    private fun frameworkOutputFolder(): String {
+        return getFolderProperty("framework.output.folder")
+    }
+
+    private fun frameworkOutputPackage(): String {
+        return properties.getProperty("framework.output.package")
     }
 
     private fun databaseUrl(): String {
