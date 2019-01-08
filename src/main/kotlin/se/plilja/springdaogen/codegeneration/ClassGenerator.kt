@@ -176,31 +176,6 @@ fun indent(code: String): String {
         res += "\n" + extraIndent + spaces + line
     }
     return res
-
-//        var res = ""
-//    var ind = 0
-//    var prevStatementTerminated = false
-//    val tab = "    "
-//    for (i in 0 until s.length) {
-//        val c = s[i]
-//        val lookAhead = if (i + 1 < s.length) s[i + 1] else '-'
-//        if (c == '{') {
-//            ind += 1
-//        } else if (c == '}') {
-//            ind = Math.max(0, ind - 1)
-//        } else if (c == ';') {
-//            prevStatementTerminated = true
-//        }
-//        res += c
-//        if (c == '\n') {
-//            val lim = if (lookAhead != '}') ind else Math.max(0, ind - 1)
-//            for (j in 1..lim) {
-//                res += tab
-//            }
-//            prevStatementTerminated = true;
-//        }
-//    }
-//    return res
 }
 
 fun rightTrimLines(s: String): String {
