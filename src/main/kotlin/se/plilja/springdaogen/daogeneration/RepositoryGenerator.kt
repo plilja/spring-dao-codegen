@@ -16,6 +16,7 @@ import se.plilja.springdaogen.sqlgeneration.insert
 import se.plilja.springdaogen.sqlgeneration.selectMany
 import se.plilja.springdaogen.sqlgeneration.selectOne
 import se.plilja.springdaogen.sqlgeneration.update
+import java.util.*
 
 
 fun generateRepository(config: Config, table: Table): ClassGenerator {
@@ -90,7 +91,9 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
         """
     )
     for (column in table.columns) {
-        g.addImport(column.javaType)
+        if (column.javaType == UUID::class.java) {
+            g.addImport(column.javaType)
+        }
     }
     if (config.entityOutputPackage != config.repositoryOutputPackage) {
         g.addImport("${config.entityOutputPackage}.${table.entityName()}")
@@ -102,17 +105,15 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
 }
 
 private fun rowMapper(table: Table): String {
-    val setters = table.columns.map {
-        "                ${setterForColumn(table, it)}"
-    }.joinToString("\n")
+    val setters = table.columns.map { setterForColumn(it) }.joinToString("\n")
     return """(rs, i) -> {
                 return new ${table.entityName()}()
                 $setters;
               }"""
 }
 
-private fun setterForColumn(table: Table, column: Column): String {
-    return ".${column.setter()}((${column.javaType.simpleName}) rs.getObject(\"${column.name}\"))"
+private fun setterForColumn(column: Column): String {
+    return ".${column.setter()}(${column.recordSetMethod("rs")})"
 }
 
 private fun rowUnmapper(table: Table): String {

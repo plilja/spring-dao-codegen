@@ -55,6 +55,10 @@ fun capitalizeFirst(s: String): String {
     }
 }
 
+fun capitalizeLast(s: String): String {
+    return capitalizeFirst(s.reversed()).reversed()
+}
+
 fun lowerCaseFirst(s: String): String {
     return if (s.isEmpty()) {
         ""

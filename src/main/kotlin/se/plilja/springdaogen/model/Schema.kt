@@ -2,6 +2,11 @@ package se.plilja.springdaogen.model
 
 import se.plilja.springdaogen.util.camelCase
 import se.plilja.springdaogen.util.capitalizeFirst
+import se.plilja.springdaogen.util.capitalizeLast
+import java.math.BigDecimal
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.util.*
 
 
 data class Schema(val tables: List<Table>)
@@ -31,10 +36,37 @@ data class Column(
     fun fieldName(): String {
         val s = camelCase(name)
         if (isReservedKeyword(s)) {
-            return s + "2"
+            return capitalizeLast(s)
         } else {
             return s
         }
+    }
+
+    fun recordSetMethod(rs: String): String {
+        if (javaType == BigDecimal::class.java) {
+            return "$rs.getBigDecimal(\"${name}\")"
+        } else if (javaType == String::class.java) {
+            return "$rs.getString(\"${name}\")"
+        } else if (javaType == Boolean::class.java) {
+            return "$rs.getObject(\"${name}\") != null ? $rs.getBoolean(\"${name}\") : null"
+        } else if (javaType == Integer::class.java) {
+            return "$rs.getObject(\"${name}\") != null ? $rs.getInt(\"${name}\") : null"
+        } else if (javaType == Long::class.java) {
+            return "$rs.getObject(\"${name}\") != null ? $rs.getLong(\"${name}\") : null"
+        } else if (javaType == Float::class.java) {
+            return "$rs.getObject(\"${name}\") != null ? $rs.getFloat(\"${name}\") : null"
+        } else if (javaType == Double::class.java) {
+            return "$rs.getObject(\"${name}\") != null ? $rs.getDouble(\"${name}\") : null"
+        } else if (javaType == UUID::class.java) {
+            return "UUID.fromString($rs.getString(\"${name}\"))"
+        } else if (javaType == LocalDate::class.java) {
+            return "$rs.getDate(\"${name}\").toLocalDate()"
+        } else if (javaType == LocalDateTime::class.java) {
+            return "$rs.getTimestamp(\"${name}\").toLocalDateTime()"
+        } else {
+            return "(${javaType.simpleName}) $rs.getObject(\"${name}\")"
+        }
+
     }
 }
 
