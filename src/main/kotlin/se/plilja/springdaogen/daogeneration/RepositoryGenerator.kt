@@ -46,7 +46,7 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
         """
             @Override
             protected String getSelectOneSql() {
-                return ${selectOne(table, config)};
+                return ${selectOne(table, config.databaseDialect)};
             }
         """
     )
@@ -54,7 +54,7 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
         """
             @Override
             protected String getSelectManySql(int maxSelectCount) {
-                return String.format(${selectMany(table, config)}, maxSelectCount);
+                return String.format(${selectMany(table, config.databaseDialect)}, maxSelectCount);
             }
         """
     )
@@ -62,7 +62,7 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
         """
             @Override
             protected String getInsertSql() {
-                return ${insert(table, config)};
+                return ${insert(table, config.databaseDialect)};
             }
         """
     )
@@ -70,7 +70,7 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
         """
             @Override
             protected String getUpdateSql() {
-                return ${update(table, config)};
+                return ${update(table, config.databaseDialect)};
             }
         """
     )

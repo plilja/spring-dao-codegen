@@ -38,8 +38,6 @@ class RepositoryGeneratorTest {
         val res = generateRepository(config, table)
         val act = res.generate()
 
-        println(act)
-
         // then
         val exp = """
 package se.plilja.test;
@@ -147,8 +145,6 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
         // when
         val res = generateRepository(config, table)
         val act = res.generate()
-
-        println(act)
 
         // then
         val exp = """

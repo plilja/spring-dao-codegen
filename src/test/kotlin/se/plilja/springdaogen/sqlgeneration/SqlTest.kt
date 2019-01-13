@@ -10,13 +10,12 @@ import se.plilja.springdaogen.model.Table
 class SqlTest {
     @Test
     fun testInsert() {
-        val config = Config(DatabaseDialect.MSSQL_SERVER, "", "", "", "", "", "", "", "", "", "", 0)
         val pk = Column("FOO_ID", Integer::class.java)
         val name = Column("NAME", String::class.java)
         val age = Column("AGE", Integer::class.java)
 
         // when
-        val sql = insert(Table("public", "FOO", pk, listOf(pk, name, age)), config)
+        val sql = insert(Table("public", "FOO", pk, listOf(pk, name, age)), DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals(
@@ -35,13 +34,12 @@ class SqlTest {
 
     @Test
     fun testUpdate() {
-        val config = Config(DatabaseDialect.MSSQL_SERVER, "", "", "", "", "", "", "", "", "", "", 0)
         val pk = Column("FOO_ID", Integer::class.java)
         val name = Column("NAME", String::class.java)
         val age = Column("AGE", Integer::class.java)
 
         // when
-        val sql = update(Table("public", "FOO", pk, listOf(pk, name, age)), config)
+        val sql = update(Table("public", "FOO", pk, listOf(pk, name, age)), DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals(
@@ -56,12 +54,11 @@ class SqlTest {
 
     @Test
     fun testSelectOne() {
-        val config = Config(DatabaseDialect.MSSQL_SERVER, "", "", "", "", "", "", "", "", "", "", 0)
         val pk = Column("FOO_ID", Integer::class.java)
         val name = Column("NAME", String::class.java)
 
         // when
-        val sql = selectOne(Table("public", "FOO", pk, listOf(pk, name)), config)
+        val sql = selectOne(Table("public", "FOO", pk, listOf(pk, name)), DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals(
@@ -77,12 +74,11 @@ class SqlTest {
 
     @Test
     fun testSelectNoSchema() {
-        val config = Config(DatabaseDialect.MSSQL_SERVER, "", "", "", "", "", "", "", "", "", "", 0)
         val pk = Column("FOO_ID", Integer::class.java)
         val name = Column("NAME", String::class.java)
 
         // when
-        val sql = selectOne(Table(null, "FOO", pk, listOf(pk, name)), config)
+        val sql = selectOne(Table(null, "FOO", pk, listOf(pk, name)), DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals(
@@ -98,12 +94,11 @@ class SqlTest {
 
     @Test
     fun testSelectManyMysql() {
-        val config = Config(DatabaseDialect.MYSQL, "", "", "", "", "", "", "", "", "", "", 0)
         val pk = Column("FOO_ID", Integer::class.java)
         val name = Column("NAME", String::class.java)
 
         // when
-        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name)), config)
+        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name)), DatabaseDialect.MYSQL)
 
         // then
         assertEquals(
@@ -119,12 +114,11 @@ class SqlTest {
 
     @Test
     fun testSelectManyPostgres() {
-        val config = Config(DatabaseDialect.POSTGRES, "", "", "", "", "", "", "", "", "", "", 0)
         val pk = Column("FOO_ID", Integer::class.java)
         val name = Column("NAME", String::class.java)
 
         // when
-        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name)), config)
+        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name)), DatabaseDialect.POSTGRES)
 
         // then
         assertEquals(
@@ -140,12 +134,11 @@ class SqlTest {
 
     @Test
     fun testSelectManyOracle() {
-        val config = Config(DatabaseDialect.ORACLE, "", "", "", "", "", "", "", "", "", "", 0)
         val pk = Column("FOO_ID", Integer::class.java)
         val name = Column("NAME", String::class.java)
 
         // when
-        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name)), config)
+        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name)), DatabaseDialect.ORACLE)
 
         // then
         assertEquals(
@@ -161,12 +154,11 @@ class SqlTest {
 
     @Test
     fun testSelectManyMsSqlServer() {
-        val config = Config(DatabaseDialect.MSSQL_SERVER, "", "", "", "", "", "", "", "", "", "", 0)
         val pk = Column("FOO_ID", Integer::class.java)
         val name = Column("NAME", String::class.java)
 
         // when
-        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name)), config)
+        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name)), DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals(
