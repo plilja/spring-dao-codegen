@@ -8,7 +8,7 @@ import se.plilja.springdaogen.model.Table
 fun insert(table: Table, config: Config): String {
     val columns = table.columns.filter { it != table.primaryKey }
     return """
-            |"INSERT INTO ${formatIdentifier(table.schemaName, config)}.${formatIdentifier(table.name, config)} (" +
+            |"INSERT INTO ${formatTable(table, config)} (" +
             |${columns.map { "\"   ${formatIdentifier(it.name, config)}" }.joinToString(", \" +\n")}" +
             |") " +
             |"VALUES (" +
@@ -20,7 +20,7 @@ fun insert(table: Table, config: Config): String {
 fun update(table: Table, config: Config): String {
     val columns = table.columns.filter { it != table.primaryKey }
     return """
-            |"UPDATE ${formatIdentifier(table.schemaName, config)}.${formatIdentifier(table.name, config)} SET " +
+            |"UPDATE ${formatTable(table, config)} SET " +
             |${columns.map { "\"   ${it.name} = :${it.name}" }.joinToString(", \" +\n")} " +
             |"WHERE ${table.primaryKey.name} = :${table.primaryKey.name}"
             """.trimMargin()
@@ -31,7 +31,7 @@ fun selectOne(table: Table, config: Config): String {
     return """
             |"SELECT " +
             |${columns.map { "\"   ${formatIdentifier(it.name, config)}" }.joinToString(", \" +\n")} " +
-            |"FROM ${formatIdentifier(table.schemaName, config)}.${formatIdentifier(table.name, config)} " +
+            |"FROM ${formatTable(table, config)} " +
             |"WHERE ${formatIdentifier(table.primaryKey.name, config)} = :${table.primaryKey.name}"
             """.trimMargin()
 }
@@ -41,7 +41,7 @@ fun selectMany(table: Table, config: Config): String {
     var result = """
             |"SELECT${if (config.databaseDialect == DatabaseDialect.MSSQL_SERVER) " TOP %d" else ""} " +
             |${columns.map { "\"   ${formatIdentifier(it.name, config)}" }.joinToString(", \" +\n")} " +
-            |"FROM ${formatIdentifier(table.schemaName, config)}.${formatIdentifier(table.name, config)} "
+            |"FROM ${formatTable(table, config)} "
             """.trimMargin()
     if (config.databaseDialect == DatabaseDialect.ORACLE) {
         result += """ +
@@ -57,6 +57,16 @@ fun selectMany(table: Table, config: Config): String {
     return result
 }
 
+fun formatTable(table: Table, config: Config): String {
+    val identifier = formatIdentifier(table.name, config)
+    val schema = if (table.schemaName != null) {
+        "${formatIdentifier(table.schemaName, config)}."
+    } else {
+        ""
+    }
+    return schema + identifier
+}
+
 fun formatIdentifier(id: String, config: Config): String {
     if (config.databaseDialect == DatabaseDialect.POSTGRES && id.toLowerCase() != id) {
         return "\\\"$id\\\""
@@ -64,3 +74,4 @@ fun formatIdentifier(id: String, config: Config): String {
         return id
     }
 }
+

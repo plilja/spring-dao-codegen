@@ -11,11 +11,11 @@ import se.plilja.springdaogen.dbtests.framework.BaseRepository;
 import java.util.UUID;
 
 @Repository
-public class FooRepository extends BaseRepository<FooEntity, Long> {
+public class FooPostgresRepository extends BaseRepository<FooPostgresEntity, Long> {
 
-    private static final RowMapper<FooEntity> ROW_MAPPER = (rs, i) -> {
-        return new FooEntity()
-                .setFooId((Long) rs.getObject("FOO_ID"))
+    private static final RowMapper<FooPostgresEntity> ROW_MAPPER = (rs, i) -> {
+        return new FooPostgresEntity()
+                .setId((Long) rs.getObject("FOO_ID"))
                 .setBooleanBit((Boolean) rs.getObject("BOOLEAN_BIT"))
                 .setBooleanB((Boolean) rs.getObject("BOOLEAN_B"))
                 .setChaR(rs.getString("CHAR"))
@@ -31,14 +31,14 @@ public class FooRepository extends BaseRepository<FooEntity, Long> {
     };
 
     @Autowired
-    public FooRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    public FooPostgresRepository(NamedParameterJdbcTemplate jdbcTemplate) {
         super(Long.class, jdbcTemplate, ROW_MAPPER);
     }
 
     @Override
-    public SqlParameterSource getParams(FooEntity o) {
+    public SqlParameterSource getParams(FooPostgresEntity o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
-        m.addValue("FOO_ID", o.getFooId());
+        m.addValue("FOO_ID", o.getId());
         m.addValue("BOOLEAN_BIT", o.getBooleanBit());
         m.addValue("BOOLEAN_B", o.getBooleanB());
         m.addValue("CHAR", o.getChaR());
@@ -70,7 +70,7 @@ public class FooRepository extends BaseRepository<FooEntity, Long> {
                 "   \"XML\", " +
                 "   \"TEXT\", " +
                 "   \"BYTEA\" " +
-                "FROM public.\"FOO\" " +
+                "FROM public.\"FOO_POSTGRES\" " +
                 "WHERE \"FOO_ID\" = :FOO_ID";
     }
 
@@ -90,13 +90,13 @@ public class FooRepository extends BaseRepository<FooEntity, Long> {
                 "   \"XML\", " +
                 "   \"TEXT\", " +
                 "   \"BYTEA\" " +
-                "FROM public.\"FOO\" " +
+                "FROM public.\"FOO_POSTGRES\" " +
                 "LIMIT %d", maxSelectCount);
     }
 
     @Override
     protected String getInsertSql() {
-        return "INSERT INTO public.\"FOO\" (" +
+        return "INSERT INTO public.\"FOO_POSTGRES\" (" +
                 "   \"BOOLEAN_BIT\", " +
                 "   \"BOOLEAN_B\", " +
                 "   \"CHAR\", " +
@@ -128,7 +128,7 @@ public class FooRepository extends BaseRepository<FooEntity, Long> {
 
     @Override
     protected String getUpdateSql() {
-        return "UPDATE public.\"FOO\" SET " +
+        return "UPDATE public.\"FOO_POSTGRES\" SET " +
                 "   BOOLEAN_BIT = :BOOLEAN_BIT, " +
                 "   BOOLEAN_B = :BOOLEAN_B, " +
                 "   CHAR = :CHAR, " +

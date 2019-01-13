@@ -5,4 +5,8 @@ services:
         build: ./postgres-test
         ports:
             - "4003:5432"
+    mysql:
+        build: ./mysql-test
+        ports:
+            - "4004:3306"
 

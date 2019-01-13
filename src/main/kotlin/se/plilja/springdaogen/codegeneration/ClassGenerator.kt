@@ -38,6 +38,11 @@ class ClassGenerator(
         constants.add(Pair(Field(name, type, false), initialization))
     }
 
+    fun addPrivateField(name: String, type: Class<out Any>) {
+        fields.add(Field(name, type.simpleName, true))
+        addImport(type)
+    }
+
     fun addField(name: String, type: Class<out Any>) {
         fields.add(Field(name, type.simpleName, false))
         addImport(type)

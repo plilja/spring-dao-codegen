@@ -105,19 +105,29 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
 }
 
 private fun rowMapper(table: Table): String {
-    val setters = table.columns.map { setterForColumn(it) }.joinToString("\n")
+    val setters = table.columns.map { setterForColumn(table, it) }.joinToString("\n")
     return """(rs, i) -> {
                 return new ${table.entityName()}()
                 $setters;
               }"""
 }
 
-private fun setterForColumn(column: Column): String {
-    return ".${column.setter()}(${column.recordSetMethod("rs")})"
+private fun setterForColumn(table: Table, column: Column): String {
+    return if (table.primaryKey == column) {
+        ".setId(${column.recordSetMethod("rs")})"
+    } else {
+        ".${column.setter()}(${column.recordSetMethod("rs")})"
+    }
 }
 
 private fun rowUnmapper(table: Table): String {
-    val attributes = table.columns.map { "m.addValue(\"${it.name}\", o.${it.getter()}());" }.joinToString("\n")
+    val attributes = table.columns.map {
+        if (table.primaryKey == it) {
+            "m.addValue(\"${it.name}\", o.getId());"
+        } else {
+            "m.addValue(\"${it.name}\", o.${it.getter()}());"
+        }
+    }.joinToString("\n")
     return """
             @Override
             public SqlParameterSource getParams(${table.entityName()} o) {
@@ -127,3 +137,4 @@ private fun rowUnmapper(table: Table): String {
             }
     """.trimMargin()
 }
+

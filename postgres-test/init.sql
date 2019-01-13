@@ -2,7 +2,7 @@ CREATE SCHEMA test_schema
     AUTHORIZATION "docker";
 
 
-CREATE TABLE public."FOO"
+CREATE TABLE public."FOO_POSTGRES"
 (
     "FOO_ID" bigint NOT NULL,
     "BOOLEAN_BIT" bit(1) NOT NULL,
@@ -29,7 +29,7 @@ WITH (
 
 CREATE SEQUENCE test_schema."BAZ_BAZ_ID_seq";
 
-CREATE TABLE test_schema."baz"
+CREATE TABLE test_schema."baz_postgres"
 (
     "baz_id" integer NOT NULL DEFAULT nextval('test_schema."BAZ_BAZ_ID_seq"'::regclass),
     "baz_name" character varying(100) COLLATE pg_catalog."default",
@@ -42,5 +42,5 @@ WITH (
 -- 
 -- ALTER TABLE test_schema."BAZ"
 --     OWNER to "docker";
-COMMENT ON TABLE test_schema."baz"
+COMMENT ON TABLE test_schema."baz_postgres"
     IS 'Baz comment';

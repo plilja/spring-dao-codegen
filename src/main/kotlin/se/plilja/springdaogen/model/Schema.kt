@@ -11,7 +11,7 @@ import java.util.*
 
 data class Schema(val tables: List<Table>)
 
-data class Table(val schemaName: String, val name: String, val primaryKey: Column, val columns: List<Column>) {
+data class Table(val schemaName: String?, val name: String, val primaryKey: Column, val columns: List<Column>) {
     fun entityName(): String {
         return capitalizeFirst(camelCase(name)) + "Entity"
     }

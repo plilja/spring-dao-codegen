@@ -76,6 +76,27 @@ class SqlTest {
     }
 
     @Test
+    fun testSelectNoSchema() {
+        val config = Config(DatabaseDialect.MSSQL_SERVER, "", "", "", "", "", "", "", "", "", "", 0)
+        val pk = Column("FOO_ID", Integer::class.java)
+        val name = Column("NAME", String::class.java)
+
+        // when
+        val sql = selectOne(Table(null, "FOO", pk, listOf(pk, name)), config)
+
+        // then
+        assertEquals(
+            """
+            |"SELECT " +
+            |"   FOO_ID, " +
+            |"   NAME " +
+            |"FROM FOO " +
+            |"WHERE FOO_ID = :FOO_ID"
+        """.trimMargin(), sql
+        )
+    }
+
+    @Test
     fun testSelectManyMysql() {
         val config = Config(DatabaseDialect.MYSQL, "", "", "", "", "", "", "", "", "", "", 0)
         val pk = Column("FOO_ID", Integer::class.java)

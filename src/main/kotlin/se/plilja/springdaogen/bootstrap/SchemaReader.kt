@@ -33,7 +33,7 @@ fun catalogToSchema(catalog: Catalog): Schema {
 
 fun convertTable(table: schemacrawler.schema.Table): Table {
     return Table(
-        table.schema.name,
+        if (table.schema != null) table.schema.name else null,
         table.name,
         convertColumn(table.primaryKey.columns[0]),
         table.columns.map { convertColumn(it) })

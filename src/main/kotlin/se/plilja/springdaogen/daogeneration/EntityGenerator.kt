@@ -8,9 +8,12 @@ import se.plilja.springdaogen.model.Table
 
 fun generateEntity(config: Config, table: Table) : ClassGenerator {
     val g = ClassGenerator(table.entityName(), config.entityOutputPackage, config.entityOutputFolder)
-    g.implements = "BaseEntity<${table.primaryKey.javaType.simpleName}>"
+    g.implements = "BaseEntity<${table.entityName()}, ${table.primaryKey.javaType.simpleName}>"
+    g.addPrivateField(table.primaryKey.fieldName(), table.primaryKey.javaType)
     for (column in table.columns) {
-        g.addField(column.fieldName(), column.javaType)
+        if (column != table.primaryKey) {
+            g.addField(column.fieldName(), column.javaType)
+        }
     }
     g.addCustomMethod("""
     public ${table.primaryKey.javaType.simpleName} getId() {
@@ -18,8 +21,9 @@ fun generateEntity(config: Config, table: Table) : ClassGenerator {
     }
     """)
     g.addCustomMethod("""
-    public void setId(${table.primaryKey.javaType.simpleName} id) {
-        ${table.primaryKey.setter()}(id);
+    public ${table.entityName()} setId(${table.primaryKey.javaType.simpleName} id) {
+        this.${table.primaryKey.fieldName()} = id;
+        return this;
     }
     """)
     if (config.frameworkOutputPackage != config.entityOutputPackage) {

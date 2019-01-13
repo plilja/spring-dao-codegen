@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class BaseRepository<T extends BaseEntity<ID>, ID> {
+public abstract class BaseRepository<T extends BaseEntity<?, ID>, ID> {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private Class<ID> idClass;

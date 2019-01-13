@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-public class FooEntity implements BaseEntity<Long> {
+public class FooPostgresEntity implements BaseEntity<FooPostgresEntity, Long> {
 
     private Long fooId;
     private Boolean booleanBit;
@@ -23,10 +23,10 @@ public class FooEntity implements BaseEntity<Long> {
     private String text;
     private byte[] bytea;
 
-    public FooEntity() {
+    public FooPostgresEntity() {
     }
 
-    public FooEntity(Long fooId, Boolean booleanBit, Boolean booleanB, String chaR, LocalDate date, LocalDateTime timestamp, BigDecimal bigdecimal, Float floaT, Double doublE, UUID guid, String xml, String text, byte[] bytea) {
+    public FooPostgresEntity(Long fooId, Boolean booleanBit, Boolean booleanB, String chaR, LocalDate date, LocalDateTime timestamp, BigDecimal bigdecimal, Float floaT, Double doublE, UUID guid, String xml, String text, byte[] bytea) {
         this.fooId = fooId;
         this.booleanBit = booleanBit;
         this.booleanB = booleanB;
@@ -42,20 +42,11 @@ public class FooEntity implements BaseEntity<Long> {
         this.bytea = bytea;
     }
 
-    public Long getFooId() {
-        return fooId;
-    }
-
-    public FooEntity setFooId(Long fooId) {
-        this.fooId = fooId;
-        return this;
-    }
-
     public Boolean getBooleanBit() {
         return booleanBit;
     }
 
-    public FooEntity setBooleanBit(Boolean booleanBit) {
+    public FooPostgresEntity setBooleanBit(Boolean booleanBit) {
         this.booleanBit = booleanBit;
         return this;
     }
@@ -64,7 +55,7 @@ public class FooEntity implements BaseEntity<Long> {
         return booleanB;
     }
 
-    public FooEntity setBooleanB(Boolean booleanB) {
+    public FooPostgresEntity setBooleanB(Boolean booleanB) {
         this.booleanB = booleanB;
         return this;
     }
@@ -73,7 +64,7 @@ public class FooEntity implements BaseEntity<Long> {
         return chaR;
     }
 
-    public FooEntity setChaR(String chaR) {
+    public FooPostgresEntity setChaR(String chaR) {
         this.chaR = chaR;
         return this;
     }
@@ -82,7 +73,7 @@ public class FooEntity implements BaseEntity<Long> {
         return date;
     }
 
-    public FooEntity setDate(LocalDate date) {
+    public FooPostgresEntity setDate(LocalDate date) {
         this.date = date;
         return this;
     }
@@ -91,7 +82,7 @@ public class FooEntity implements BaseEntity<Long> {
         return timestamp;
     }
 
-    public FooEntity setTimestamp(LocalDateTime timestamp) {
+    public FooPostgresEntity setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
         return this;
     }
@@ -100,7 +91,7 @@ public class FooEntity implements BaseEntity<Long> {
         return bigdecimal;
     }
 
-    public FooEntity setBigdecimal(BigDecimal bigdecimal) {
+    public FooPostgresEntity setBigdecimal(BigDecimal bigdecimal) {
         this.bigdecimal = bigdecimal;
         return this;
     }
@@ -109,7 +100,7 @@ public class FooEntity implements BaseEntity<Long> {
         return floaT;
     }
 
-    public FooEntity setFloaT(Float floaT) {
+    public FooPostgresEntity setFloaT(Float floaT) {
         this.floaT = floaT;
         return this;
     }
@@ -118,7 +109,7 @@ public class FooEntity implements BaseEntity<Long> {
         return doublE;
     }
 
-    public FooEntity setDoublE(Double doublE) {
+    public FooPostgresEntity setDoublE(Double doublE) {
         this.doublE = doublE;
         return this;
     }
@@ -127,7 +118,7 @@ public class FooEntity implements BaseEntity<Long> {
         return guid;
     }
 
-    public FooEntity setGuid(UUID guid) {
+    public FooPostgresEntity setGuid(UUID guid) {
         this.guid = guid;
         return this;
     }
@@ -136,7 +127,7 @@ public class FooEntity implements BaseEntity<Long> {
         return xml;
     }
 
-    public FooEntity setXml(String xml) {
+    public FooPostgresEntity setXml(String xml) {
         this.xml = xml;
         return this;
     }
@@ -145,7 +136,7 @@ public class FooEntity implements BaseEntity<Long> {
         return text;
     }
 
-    public FooEntity setText(String text) {
+    public FooPostgresEntity setText(String text) {
         this.text = text;
         return this;
     }
@@ -154,7 +145,7 @@ public class FooEntity implements BaseEntity<Long> {
         return bytea;
     }
 
-    public FooEntity setBytea(byte[] bytea) {
+    public FooPostgresEntity setBytea(byte[] bytea) {
         this.bytea = bytea;
         return this;
     }
@@ -163,8 +154,9 @@ public class FooEntity implements BaseEntity<Long> {
         return fooId;
     }
 
-    public void setId(Long id) {
-        setFooId(id);
+    public FooPostgresEntity setId(Long id) {
+        this.fooId = id;
+        return this;
     }
 
 }
