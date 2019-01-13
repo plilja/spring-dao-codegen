@@ -10,17 +10,18 @@ import se.plilja.springdaogen.model.Table
 class SqlTest {
     @Test
     fun testInsert() {
+        val config = Config(DatabaseDialect.MSSQL_SERVER, "", "", "", "", "", "", "", "", "", "", 0)
         val pk = Column("FOO_ID", Integer::class.java)
         val name = Column("NAME", String::class.java)
         val age = Column("AGE", Integer::class.java)
 
         // when
-        val sql = insert(Table("FOO", pk, listOf(pk, name, age)))
+        val sql = insert(Table("public", "FOO", pk, listOf(pk, name, age)), config)
 
         // then
         assertEquals(
             """
-            |"INSERT INTO FOO (" +
+            |"INSERT INTO public.FOO (" +
             |"   NAME, " +
             |"   AGE" +
             |") " +
@@ -34,17 +35,18 @@ class SqlTest {
 
     @Test
     fun testUpdate() {
+        val config = Config(DatabaseDialect.MSSQL_SERVER, "", "", "", "", "", "", "", "", "", "", 0)
         val pk = Column("FOO_ID", Integer::class.java)
         val name = Column("NAME", String::class.java)
         val age = Column("AGE", Integer::class.java)
 
         // when
-        val sql = update(Table("FOO", pk, listOf(pk, name, age)))
+        val sql = update(Table("public", "FOO", pk, listOf(pk, name, age)), config)
 
         // then
         assertEquals(
             """
-            |"UPDATE FOO SET " +
+            |"UPDATE public.FOO SET " +
             |"   NAME = :NAME, " +
             |"   AGE = :AGE " +
             |"WHERE FOO_ID = :FOO_ID"
@@ -54,11 +56,12 @@ class SqlTest {
 
     @Test
     fun testSelectOne() {
+        val config = Config(DatabaseDialect.MSSQL_SERVER, "", "", "", "", "", "", "", "", "", "", 0)
         val pk = Column("FOO_ID", Integer::class.java)
         val name = Column("NAME", String::class.java)
 
         // when
-        val sql = selectOne(Table("FOO", pk, listOf(pk, name)))
+        val sql = selectOne(Table("public", "FOO", pk, listOf(pk, name)), config)
 
         // then
         assertEquals(
@@ -66,44 +69,20 @@ class SqlTest {
             |"SELECT " +
             |"   FOO_ID, " +
             |"   NAME " +
-            |"FROM FOO " +
+            |"FROM public.FOO " +
             |"WHERE FOO_ID = :FOO_ID"
         """.trimMargin(), sql
         )
     }
 
     @Test
-    fun testSelectManyMysqlAndPostgres() {
-        for (dialect in listOf(DatabaseDialect.MYSQL, DatabaseDialect.POSTGRES)) {
-            val config = Config(dialect, "", "", "", "", "", "", "", "", "", "", 0)
-            val pk = Column("FOO_ID", Integer::class.java)
-            val name = Column("NAME", String::class.java)
-
-            // when
-            val sql = selectMany(Table("FOO", pk, listOf(pk, name)), config)
-
-            // then
-            assertEquals(
-                dialect.toString(),
-                """
-            |"SELECT " +
-            |"   FOO_ID, " +
-            |"   NAME " +
-            |"FROM FOO " +
-            |"LIMIT %d"
-        """.trimMargin(), sql
-            )
-        }
-    }
-
-    @Test
-    fun testSelectManyOracle() {
-        val config = Config(DatabaseDialect.ORACLE, "", "", "", "", "", "", "", "", "", "",  0)
+    fun testSelectManyMysql() {
+        val config = Config(DatabaseDialect.MYSQL, "", "", "", "", "", "", "", "", "", "", 0)
         val pk = Column("FOO_ID", Integer::class.java)
         val name = Column("NAME", String::class.java)
 
         // when
-        val sql = selectMany(Table("FOO", pk, listOf(pk, name)), config)
+        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name)), config)
 
         // then
         assertEquals(
@@ -111,7 +90,49 @@ class SqlTest {
             |"SELECT " +
             |"   FOO_ID, " +
             |"   NAME " +
-            |"FROM FOO " +
+            |"FROM public.FOO " +
+            |"LIMIT %d"
+        """.trimMargin(), sql
+        )
+    }
+
+    @Test
+    fun testSelectManyPostgres() {
+        val config = Config(DatabaseDialect.POSTGRES, "", "", "", "", "", "", "", "", "", "", 0)
+        val pk = Column("FOO_ID", Integer::class.java)
+        val name = Column("NAME", String::class.java)
+
+        // when
+        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name)), config)
+
+        // then
+        assertEquals(
+            """
+            |"SELECT " +
+            |"   \"FOO_ID\", " +
+            |"   \"NAME\" " +
+            |"FROM public.\"FOO\" " +
+            |"LIMIT %d"
+        """.trimMargin(), sql
+        )
+    }
+
+    @Test
+    fun testSelectManyOracle() {
+        val config = Config(DatabaseDialect.ORACLE, "", "", "", "", "", "", "", "", "", "", 0)
+        val pk = Column("FOO_ID", Integer::class.java)
+        val name = Column("NAME", String::class.java)
+
+        // when
+        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name)), config)
+
+        // then
+        assertEquals(
+            """
+            |"SELECT " +
+            |"   FOO_ID, " +
+            |"   NAME " +
+            |"FROM public.FOO " +
             |"WHERE ROWNUM <= %d"
         """.trimMargin(), sql
         )
@@ -124,7 +145,7 @@ class SqlTest {
         val name = Column("NAME", String::class.java)
 
         // when
-        val sql = selectMany(Table("FOO", pk, listOf(pk, name)), config)
+        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name)), config)
 
         // then
         assertEquals(
@@ -132,7 +153,7 @@ class SqlTest {
             |"SELECT TOP %d " +
             |"   FOO_ID, " +
             |"   NAME " +
-            |"FROM FOO "
+            |"FROM public.FOO "
         """.trimMargin(), sql
         )
     }

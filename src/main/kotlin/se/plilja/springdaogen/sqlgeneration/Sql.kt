@@ -5,11 +5,11 @@ import se.plilja.springdaogen.model.DatabaseDialect
 import se.plilja.springdaogen.model.Table
 
 
-fun insert(table: Table): String {
+fun insert(table: Table, config: Config): String {
     val columns = table.columns.filter { it != table.primaryKey }
     return """
-            |"INSERT INTO ${table.name} (" +
-            |${columns.map { "\"   ${it.name}" }.joinToString(", \" +\n")}" +
+            |"INSERT INTO ${formatIdentifier(table.schemaName, config)}.${formatIdentifier(table.name, config)} (" +
+            |${columns.map { "\"   ${formatIdentifier(it.name, config)}" }.joinToString(", \" +\n")}" +
             |") " +
             |"VALUES (" +
             |${columns.map { "\"   :${it.name}" }.joinToString(", \" +\n")}" +
@@ -17,22 +17,22 @@ fun insert(table: Table): String {
             """.trimMargin()
 }
 
-fun update(table: Table): String {
+fun update(table: Table, config: Config): String {
     val columns = table.columns.filter { it != table.primaryKey }
     return """
-            |"UPDATE ${table.name} SET " +
+            |"UPDATE ${formatIdentifier(table.schemaName, config)}.${formatIdentifier(table.name, config)} SET " +
             |${columns.map { "\"   ${it.name} = :${it.name}" }.joinToString(", \" +\n")} " +
             |"WHERE ${table.primaryKey.name} = :${table.primaryKey.name}"
             """.trimMargin()
 }
 
-fun selectOne(table: Table): String {
+fun selectOne(table: Table, config: Config): String {
     val columns = table.columns
     return """
             |"SELECT " +
-            |${columns.map { "\"   ${it.name}" }.joinToString(", \" +\n")} " +
-            |"FROM ${table.name} " +
-            |"WHERE ${table.primaryKey.name} = :${table.primaryKey.name}"
+            |${columns.map { "\"   ${formatIdentifier(it.name, config)}" }.joinToString(", \" +\n")} " +
+            |"FROM ${formatIdentifier(table.schemaName, config)}.${formatIdentifier(table.name, config)} " +
+            |"WHERE ${formatIdentifier(table.primaryKey.name, config)} = :${table.primaryKey.name}"
             """.trimMargin()
 }
 
@@ -40,8 +40,8 @@ fun selectMany(table: Table, config: Config): String {
     val columns = table.columns
     var result = """
             |"SELECT${if (config.databaseDialect == DatabaseDialect.MSSQL_SERVER) " TOP %d" else ""} " +
-            |${columns.map { "\"   ${it.name}" }.joinToString(", \" +\n")} " +
-            |"FROM ${table.name} "
+            |${columns.map { "\"   ${formatIdentifier(it.name, config)}" }.joinToString(", \" +\n")} " +
+            |"FROM ${formatIdentifier(table.schemaName, config)}.${formatIdentifier(table.name, config)} "
             """.trimMargin()
     if (config.databaseDialect == DatabaseDialect.ORACLE) {
         result += """ +
@@ -55,4 +55,12 @@ fun selectMany(table: Table, config: Config): String {
         throw IllegalArgumentException("Unknown database dialect ${config.databaseDialect}")
     }
     return result
+}
+
+fun formatIdentifier(id: String, config: Config): String {
+    if (config.databaseDialect == DatabaseDialect.POSTGRES && id.toLowerCase() != id) {
+        return "\\\"$id\\\""
+    } else {
+        return id
+    }
 }

@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+    postgres:
+        build: ./postgres-test
+        ports:
+            - "4003:5432"
+

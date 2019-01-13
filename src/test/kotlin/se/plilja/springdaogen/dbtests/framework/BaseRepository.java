@@ -1,9 +1,4 @@
-package se.plilja.springdaogen.generatedframework
-
-
-fun baseRepository(_package: String) : Pair<String, String> {
-    return Pair("BaseRepository", """
-package $_package;
+package se.plilja.springdaogen.dbtests.framework;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -100,6 +95,4 @@ public abstract class BaseRepository<T extends BaseEntity<ID>, ID> {
      * unexpectedly large queries that may cause performance degradation.
      */
     protected abstract int getSelectAllDefaultMaxCount();
-}
-    """.trimIndent())
 }

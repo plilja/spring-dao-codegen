@@ -46,7 +46,7 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
         """
             @Override
             protected String getSelectOneSql() {
-                return ${selectOne(table)};
+                return ${selectOne(table, config)};
             }
         """
     )
@@ -62,7 +62,7 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
         """
             @Override
             protected String getInsertSql() {
-                return ${insert(table)};
+                return ${insert(table, config)};
             }
         """
     )
@@ -70,7 +70,7 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
         """
             @Override
             protected String getUpdateSql() {
-                return ${update(table)};
+                return ${update(table, config)};
             }
         """
     )
