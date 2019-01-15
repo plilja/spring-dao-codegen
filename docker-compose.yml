@@ -9,4 +9,8 @@ services:
         build: ./mysql-test
         ports:
             - "4004:3306"
+    mssql:
+        build: ./mssql-test
+        ports:
+            - "4005:1433"
 

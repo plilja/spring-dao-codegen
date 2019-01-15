@@ -15,8 +15,14 @@ class RepositoryGeneratorTest {
     }
 
     @Test
+    fun tableWithAggregateIdColumns() {
+        // TODO
+    }
+
+    @Test
     fun tableWithIdColumnNamedID() {
         val config = Config(
+            "",
             DatabaseDialect.MYSQL,
             "",
             "",
@@ -28,7 +34,8 @@ class RepositoryGeneratorTest {
             "se.plilja.test",
             "",
             "se.plilja.test",
-            10
+            10,
+            emptyList()
         )
         val pk = Column("ID", Integer::class.java)
         val name = Column("name", String::class.java)
@@ -125,6 +132,7 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
     @Test
     fun tableGenerateTable() {
         val config = Config(
+            "",
             DatabaseDialect.MYSQL,
             "",
             "",
@@ -136,7 +144,8 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
             "se.plilja.test",
             "",
             "se.plilja.test",
-            10
+            10,
+            emptyList()
         )
         val pk = Column("tableId", Integer::class.java)
         val name = Column("name", String::class.java)

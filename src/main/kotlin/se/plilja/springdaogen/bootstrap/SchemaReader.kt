@@ -1,15 +1,13 @@
 package se.plilja.springdaogen.bootstrap
 
+import org.springframework.boot.jdbc.DataSourceBuilder
 import schemacrawler.schema.Catalog
 import schemacrawler.schemacrawler.IncludeAll
 import schemacrawler.schemacrawler.SchemaCrawlerOptionsBuilder
+import schemacrawler.schemacrawler.SchemaInfoLevelBuilder
 import schemacrawler.utility.SchemaCrawlerUtility
-import se.plilja.springdaogen.model.Column
-import se.plilja.springdaogen.model.Config
-import se.plilja.springdaogen.model.Schema
-import se.plilja.springdaogen.model.Table
+import se.plilja.springdaogen.model.*
 import java.sql.Connection
-import java.sql.DriverManager
 import java.sql.SQLXML
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -18,17 +16,28 @@ import java.util.*
 
 fun readSchema(config: Config): Schema {
     val conn = getConnection(config)
-    val options = SchemaCrawlerOptionsBuilder.builder()
-        .includeColumns(IncludeAll())
-        .includeTables(IncludeAll())
-        .includeSchemas(IncludeAll())
-        .toOptions()
-    val catalog = SchemaCrawlerUtility.getCatalog(conn, options)
-    return catalogToSchema(catalog)
+    try {
+        val options = SchemaCrawlerOptionsBuilder.builder()
+            .withSchemaInfoLevel(SchemaInfoLevelBuilder.standard())
+            .includeColumns(IncludeAll())
+            .includeTables(IncludeAll())
+            .includeSchemas(IncludeAll())
+            .toOptions()
+        val catalog = SchemaCrawlerUtility.getCatalog(conn, options)
+        return catalogToSchema(catalog, config)
+    } finally {
+        conn.close()
+    }
 }
 
-fun catalogToSchema(catalog: Catalog): Schema {
-    return Schema(catalog.tables.map { convertTable(it) })
+fun catalogToSchema(catalog: Catalog, config: Config): Schema {
+    val filteredTables = catalog.tables
+        .filter { if (config.databaseDialect == DatabaseDialect.MSSQL_SERVER) it.schema.catalogName == config.databaseName else true }
+        .filter { it.hasPrimaryKey() }
+        .filter { config.schemas.isEmpty() or config.schemas.contains(it.schema.name) }
+    val convertedTables = filteredTables
+        .map { convertTable(it) }
+    return Schema(convertedTables)
 }
 
 fun convertTable(table: schemacrawler.schema.Table): Table {
@@ -61,6 +70,11 @@ fun resolveType(column: schemacrawler.schema.Column): Class<out Any> {
 }
 
 fun getConnection(config: Config): Connection {
-    Class.forName(config.databaseDriver)
-    return DriverManager.getConnection(config.databaseUrl, config.databaseUser, config.databasePassword)
+    return DataSourceBuilder.create()
+        .url(config.databaseUrl)
+        .driverClassName(config.databaseDriver)
+        .username(config.databaseUser)
+        .password(config.databasePassword)
+        .build()
+        .connection
 }

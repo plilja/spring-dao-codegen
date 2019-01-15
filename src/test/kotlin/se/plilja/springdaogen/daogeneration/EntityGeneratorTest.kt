@@ -12,7 +12,22 @@ class EntityGeneratorTest {
     @Test
     fun generateEntityWithPropertyNamedId() {
         val config =
-            Config(DatabaseDialect.MYSQL, "", "", "", "", "", "se.plilja.test", "", "", "", "se.plilja.test", 10)
+            Config(
+                "",
+                DatabaseDialect.MYSQL,
+                "",
+                "",
+                "",
+                "",
+                "",
+                "se.plilja.test",
+                "",
+                "",
+                "",
+                "se.plilja.test",
+                10,
+                emptyList()
+            )
         val pk = Column("ID", Integer::class.java)
         val table = Table("dbo", "Table", pk, listOf(pk))
 

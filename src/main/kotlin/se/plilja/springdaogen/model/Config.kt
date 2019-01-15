@@ -5,6 +5,7 @@ import java.util.*
 
 
 data class Config(
+    val databaseName: String,
     val databaseDialect: DatabaseDialect,
     val databaseUrl: String,
     val databaseUser: String,
@@ -16,7 +17,8 @@ data class Config(
     val repositoryOutputPackage: String,
     val frameworkOutputFolder: String,
     val frameworkOutputPackage: String,
-    val maxSelectAllCount: Int
+    val maxSelectAllCount: Int,
+    val schemas: List<String>
 ) {
 
     companion object {
@@ -44,6 +46,7 @@ private class ConfigReader {
 
     fun readConfig(): Config {
         return Config(
+            getDatabaseName(),
             databaseDialect(),
             databaseUrl(),
             databaseUser(),
@@ -55,7 +58,8 @@ private class ConfigReader {
             repositoryOutputPackage(),
             frameworkOutputFolder(),
             frameworkOutputPackage(),
-            maxSelectAllCount()
+            maxSelectAllCount(),
+            getSchemas()
         )
     }
 
@@ -114,5 +118,18 @@ private class ConfigReader {
 
     private fun maxSelectAllCount(): Int {
         return properties.getProperty("max.select.all.count").toInt()
+    }
+
+    private fun getSchemas(): List<String> {
+        val property = properties.getProperty("database.schemas", "").trim()
+        return if (property == "") {
+            emptyList()
+        } else {
+            property.split(",").map { it.trim() }
+        }
+    }
+
+    private fun getDatabaseName(): String {
+        return properties.getProperty("database.name")
     }
 }
