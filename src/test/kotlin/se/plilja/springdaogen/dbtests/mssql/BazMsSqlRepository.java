@@ -31,6 +31,14 @@ public class BazMsSqlRepository extends BaseRepository<BazMsSqlEntity, Integer> 
     }
 
     @Override
+    protected String getExistsByIdSql() {
+        return "SELECT " +
+                "COUNT(*) " +
+                "FROM dbo.baz_ms_sql " +
+                "WHERE id = :id";
+    }
+
+    @Override
     protected String getSelectOneSql() {
         return "SELECT " +
                 "   id, " +

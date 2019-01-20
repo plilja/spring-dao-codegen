@@ -31,6 +31,14 @@ public class BazOracleRepository extends BaseRepository<BazOracleEntity, Integer
     }
 
     @Override
+    protected String getExistsByIdSql() {
+        return "SELECT " +
+                "COUNT(*) " +
+                "FROM DOCKER.BAZ_ORACLE " +
+                "WHERE ID = :ID";
+    }
+
+    @Override
     protected String getSelectOneSql() {
         return "SELECT " +
                 "   ID, " +

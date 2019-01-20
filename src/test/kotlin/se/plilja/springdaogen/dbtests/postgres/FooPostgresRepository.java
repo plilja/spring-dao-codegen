@@ -55,6 +55,14 @@ public class FooPostgresRepository extends BaseRepository<FooPostgresEntity, Lon
     }
 
     @Override
+    protected String getExistsByIdSql() {
+        return "SELECT " +
+                "COUNT(*) " +
+                "FROM public.\"FOO_POSTGRES\" " +
+                "WHERE \"FOO_ID\" = :FOO_ID";
+    }
+
+    @Override
     protected String getSelectOneSql() {
         return "SELECT " +
                 "   \"FOO_ID\", " +

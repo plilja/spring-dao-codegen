@@ -12,10 +12,7 @@ import se.plilja.springdaogen.generatedframework.baseRepository
 import se.plilja.springdaogen.model.Column
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Table
-import se.plilja.springdaogen.sqlgeneration.insert
-import se.plilja.springdaogen.sqlgeneration.selectMany
-import se.plilja.springdaogen.sqlgeneration.selectOne
-import se.plilja.springdaogen.sqlgeneration.update
+import se.plilja.springdaogen.sqlgeneration.*
 import java.util.*
 
 
@@ -42,6 +39,14 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
         """
     )
     g.addImport(NamedParameterJdbcTemplate::class.java)
+    g.addCustomMethod(
+        """
+            @Override
+            protected String getExistsByIdSql() {
+                return ${existsById(table, config.databaseDialect)};
+            }
+        """
+    )
     g.addCustomMethod(
         """
             @Override

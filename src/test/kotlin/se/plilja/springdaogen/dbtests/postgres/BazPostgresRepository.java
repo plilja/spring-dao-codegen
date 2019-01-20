@@ -31,6 +31,14 @@ public class BazPostgresRepository extends BaseRepository<BazPostgresEntity, Int
     }
 
     @Override
+    protected String getExistsByIdSql() {
+        return "SELECT " +
+                "COUNT(*) " +
+                "FROM test_schema.baz_postgres " +
+                "WHERE baz_id = :baz_id";
+    }
+
+    @Override
     protected String getSelectOneSql() {
         return "SELECT " +
                 "   baz_id, " +

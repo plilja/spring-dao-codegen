@@ -21,6 +21,13 @@ public abstract class BaseRepository<T extends BaseEntity<?, ID>, ID> {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public boolean existsById(ID id) {
+        String sql = getExistsByIdSql();
+        Map<String, Object> params = new HashMap<>();
+        params.put(getPrimaryKeyColumnName(), id);
+        return jdbcTemplate.queryForObject(sql, params, Integer.class) > 0;
+    }
+
     public T getOne(ID id) {
         String sql = getSelectOneSql();
         Map<String, Object> params = new HashMap<>();
@@ -73,6 +80,8 @@ public abstract class BaseRepository<T extends BaseEntity<?, ID>, ID> {
     }
 
     protected abstract SqlParameterSource getParams(T object);
+
+    protected abstract String getExistsByIdSql();
 
     protected abstract String getSelectOneSql();
 

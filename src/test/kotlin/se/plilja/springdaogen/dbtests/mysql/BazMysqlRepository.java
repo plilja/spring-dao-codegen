@@ -31,6 +31,14 @@ public class BazMysqlRepository extends BaseRepository<BazMysqlEntity, Integer> 
     }
 
     @Override
+    protected String getExistsByIdSql() {
+        return "SELECT " +
+                "COUNT(*) " +
+                "FROM BazMysql " +
+                "WHERE id = :id";
+    }
+
+    @Override
     protected String getSelectOneSql() {
         return "SELECT " +
                 "   id, " +

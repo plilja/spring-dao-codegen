@@ -7,6 +7,7 @@ package $_package;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -24,6 +25,13 @@ public abstract class BaseRepository<T extends BaseEntity<?, ID>, ID> {
         this.idClass = idClass;
         this.rowMapper = rowMapper;
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public boolean existsById(ID id) {
+        String sql = getExistsByIdSql();
+        Map<String, Object> params = new HashMap<>();
+        params.put(getPrimaryKeyColumnName(), id);
+        return jdbcTemplate.queryForObject(sql, params, Integer.class) > 0;
     }
 
     public T getOne(ID id) {
@@ -78,6 +86,8 @@ public abstract class BaseRepository<T extends BaseEntity<?, ID>, ID> {
     }
 
     protected abstract SqlParameterSource getParams(T object);
+
+    protected abstract String getExistsByIdSql();
 
     protected abstract String getSelectOneSql();
 

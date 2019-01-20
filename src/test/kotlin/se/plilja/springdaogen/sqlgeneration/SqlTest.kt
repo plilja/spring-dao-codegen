@@ -3,7 +3,6 @@ package se.plilja.springdaogen.sqlgeneration
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import se.plilja.springdaogen.model.Column
-import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.DatabaseDialect
 import se.plilja.springdaogen.model.Table
 
@@ -86,6 +85,25 @@ class SqlTest {
             |"SELECT " +
             |"   FOO_ID, " +
             |"   NAME " +
+            |"FROM FOO " +
+            |"WHERE FOO_ID = :FOO_ID"
+        """.trimMargin(), sql
+        )
+    }
+
+    @Test
+    fun testExistsById() {
+        val pk = Column("FOO_ID", Integer::class.java)
+        val name = Column("NAME", String::class.java)
+
+        // when
+        val sql = existsById(Table(null, "FOO", pk, listOf(pk, name)), DatabaseDialect.MSSQL_SERVER)
+
+        // then
+        assertEquals(
+            """
+            |"SELECT " +
+            |"COUNT(*) " +
             |"FROM FOO " +
             |"WHERE FOO_ID = :FOO_ID"
         """.trimMargin(), sql

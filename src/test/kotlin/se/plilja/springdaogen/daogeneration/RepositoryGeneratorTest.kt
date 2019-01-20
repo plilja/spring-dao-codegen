@@ -79,6 +79,14 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
     }
 
     @Override
+    protected String getExistsByIdSql() {
+        return "SELECT " +
+                "COUNT(*) " +
+                "FROM dbo.Table " +
+                "WHERE ID = :ID";
+    }
+
+    @Override
     protected String getSelectOneSql() {
         return "SELECT " +
                 "   ID, " +
@@ -186,6 +194,14 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
         m.addValue("tableId", o.getId());
         m.addValue("name", o.getName());
         return m;
+    }
+
+    @Override
+    protected String getExistsByIdSql() {
+        return "SELECT " +
+                "COUNT(*) " +
+                "FROM dbo.Table " +
+                "WHERE tableId = :tableId";
     }
 
     @Override

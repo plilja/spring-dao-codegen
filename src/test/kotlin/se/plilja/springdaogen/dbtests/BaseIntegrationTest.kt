@@ -9,6 +9,7 @@ import se.plilja.springdaogen.dbtests.framework.BaseRepository
 import se.plilja.springdaogen.dbtests.framework.MaxAllowedCountExceededException
 import java.util.*
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
@@ -68,6 +69,14 @@ abstract class BaseIntegrationTest<Entity : BaseEntity<Entity, Int>, Repo : Base
         val retrievedEntity2 = repo.findOneById(entity.id)
         assertTrue(retrievedEntity2.isPresent)
         assertEquals(retrievedEntity1.id, retrievedEntity2.get().id)
+    }
+
+    @Test
+    fun existsById() {
+        assertFalse(repo.existsById(4711))
+        val entity = newEntity("Bar")
+        repo.create(entity)
+        assertTrue(repo.existsById(entity.id))
     }
 
     @Test

@@ -35,6 +35,15 @@ fun selectOne(table: Table, databaseDialect: DatabaseDialect): String {
             """.trimMargin()
 }
 
+fun existsById(table: Table, databaseDialect: DatabaseDialect): String {
+    return """
+            |"SELECT " +
+            |"COUNT(*) " +
+            |"FROM ${formatTable(table, databaseDialect)} " +
+            |"WHERE ${formatIdentifier(table.primaryKey.name, databaseDialect)} = :${table.primaryKey.name}"
+            """.trimMargin()
+}
+
 fun selectMany(table: Table, databaseDialect: DatabaseDialect): String {
     val columns = table.columns
     var result = """
