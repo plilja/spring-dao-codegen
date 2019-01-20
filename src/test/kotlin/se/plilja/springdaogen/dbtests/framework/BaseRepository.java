@@ -98,6 +98,21 @@ public abstract class BaseRepository<T extends BaseEntity<?, ID>, ID> {
         }
     }
 
+    @Transactional
+    public void deleteAll(Iterable<T> objects) {
+        String sql = getDeleteSql();
+        Map<String, Object> params = new HashMap<>();
+        List<ID> ids = new ArrayList<>();
+        for (T object : objects) {
+            ids.add(object.getId());
+        }
+        params.put("ids", ids);
+        int updated = jdbcTemplate.update(sql, params);
+        if (updated > ids.size()) {
+            throw new SqlUpdateException(String.format("%d objects was affected by delete, but only %d was expected", updated, ids.size()));
+        }
+    }
+
     protected abstract SqlParameterSource getParams(T object);
 
     protected abstract String getExistsByIdSql();
