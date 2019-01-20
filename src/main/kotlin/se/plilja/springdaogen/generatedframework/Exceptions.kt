@@ -10,7 +10,7 @@ fun maxAllowedCountExceededException(_package: String): Pair<String, String> {
         "MaxAllowedCountExceededException", """
 package $_package;
 
-public class MaxAllowedCountExceededException extends RuntimeException{
+public class MaxAllowedCountExceededException extends RuntimeException {
     public MaxAllowedCountExceededException(String message) {
         super(message);
     }

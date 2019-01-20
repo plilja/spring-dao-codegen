@@ -1,5 +1,10 @@
 USE master
 
+IF DB_ID('docker') IS NOT NULL
+BEGIN
+    SET NOEXEC ON; 
+END
+
 CREATE DATABASE docker
 
 GO
@@ -23,4 +28,4 @@ CREATE TABLE baz_ms_sql (
     name VARCHAR(30) NOT NULL
 )
 
-GO
+SET NOEXEC OFF; 
