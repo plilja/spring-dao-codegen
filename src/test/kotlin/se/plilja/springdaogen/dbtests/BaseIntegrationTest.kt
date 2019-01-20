@@ -7,8 +7,10 @@ import org.springframework.dao.EmptyResultDataAccessException
 import se.plilja.springdaogen.dbtests.framework.BaseEntity
 import se.plilja.springdaogen.dbtests.framework.BaseRepository
 import se.plilja.springdaogen.dbtests.framework.MaxAllowedCountExceededException
+import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 abstract class BaseIntegrationTest<Entity : BaseEntity<Entity, Int>, Repo : BaseRepository<Entity, Int>> {
 
@@ -58,6 +60,17 @@ abstract class BaseIntegrationTest<Entity : BaseEntity<Entity, Int>, Repo : Base
     }
 
     @Test
+    fun getOneAndFindOne() {
+        val entity = newEntity("Bar")
+        repo.create(entity)
+
+        val retrievedEntity1 = repo.getOne(entity.id)
+        val retrievedEntity2 = repo.findOneById(entity.id)
+        assertTrue(retrievedEntity2.isPresent)
+        assertEquals(retrievedEntity1.id, retrievedEntity2.get().id)
+    }
+
+    @Test
     fun update() {
         val bazEntity = newEntity("Bar")
         repo.create(bazEntity)
@@ -71,8 +84,13 @@ abstract class BaseIntegrationTest<Entity : BaseEntity<Entity, Int>, Repo : Base
     }
 
     @Test(expected = EmptyResultDataAccessException::class)
-    fun findOneNonExistingReturnsNull() {
-        val baz = repo.getOne(4711)
-        assertEquals(null, baz)
+    fun getOneNonExistingThrowsException() {
+        repo.getOne(4711)
+    }
+
+    @Test
+    fun findOneNonExistingReturnsEmpty() {
+        val maybeT = repo.findOneById(4711)
+        assertEquals(Optional.empty(), maybeT)
     }
 }

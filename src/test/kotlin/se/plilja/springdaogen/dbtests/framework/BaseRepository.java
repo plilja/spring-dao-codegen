@@ -1,15 +1,13 @@
 package se.plilja.springdaogen.dbtests.framework;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class BaseRepository<T extends BaseEntity<?, ID>, ID> {
 
@@ -28,6 +26,15 @@ public abstract class BaseRepository<T extends BaseEntity<?, ID>, ID> {
         Map<String, Object> params = new HashMap<>();
         params.put(getPrimaryKeyColumnName(), id);
         return jdbcTemplate.queryForObject(sql, params, rowMapper);
+    }
+
+    public Optional<T> findOneById(ID id) {
+        try {
+            T res = getOne(id);
+            return Optional.of(res);
+        } catch (EmptyResultDataAccessException ex) {
+            return Optional.empty();
+        }
     }
 
     public List<T> findAll() {

@@ -2,12 +2,10 @@ package se.plilja.springdaogen.bootstrap
 
 import org.springframework.boot.jdbc.DataSourceBuilder
 import schemacrawler.schema.Catalog
-import schemacrawler.schemacrawler.IncludeAll
-import schemacrawler.schemacrawler.RegularExpressionInclusionRule
-import schemacrawler.schemacrawler.SchemaCrawlerOptionsBuilder
-import schemacrawler.schemacrawler.SchemaInfoLevelBuilder
+import schemacrawler.schemacrawler.*
 import schemacrawler.utility.SchemaCrawlerUtility
 import se.plilja.springdaogen.model.*
+import se.plilja.springdaogen.model.Config
 import java.sql.Connection
 import java.sql.SQLXML
 import java.time.LocalDate
@@ -28,6 +26,8 @@ fun readSchema(config: Config): Schema {
             .includeColumns(IncludeAll())
             .includeTables(IncludeAll())
             .includeSchemas(schemaFilter)
+            .includeSynonyms(ExcludeAll())
+            .includeRoutines(ExcludeAll())
             .toOptions()
         val catalog = SchemaCrawlerUtility.getCatalog(conn, options)
         return catalogToSchema(catalog, config)
