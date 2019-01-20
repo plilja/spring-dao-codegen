@@ -13,4 +13,8 @@ services:
         build: ./mssql-test
         ports:
             - "4005:1433"
+    oracle:
+        build: ./oracle-test
+        ports:
+            - "4006:1521"
 
