@@ -11,6 +11,7 @@ import java.sql.SQLXML
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
+import java.util.regex.Pattern
 
 
 fun readSchema(config: Config): Schema {
@@ -19,7 +20,7 @@ fun readSchema(config: Config): Schema {
         val schemaFilter = if (config.schemas.isEmpty()) {
             IncludeAll()
         } else {
-            RegularExpressionInclusionRule(config.schemas.joinToString("|"))
+            RegularExpressionInclusionRule(Pattern.compile("(?i)" + config.schemas.joinToString("|")))
         }
         val options = SchemaCrawlerOptionsBuilder.builder()
             .withSchemaInfoLevel(SchemaInfoLevelBuilder.standard())
@@ -38,9 +39,7 @@ fun readSchema(config: Config): Schema {
 
 fun catalogToSchema(catalog: Catalog, config: Config): Schema {
     val filteredTables = catalog.tables
-        .filter { if (config.databaseDialect == DatabaseDialect.MSSQL_SERVER) it.schema.catalogName == config.databaseName else true }
         .filter { it.hasPrimaryKey() }
-        .filter { config.schemas.isEmpty() or config.schemas.contains(it.schema.name) }
     val convertedTables = filteredTables
         .map { convertTable(it, config) }
     return Schema(convertedTables)
