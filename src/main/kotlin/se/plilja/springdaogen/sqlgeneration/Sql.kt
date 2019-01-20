@@ -35,6 +35,13 @@ fun selectOne(table: Table, databaseDialect: DatabaseDialect): String {
             """.trimMargin()
 }
 
+fun delete(table: Table, databaseDialect: DatabaseDialect): String {
+    return """
+            |"DELETE FROM ${formatTable(table, databaseDialect)} " +
+            |"WHERE ${formatIdentifier(table.primaryKey.name, databaseDialect)} IN (:ids)"
+            """.trimMargin()
+}
+
 fun existsById(table: Table, databaseDialect: DatabaseDialect): String {
     return """
             |"SELECT " +

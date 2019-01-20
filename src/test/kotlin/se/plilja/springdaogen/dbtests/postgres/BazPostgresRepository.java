@@ -74,6 +74,12 @@ public class BazPostgresRepository extends BaseRepository<BazPostgresEntity, Int
     }
 
     @Override
+    protected String getDeleteSql() {
+        return "DELETE FROM test_schema.baz_postgres " +
+                "WHERE baz_id IN (:ids)";
+    }
+
+    @Override
     protected String getPrimaryKeyColumnName() {
         return "baz_id";
     }

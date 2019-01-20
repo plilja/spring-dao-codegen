@@ -74,6 +74,12 @@ public class BazMysqlRepository extends BaseRepository<BazMysqlEntity, Integer> 
     }
 
     @Override
+    protected String getDeleteSql() {
+        return "DELETE FROM BazMysql " +
+                "WHERE id IN (:ids)";
+    }
+
+    @Override
     protected String getPrimaryKeyColumnName() {
         return "id";
     }

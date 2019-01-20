@@ -111,6 +111,23 @@ class SqlTest {
     }
 
     @Test
+    fun testDelete() {
+        val pk = Column("FOO_ID", Integer::class.java)
+        val name = Column("NAME", String::class.java)
+
+        // when
+        val sql = delete(Table(null, "FOO", pk, listOf(pk, name)), DatabaseDialect.MSSQL_SERVER)
+
+        // then
+        assertEquals(
+            """
+            |"DELETE FROM FOO " +
+            |"WHERE FOO_ID IN (:ids)"
+        """.trimMargin(), sql
+        )
+    }
+
+    @Test
     fun testSelectManyMysql() {
         val pk = Column("FOO_ID", Integer::class.java)
         val name = Column("NAME", String::class.java)

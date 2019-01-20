@@ -82,6 +82,14 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
     g.addCustomMethod(
         """
             @Override
+            protected String getDeleteSql() {
+                return ${delete(table, config.databaseDialect)};
+            }
+        """
+    )
+    g.addCustomMethod(
+        """
+            @Override
             protected String getPrimaryKeyColumnName() {
                 return "${table.primaryKey.name}";
             }

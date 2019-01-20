@@ -153,6 +153,12 @@ public class FooPostgresRepository extends BaseRepository<FooPostgresEntity, Lon
     }
 
     @Override
+    protected String getDeleteSql() {
+        return "DELETE FROM public.\"FOO_POSTGRES\" " +
+                "WHERE \"FOO_ID\" IN (:ids)";
+    }
+
+    @Override
     protected String getPrimaryKeyColumnName() {
         return "FOO_ID";
     }

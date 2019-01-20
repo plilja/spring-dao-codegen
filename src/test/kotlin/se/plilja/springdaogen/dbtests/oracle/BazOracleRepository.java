@@ -74,6 +74,12 @@ public class BazOracleRepository extends BaseRepository<BazOracleEntity, Integer
     }
 
     @Override
+    protected String getDeleteSql() {
+        return "DELETE FROM DOCKER.BAZ_ORACLE " +
+                "WHERE ID IN (:ids)";
+    }
+
+    @Override
     protected String getPrimaryKeyColumnName() {
         return "ID";
     }

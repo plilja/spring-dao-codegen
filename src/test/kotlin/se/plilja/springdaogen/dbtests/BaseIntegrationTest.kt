@@ -92,6 +92,28 @@ abstract class BaseIntegrationTest<Entity : BaseEntity<Entity, Int>, Repo : Base
         assertEquals("Bar updated", getName(retrievedEntity))
     }
 
+    @Test
+    fun delete() {
+        val bazEntity = newEntity("Bar")
+
+        repo.create(bazEntity)
+        repo.delete(bazEntity)
+
+        assertNotNull(bazEntity.id)
+        assertFalse(repo.existsById(bazEntity.id))
+    }
+
+    @Test
+    fun deleteById() {
+        val bazEntity = newEntity("Bar")
+
+        repo.create(bazEntity)
+        repo.deleteById(bazEntity.id)
+
+        assertNotNull(bazEntity.id)
+        assertFalse(repo.existsById(bazEntity.id))
+    }
+
     @Test(expected = EmptyResultDataAccessException::class)
     fun getOneNonExistingThrowsException() {
         repo.getOne(4711)

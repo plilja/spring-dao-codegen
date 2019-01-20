@@ -60,11 +60,11 @@ public abstract class BaseRepository<T extends BaseEntity<?, ID>, ID> {
     public void update(T object) {
         String sql = getUpdateSql();
         SqlParameterSource params = getParams(object);
-        int update = jdbcTemplate.update(sql, params);
-        if (update == 0) {
+        int updated = jdbcTemplate.update(sql, params);
+        if (updated == 0) {
             throw new SqlUpdateException(String.format("No rows affected when trying to update object with id %s", object.getId())); // TODO more informative message
-        } else if (update > 1) {
-            throw new SqlUpdateException(String.format("More than one row [%d] affected by update", update));
+        } else if (updated > 1) {
+            throw new SqlUpdateException(String.format("More than one row [%d] affected by update", updated));
         }
     }
 
@@ -73,10 +73,29 @@ public abstract class BaseRepository<T extends BaseEntity<?, ID>, ID> {
             // TODO non generated key
             throw new IllegalArgumentException(String.format("Attempting to create a new object with an existing id %s", object.getId()));
         }
+        String sql = getInsertSql();
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         SqlParameterSource params = getParams(object);
-        jdbcTemplate.update(getInsertSql(), params, keyHolder, new String[]{getPrimaryKeyColumnName()});
+        jdbcTemplate.update(sql, params, keyHolder, new String[]{getPrimaryKeyColumnName()});
         setId(object, keyHolder.getKey());
+    }
+
+    @Transactional
+    public void delete(T object) {
+        deleteById(object.getId());
+    }
+
+    @Transactional
+    public void deleteById(ID id) {
+        String sql = getDeleteSql();
+        Map<String, Object> params = new HashMap<>();
+        params.put("ids", Collections.singletonList(id));
+        int updated = jdbcTemplate.update(sql, params);
+        if (updated == 0) {
+            throw new SqlUpdateException(String.format("No rows affected when trying to delete object with id %s", id));
+        } else if (updated > 1) {
+            throw new SqlUpdateException(String.format("More than one row [%d] affected by update", updated));
+        }
     }
 
     protected abstract SqlParameterSource getParams(T object);
@@ -92,6 +111,8 @@ public abstract class BaseRepository<T extends BaseEntity<?, ID>, ID> {
     protected abstract String getUpdateSql();
 
     protected abstract String getPrimaryKeyColumnName();
+
+    protected abstract String getDeleteSql();
 
     /**
      * @noinspection unchecked

@@ -73,6 +73,12 @@ public class BazMsSqlRepository extends BaseRepository<BazMsSqlEntity, Integer> 
     }
 
     @Override
+    protected String getDeleteSql() {
+        return "DELETE FROM dbo.baz_ms_sql " +
+                "WHERE id IN (:ids)";
+    }
+
+    @Override
     protected String getPrimaryKeyColumnName() {
         return "id";
     }

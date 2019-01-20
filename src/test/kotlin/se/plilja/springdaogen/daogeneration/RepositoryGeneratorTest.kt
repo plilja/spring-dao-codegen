@@ -122,6 +122,12 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
     }
 
     @Override
+    protected String getDeleteSql() {
+        return "DELETE FROM dbo.Table " +
+                "WHERE ID IN (:ids)";
+    }
+
+    @Override
     protected String getPrimaryKeyColumnName() {
         return "ID";
     }
@@ -237,6 +243,12 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
         return "UPDATE dbo.Table SET " +
                 "   name = :name " +
                 "WHERE tableId = :tableId";
+    }
+
+    @Override
+    protected String getDeleteSql() {
+        return "DELETE FROM dbo.Table " +
+                "WHERE tableId IN (:ids)";
     }
 
     @Override
