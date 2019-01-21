@@ -39,12 +39,12 @@ public class BazPostgresRepository extends BaseRepository<BazPostgresEntity, Int
     }
 
     @Override
-    protected String getSelectOneSql() {
+    protected String getSelectIdsSql() {
         return "SELECT " +
-                "   baz_id, " +
-                "   baz_name " +
+                "baz_id, " +
+                "baz_name " +
                 "FROM test_schema.baz_postgres " +
-                "WHERE baz_id = :baz_id";
+                "WHERE baz_id IN (:ids)";
     }
 
     @Override

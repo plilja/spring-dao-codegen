@@ -39,12 +39,12 @@ public class BazOracleRepository extends BaseRepository<BazOracleEntity, Integer
     }
 
     @Override
-    protected String getSelectOneSql() {
+    protected String getSelectIdsSql() {
         return "SELECT " +
-                "   ID, " +
-                "   NAME " +
+                "ID, " +
+                "NAME " +
                 "FROM DOCKER.BAZ_ORACLE " +
-                "WHERE ID = :ID";
+                "WHERE ID IN (:ids)";
     }
 
     @Override

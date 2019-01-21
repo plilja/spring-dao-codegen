@@ -72,6 +72,21 @@ abstract class BaseIntegrationTest<Entity : BaseEntity<Entity, Int>, Repo : Base
     }
 
     @Test
+    fun findAllByIds() {
+        assertEquals(emptyList(), repo.findAllById(listOf(0, 1, 2, 3)))
+
+        val entity1 = newEntity("Bar1")
+        repo.create(entity1)
+
+        assertEquals(listOf("Bar1"), repo.findAllById(listOf(entity1.id, 1, entity1.id, 3)).map { getName(it) })
+
+        val entity2 = newEntity("Bar2")
+        repo.create(entity2)
+
+        assertEquals(listOf("Bar1", "Bar2"), repo.findAllById(listOf(entity1.id, 1, entity2.id, 3)).map { getName(it) })
+    }
+
+    @Test
     fun existsById() {
         assertFalse(repo.existsById(4711))
         val entity = newEntity("Bar")

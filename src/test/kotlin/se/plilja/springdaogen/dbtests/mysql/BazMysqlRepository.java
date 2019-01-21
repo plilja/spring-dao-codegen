@@ -39,12 +39,12 @@ public class BazMysqlRepository extends BaseRepository<BazMysqlEntity, Integer> 
     }
 
     @Override
-    protected String getSelectOneSql() {
+    protected String getSelectIdsSql() {
         return "SELECT " +
-                "   id, " +
-                "   name " +
+                "id, " +
+                "name " +
                 "FROM BazMysql " +
-                "WHERE id = :id";
+                "WHERE id IN (:ids)";
     }
 
     @Override

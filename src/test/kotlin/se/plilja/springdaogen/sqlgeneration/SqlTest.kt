@@ -63,10 +63,10 @@ class SqlTest {
         assertEquals(
             """
             |"SELECT " +
-            |"   FOO_ID, " +
-            |"   NAME " +
+            |"FOO_ID, " +
+            |"NAME " +
             |"FROM public.FOO " +
-            |"WHERE FOO_ID = :FOO_ID"
+            |"WHERE FOO_ID IN (:ids)"
         """.trimMargin(), sql
         )
     }
@@ -83,10 +83,10 @@ class SqlTest {
         assertEquals(
             """
             |"SELECT " +
-            |"   FOO_ID, " +
-            |"   NAME " +
+            |"FOO_ID, " +
+            |"NAME " +
             |"FROM FOO " +
-            |"WHERE FOO_ID = :FOO_ID"
+            |"WHERE FOO_ID IN (:ids)"
         """.trimMargin(), sql
         )
     }

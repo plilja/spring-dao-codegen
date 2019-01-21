@@ -1,6 +1,5 @@
 package se.plilja.springdaogen.dbtests.postgres;
 
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -8,6 +7,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import se.plilja.springdaogen.dbtests.framework.BaseRepository;
+
+import java.util.UUID;
 
 @Repository
 public class FooPostgresRepository extends BaseRepository<FooPostgresEntity, Long> {
@@ -62,23 +63,23 @@ public class FooPostgresRepository extends BaseRepository<FooPostgresEntity, Lon
     }
 
     @Override
-    protected String getSelectOneSql() {
+    protected String getSelectIdsSql() {
         return "SELECT " +
-                "   \"FOO_ID\", " +
-                "   \"BOOLEAN_BIT\", " +
-                "   \"BOOLEAN_B\", " +
-                "   \"CHAR\", " +
-                "   \"DATE\", " +
-                "   \"TIMESTAMP\", " +
-                "   \"BIGDECIMAL\", " +
-                "   \"FLOAT\", " +
-                "   \"DOUBLE\", " +
-                "   \"GUID\", " +
-                "   \"XML\", " +
-                "   \"TEXT\", " +
-                "   \"BYTEA\" " +
+                "\"FOO_ID\", " +
+                "\"BOOLEAN_BIT\", " +
+                "\"BOOLEAN_B\", " +
+                "\"CHAR\", " +
+                "\"DATE\", " +
+                "\"TIMESTAMP\", " +
+                "\"BIGDECIMAL\", " +
+                "\"FLOAT\", " +
+                "\"DOUBLE\", " +
+                "\"GUID\", " +
+                "\"XML\", " +
+                "\"TEXT\", " +
+                "\"BYTEA\" " +
                 "FROM public.\"FOO_POSTGRES\" " +
-                "WHERE \"FOO_ID\" = :FOO_ID";
+                "WHERE \"FOO_ID\" IN (:ids)";
     }
 
     @Override

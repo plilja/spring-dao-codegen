@@ -87,12 +87,12 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
     }
 
     @Override
-    protected String getSelectOneSql() {
+    protected String getSelectIdsSql() {
         return "SELECT " +
-                "   ID, " +
-                "   name " +
+                "ID, " +
+                "name " +
                 "FROM dbo.Table " +
-                "WHERE ID = :ID";
+                "WHERE ID IN (:ids)";
     }
 
     @Override
@@ -216,12 +216,12 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
     }
 
     @Override
-    protected String getSelectOneSql() {
+    protected String getSelectIdsSql() {
         return "SELECT " +
-                "   tableId, " +
-                "   name " +
+                "tableId, " +
+                "name " +
                 "FROM dbo.Table " +
-                "WHERE tableId = :tableId";
+                "WHERE tableId IN (:ids)";
     }
 
     @Override

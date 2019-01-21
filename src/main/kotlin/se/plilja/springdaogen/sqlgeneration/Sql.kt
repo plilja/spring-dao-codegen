@@ -29,9 +29,9 @@ fun selectOne(table: Table, databaseDialect: DatabaseDialect): String {
     val columns = table.columns
     return """
             |"SELECT " +
-            |${columns.map { "\"   ${formatIdentifier(it.name, databaseDialect)}" }.joinToString(", \" +\n")} " +
+            |${columns.map { "\"${formatIdentifier(it.name, databaseDialect)}" }.joinToString(", \" +\n")} " +
             |"FROM ${formatTable(table, databaseDialect)} " +
-            |"WHERE ${formatIdentifier(table.primaryKey.name, databaseDialect)} = :${table.primaryKey.name}"
+            |"WHERE ${formatIdentifier(table.primaryKey.name, databaseDialect)} IN (:ids)"
             """.trimMargin()
 }
 

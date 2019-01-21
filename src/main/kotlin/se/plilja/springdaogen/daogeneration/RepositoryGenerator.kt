@@ -50,7 +50,7 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
     g.addCustomMethod(
         """
             @Override
-            protected String getSelectOneSql() {
+            protected String getSelectIdsSql() {
                 return ${selectOne(table, config.databaseDialect)};
             }
         """

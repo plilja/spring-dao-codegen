@@ -35,9 +35,9 @@ public abstract class BaseRepository<T extends BaseEntity<?, ID>, ID> {
     }
 
     public T getOne(ID id) {
-        String sql = getSelectOneSql();
+        String sql = getSelectIdsSql();
         Map<String, Object> params = new HashMap<>();
-        params.put(getPrimaryKeyColumnName(), id);
+        params.put("ids", Collections.singletonList(id));
         return jdbcTemplate.queryForObject(sql, params, rowMapper);
     }
 
@@ -48,6 +48,17 @@ public abstract class BaseRepository<T extends BaseEntity<?, ID>, ID> {
         } catch (EmptyResultDataAccessException ex) {
             return Optional.empty();
         }
+    }
+
+    public List<T> findAllById(Iterable<ID> ids) {
+        String sql = getSelectIdsSql();
+        List<ID> idsList = new ArrayList<>();
+        for (ID id : ids) {
+            idsList.add(id);
+        }
+        Map<String, Object> params = new HashMap<>();
+        params.put("ids", idsList);
+        return jdbcTemplate.query(sql, params, rowMapper);
     }
 
     public List<T> findAll() {
@@ -119,11 +130,17 @@ public abstract class BaseRepository<T extends BaseEntity<?, ID>, ID> {
         }
     }
 
+    public long count() {
+        String sql = getCountSql();
+        HashMap<String, Object> noParams = new HashMap<>();
+        return jdbcTemplate.queryForObject(sql, noParams, Long.class);
+    }
+
     protected abstract SqlParameterSource getParams(T object);
 
     protected abstract String getExistsByIdSql();
 
-    protected abstract String getSelectOneSql();
+    protected abstract String getSelectIdsSql();
 
     protected abstract String getSelectManySql(int maxAllowedCount);
 

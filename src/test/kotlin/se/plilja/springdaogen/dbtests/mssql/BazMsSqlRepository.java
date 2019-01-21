@@ -39,12 +39,12 @@ public class BazMsSqlRepository extends BaseRepository<BazMsSqlEntity, Integer> 
     }
 
     @Override
-    protected String getSelectOneSql() {
+    protected String getSelectIdsSql() {
         return "SELECT " +
-                "   id, " +
-                "   name " +
+                "id, " +
+                "name " +
                 "FROM dbo.baz_ms_sql " +
-                "WHERE id = :id";
+                "WHERE id IN (:ids)";
     }
 
     @Override
