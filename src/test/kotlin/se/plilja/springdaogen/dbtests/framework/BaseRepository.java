@@ -68,7 +68,7 @@ public abstract class BaseRepository<T extends BaseEntity<?, ID>, ID> {
     }
 
     @Transactional
-    public void update(T object) {
+    public void save(T object) {
         String sql = getUpdateSql();
         SqlParameterSource params = getParams(object);
         int updated = jdbcTemplate.update(sql, params);

@@ -95,13 +95,13 @@ abstract class BaseIntegrationTest<Entity : BaseEntity<Entity, Int>, Repo : Base
     }
 
     @Test
-    fun update() {
+    fun save() {
         val bazEntity = newEntity("Bar")
         repo.create(bazEntity)
 
         val bazEntity2 = newEntity("Bar updated")
             .setId(bazEntity.id)
-        repo.update(bazEntity2)
+        repo.save(bazEntity2)
 
         val retrievedEntity = repo.getOne(bazEntity.id)
         assertEquals("Bar updated", getName(retrievedEntity))
