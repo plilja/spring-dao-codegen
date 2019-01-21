@@ -1,11 +1,10 @@
 package se.plilja.springdaogen.dbtests.postgres;
 
-import se.plilja.springdaogen.dbtests.framework.BaseEntity;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import se.plilja.springdaogen.dbtests.framework.BaseEntity;
 
 public class FooPostgresEntity implements BaseEntity<FooPostgresEntity, Long> {
 

@@ -72,6 +72,10 @@ fun selectMany(table: Table, databaseDialect: DatabaseDialect): String {
     return result
 }
 
+fun count(table: Table, databaseDialect: DatabaseDialect): String {
+    return "\"SELECT COUNT(*) FROM ${formatTable(table, databaseDialect)}\""
+}
+
 fun formatTable(table: Table, databaseDialect: DatabaseDialect): String {
     val identifier = formatIdentifier(table.name, databaseDialect)
     val schema = if (table.schemaName != null) {
@@ -89,4 +93,5 @@ fun formatIdentifier(id: String, databaseDialect: DatabaseDialect): String {
         return id
     }
 }
+
 

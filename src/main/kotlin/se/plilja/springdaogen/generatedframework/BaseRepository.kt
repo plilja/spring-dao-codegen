@@ -135,6 +135,8 @@ public abstract class BaseRepository<T extends BaseEntity<?, ID>, ID> {
 
     protected abstract String getDeleteSql();
 
+    protected abstract String getCountSql();
+
     /**
      * @noinspection unchecked
      */

@@ -205,4 +205,16 @@ class SqlTest {
         """.trimMargin(), sql
         )
     }
+
+    @Test
+    fun testCount() {
+        val pk = Column("FOO_ID", Integer::class.java)
+        val name = Column("NAME", String::class.java)
+
+        // when
+        val sql = count(Table(null, "FOO", pk, listOf(pk, name)), DatabaseDialect.MSSQL_SERVER)
+
+        // then
+        assertEquals("\"SELECT COUNT(*) FROM FOO\"", sql)
+    }
 }

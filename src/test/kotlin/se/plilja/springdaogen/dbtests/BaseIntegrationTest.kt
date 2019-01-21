@@ -144,4 +144,19 @@ abstract class BaseIntegrationTest<Entity : BaseEntity<Entity, Int>, Repo : Base
         val maybeT = repo.findOneById(4711)
         assertEquals(Optional.empty(), maybeT)
     }
+
+    @Test
+    fun count() {
+        assertEquals(0, repo.count())
+
+        val entity1 = newEntity("Bar3")
+        repo.create(entity1)
+
+        assertEquals(1, repo.count())
+
+        val entity2 = newEntity("Bar3")
+        repo.create(entity2)
+
+        assertEquals(2, repo.count())
+    }
 }

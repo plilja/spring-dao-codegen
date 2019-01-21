@@ -1,5 +1,6 @@
 package se.plilja.springdaogen.dbtests.postgres;
 
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -7,8 +8,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 import se.plilja.springdaogen.dbtests.framework.BaseRepository;
-
-import java.util.UUID;
 
 @Repository
 public class FooPostgresRepository extends BaseRepository<FooPostgresEntity, Long> {
@@ -156,6 +155,11 @@ public class FooPostgresRepository extends BaseRepository<FooPostgresEntity, Lon
     protected String getDeleteSql() {
         return "DELETE FROM public.\"FOO_POSTGRES\" " +
                 "WHERE \"FOO_ID\" IN (:ids)";
+    }
+
+    @Override
+    protected String getCountSql() {
+        return "SELECT COUNT(*) FROM public.\"FOO_POSTGRES\"";
     }
 
     @Override

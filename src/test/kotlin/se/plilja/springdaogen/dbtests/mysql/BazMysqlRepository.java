@@ -80,6 +80,11 @@ public class BazMysqlRepository extends BaseRepository<BazMysqlEntity, Integer> 
     }
 
     @Override
+    protected String getCountSql() {
+        return "SELECT COUNT(*) FROM BazMysql";
+    }
+
+    @Override
     protected String getPrimaryKeyColumnName() {
         return "id";
     }

@@ -80,6 +80,11 @@ public class BazPostgresRepository extends BaseRepository<BazPostgresEntity, Int
     }
 
     @Override
+    protected String getCountSql() {
+        return "SELECT COUNT(*) FROM test_schema.baz_postgres";
+    }
+
+    @Override
     protected String getPrimaryKeyColumnName() {
         return "baz_id";
     }

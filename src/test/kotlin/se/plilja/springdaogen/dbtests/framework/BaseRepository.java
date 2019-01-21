@@ -2,6 +2,7 @@ package se.plilja.springdaogen.dbtests.framework;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -113,6 +114,12 @@ public abstract class BaseRepository<T extends BaseEntity<?, ID>, ID> {
         }
     }
 
+    public long count() {
+        String sql = getCountSql();
+        HashMap<String, Object> noParams = new HashMap<>();
+        return jdbcTemplate.queryForObject(sql, noParams, Long.class);
+    }
+
     protected abstract SqlParameterSource getParams(T object);
 
     protected abstract String getExistsByIdSql();
@@ -128,6 +135,8 @@ public abstract class BaseRepository<T extends BaseEntity<?, ID>, ID> {
     protected abstract String getPrimaryKeyColumnName();
 
     protected abstract String getDeleteSql();
+
+    protected abstract String getCountSql();
 
     /**
      * @noinspection unchecked

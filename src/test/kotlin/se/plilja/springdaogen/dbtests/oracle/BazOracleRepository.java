@@ -80,6 +80,11 @@ public class BazOracleRepository extends BaseRepository<BazOracleEntity, Integer
     }
 
     @Override
+    protected String getCountSql() {
+        return "SELECT COUNT(*) FROM DOCKER.BAZ_ORACLE";
+    }
+
+    @Override
     protected String getPrimaryKeyColumnName() {
         return "ID";
     }

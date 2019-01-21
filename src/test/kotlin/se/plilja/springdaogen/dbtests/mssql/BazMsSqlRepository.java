@@ -79,6 +79,11 @@ public class BazMsSqlRepository extends BaseRepository<BazMsSqlEntity, Integer> 
     }
 
     @Override
+    protected String getCountSql() {
+        return "SELECT COUNT(*) FROM dbo.baz_ms_sql";
+    }
+
+    @Override
     protected String getPrimaryKeyColumnName() {
         return "id";
     }

@@ -128,6 +128,11 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
     }
 
     @Override
+    protected String getCountSql() {
+        return "SELECT COUNT(*) FROM dbo.Table";
+    }
+
+    @Override
     protected String getPrimaryKeyColumnName() {
         return "ID";
     }
@@ -249,6 +254,11 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
     protected String getDeleteSql() {
         return "DELETE FROM dbo.Table " +
                 "WHERE tableId IN (:ids)";
+    }
+
+    @Override
+    protected String getCountSql() {
+        return "SELECT COUNT(*) FROM dbo.Table";
     }
 
     @Override

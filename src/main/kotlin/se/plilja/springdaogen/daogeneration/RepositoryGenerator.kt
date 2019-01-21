@@ -90,6 +90,14 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
     g.addCustomMethod(
         """
             @Override
+            protected String getCountSql() {
+                return ${count(table, config.databaseDialect)};
+            }
+        """
+    )
+    g.addCustomMethod(
+        """
+            @Override
             protected String getPrimaryKeyColumnName() {
                 return "${table.primaryKey.name}";
             }
@@ -103,6 +111,7 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
             }
         """
     )
+
     for (column in table.columns) {
         if (column.javaType == UUID::class.java) {
             g.addImport(column.javaType)
