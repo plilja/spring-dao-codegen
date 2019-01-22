@@ -61,6 +61,14 @@ public abstract class BaseRepository<T extends BaseEntity<?, ID>, ID> {
         return jdbcTemplate.query(sql, params, rowMapper);
     }
 
+    public List<T> findPage(long start, int pageSize) {
+        if (pageSize == 0) {
+            return Collections.emptyList();
+        }
+        String sql = getSelectPageSql(start, pageSize);
+        return jdbcTemplate.query(sql, Collections.emptyMap(), rowMapper);
+    }
+
     public List<T> findAll() {
         return findAll(getSelectAllDefaultMaxCount());
     }
@@ -143,6 +151,8 @@ public abstract class BaseRepository<T extends BaseEntity<?, ID>, ID> {
     protected abstract String getSelectIdsSql();
 
     protected abstract String getSelectManySql(int maxAllowedCount);
+
+    protected abstract String getSelectPageSql(long start, int pageSize);
 
     protected abstract String getInsertSql();
 

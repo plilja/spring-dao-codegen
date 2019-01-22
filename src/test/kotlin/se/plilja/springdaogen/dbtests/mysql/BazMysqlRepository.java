@@ -57,6 +57,15 @@ public class BazMysqlRepository extends BaseRepository<BazMysqlEntity, Integer> 
     }
 
     @Override
+    protected String getSelectPageSql(long start, int pageSize) {
+        return String.format("SELECT %n" +
+                "id, %n" +
+                "name %n" +
+                "FROM BazMysql %n" +
+                "LIMIT %d OFFSET %d", pageSize, start);
+    }
+
+    @Override
     protected String getInsertSql() {
         return "INSERT INTO BazMysql (" +
                 "   name" +

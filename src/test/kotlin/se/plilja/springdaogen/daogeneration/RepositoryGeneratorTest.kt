@@ -105,6 +105,15 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
     }
 
     @Override
+    protected String getSelectPageSql(long start, int pageSize) {
+        return String.format("SELECT %n" +
+                "ID, %n" +
+                "name %n" +
+                "FROM dbo.Table %n" +
+                "LIMIT %d OFFSET %d", pageSize, start);
+    }
+
+    @Override
     protected String getInsertSql() {
         return "INSERT INTO dbo.Table (" +
                 "   name" +
@@ -231,6 +240,15 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
                 "   name " +
                 "FROM dbo.Table " +
                 "LIMIT %d", maxSelectCount);
+    }
+
+    @Override
+    protected String getSelectPageSql(long start, int pageSize) {
+        return String.format("SELECT %n" +
+                "tableId, %n" +
+                "name %n" +
+                "FROM dbo.Table %n" +
+                "LIMIT %d OFFSET %d", pageSize, start);
     }
 
     @Override

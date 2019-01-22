@@ -56,6 +56,16 @@ public class BazMsSqlRepository extends BaseRepository<BazMsSqlEntity, Integer> 
     }
 
     @Override
+    protected String getSelectPageSql(long start, int pageSize) {
+        return String.format("SELECT %n" +
+                "id, %n" +
+                "name %n" +
+                "FROM dbo.baz_ms_sql %n" +
+                "ORDER BY id %n" +
+                "OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", start, pageSize);
+    }
+
+    @Override
     protected String getInsertSql() {
         return "INSERT INTO dbo.baz_ms_sql (" +
                 "   name" +

@@ -87,6 +87,22 @@ abstract class BaseIntegrationTest<Entity : BaseEntity<Entity, Int>, Repo : Base
     }
 
     @Test
+    fun findPage() {
+        assertEquals(emptyList(), repo.findPage(0, 10))
+
+        for (i in 1..10) {
+            val bazEntity = newEntity("Bar $i")
+            repo.create(bazEntity)
+        }
+
+        assertEquals(listOf("Bar 1", "Bar 2"), repo.findPage(0, 2).map { getName(it) })
+        assertEquals(listOf("Bar 3", "Bar 4"), repo.findPage(2, 2).map { getName(it) })
+        assertEquals(listOf("Bar 10"), repo.findPage(9, 2).map { getName(it) })
+        assertEquals(emptyList(), repo.findPage(10, 2))
+        assertEquals(emptyList(), repo.findPage(0, 0))
+    }
+
+    @Test
     fun existsById() {
         assertFalse(repo.existsById(4711))
         val entity = newEntity("Bar")

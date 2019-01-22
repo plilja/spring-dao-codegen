@@ -57,6 +57,15 @@ public class BazPostgresRepository extends BaseRepository<BazPostgresEntity, Int
     }
 
     @Override
+    protected String getSelectPageSql(long start, int pageSize) {
+        return String.format("SELECT %n" +
+                "baz_id, %n" +
+                "baz_name %n" +
+                "FROM test_schema.baz_postgres %n" +
+                "LIMIT %d OFFSET %d", pageSize, start);
+    }
+
+    @Override
     protected String getInsertSql() {
         return "INSERT INTO test_schema.baz_postgres (" +
                 "   baz_name" +

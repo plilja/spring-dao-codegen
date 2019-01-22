@@ -35,6 +35,41 @@ fun selectOne(table: Table, databaseDialect: DatabaseDialect): String {
             """.trimMargin()
 }
 
+fun selectPage(table: Table, databaseDialect: DatabaseDialect): String {
+    val columns = table.columns
+    return when {
+        databaseDialect in listOf(DatabaseDialect.MYSQL, DatabaseDialect.POSTGRES) -> """
+            |String.format("SELECT %n" +
+            |${columns.map { "\"${formatIdentifier(it.name, databaseDialect)}" }.joinToString(", %n\" +\n")} %n" +
+            |"FROM ${formatTable(table, databaseDialect)} %n" +
+            |"LIMIT %d OFFSET %d", pageSize, start);
+        """.trimMargin()
+
+        databaseDialect == DatabaseDialect.MSSQL_SERVER -> """
+            |String.format("SELECT %n" +
+            |${columns.map { "\"${formatIdentifier(it.name, databaseDialect)}" }.joinToString(", %n\" +\n")} %n" +
+            |"FROM ${formatTable(table, databaseDialect)} %n" +
+            |"ORDER BY ${formatIdentifier(table.primaryKey.name, databaseDialect)} %n" +
+            |"OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", start, pageSize);
+            """.trimMargin()
+
+        databaseDialect == DatabaseDialect.ORACLE -> """
+            |String.format("SELECT * FROM (%n" +
+            |"    SELECT rownum tmp_rownum_, a.* %n" +
+            |"    FROM (SELECT %n" +
+            |${columns.map { "\"${formatIdentifier(it.name, databaseDialect)}" }.joinToString(", %n\" +\n")} %n" +
+            |"        FROM ${formatTable(table, databaseDialect)} %n" +
+            |"        ORDER BY ${formatIdentifier(table.primaryKey.name, databaseDialect)} %n" +
+            |"    ) a %n" +
+            |"    WHERE rownum < %d + %d %n" +
+            |")%n" +
+            |"WHERE tmp_rownum_ >= %d", start + 1, pageSize, start + 1);
+        """.trimMargin()
+
+        else -> throw RuntimeException("Unsupported database dialect $databaseDialect")
+    }
+}
+
 fun delete(table: Table, databaseDialect: DatabaseDialect): String {
     return """
             |"DELETE FROM ${formatTable(table, databaseDialect)} " +

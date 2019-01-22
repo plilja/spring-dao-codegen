@@ -103,6 +103,26 @@ public class FooPostgresRepository extends BaseRepository<FooPostgresEntity, Lon
     }
 
     @Override
+    protected String getSelectPageSql(long start, int pageSize) {
+        return String.format("SELECT %n" +
+                "\"FOO_ID\", %n" +
+                "\"BOOLEAN_BIT\", %n" +
+                "\"BOOLEAN_B\", %n" +
+                "\"CHAR\", %n" +
+                "\"DATE\", %n" +
+                "\"TIMESTAMP\", %n" +
+                "\"BIGDECIMAL\", %n" +
+                "\"FLOAT\", %n" +
+                "\"DOUBLE\", %n" +
+                "\"GUID\", %n" +
+                "\"XML\", %n" +
+                "\"TEXT\", %n" +
+                "\"BYTEA\" %n" +
+                "FROM public.\"FOO_POSTGRES\" %n" +
+                "LIMIT %d OFFSET %d", pageSize, start);
+    }
+
+    @Override
     protected String getInsertSql() {
         return "INSERT INTO public.\"FOO_POSTGRES\" (" +
                 "   \"BOOLEAN_BIT\", " +

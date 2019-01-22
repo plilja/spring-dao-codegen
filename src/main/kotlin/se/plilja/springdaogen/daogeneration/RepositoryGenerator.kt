@@ -66,6 +66,14 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
     g.addCustomMethod(
         """
             @Override
+            protected String getSelectPageSql(long start, int pageSize) {
+                return ${selectPage(table, config.databaseDialect)}
+            }
+        """
+    )
+    g.addCustomMethod(
+        """
+            @Override
             protected String getInsertSql() {
                 return ${insert(table, config.databaseDialect)};
             }
