@@ -5,11 +5,8 @@ import se.plilja.springdaogen.model.Table
 
 
 fun insert(table: Table, databaseDialect: DatabaseDialect): String {
-    return if (table.columns.isEmpty()) {
-        "INSERT INTO ${formatTable(table, databaseDialect)}() VALUES()"
-    } else {
-        val columns = table.columns.filter { it != table.primaryKey }
-        """
+    val columns = table.columns.filter { it != table.primaryKey }
+    return """
             |"INSERT INTO ${formatTable(table, databaseDialect)} (" +
             |${columns.map { "\"   ${formatIdentifier(it.name, databaseDialect)}" }.joinToString(", \" +\n")}" +
             |") " +
@@ -17,7 +14,6 @@ fun insert(table: Table, databaseDialect: DatabaseDialect): String {
             |${columns.map { "\"   :${it.name}" }.joinToString(", \" +\n")}" +
             |")"
             """.trimMargin()
-    }
 }
 
 fun update(table: Table, databaseDialect: DatabaseDialect): String {
