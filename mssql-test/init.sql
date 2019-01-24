@@ -28,4 +28,8 @@ CREATE TABLE baz_ms_sql (
     name VARCHAR(30) NOT NULL
 )
 
+CREATE TABLE one_col_ms_sql (
+    id INT identity(1, 1) primary key
+)
+
 SET NOEXEC OFF; 

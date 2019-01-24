@@ -22,10 +22,6 @@ CREATE TABLE public."FOO_POSTGRES"
 WITH (
     OIDS = FALSE
 );
--- TABLESPACE pg_default;
--- 
--- ALTER TABLE public."FOO"
---     OWNER to "docker";
 
 CREATE SEQUENCE test_schema."BAZ_BAZ_ID_seq";
 
@@ -38,9 +34,14 @@ CREATE TABLE test_schema."baz_postgres"
 WITH (
     OIDS = FALSE
 );
--- TABLESPACE pg_default;
--- 
--- ALTER TABLE test_schema."BAZ"
---     OWNER to "docker";
 COMMENT ON TABLE test_schema."baz_postgres"
     IS 'Baz comment';
+
+
+CREATE SEQUENCE test_schema."ONE_COL_seq";
+
+CREATE TABLE test_schema."one_column_postgres"
+(
+    "id" integer NOT NULL DEFAULT nextval('test_schema."ONE_COL_seq"'::regclass),
+    CONSTRAINT "one_col_pkey" PRIMARY KEY ("id")
+);
