@@ -13,4 +13,4 @@
 * Normalize config
 * Evil Oracle dependency optional
 * Smart way to build and run all IT-tests
-* Posibility to choose some formatting (for example lower case SQL vs upper case)
+* Possibility to choose some formatting (for example lower case SQL vs upper case)

@@ -24,26 +24,29 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
     for (column in table.columns) {
         if (config.useLombok) {
             g.addPrivateField(column.fieldName(), column.javaType)
+        } else if (column == table.primaryKey && column.name.toLowerCase() == "id") {
+            g.addPrivateField(column.fieldName(), column.javaType)
         } else {
             g.addField(column.fieldName(), column.javaType)
         }
     }
-    if (table.primaryKey.name.toLowerCase() != "id") {
-        g.addCustomMethod(
-            """
+    g.addCustomMethod(
+        """
+        |   @Override
         |   public ${table.primaryKey.javaType.simpleName} getId() {
         |       return ${table.primaryKey.fieldName()};
         |   }
     """.trimMargin()
-        )
-        g.addCustomMethod(
-            """
+    )
+    g.addCustomMethod(
+        """
+        |   @Override
         |   public void setId(${table.primaryKey.javaType.simpleName} id) {
         |       this.${table.primaryKey.fieldName()} = id;
         |   }
         """.trimMargin()
-        )
-    }
+    )
+
     if (config.frameworkOutputPackage != config.entityOutputPackage) {
         g.addImport("${config.frameworkOutputPackage}.${baseEntity(config.frameworkOutputPackage).first}")
     }

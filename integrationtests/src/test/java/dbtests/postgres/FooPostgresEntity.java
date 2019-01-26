@@ -1,6 +1,7 @@
 package dbtests.postgres;
 
 import dbtests.framework.BaseEntity;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -145,10 +146,12 @@ public class FooPostgresEntity implements BaseEntity<Long> {
         this.bytea = bytea;
     }
 
+    @Override
     public Long getId() {
         return fooId;
     }
 
+    @Override
     public void setId(Long id) {
         this.fooId = id;
     }

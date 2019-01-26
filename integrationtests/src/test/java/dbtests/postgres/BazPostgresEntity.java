@@ -31,10 +31,12 @@ public class BazPostgresEntity implements BaseEntity<Integer> {
         this.bazName = bazName;
     }
 
+    @Override
     public Integer getId() {
         return bazId;
     }
 
+    @Override
     public void setId(Integer id) {
         this.bazId = id;
     }
