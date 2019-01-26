@@ -112,7 +112,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     }
 
     @Test
-    public void save() {
+    public void saveOnExistingObject() {
         Entity bazEntity = newEntity("Bar");
         getRepo().create(bazEntity);
 
@@ -123,6 +123,18 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
 
         Entity retrievedEntity = getRepo().getOne(bazEntity.getId());
         assertEquals("Bar updated", getName(retrievedEntity));
+    }
+
+    @Test
+    public void saveOnNewObject() {
+        Entity bazEntity = newEntity("Bar");
+        getRepo().save(bazEntity);
+
+        assertNotNull(bazEntity.getId());
+
+        Entity retrievedEntity = getRepo().getOne(bazEntity.getId());
+        assertEquals(bazEntity.getId(), retrievedEntity.getId());
+        assertEquals("Bar", getName(retrievedEntity));
     }
 
     @Test

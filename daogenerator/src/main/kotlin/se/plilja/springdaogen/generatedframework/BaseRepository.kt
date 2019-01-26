@@ -7,7 +7,6 @@ package $_package;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -83,13 +82,17 @@ public abstract class BaseRepository<T extends BaseEntity<ID>, ID> {
 
     @Transactional
     public void save(T object) {
-        String sql = getUpdateSql();
-        SqlParameterSource params = getParams(object);
-        int updated = jdbcTemplate.update(sql, params);
-        if (updated == 0) {
-            throw new SqlUpdateException(String.format("No rows affected when trying to update object with id %s", object.getId())); // TODO more informative message
-        } else if (updated > 1) {
-            throw new SqlUpdateException(String.format("More than one row [%d] affected by update", updated));
+        if (object.getId() == null) {
+            create(object);
+        } else {
+            String sql = getUpdateSql();
+            SqlParameterSource params = getParams(object);
+            int updated = jdbcTemplate.update(sql, params);
+            if (updated == 0) {
+                throw new SqlUpdateException(String.format("No rows affected when trying to update object with id %s", object.getId())); // TODO more informative message
+            } else if (updated > 1) {
+                throw new SqlUpdateException(String.format("More than one row [%d] affected by update", updated));
+            }
         }
     }
 
