@@ -1,6 +1,7 @@
+-- Intentionally written a little quirky to provoke code generator
+
 CREATE SCHEMA test_schema
     AUTHORIZATION "docker";
-
 
 CREATE TABLE public."FOO_POSTGRES"
 (

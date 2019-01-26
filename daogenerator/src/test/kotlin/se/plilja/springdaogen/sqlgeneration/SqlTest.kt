@@ -7,29 +7,7 @@ import se.plilja.springdaogen.model.DatabaseDialect
 import se.plilja.springdaogen.model.Table
 
 class SqlTest {
-    @Test
-    fun testInsert() {
-        val pk = Column("FOO_ID", Integer::class.java)
-        val name = Column("NAME", String::class.java)
-        val age = Column("AGE", Integer::class.java)
 
-        // when
-        val sql = insert(Table("public", "FOO", pk, listOf(pk, name, age)), DatabaseDialect.MSSQL_SERVER)
-
-        // then
-        assertEquals(
-            """
-            |"INSERT INTO public.FOO (" +
-            |"   NAME, " +
-            |"   AGE" +
-            |") " +
-            |"VALUES (" +
-            |"   :NAME, " +
-            |"   :AGE" +
-            |")"
-        """.trimMargin(), sql
-        )
-    }
 
     @Test
     fun testUpdate() {

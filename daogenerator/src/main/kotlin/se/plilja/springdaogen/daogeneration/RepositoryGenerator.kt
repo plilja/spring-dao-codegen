@@ -78,11 +78,12 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
             }
         """
     )
+    val updateString = update(table, config.databaseDialect)
     g.addCustomMethod(
         """
             @Override
             protected String getUpdateSql() {
-                return ${update(table, config.databaseDialect)};
+                ${if (updateString != null) "return $updateString;" else "throw new UnsupportedOperationException();"}
             }
         """
     )

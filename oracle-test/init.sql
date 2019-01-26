@@ -1,3 +1,5 @@
+-- Intentionally written a little quirky to provoke code generator
+
 CREATE USER DOCKER
     IDENTIFIED BY password
     QUOTA 50M ON SYSTEM;

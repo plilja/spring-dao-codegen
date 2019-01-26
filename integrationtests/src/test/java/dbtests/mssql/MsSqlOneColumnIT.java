@@ -1,6 +1,6 @@
 package dbtests.mssql;
 
-import dbtests.BaseIntegrationTest;
+import dbtests.OneColumnBaseTest;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -10,34 +10,28 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @ContextConfiguration(classes = {MsSqlITConfig.class})
-@Import(BazMsSqlRepository.class)
+@Import(OneColumnMsSqlRepository.class)
 @RunWith(SpringRunner.class)
-public class MsSqlIT extends BaseIntegrationTest<BazMsSqlEntity, BazMsSqlRepository> {
-
+public class MsSqlOneColumnIT extends OneColumnBaseTest<OneColumnMsSqlEntity, OneColumnMsSqlRepository> {
     @Autowired
     NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    BazMsSqlRepository repo;
+    OneColumnMsSqlRepository repo;
 
     @Override
-    protected BazMsSqlRepository getRepo() {
+    protected OneColumnMsSqlRepository getRepo() {
         return repo;
     }
 
     @Override
-    public void clearTable() {
-        jdbcTemplate.update("DELETE FROM baz_ms_sql", new MapSqlParameterSource());
+    protected void clearTable() {
+        jdbcTemplate.update("DELETE FROM one_column_ms_sql", new MapSqlParameterSource());
+
     }
 
     @Override
-    protected BazMsSqlEntity newEntity(String name) {
-        return new BazMsSqlEntity(null, name);
+    protected OneColumnMsSqlEntity newEntity() {
+        return new OneColumnMsSqlEntity();
     }
-
-    @Override
-    protected String getName(BazMsSqlEntity entity) {
-        return entity.getName();
-    }
-
 }

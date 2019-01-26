@@ -1,6 +1,6 @@
 package dbtests.postgres;
 
-import dbtests.BaseIntegrationTest;
+import dbtests.OneColumnBaseTest;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -10,34 +10,28 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @ContextConfiguration(classes = {PostgresITConfig.class})
-@Import(BazPostgresRepository.class)
+@Import(OneColumnPostgresRepository.class)
 @RunWith(SpringRunner.class)
-public class PostgresIT extends BaseIntegrationTest<BazPostgresEntity, BazPostgresRepository> {
-
+public class PostgresOneColumnIT extends OneColumnBaseTest<OneColumnPostgresEntity, OneColumnPostgresRepository> {
     @Autowired
     NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    BazPostgresRepository repo;
+    OneColumnPostgresRepository repo;
 
     @Override
-    protected BazPostgresRepository getRepo() {
+    protected OneColumnPostgresRepository getRepo() {
         return repo;
     }
 
     @Override
-    public void clearTable() {
-        jdbcTemplate.update("DELETE FROM test_schema.baz_postgres", new MapSqlParameterSource());
+    protected void clearTable() {
+        jdbcTemplate.update("DELETE FROM test_schema.one_column_postgres", new MapSqlParameterSource());
+
     }
 
     @Override
-    protected BazPostgresEntity newEntity(String name) {
-        return new BazPostgresEntity(null, name);
+    protected OneColumnPostgresEntity newEntity() {
+        return new OneColumnPostgresEntity();
     }
-
-    @Override
-    protected String getName(BazPostgresEntity entity) {
-        return entity.getBazName();
-    }
-
 }

@@ -5,24 +5,42 @@ import se.plilja.springdaogen.model.Table
 
 
 fun insert(table: Table, databaseDialect: DatabaseDialect): String {
-    val columns = table.columns.filter { it != table.primaryKey }
-    return """
+    val insertColumns = table.columns.filter { it != table.primaryKey }
+    return if (insertColumns.isEmpty()) {
+        when (databaseDialect) {
+            DatabaseDialect.MYSQL -> "\"INSERT INTO ${formatTable(table, databaseDialect)}() VALUES()\""
+            DatabaseDialect.ORACLE -> {
+                // TODO will this work with Oracle12c identity style columns?
+                "\"INSERT INTO ${formatTable(table, databaseDialect)}(${formatIdentifier(
+                    table.primaryKey.name,
+                    databaseDialect
+                )}) VALUES(null)\""
+            }
+            else -> "\"INSERT INTO ${formatTable(table, databaseDialect)} DEFAULT VALUES\""
+        }
+    } else {
+        """
             |"INSERT INTO ${formatTable(table, databaseDialect)} (" +
-            |${columns.map { "\"   ${formatIdentifier(it.name, databaseDialect)}" }.joinToString(", \" +\n")}" +
+            |${insertColumns.map { "\"   ${formatIdentifier(it.name, databaseDialect)}" }.joinToString(", \" +\n")}" +
             |") " +
             |"VALUES (" +
-            |${columns.map { "\"   :${it.name}" }.joinToString(", \" +\n")}" +
+            |${insertColumns.map { "\"   :${it.name}" }.joinToString(", \" +\n")}" +
             |")"
             """.trimMargin()
+    }
 }
 
-fun update(table: Table, databaseDialect: DatabaseDialect): String {
-    val columns = table.columns.filter { it != table.primaryKey }
-    return """
+fun update(table: Table, databaseDialect: DatabaseDialect): String? {
+    val updateColumns = table.columns.filter { it != table.primaryKey }
+    return if (updateColumns.isEmpty()) {
+        null // Special case, update not supported
+    } else {
+        """
             |"UPDATE ${formatTable(table, databaseDialect)} SET " +
-            |${columns.map { "\"   ${it.name} = :${it.name}" }.joinToString(", \" +\n")} " +
+            |${updateColumns.map { "\"   ${it.name} = :${it.name}" }.joinToString(", \" +\n")} " +
             |"WHERE ${table.primaryKey.name} = :${table.primaryKey.name}"
             """.trimMargin()
+    }
 }
 
 fun selectOne(table: Table, databaseDialect: DatabaseDialect): String {

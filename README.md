@@ -1,7 +1,6 @@
 # Generate daos
 
 # TODO:s
-* Tables with just one column that is the ID-column
 * Tables with composite id-columns
 * Tables with non generated columns
 * Ability to prefix/suffix generated classes
@@ -14,3 +13,4 @@
 * Normalize config
 * Evil Oracle dependency optional
 * Smart way to build and run all IT-tests
+* Posibility to choose some formatting (for example lower case SQL vs upper case)

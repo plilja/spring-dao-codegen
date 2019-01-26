@@ -1,7 +1,6 @@
 package dbtests.mysql;
 
-
-import dbtests.BaseIntegrationTest;
+import dbtests.OneColumnBaseTest;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -11,35 +10,29 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @ContextConfiguration(classes = {MysqlITConfig.class})
-@Import(BazMysqlRepository.class)
+@Import(OneColumnMysqlRepository.class)
 @RunWith(SpringRunner.class)
-public class MysqlIT extends BaseIntegrationTest<BazMysqlEntity, BazMysqlRepository> {
+public class MysqlOneColumnIT extends OneColumnBaseTest<OneColumnMysqlEntity, OneColumnMysqlRepository> {
 
     @Autowired
     NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    BazMysqlRepository repo;
+    OneColumnMysqlRepository repo;
 
     @Override
-    protected BazMysqlRepository getRepo() {
+    protected OneColumnMysqlRepository getRepo() {
         return repo;
     }
 
     @Override
-    public void clearTable() {
-        jdbcTemplate.update("DELETE FROM BazMysql", new MapSqlParameterSource());
+    protected void clearTable() {
+        jdbcTemplate.update("DELETE FROM ONE_COLUMN_MYSQL", new MapSqlParameterSource());
+
     }
 
     @Override
-    protected BazMysqlEntity newEntity(String name) {
-        return new BazMysqlEntity(null, name);
+    protected OneColumnMysqlEntity newEntity() {
+        return new OneColumnMysqlEntity();
     }
-
-    @Override
-    protected String getName(BazMysqlEntity entity) {
-        return entity.getName();
-    }
-
 }
-
