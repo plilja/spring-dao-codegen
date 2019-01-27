@@ -1,4 +1,4 @@
-package dbtests.postgres.model;
+package dbtests.mssql.model;
 
 import dbtests.framework.AbstractBaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,28 +9,28 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class OneColumnGeneratedIdPostgresRepository extends AbstractBaseRepository<OneColumnGeneratedIdPostgresEntity, Integer> {
+public class OneColumnGeneratedIdMsSqlRepositoryImpl extends AbstractBaseRepository<OneColumnGeneratedIdMsSqlEntity, Integer> implements OneColumnGeneratedIdMsSqlRepository {
 
-    private static final RowMapper<OneColumnGeneratedIdPostgresEntity> ROW_MAPPER = (rs, i) -> {
-        OneColumnGeneratedIdPostgresEntity r = new OneColumnGeneratedIdPostgresEntity();
+    private static final RowMapper<OneColumnGeneratedIdMsSqlEntity> ROW_MAPPER = (rs, i) -> {
+        OneColumnGeneratedIdMsSqlEntity r = new OneColumnGeneratedIdMsSqlEntity();
         r.setId(rs.getObject("id") != null ? rs.getInt("id") : null);
         return r;
     };
 
     @Autowired
-    public OneColumnGeneratedIdPostgresRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    public OneColumnGeneratedIdMsSqlRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate) {
         super(Integer.class, true, jdbcTemplate);
     }
 
     @Override
-    public SqlParameterSource getParams(OneColumnGeneratedIdPostgresEntity o) {
+    public SqlParameterSource getParams(OneColumnGeneratedIdMsSqlEntity o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
         return m;
     }
 
     @Override
-    protected RowMapper<OneColumnGeneratedIdPostgresEntity> getRowMapper() {
+    protected RowMapper<OneColumnGeneratedIdMsSqlEntity> getRowMapper() {
         return ROW_MAPPER;
     }
 
@@ -38,7 +38,7 @@ public class OneColumnGeneratedIdPostgresRepository extends AbstractBaseReposito
     protected String getExistsByIdSql() {
         return "SELECT " +
                 "COUNT(*) " +
-                "FROM test_schema.one_column_generated_id_postgres " +
+                "FROM dbo.one_column_generated_id_ms_sql " +
                 "WHERE id = :id";
     }
 
@@ -46,29 +46,29 @@ public class OneColumnGeneratedIdPostgresRepository extends AbstractBaseReposito
     protected String getSelectIdsSql() {
         return "SELECT " +
                 "id " +
-                "FROM test_schema.one_column_generated_id_postgres " +
+                "FROM dbo.one_column_generated_id_ms_sql " +
                 "WHERE id IN (:ids)";
     }
 
     @Override
     protected String getSelectManySql(int maxSelectCount) {
-        return String.format("SELECT " +
+        return String.format("SELECT TOP %d " +
                 "   id " +
-                "FROM test_schema.one_column_generated_id_postgres " +
-                "LIMIT %d", maxSelectCount);
+                "FROM dbo.one_column_generated_id_ms_sql ", maxSelectCount);
     }
 
     @Override
     protected String getSelectPageSql(long start, int pageSize) {
         return String.format("SELECT %n" +
                 "id %n" +
-                "FROM test_schema.one_column_generated_id_postgres %n" +
-                "LIMIT %d OFFSET %d", pageSize, start);
+                "FROM dbo.one_column_generated_id_ms_sql %n" +
+                "ORDER BY id %n" +
+                "OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", start, pageSize);
     }
 
     @Override
     protected String getInsertSql() {
-        return "INSERT INTO test_schema.one_column_generated_id_postgres DEFAULT VALUES";
+        return "INSERT INTO dbo.one_column_generated_id_ms_sql DEFAULT VALUES";
     }
 
     @Override
@@ -78,13 +78,13 @@ public class OneColumnGeneratedIdPostgresRepository extends AbstractBaseReposito
 
     @Override
     protected String getDeleteSql() {
-        return "DELETE FROM test_schema.one_column_generated_id_postgres " +
+        return "DELETE FROM dbo.one_column_generated_id_ms_sql " +
                 "WHERE id IN (:ids)";
     }
 
     @Override
     protected String getCountSql() {
-        return "SELECT COUNT(*) FROM test_schema.one_column_generated_id_postgres";
+        return "SELECT COUNT(*) FROM dbo.one_column_generated_id_ms_sql";
     }
 
     @Override

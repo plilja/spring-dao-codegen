@@ -1,6 +1,6 @@
 package dbtests.oracle.model;
 
-import dbtests.framework.BaseRepository;
+import dbtests.framework.AbstractBaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class BazOracleDao extends BaseRepository<BazOracle, Integer> {
+public class BazOracleDao extends AbstractBaseRepository<BazOracle, Integer> {
 
     private static final RowMapper<BazOracle> ROW_MAPPER = (rs, i) -> {
         BazOracle r = new BazOracle();

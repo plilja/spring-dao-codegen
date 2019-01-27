@@ -1,4 +1,4 @@
-package dbtests.postgres.model;
+package dbtests.mssql.model;
 
 import dbtests.framework.AbstractBaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,28 +9,28 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class OneColumnGeneratedIdPostgresRepository extends AbstractBaseRepository<OneColumnGeneratedIdPostgresEntity, Integer> {
+public class OneColumnNaturalIdMsSqlRepositoryImpl extends AbstractBaseRepository<OneColumnNaturalIdMsSqlEntity, String> implements OneColumnNaturalIdMsSqlRepository {
 
-    private static final RowMapper<OneColumnGeneratedIdPostgresEntity> ROW_MAPPER = (rs, i) -> {
-        OneColumnGeneratedIdPostgresEntity r = new OneColumnGeneratedIdPostgresEntity();
-        r.setId(rs.getObject("id") != null ? rs.getInt("id") : null);
+    private static final RowMapper<OneColumnNaturalIdMsSqlEntity> ROW_MAPPER = (rs, i) -> {
+        OneColumnNaturalIdMsSqlEntity r = new OneColumnNaturalIdMsSqlEntity();
+        r.setId(rs.getString("id"));
         return r;
     };
 
     @Autowired
-    public OneColumnGeneratedIdPostgresRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, true, jdbcTemplate);
+    public OneColumnNaturalIdMsSqlRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate) {
+        super(String.class, false, jdbcTemplate);
     }
 
     @Override
-    public SqlParameterSource getParams(OneColumnGeneratedIdPostgresEntity o) {
+    public SqlParameterSource getParams(OneColumnNaturalIdMsSqlEntity o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
         return m;
     }
 
     @Override
-    protected RowMapper<OneColumnGeneratedIdPostgresEntity> getRowMapper() {
+    protected RowMapper<OneColumnNaturalIdMsSqlEntity> getRowMapper() {
         return ROW_MAPPER;
     }
 
@@ -38,7 +38,7 @@ public class OneColumnGeneratedIdPostgresRepository extends AbstractBaseReposito
     protected String getExistsByIdSql() {
         return "SELECT " +
                 "COUNT(*) " +
-                "FROM test_schema.one_column_generated_id_postgres " +
+                "FROM dbo.ONE_COLUMN_NATURAL_ID_MS_SQL " +
                 "WHERE id = :id";
     }
 
@@ -46,29 +46,34 @@ public class OneColumnGeneratedIdPostgresRepository extends AbstractBaseReposito
     protected String getSelectIdsSql() {
         return "SELECT " +
                 "id " +
-                "FROM test_schema.one_column_generated_id_postgres " +
+                "FROM dbo.ONE_COLUMN_NATURAL_ID_MS_SQL " +
                 "WHERE id IN (:ids)";
     }
 
     @Override
     protected String getSelectManySql(int maxSelectCount) {
-        return String.format("SELECT " +
+        return String.format("SELECT TOP %d " +
                 "   id " +
-                "FROM test_schema.one_column_generated_id_postgres " +
-                "LIMIT %d", maxSelectCount);
+                "FROM dbo.ONE_COLUMN_NATURAL_ID_MS_SQL ", maxSelectCount);
     }
 
     @Override
     protected String getSelectPageSql(long start, int pageSize) {
         return String.format("SELECT %n" +
                 "id %n" +
-                "FROM test_schema.one_column_generated_id_postgres %n" +
-                "LIMIT %d OFFSET %d", pageSize, start);
+                "FROM dbo.ONE_COLUMN_NATURAL_ID_MS_SQL %n" +
+                "ORDER BY id %n" +
+                "OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", start, pageSize);
     }
 
     @Override
     protected String getInsertSql() {
-        return "INSERT INTO test_schema.one_column_generated_id_postgres DEFAULT VALUES";
+        return "INSERT INTO dbo.ONE_COLUMN_NATURAL_ID_MS_SQL (" +
+                "   id" +
+                ") " +
+                "VALUES (" +
+                "   :id" +
+                ")";
     }
 
     @Override
@@ -78,13 +83,13 @@ public class OneColumnGeneratedIdPostgresRepository extends AbstractBaseReposito
 
     @Override
     protected String getDeleteSql() {
-        return "DELETE FROM test_schema.one_column_generated_id_postgres " +
+        return "DELETE FROM dbo.ONE_COLUMN_NATURAL_ID_MS_SQL " +
                 "WHERE id IN (:ids)";
     }
 
     @Override
     protected String getCountSql() {
-        return "SELECT COUNT(*) FROM test_schema.one_column_generated_id_postgres";
+        return "SELECT COUNT(*) FROM dbo.ONE_COLUMN_NATURAL_ID_MS_SQL";
     }
 
     @Override

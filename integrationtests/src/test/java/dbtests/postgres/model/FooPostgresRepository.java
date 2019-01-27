@@ -1,6 +1,6 @@
 package dbtests.postgres.model;
 
-import dbtests.framework.BaseRepository;
+import dbtests.framework.AbstractBaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public class FooPostgresRepository extends BaseRepository<FooPostgresEntity, Long> {
+public class FooPostgresRepository extends AbstractBaseRepository<FooPostgresEntity, Long> {
 
     private static final RowMapper<FooPostgresEntity> ROW_MAPPER = (rs, i) -> {
         FooPostgresEntity r = new FooPostgresEntity();

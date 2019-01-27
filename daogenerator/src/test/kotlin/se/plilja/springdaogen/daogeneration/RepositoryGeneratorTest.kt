@@ -44,7 +44,7 @@ class RepositoryGeneratorTest {
             Table("dbo", "Table", pk, listOf(pk, name), repositorySuffix = "Repository", entitySuffix = "Entity")
 
         // when
-        val res = generateRepository(config, table)
+        val res = generateRepository(config, table)[0]
         val act = res.generate()
 
         // then
@@ -59,7 +59,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class TableRepository extends BaseRepository<TableEntity, Integer> {
+public class TableRepository extends AbstractBaseRepository<TableEntity, Integer> {
 
     private static final RowMapper<TableEntity> ROW_MAPPER = (rs, i) -> {
         TableEntity r = new TableEntity();
@@ -190,7 +190,7 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
             Table("dbo", "Table", pk, listOf(pk, name), repositorySuffix = "Repository", entitySuffix = "Entity")
 
         // when
-        val res = generateRepository(config, table)
+        val res = generateRepository(config, table)[0]
         val act = res.generate()
 
         // then
@@ -205,7 +205,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class TableRepository extends BaseRepository<TableEntity, Integer> {
+public class TableRepository extends AbstractBaseRepository<TableEntity, Integer> {
 
     private static final RowMapper<TableEntity> ROW_MAPPER = (rs, i) -> {
         TableEntity r = new TableEntity();
@@ -339,7 +339,7 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
             Table("dbo", "Table", pk, listOf(pk, name), repositoryPrefix = "Abstract", repositorySuffix = "Repository")
 
         // when
-        val res = generateRepository(config, table)
+        val res = generateRepository(config, table)[0]
         val act = res.generate()
 
         // then
@@ -351,7 +351,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
-public abstract class AbstractTableRepository extends BaseRepository<Table, Integer> {
+public abstract class AbstractTableRepository extends AbstractBaseRepository<Table, Integer> {
 
     private static final RowMapper<Table> ROW_MAPPER = (rs, i) -> {
         Table r = new Table();

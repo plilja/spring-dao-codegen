@@ -3,6 +3,7 @@ package dbtests.mssql.tests;
 import dbtests.OneColumnGeneratedIdBaseTest;
 import dbtests.mssql.model.OneColumnGeneratedIdMsSqlEntity;
 import dbtests.mssql.model.OneColumnGeneratedIdMsSqlRepository;
+import dbtests.mssql.model.OneColumnGeneratedIdMsSqlRepositoryImpl;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -12,17 +13,17 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @ContextConfiguration(classes = {MsSqlITConfig.class})
-@Import(OneColumnGeneratedIdMsSqlRepository.class)
+@Import(OneColumnGeneratedIdMsSqlRepositoryImpl.class)
 @RunWith(SpringRunner.class)
 public class MsSqlOneColumnGeneratedIdIT extends OneColumnGeneratedIdBaseTest<OneColumnGeneratedIdMsSqlEntity, OneColumnGeneratedIdMsSqlRepository> {
     @Autowired
     NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    OneColumnGeneratedIdMsSqlRepository repo;
+    OneColumnGeneratedIdMsSqlRepositoryImpl repo;
 
     @Override
-    protected OneColumnGeneratedIdMsSqlRepository getRepo() {
+    protected OneColumnGeneratedIdMsSqlRepositoryImpl getRepo() {
         return repo;
     }
 

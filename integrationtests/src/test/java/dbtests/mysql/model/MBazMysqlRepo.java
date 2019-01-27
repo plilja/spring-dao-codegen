@@ -1,6 +1,6 @@
 package dbtests.mysql.model;
 
-import dbtests.framework.BaseRepository;
+import dbtests.framework.AbstractBaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class MBazMysqlRepo extends BaseRepository<MBazMysql, Integer> {
+public class MBazMysqlRepo extends AbstractBaseRepository<MBazMysql, Integer> {
 
     private static final RowMapper<MBazMysql> ROW_MAPPER = (rs, i) -> {
         MBazMysql r = new MBazMysql();

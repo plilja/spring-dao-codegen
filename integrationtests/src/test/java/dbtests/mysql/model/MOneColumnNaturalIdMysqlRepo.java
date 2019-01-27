@@ -1,6 +1,6 @@
 package dbtests.mysql.model;
 
-import dbtests.framework.BaseRepository;
+import dbtests.framework.AbstractBaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class MOneColumnNaturalIdMysqlRepo extends BaseRepository<MOneColumnNaturalIdMysql, String> {
+public class MOneColumnNaturalIdMysqlRepo extends AbstractBaseRepository<MOneColumnNaturalIdMysql, String> {
 
     private static final RowMapper<MOneColumnNaturalIdMysql> ROW_MAPPER = (rs, i) -> {
         MOneColumnNaturalIdMysql r = new MOneColumnNaturalIdMysql();
@@ -78,7 +78,7 @@ public class MOneColumnNaturalIdMysqlRepo extends BaseRepository<MOneColumnNatur
 
     @Override
     protected String getUpdateSql() {
-        throw new UnsupportedOperationException();
+        return null;
     }
 
     @Override

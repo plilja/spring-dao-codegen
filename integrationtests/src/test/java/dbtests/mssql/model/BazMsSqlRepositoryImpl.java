@@ -1,4 +1,4 @@
-package dbtests.postgres.model;
+package dbtests.mssql.model;
 
 import dbtests.framework.AbstractBaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,28 +9,30 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class OneColumnGeneratedIdPostgresRepository extends AbstractBaseRepository<OneColumnGeneratedIdPostgresEntity, Integer> {
+public class BazMsSqlRepositoryImpl extends AbstractBaseRepository<BazMsSqlEntity, Integer> implements BazMsSqlRepository {
 
-    private static final RowMapper<OneColumnGeneratedIdPostgresEntity> ROW_MAPPER = (rs, i) -> {
-        OneColumnGeneratedIdPostgresEntity r = new OneColumnGeneratedIdPostgresEntity();
+    private static final RowMapper<BazMsSqlEntity> ROW_MAPPER = (rs, i) -> {
+        BazMsSqlEntity r = new BazMsSqlEntity();
         r.setId(rs.getObject("id") != null ? rs.getInt("id") : null);
+        r.setName(rs.getString("name"));
         return r;
     };
 
     @Autowired
-    public OneColumnGeneratedIdPostgresRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    public BazMsSqlRepositoryImpl(NamedParameterJdbcTemplate jdbcTemplate) {
         super(Integer.class, true, jdbcTemplate);
     }
 
     @Override
-    public SqlParameterSource getParams(OneColumnGeneratedIdPostgresEntity o) {
+    public SqlParameterSource getParams(BazMsSqlEntity o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
+        m.addValue("name", o.getName());
         return m;
     }
 
     @Override
-    protected RowMapper<OneColumnGeneratedIdPostgresEntity> getRowMapper() {
+    protected RowMapper<BazMsSqlEntity> getRowMapper() {
         return ROW_MAPPER;
     }
 
@@ -38,53 +40,63 @@ public class OneColumnGeneratedIdPostgresRepository extends AbstractBaseReposito
     protected String getExistsByIdSql() {
         return "SELECT " +
                 "COUNT(*) " +
-                "FROM test_schema.one_column_generated_id_postgres " +
+                "FROM dbo.baz_ms_sql " +
                 "WHERE id = :id";
     }
 
     @Override
     protected String getSelectIdsSql() {
         return "SELECT " +
-                "id " +
-                "FROM test_schema.one_column_generated_id_postgres " +
+                "id, " +
+                "name " +
+                "FROM dbo.baz_ms_sql " +
                 "WHERE id IN (:ids)";
     }
 
     @Override
     protected String getSelectManySql(int maxSelectCount) {
-        return String.format("SELECT " +
-                "   id " +
-                "FROM test_schema.one_column_generated_id_postgres " +
-                "LIMIT %d", maxSelectCount);
+        return String.format("SELECT TOP %d " +
+                "   id, " +
+                "   name " +
+                "FROM dbo.baz_ms_sql ", maxSelectCount);
     }
 
     @Override
     protected String getSelectPageSql(long start, int pageSize) {
         return String.format("SELECT %n" +
-                "id %n" +
-                "FROM test_schema.one_column_generated_id_postgres %n" +
-                "LIMIT %d OFFSET %d", pageSize, start);
+                "id, %n" +
+                "name %n" +
+                "FROM dbo.baz_ms_sql %n" +
+                "ORDER BY id %n" +
+                "OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", start, pageSize);
     }
 
     @Override
     protected String getInsertSql() {
-        return "INSERT INTO test_schema.one_column_generated_id_postgres DEFAULT VALUES";
+        return "INSERT INTO dbo.baz_ms_sql (" +
+                "   name" +
+                ") " +
+                "VALUES (" +
+                "   :name" +
+                ")";
     }
 
     @Override
     protected String getUpdateSql() {
-        return null;
+        return "UPDATE dbo.baz_ms_sql SET " +
+                "   name = :name " +
+                "WHERE id = :id";
     }
 
     @Override
     protected String getDeleteSql() {
-        return "DELETE FROM test_schema.one_column_generated_id_postgres " +
+        return "DELETE FROM dbo.baz_ms_sql " +
                 "WHERE id IN (:ids)";
     }
 
     @Override
     protected String getCountSql() {
-        return "SELECT COUNT(*) FROM test_schema.one_column_generated_id_postgres";
+        return "SELECT COUNT(*) FROM dbo.baz_ms_sql";
     }
 
     @Override

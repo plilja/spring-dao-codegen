@@ -1,6 +1,6 @@
 package dbtests.oracle.model;
 
-import dbtests.framework.BaseRepository;
+import dbtests.framework.AbstractBaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class OneColumnNaturalIdOracleDao extends BaseRepository<OneColumnNaturalIdOracle, String> {
+public class OneColumnNaturalIdOracleDao extends AbstractBaseRepository<OneColumnNaturalIdOracle, String> {
 
     private static final RowMapper<OneColumnNaturalIdOracle> ROW_MAPPER = (rs, i) -> {
         OneColumnNaturalIdOracle r = new OneColumnNaturalIdOracle();
@@ -84,7 +84,7 @@ public class OneColumnNaturalIdOracleDao extends BaseRepository<OneColumnNatural
 
     @Override
     protected String getUpdateSql() {
-        throw new UnsupportedOperationException();
+        return null;
     }
 
     @Override

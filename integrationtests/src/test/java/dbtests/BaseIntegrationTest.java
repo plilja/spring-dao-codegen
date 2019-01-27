@@ -12,7 +12,10 @@ import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Repo extends BaseRepository<Entity, Integer>> {
 
@@ -35,7 +38,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
 
         for (int i = 1; i <= 10; i++) {
             Entity bazEntity = newEntity(String.format("Bar %d", i));
-            getRepo().create(bazEntity);
+            getRepo().save(bazEntity);
         }
 
         assertEquals(10, getRepo().findAll().size());
@@ -45,7 +48,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     public void findAllExceedsMaxLimit() {
         for (int i = 0; i < 11; i++) {
             Entity bazEntity = newEntity(String.format("Bar %d", i));
-            getRepo().create(bazEntity);
+            getRepo().save(bazEntity);
         }
         getRepo().findAll();
     }
@@ -53,7 +56,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     @Test
     public void create() {
         Entity bazEntity = newEntity("Bar");
-        getRepo().create(bazEntity);
+        getRepo().save(bazEntity);
         assertNotNull(bazEntity.getId());
 
         Entity retrievedEntity = getRepo().getOne(bazEntity.getId());
@@ -64,7 +67,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     @Test
     public void getOneAndFindOne() {
         Entity entity = newEntity("Bar");
-        getRepo().create(entity);
+        getRepo().save(entity);
 
         Entity retrievedEntity1 = getRepo().getOne(entity.getId());
         Optional<Entity> retrievedEntity2 = getRepo().findOneById(entity.getId());
@@ -77,12 +80,12 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
         assertEquals(emptyList(), getRepo().findAllById(List.of(0, 1, 2, 3)));
 
         Entity entity1 = newEntity("Bar1");
-        getRepo().create(entity1);
+        getRepo().save(entity1);
 
         assertEquals(List.of("Bar1"), getRepo().findAllById(List.of(entity1.getId(), 1, entity1.getId(), 3)).stream().map(this::getName).collect(toList()));
 
         Entity entity2 = newEntity("Bar2");
-        getRepo().create(entity2);
+        getRepo().save(entity2);
 
         assertEquals(List.of("Bar1", "Bar2"), getRepo().findAllById(List.of(entity1.getId(), 1, entity2.getId(), 3)).stream().map(this::getName).collect(toList()));
     }
@@ -93,7 +96,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
 
         for (int i = 1; i <= 10; i++) {
             Entity bazEntity = newEntity(String.format("Bar %d", i));
-            getRepo().create(bazEntity);
+            getRepo().save(bazEntity);
         }
 
         assertEquals(List.of("Bar 1", "Bar 2"), getRepo().findPage(0, 2).stream().map(this::getName).collect(toList()));
@@ -107,14 +110,14 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     public void existsById() {
         assertFalse(getRepo().existsById(4711));
         Entity entity = newEntity("Bar");
-        getRepo().create(entity);
+        getRepo().save(entity);
         assertTrue(getRepo().existsById(entity.getId()));
     }
 
     @Test
     public void saveOnExistingObject() {
         Entity bazEntity = newEntity("Bar");
-        getRepo().create(bazEntity);
+        getRepo().save(bazEntity);
 
         Entity bazEntity2 = newEntity("Bar updated");
         bazEntity2.setId(bazEntity.getId());
@@ -141,7 +144,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     public void delete() {
         Entity bazEntity = newEntity("Bar");
 
-        getRepo().create(bazEntity);
+        getRepo().save(bazEntity);
         getRepo().delete(bazEntity);
 
         assertNotNull(bazEntity.getId());
@@ -152,7 +155,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     public void deleteById() {
         Entity bazEntity = newEntity("Bar");
 
-        getRepo().create(bazEntity);
+        getRepo().save(bazEntity);
         getRepo().deleteById(bazEntity.getId());
 
         assertNotNull(bazEntity.getId());
@@ -166,10 +169,10 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
         Entity entity3 = newEntity("Bar3");
         Entity entity4 = newEntity("Bar3");
 
-        getRepo().create(entity1);
-        getRepo().create(entity2);
-        getRepo().create(entity3);
-        getRepo().create(entity4);
+        getRepo().save(entity1);
+        getRepo().save(entity2);
+        getRepo().save(entity3);
+        getRepo().save(entity4);
 
         getRepo().deleteAll(List.of(entity2, entity3));
 
@@ -195,12 +198,12 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
         assertEquals(0, getRepo().count());
 
         Entity entity1 = newEntity("Bar3");
-        getRepo().create(entity1);
+        getRepo().save(entity1);
 
         assertEquals(1, getRepo().count());
 
         Entity entity2 = newEntity("Bar3");
-        getRepo().create(entity2);
+        getRepo().save(entity2);
 
         assertEquals(2, getRepo().count());
     }

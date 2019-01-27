@@ -3,6 +3,7 @@ package dbtests.mssql.tests;
 import dbtests.BaseIntegrationTest;
 import dbtests.mssql.model.BazMsSqlEntity;
 import dbtests.mssql.model.BazMsSqlRepository;
+import dbtests.mssql.model.BazMsSqlRepositoryImpl;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -12,7 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @ContextConfiguration(classes = {MsSqlITConfig.class})
-@Import(BazMsSqlRepository.class)
+@Import(BazMsSqlRepositoryImpl.class)
 @RunWith(SpringRunner.class)
 public class MsSqlIT extends BaseIntegrationTest<BazMsSqlEntity, BazMsSqlRepository> {
 
@@ -20,7 +21,7 @@ public class MsSqlIT extends BaseIntegrationTest<BazMsSqlEntity, BazMsSqlReposit
     NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    BazMsSqlRepository repo;
+    BazMsSqlRepositoryImpl repo;
 
     @Override
     protected BazMsSqlRepository getRepo() {

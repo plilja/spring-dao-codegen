@@ -25,8 +25,14 @@ data class Config(
     val entityPrefix: String = "",
     val entitySuffix: String = "",
     val repositoryPrefix: String = "",
-    val repositorySuffix: String = "Repository"
+    val repositorySuffix: String = "Repository",
+    val testRepositoryPrefix: String = "",
+    val testRepositorySuffix: String = "",
+    val testRepositoryOutputFolder: String? = null,
+    val testRepositoryOutputPackage: String? = null
 ) {
+
+    fun generateTestClasses() = testRepositoryOutputFolder != null && testRepositoryOutputPackage != null
 
     companion object {
 
@@ -40,10 +46,10 @@ data class Config(
     }
 }
 
-private class ConfigReader {
+private class ConfigReader(file: File) {
     private val properties: Properties;
 
-    constructor(file: File) {
+    init {
         val r = Properties()
         file.inputStream().use {
             r.load(it)
@@ -73,18 +79,28 @@ private class ConfigReader {
             entityPrefix = getEntityPrefix(),
             entitySuffix = getEntitySuffix(),
             repositoryPrefix = getRepositoryPrefix(),
-            repositorySuffix = getRepositorySuffix()
+            repositorySuffix = getRepositorySuffix(),
+            testRepositoryPrefix = getTestRepositoryPrefix(),
+            testRepositorySuffix = getTestRepositorySuffix(),
+            testRepositoryOutputFolder = testRepositoryOutputFolder(),
+            testRepositoryOutputPackage = testRepositoryOutputPackage()
         )
     }
 
     private fun databaseDialect() = DatabaseDialect.valueOf(properties.getProperty("database.dialect"))
 
-    private fun getFolderProperty(property: String): String {
-        val f = properties.getProperty(property)
-        if (f.last() != '/') {
-            return "$f/"
+    private fun getFolderProperty(property: String) = getOptionalFolderProperty(property)!!
+
+    private fun getOptionalFolderProperty(property: String): String? {
+        if (properties.containsKey(property)) {
+            val f = properties.getProperty(property)
+            if (f.last() != '/') {
+                return "$f/"
+            } else {
+                return f
+            }
         } else {
-            return f
+            return null
         }
     }
 
@@ -96,6 +112,10 @@ private class ConfigReader {
 
     private fun repositoryOutputPackage() = properties.getProperty("repository.output.package")
 
+    private fun testRepositoryOutputFolder() = getOptionalFolderProperty("test_repository.output.folder")
+
+    private fun testRepositoryOutputPackage() = properties.getProperty("test_repository.output.package", null)
+
     private fun getEntityPrefix() = properties.getProperty("entity.output.prefix", "")
 
     private fun getEntitySuffix() = properties.getProperty("entity.output.suffix", "")
@@ -103,6 +123,10 @@ private class ConfigReader {
     private fun getRepositoryPrefix() = properties.getProperty("repository.output.prefix", "")
 
     private fun getRepositorySuffix() = properties.getProperty("repository.output.suffix", "Repository")
+
+    private fun getTestRepositoryPrefix() = properties.getProperty("test_repository.output.prefix", "")
+
+    private fun getTestRepositorySuffix() = properties.getProperty("test_repository.output.suffix", "Repository")
 
     private fun frameworkOutputFolder() = getFolderProperty("framework.output.folder")
 

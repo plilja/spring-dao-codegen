@@ -1,16 +1,14 @@
 package se.plilja.springdaogen.codegeneration
 
 import se.plilja.springdaogen.util.capitalizeFirst
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 class ClassGenerator(
-    val name: String,
-    val packageName: String,
-    val sourceBaseFolder: String
-) {
-    private val imports = TreeSet<String>()
+    name: String,
+    packageName: String,
+    sourceBaseFolder: String
+) : ClassFileGenerator(name, sourceBaseFolder, packageName) {
+
     private val classAnnotations = ArrayList<String>()
     private val constants = ArrayList<Pair<Field, String>>()
     private val fields = ArrayList<Field>()
@@ -54,18 +52,6 @@ class ClassGenerator(
         customConstructors.add(constructor)
     }
 
-    fun addImport(type: Class<out Any>) {
-        if (!type.packageName.startsWith("java.lang")) {
-            imports.add(type.canonicalName)
-        }
-    }
-
-    fun addImport(canonicalName: String) {
-        if (!canonicalName.startsWith("java.lang.")) {
-            imports.add(canonicalName)
-        }
-    }
-
     fun setExtends(clazz: Class<out Any>) {
         this.extends = clazz.simpleName
         addImport(clazz)
@@ -75,17 +61,8 @@ class ClassGenerator(
         customMethods.add(methodCode)
     }
 
-    fun getOutputFolder(): String {
-        return "${sourceBaseFolder}${packageName.replace(".", "/")}"
-    }
-
-    fun getOutputFileName(): String {
-        return "${getOutputFolder()}/${name}.java"
-    }
-
-    fun generate(): String {
+    override fun generate(): String {
         val packageDeclaration = "package $packageName;"
-        val importsDeclaration = imports.map { "import $it;" }.joinToString("\n")
         val joinedClassAnnotation = classAnnotations.joinToString("\n")
         val classHeader =
             "public${if (isAbstract) " abstract" else ""}${if (isFinal) " final" else ""} class $name${if (extends != null) " extends $extends" else ""}${if (implements != null) " implements $implements" else ""} {"
@@ -123,7 +100,7 @@ class ClassGenerator(
 
         val classParts = listOf(
             packageDeclaration,
-            importsDeclaration,
+            formatImports(),
             classDeclaration,
             constantsDeclaration,
             fieldsDeclaration,
@@ -134,9 +111,9 @@ class ClassGenerator(
             joinedCustomMethods,
             classClose
         )
-        return rightTrimLines(indent(classParts.filter { !it.trim().isEmpty() }
+        return formatCode(classParts.filter { !it.trim().isEmpty() }
             .joinToString("\n\n")
-            .replace("    ", "")))
+            .replace("    ", ""))
 
     }
 
@@ -149,44 +126,6 @@ class ClassGenerator(
                       this.${field.name} = ${field.name};
                   }"""
     }
-}
-
-fun indent(code: String): String {
-    val lines = code.split("\n").map { it.trim() }
-    val tab = "    "
-    var indent = 0
-    var res = lines[0]
-    for (i in 1 until lines.size) {
-        val prevLine = lines[i - 1]
-        val line = lines[i]
-        if (prevLine.trim() == "" && line == "") {
-            continue
-        }
-        val extraIndent = if (prevLine != "" && !(prevLine.last() in listOf(';', '{', '}')) && prevLine[0] != '@') {
-            tab + tab
-        } else {
-            ""
-        }
-
-        if (line.endsWith("}") || line.endsWith("};")) {
-            indent -= 1
-        }
-
-        var spaces = ""
-        for (j in 1..indent) {
-            spaces += tab
-        }
-        if (line.endsWith("{")) {
-            indent += 1
-        }
-
-        res += "\n" + extraIndent + spaces + line
-    }
-    return res
-}
-
-fun rightTrimLines(s: String): String {
-    return s.split("\n").map { it.trimEnd() }.joinToString("\n")
 }
 
 data class Field(val name: String, val type: String, val private: Boolean) {

@@ -2,7 +2,6 @@
 
 # TODO:s
 * Tables with composite id-columns
-* Generate test implementations for repositories (in memory)
 * SqlLite
 * MariaDb
 * H2
@@ -16,3 +15,4 @@
 * Possibility to choose some formatting (for example lower case SQL vs upper case)
 * Junit5, look into Kotlin test libraries
 * Remove create-method and look over interfaces
+* Look over naming (should we go with Dao as default over Repository to avoid JPA confusion?)

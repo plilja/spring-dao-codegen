@@ -1,9 +1,7 @@
 package se.plilja.springdaogen.bootstrap
 
 import se.plilja.springdaogen.daogeneration.generateDaos
-import se.plilja.springdaogen.generatedframework.baseEntity
-import se.plilja.springdaogen.generatedframework.baseRepository
-import se.plilja.springdaogen.generatedframework.frameworkExceptions
+import se.plilja.springdaogen.generatedframework.*
 import se.plilja.springdaogen.model.Config
 import java.io.File
 
@@ -35,8 +33,20 @@ fun copyFrameworkClasses(config: Config) {
         File(dir.absolutePath + "/" + clazz.first + ".java").writeText(clazz.second)
     }
 
+    fun writeTestFrameworkClass(clazz: Pair<String, String>) {
+        assert(config.testRepositoryOutputFolder != null)
+        assert(config.testRepositoryOutputPackage != null)
+        val dir = File(config.testRepositoryOutputFolder + config.testRepositoryOutputPackage!!.replace(".", "/"))
+        dir.mkdirs()
+        File(dir.absolutePath + "/" + clazz.first + ".java").writeText(clazz.second)
+    }
+
     writeFrameworkClass(baseEntity(config.frameworkOutputPackage))
+    writeFrameworkClass(abstractBaseRepository(config.frameworkOutputPackage))
     writeFrameworkClass(baseRepository(config.frameworkOutputPackage))
+    if (config.testRepositoryOutputFolder != null && config.testRepositoryOutputPackage != null) {
+        writeTestFrameworkClass(baseTestRepository(config))
+    }
     for (exceptionClass in frameworkExceptions(config.frameworkOutputPackage)) {
         writeFrameworkClass(exceptionClass)
     }

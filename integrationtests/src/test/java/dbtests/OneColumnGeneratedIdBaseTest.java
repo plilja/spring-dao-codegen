@@ -23,7 +23,7 @@ public abstract class OneColumnGeneratedIdBaseTest<Entity extends BaseEntity<Int
     @Test
     public void create() {
         Entity entity = newEntity();
-        getRepo().create(entity);
+        getRepo().save(entity);
         assertNotNull(entity.getId());
 
         Entity retrievedEntity = getRepo().getOne(entity.getId());
@@ -34,7 +34,7 @@ public abstract class OneColumnGeneratedIdBaseTest<Entity extends BaseEntity<Int
     @Test(expected = UnsupportedOperationException.class)
     public void updatesAreNotSupported() {
         Entity entity = newEntity();
-        getRepo().create(entity);
+        getRepo().save(entity);
         getRepo().save(entity);
     }
 

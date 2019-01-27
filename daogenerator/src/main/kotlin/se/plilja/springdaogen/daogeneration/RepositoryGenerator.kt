@@ -7,21 +7,43 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.core.namedparam.SqlParameterSource
 import org.springframework.stereotype.Repository
+import se.plilja.springdaogen.codegeneration.ClassFileGenerator
 import se.plilja.springdaogen.codegeneration.ClassGenerator
+import se.plilja.springdaogen.codegeneration.InterfaceGenerator
+import se.plilja.springdaogen.generatedframework.abstractBaseRepository
 import se.plilja.springdaogen.generatedframework.baseRepository
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Table
 import se.plilja.springdaogen.sqlgeneration.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 
-fun generateRepository(config: Config, table: Table): ClassGenerator {
-    val g = ClassGenerator(table.repositoryName(), config.repositoryOutputPackage, config.repositoryOutputFolder)
+fun generateRepository(config: Config, table: Table): List<ClassFileGenerator> {
+    val result = ArrayList<ClassFileGenerator>()
+    if (config.generateTestClasses()) {
+        val iface =
+            InterfaceGenerator(table.repositoryName(), config.repositoryOutputPackage, config.repositoryOutputFolder)
+        iface.extends = "BaseRepository<${table.entityName()}, ${table.primaryKey.javaType.simpleName}>"
+        result.add(iface)
+        if (config.entityOutputPackage != config.repositoryOutputPackage) {
+            iface.addImport("${config.entityOutputPackage}.${table.entityName()}")
+        }
+        if (config.frameworkOutputPackage != config.repositoryOutputPackage) {
+            iface.addImport("${config.frameworkOutputPackage}.${baseRepository(config.frameworkOutputPackage).first}")
+        }
+
+    }
+    val name = if (config.generateTestClasses()) table.repositoryName() + "Impl" else table.repositoryName()
+    val g = ClassGenerator(name, config.repositoryOutputPackage, config.repositoryOutputFolder)
     if (!config.repositoriesAreAbstract) {
         g.addClassAnnotation("@Repository")
         g.addImport(Repository::class.java)
     }
-    g.extends = "BaseRepository<${table.entityName()}, ${table.primaryKey.javaType.simpleName}>"
+    g.extends = "AbstractBaseRepository<${table.entityName()}, ${table.primaryKey.javaType.simpleName}>"
+    if (config.generateTestClasses()) {
+        g.implements = table.repositoryName()
+    }
     g.addPrivateConstant(
         "ROW_MAPPER", "RowMapper<${table.entityName()}>",
         rowMapper(table)
@@ -100,12 +122,11 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
             }
         """
     )
-    val updateString = update(table, config.databaseDialect)
     g.addCustomMethod(
         """
             @Override
             protected String getUpdateSql() {
-                ${if (updateString != null) "return $updateString;" else "throw new UnsupportedOperationException();"}
+                return ${update(table, config.databaseDialect)};
             }
         """
     )
@@ -151,9 +172,10 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
         g.addImport("${config.entityOutputPackage}.${table.entityName()}")
     }
     if (config.frameworkOutputPackage != config.repositoryOutputPackage) {
-        g.addImport("${config.frameworkOutputPackage}.${baseRepository(config.frameworkOutputPackage).first}")
+        g.addImport("${config.frameworkOutputPackage}.${abstractBaseRepository(config.frameworkOutputPackage).first}")
     }
-    return g
+    result.add(g)
+    return result
 }
 
 private fun rowMapper(table: Table): String {
