@@ -2,14 +2,14 @@ package dbtests.mysql.model;
 
 import dbtests.framework.BaseEntity;
 
-public class OneColumnGeneratedIdMysqlEntity implements BaseEntity<Integer> {
+public class MOneColumnGeneratedIdMysql implements BaseEntity<Integer> {
 
     private Integer id;
 
-    public OneColumnGeneratedIdMysqlEntity() {
+    public MOneColumnGeneratedIdMysql() {
     }
 
-    public OneColumnGeneratedIdMysqlEntity(Integer id) {
+    public MOneColumnGeneratedIdMysql(Integer id) {
         this.id = id;
     }
 

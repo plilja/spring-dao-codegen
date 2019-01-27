@@ -20,7 +20,11 @@ data class Config(
     val maxSelectAllCount: Int,
     val schemas: List<String>,
     val useLombok: Boolean,
-    val hasGeneratedPrimaryKeysOverride: List<String> = emptyList()
+    val hasGeneratedPrimaryKeysOverride: List<String> = emptyList(),
+    val entityPrefix: String = "",
+    val entitySuffix: String = "",
+    val repositoryPrefix: String = "",
+    val repositorySuffix: String = "Repository"
 ) {
 
     companion object {
@@ -63,13 +67,15 @@ private class ConfigReader {
             maxSelectAllCount(),
             getSchemas(),
             useLombok(),
-            getGeneratedPrimaryKeysOverride()
+            getGeneratedPrimaryKeysOverride(),
+            getEntityPrefix(),
+            getEntitySuffix(),
+            getRepositoryPrefix(),
+            getRepositorySuffix()
         )
     }
 
-    private fun databaseDialect(): DatabaseDialect {
-        return DatabaseDialect.valueOf(properties.getProperty("database.dialect"))
-    }
+    private fun databaseDialect() = DatabaseDialect.valueOf(properties.getProperty("database.dialect"))
 
     private fun getFolderProperty(property: String): String {
         val f = properties.getProperty(property)
@@ -80,52 +86,46 @@ private class ConfigReader {
         }
     }
 
-    private fun entityOutputFolder(): String {
-        return getFolderProperty("entity.output.folder")
-    }
+    private fun entityOutputFolder() = getFolderProperty("entity.output.folder")
 
-    private fun entityOutputPackage(): String {
-        return properties.getProperty("entity.output.package")
-    }
+    private fun entityOutputPackage() = properties.getProperty("entity.output.package")
 
-    private fun repositoryOutputFolder(): String {
-        return getFolderProperty("repository.output.folder")
-    }
+    private fun repositoryOutputFolder() = getFolderProperty("repository.output.folder")
 
-    private fun repositoryOutputPackage(): String {
-        return properties.getProperty("repository.output.package")
-    }
+    private fun repositoryOutputPackage() = properties.getProperty("repository.output.package")
 
-    private fun frameworkOutputFolder(): String {
-        return getFolderProperty("framework.output.folder")
-    }
+    private fun getEntityPrefix() = properties.getProperty("entity.output.prefix", "")
 
-    private fun frameworkOutputPackage(): String {
-        return properties.getProperty("framework.output.package")
-    }
+    private fun getEntitySuffix() = properties.getProperty("entity.output.suffix", "")
 
-    private fun databaseUrl(): String {
-        return properties.getProperty("database.url")
-    }
+    private fun getRepositoryPrefix() = properties.getProperty("repository.output.prefix", "")
 
-    private fun databaseDriver(): String {
-        return properties.getProperty("database.driver")
-    }
+    private fun getRepositorySuffix() = properties.getProperty("repository.output.suffix", "Repository")
 
-    private fun databaseUser(): String {
-        return properties.getProperty("database.user")
-    }
+    private fun frameworkOutputFolder() = getFolderProperty("framework.output.folder")
 
-    private fun databasePassword(): String {
-        return properties.getProperty("database.password")
-    }
+    private fun frameworkOutputPackage() = properties.getProperty("framework.output.package")
 
-    private fun maxSelectAllCount(): Int {
-        return properties.getProperty("max.select.all.count").toInt()
-    }
+    private fun databaseUrl() = properties.getProperty("database.url")
 
-    private fun getSchemas(): List<String> {
-        val property = properties.getProperty("database.schemas", "").trim()
+    private fun databaseDriver() = properties.getProperty("database.driver")
+
+    private fun databaseUser() = properties.getProperty("database.user")
+
+    private fun databasePassword() = properties.getProperty("database.password")
+
+    private fun maxSelectAllCount() = properties.getProperty("max.select.all.count").toInt()
+
+    private fun getSchemas() = getListProperty("database.schemas")
+
+    private fun getGeneratedPrimaryKeysOverride() = getListProperty("generated_primary_keys_override")
+
+    private fun getDatabaseName() = properties.getProperty("database.name")
+
+    private fun useLombok() = properties.getProperty("use_lombok", "false") == "true"
+
+    private fun getListProperty(propertyName: String): List<String> {
+        val property = properties.getProperty(propertyName, "").trim()
         return if (property == "") {
             emptyList()
         } else {
@@ -133,20 +133,4 @@ private class ConfigReader {
         }
     }
 
-    private fun getGeneratedPrimaryKeysOverride(): List<String> {
-        val property = properties.getProperty("generated_primary_keys_override", "").trim()
-        return if (property == "") {
-            emptyList()
-        } else {
-            property.split(",").map { it.trim() }
-        }
-    }
-
-    private fun getDatabaseName(): String {
-        return properties.getProperty("database.name")
-    }
-
-    private fun useLombok(): Boolean {
-        return properties.getProperty("use_lombok", "false") == "true"
-    }
 }

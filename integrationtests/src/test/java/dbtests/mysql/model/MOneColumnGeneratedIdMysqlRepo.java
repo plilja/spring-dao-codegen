@@ -9,25 +9,23 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class BazMysqlRepository extends BaseRepository<BazMysqlEntity, Integer> {
+public class MOneColumnGeneratedIdMysqlRepo extends BaseRepository<MOneColumnGeneratedIdMysql, Integer> {
 
-    private static final RowMapper<BazMysqlEntity> ROW_MAPPER = (rs, i) -> {
-        BazMysqlEntity r = new BazMysqlEntity();
+    private static final RowMapper<MOneColumnGeneratedIdMysql> ROW_MAPPER = (rs, i) -> {
+        MOneColumnGeneratedIdMysql r = new MOneColumnGeneratedIdMysql();
         r.setId(rs.getObject("id") != null ? rs.getInt("id") : null);
-        r.setName(rs.getString("name"));
         return r;
     };
 
     @Autowired
-    public BazMysqlRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    public MOneColumnGeneratedIdMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate) {
         super(Integer.class, true, jdbcTemplate, ROW_MAPPER);
     }
 
     @Override
-    public SqlParameterSource getParams(BazMysqlEntity o) {
+    public SqlParameterSource getParams(MOneColumnGeneratedIdMysql o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
-        m.addValue("name", o.getName());
         return m;
     }
 
@@ -35,63 +33,53 @@ public class BazMysqlRepository extends BaseRepository<BazMysqlEntity, Integer> 
     protected String getExistsByIdSql() {
         return "SELECT " +
                 "COUNT(*) " +
-                "FROM BazMysql " +
+                "FROM ONE_COLUMN_GENERATED_ID_MYSQL " +
                 "WHERE id = :id";
     }
 
     @Override
     protected String getSelectIdsSql() {
         return "SELECT " +
-                "id, " +
-                "name " +
-                "FROM BazMysql " +
+                "id " +
+                "FROM ONE_COLUMN_GENERATED_ID_MYSQL " +
                 "WHERE id IN (:ids)";
     }
 
     @Override
     protected String getSelectManySql(int maxSelectCount) {
         return String.format("SELECT " +
-                "   id, " +
-                "   name " +
-                "FROM BazMysql " +
+                "   id " +
+                "FROM ONE_COLUMN_GENERATED_ID_MYSQL " +
                 "LIMIT %d", maxSelectCount);
     }
 
     @Override
     protected String getSelectPageSql(long start, int pageSize) {
         return String.format("SELECT %n" +
-                "id, %n" +
-                "name %n" +
-                "FROM BazMysql %n" +
+                "id %n" +
+                "FROM ONE_COLUMN_GENERATED_ID_MYSQL %n" +
                 "LIMIT %d OFFSET %d", pageSize, start);
     }
 
     @Override
     protected String getInsertSql() {
-        return "INSERT INTO BazMysql (" +
-                "   name" +
-                ") " +
-                "VALUES (" +
-                "   :name" +
-                ")";
+        return "INSERT INTO ONE_COLUMN_GENERATED_ID_MYSQL() VALUES()";
     }
 
     @Override
     protected String getUpdateSql() {
-        return "UPDATE BazMysql SET " +
-                "   name = :name " +
-                "WHERE id = :id";
+        throw new UnsupportedOperationException();
     }
 
     @Override
     protected String getDeleteSql() {
-        return "DELETE FROM BazMysql " +
+        return "DELETE FROM ONE_COLUMN_GENERATED_ID_MYSQL " +
                 "WHERE id IN (:ids)";
     }
 
     @Override
     protected String getCountSql() {
-        return "SELECT COUNT(*) FROM BazMysql";
+        return "SELECT COUNT(*) FROM ONE_COLUMN_GENERATED_ID_MYSQL";
     }
 
     @Override

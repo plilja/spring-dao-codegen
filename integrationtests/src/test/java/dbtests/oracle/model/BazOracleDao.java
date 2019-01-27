@@ -9,22 +9,22 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class BazOracleRepository extends BaseRepository<BazOracleEntity, Integer> {
+public class BazOracleDao extends BaseRepository<BazOracle, Integer> {
 
-    private static final RowMapper<BazOracleEntity> ROW_MAPPER = (rs, i) -> {
-        BazOracleEntity r = new BazOracleEntity();
+    private static final RowMapper<BazOracle> ROW_MAPPER = (rs, i) -> {
+        BazOracle r = new BazOracle();
         r.setId(rs.getObject("ID") != null ? rs.getInt("ID") : null);
         r.setName(rs.getString("NAME"));
         return r;
     };
 
     @Autowired
-    public BazOracleRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    public BazOracleDao(NamedParameterJdbcTemplate jdbcTemplate) {
         super(Integer.class, true, jdbcTemplate, ROW_MAPPER);
     }
 
     @Override
-    public SqlParameterSource getParams(BazOracleEntity o) {
+    public SqlParameterSource getParams(BazOracle o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("ID", o.getId());
         m.addValue("NAME", o.getName());

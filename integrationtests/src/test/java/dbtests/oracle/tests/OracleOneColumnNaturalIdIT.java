@@ -1,8 +1,8 @@
 package dbtests.oracle.tests;
 
 import dbtests.OneColumnNaturalIdBaseTest;
-import dbtests.oracle.model.OneColumnNaturalIdOracleEntity;
-import dbtests.oracle.model.OneColumnNaturalIdOracleRepository;
+import dbtests.oracle.model.OneColumnNaturalIdOracle;
+import dbtests.oracle.model.OneColumnNaturalIdOracleDao;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -12,17 +12,17 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @ContextConfiguration(classes = {OracleITConfig.class})
-@Import(OneColumnNaturalIdOracleRepository.class)
+@Import(OneColumnNaturalIdOracleDao.class)
 @RunWith(SpringRunner.class)
-public class OracleOneColumnNaturalIdIT extends OneColumnNaturalIdBaseTest<OneColumnNaturalIdOracleEntity, OneColumnNaturalIdOracleRepository> {
+public class OracleOneColumnNaturalIdIT extends OneColumnNaturalIdBaseTest<OneColumnNaturalIdOracle, OneColumnNaturalIdOracleDao> {
     @Autowired
     NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    OneColumnNaturalIdOracleRepository repo;
+    OneColumnNaturalIdOracleDao repo;
 
     @Override
-    protected OneColumnNaturalIdOracleRepository getRepo() {
+    protected OneColumnNaturalIdOracleDao getRepo() {
         return repo;
     }
 
@@ -33,7 +33,7 @@ public class OracleOneColumnNaturalIdIT extends OneColumnNaturalIdBaseTest<OneCo
     }
 
     @Override
-    protected OneColumnNaturalIdOracleEntity newEntity() {
-        return new OneColumnNaturalIdOracleEntity();
+    protected OneColumnNaturalIdOracle newEntity() {
+        return new OneColumnNaturalIdOracle();
     }
 }

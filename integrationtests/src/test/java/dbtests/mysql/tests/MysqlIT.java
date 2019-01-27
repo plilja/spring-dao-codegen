@@ -2,8 +2,8 @@ package dbtests.mysql.tests;
 
 
 import dbtests.BaseIntegrationTest;
-import dbtests.mysql.model.BazMysqlEntity;
-import dbtests.mysql.model.BazMysqlRepository;
+import dbtests.mysql.model.MBazMysql;
+import dbtests.mysql.model.MBazMysqlRepo;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -13,18 +13,18 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @ContextConfiguration(classes = {MysqlITConfig.class})
-@Import(BazMysqlRepository.class)
+@Import(MBazMysqlRepo.class)
 @RunWith(SpringRunner.class)
-public class MysqlIT extends BaseIntegrationTest<BazMysqlEntity, BazMysqlRepository> {
+public class MysqlIT extends BaseIntegrationTest<MBazMysql, MBazMysqlRepo> {
 
     @Autowired
     NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    BazMysqlRepository repo;
+    MBazMysqlRepo repo;
 
     @Override
-    protected BazMysqlRepository getRepo() {
+    protected MBazMysqlRepo getRepo() {
         return repo;
     }
 
@@ -34,12 +34,12 @@ public class MysqlIT extends BaseIntegrationTest<BazMysqlEntity, BazMysqlReposit
     }
 
     @Override
-    protected BazMysqlEntity newEntity(String name) {
-        return new BazMysqlEntity(null, name);
+    protected MBazMysql newEntity(String name) {
+        return new MBazMysql(null, name);
     }
 
     @Override
-    protected String getName(BazMysqlEntity entity) {
+    protected String getName(MBazMysql entity) {
         return entity.getName();
     }
 

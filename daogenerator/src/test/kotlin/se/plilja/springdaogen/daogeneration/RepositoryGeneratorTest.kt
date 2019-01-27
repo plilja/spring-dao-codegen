@@ -40,7 +40,8 @@ class RepositoryGeneratorTest {
         )
         val pk = Column("ID", Integer::class.java, true)
         val name = Column("name", String::class.java)
-        val table = Table("dbo", "Table", pk, listOf(pk, name))
+        val table =
+            Table("dbo", "Table", pk, listOf(pk, name), repositorySuffix = "Repository", entitySuffix = "Entity")
 
         // when
         val res = generateRepository(config, table)
@@ -180,7 +181,8 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
         )
         val pk = Column("tableId", Integer::class.java, true)
         val name = Column("name", String::class.java)
-        val table = Table("dbo", "Table", pk, listOf(pk, name))
+        val table =
+            Table("dbo", "Table", pk, listOf(pk, name), repositorySuffix = "Repository", entitySuffix = "Entity")
 
         // when
         val res = generateRepository(config, table)

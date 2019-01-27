@@ -40,14 +40,14 @@ class EntityGeneratorTest {
         val exp = """
 package se.plilja.test;
 
-public class TableEntity implements BaseEntity<Integer> {
+public class Table implements BaseEntity<Integer> {
 
     private Integer id;
 
-    public TableEntity() {
+    public Table() {
     }
 
-    public TableEntity(Integer id) {
+    public Table(Integer id) {
         this.id = id;
     }
 
@@ -85,11 +85,12 @@ public class TableEntity implements BaseEntity<Integer> {
                 "se.plilja.test",
                 10,
                 emptyList(),
-                false
+                false,
+                entitySuffix = "Entity"
             )
         val pk = Column("TABLE_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
-        val table = Table("dbo", "TABLE", pk, listOf(pk, name))
+        val table = Table("dbo", "TABLE", pk, listOf(pk, name), entitySuffix = "Entity")
 
         // when
         val res = generateEntity(config, table)

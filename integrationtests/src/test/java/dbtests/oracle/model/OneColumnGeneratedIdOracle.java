@@ -2,14 +2,14 @@ package dbtests.oracle.model;
 
 import dbtests.framework.BaseEntity;
 
-public class OneColumnGeneratedIdOracleEntity implements BaseEntity<Integer> {
+public class OneColumnGeneratedIdOracle implements BaseEntity<Integer> {
 
     private Integer id;
 
-    public OneColumnGeneratedIdOracleEntity() {
+    public OneColumnGeneratedIdOracle() {
     }
 
-    public OneColumnGeneratedIdOracleEntity(Integer id) {
+    public OneColumnGeneratedIdOracle(Integer id) {
         this.id = id;
     }
 

@@ -1,8 +1,8 @@
 package dbtests.oracle.tests;
 
 import dbtests.OneColumnGeneratedIdBaseTest;
-import dbtests.oracle.model.OneColumnGeneratedIdOracleEntity;
-import dbtests.oracle.model.OneColumnGeneratedIdOracleRepository;
+import dbtests.oracle.model.OneColumnGeneratedIdOracle;
+import dbtests.oracle.model.OneColumnGeneratedIdOracleDao;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -12,17 +12,17 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @ContextConfiguration(classes = {OracleITConfig.class})
-@Import(OneColumnGeneratedIdOracleRepository.class)
+@Import(OneColumnGeneratedIdOracleDao.class)
 @RunWith(SpringRunner.class)
-public class OracleOneColumnGeneratedIdIT extends OneColumnGeneratedIdBaseTest<OneColumnGeneratedIdOracleEntity, OneColumnGeneratedIdOracleRepository> {
+public class OracleOneColumnGeneratedIdIT extends OneColumnGeneratedIdBaseTest<OneColumnGeneratedIdOracle, OneColumnGeneratedIdOracleDao> {
     @Autowired
     NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    OneColumnGeneratedIdOracleRepository repo;
+    OneColumnGeneratedIdOracleDao repo;
 
     @Override
-    protected OneColumnGeneratedIdOracleRepository getRepo() {
+    protected OneColumnGeneratedIdOracleDao getRepo() {
         return repo;
     }
 
@@ -33,7 +33,7 @@ public class OracleOneColumnGeneratedIdIT extends OneColumnGeneratedIdBaseTest<O
     }
 
     @Override
-    protected OneColumnGeneratedIdOracleEntity newEntity() {
-        return new OneColumnGeneratedIdOracleEntity();
+    protected OneColumnGeneratedIdOracle newEntity() {
+        return new OneColumnGeneratedIdOracle();
     }
 }

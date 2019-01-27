@@ -9,21 +9,21 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class OneColumnNaturalIdMysqlRepository extends BaseRepository<OneColumnNaturalIdMysqlEntity, String> {
+public class MOneColumnNaturalIdMysqlRepo extends BaseRepository<MOneColumnNaturalIdMysql, String> {
 
-    private static final RowMapper<OneColumnNaturalIdMysqlEntity> ROW_MAPPER = (rs, i) -> {
-        OneColumnNaturalIdMysqlEntity r = new OneColumnNaturalIdMysqlEntity();
+    private static final RowMapper<MOneColumnNaturalIdMysql> ROW_MAPPER = (rs, i) -> {
+        MOneColumnNaturalIdMysql r = new MOneColumnNaturalIdMysql();
         r.setId(rs.getString("id"));
         return r;
     };
 
     @Autowired
-    public OneColumnNaturalIdMysqlRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    public MOneColumnNaturalIdMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate) {
         super(String.class, false, jdbcTemplate, ROW_MAPPER);
     }
 
     @Override
-    public SqlParameterSource getParams(OneColumnNaturalIdMysqlEntity o) {
+    public SqlParameterSource getParams(MOneColumnNaturalIdMysql o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
         return m;

@@ -52,7 +52,12 @@ fun convertTable(table: schemacrawler.schema.Table, config: Config): Table {
         if (table.schema != null) table.schema.name else null,
         table.name,
         convertColumn(table, table.primaryKey.columns[0], config),
-        sortedColumns.map { convertColumn(table, it, config) })
+        sortedColumns.map { convertColumn(table, it, config) },
+        config.entityPrefix,
+        config.entitySuffix,
+        config.repositoryPrefix,
+        config.repositorySuffix
+    )
 }
 
 fun convertColumn(table: schemacrawler.schema.Table, column: schemacrawler.schema.Column, config: Config): Column {

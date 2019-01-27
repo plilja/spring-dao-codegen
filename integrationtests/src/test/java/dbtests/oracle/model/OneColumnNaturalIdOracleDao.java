@@ -9,21 +9,21 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class OneColumnNaturalIdOracleRepository extends BaseRepository<OneColumnNaturalIdOracleEntity, String> {
+public class OneColumnNaturalIdOracleDao extends BaseRepository<OneColumnNaturalIdOracle, String> {
 
-    private static final RowMapper<OneColumnNaturalIdOracleEntity> ROW_MAPPER = (rs, i) -> {
-        OneColumnNaturalIdOracleEntity r = new OneColumnNaturalIdOracleEntity();
+    private static final RowMapper<OneColumnNaturalIdOracle> ROW_MAPPER = (rs, i) -> {
+        OneColumnNaturalIdOracle r = new OneColumnNaturalIdOracle();
         r.setId(rs.getString("ID"));
         return r;
     };
 
     @Autowired
-    public OneColumnNaturalIdOracleRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    public OneColumnNaturalIdOracleDao(NamedParameterJdbcTemplate jdbcTemplate) {
         super(String.class, false, jdbcTemplate, ROW_MAPPER);
     }
 
     @Override
-    public SqlParameterSource getParams(OneColumnNaturalIdOracleEntity o) {
+    public SqlParameterSource getParams(OneColumnNaturalIdOracle o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("ID", o.getId());
         return m;

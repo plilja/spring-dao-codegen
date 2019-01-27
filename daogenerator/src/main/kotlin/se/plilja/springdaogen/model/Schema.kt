@@ -11,13 +11,23 @@ import java.util.*
 
 data class Schema(val tables: List<Table>)
 
-data class Table(val schemaName: String?, val name: String, val primaryKey: Column, val columns: List<Column>) {
+data class Table(
+    val schemaName: String?,
+    val name: String,
+    val primaryKey: Column,
+    val columns: List<Column>,
+    val entityPrefix: String = "",
+    val entitySuffix: String = "",
+    val repositoryPrefix: String = "", // TODO better to get the config object?
+    val repositorySuffix: String = ""
+) {
+
     fun entityName(): String {
-        return capitalizeFirst(camelCase(name)) + "Entity"
+        return entityPrefix + capitalizeFirst(camelCase(name)) + entitySuffix
     }
 
     fun repositoryName(): String {
-        return capitalizeFirst(camelCase(name)) + "Repository"
+        return repositoryPrefix + capitalizeFirst(camelCase(name)) + repositorySuffix
     }
 }
 

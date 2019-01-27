@@ -1,8 +1,8 @@
 package dbtests.oracle.tests;
 
 import dbtests.BaseIntegrationTest;
-import dbtests.oracle.model.BazOracleEntity;
-import dbtests.oracle.model.BazOracleRepository;
+import dbtests.oracle.model.BazOracle;
+import dbtests.oracle.model.BazOracleDao;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -12,18 +12,18 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @ContextConfiguration(classes = {OracleITConfig.class})
-@Import(BazOracleRepository.class)
+@Import(BazOracleDao.class)
 @RunWith(SpringRunner.class)
-public class OracleIT extends BaseIntegrationTest<BazOracleEntity, BazOracleRepository> {
+public class OracleIT extends BaseIntegrationTest<BazOracle, BazOracleDao> {
 
     @Autowired
     NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    BazOracleRepository repo;
+    BazOracleDao repo;
 
     @Override
-    protected BazOracleRepository getRepo() {
+    protected BazOracleDao getRepo() {
         return repo;
     }
 
@@ -33,12 +33,12 @@ public class OracleIT extends BaseIntegrationTest<BazOracleEntity, BazOracleRepo
     }
 
     @Override
-    protected BazOracleEntity newEntity(String name) {
-        return new BazOracleEntity(null, name);
+    protected BazOracle newEntity(String name) {
+        return new BazOracle(null, name);
     }
 
     @Override
-    protected String getName(BazOracleEntity entity) {
+    protected String getName(BazOracle entity) {
         return entity.getName();
     }
 

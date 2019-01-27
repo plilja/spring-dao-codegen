@@ -1,15 +1,15 @@
-package dbtests.mysql.model;
+package dbtests.oracle.model;
 
 import dbtests.framework.BaseEntity;
 
-public class OneColumnNaturalIdMysqlEntity implements BaseEntity<String> {
+public class OneColumnNaturalIdOracle implements BaseEntity<String> {
 
     private String id;
 
-    public OneColumnNaturalIdMysqlEntity() {
+    public OneColumnNaturalIdOracle() {
     }
 
-    public OneColumnNaturalIdMysqlEntity(String id) {
+    public OneColumnNaturalIdOracle(String id) {
         this.id = id;
     }
 

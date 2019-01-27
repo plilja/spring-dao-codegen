@@ -1,9 +1,8 @@
 package dbtests.mysql.tests;
 
 import dbtests.OneColumnGeneratedIdBaseTest;
-import dbtests.mysql.model.OneColumnGeneratedIdMysqlEntity;
-import dbtests.mysql.model.OneColumnGeneratedIdMysqlRepository;
-import dbtests.mysql.tests.MysqlITConfig;
+import dbtests.mysql.model.MOneColumnGeneratedIdMysql;
+import dbtests.mysql.model.MOneColumnGeneratedIdMysqlRepo;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -13,18 +12,18 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @ContextConfiguration(classes = {MysqlITConfig.class})
-@Import(OneColumnGeneratedIdMysqlRepository.class)
+@Import(MOneColumnGeneratedIdMysqlRepo.class)
 @RunWith(SpringRunner.class)
-public class MysqlOneColumnGeneratedIdIT extends OneColumnGeneratedIdBaseTest<OneColumnGeneratedIdMysqlEntity, OneColumnGeneratedIdMysqlRepository> {
+public class MysqlOneColumnGeneratedIdIT extends OneColumnGeneratedIdBaseTest<MOneColumnGeneratedIdMysql, MOneColumnGeneratedIdMysqlRepo> {
 
     @Autowired
     NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    OneColumnGeneratedIdMysqlRepository repo;
+    MOneColumnGeneratedIdMysqlRepo repo;
 
     @Override
-    protected OneColumnGeneratedIdMysqlRepository getRepo() {
+    protected MOneColumnGeneratedIdMysqlRepo getRepo() {
         return repo;
     }
 
@@ -35,7 +34,7 @@ public class MysqlOneColumnGeneratedIdIT extends OneColumnGeneratedIdBaseTest<On
     }
 
     @Override
-    protected OneColumnGeneratedIdMysqlEntity newEntity() {
-        return new OneColumnGeneratedIdMysqlEntity();
+    protected MOneColumnGeneratedIdMysql newEntity() {
+        return new MOneColumnGeneratedIdMysql();
     }
 }

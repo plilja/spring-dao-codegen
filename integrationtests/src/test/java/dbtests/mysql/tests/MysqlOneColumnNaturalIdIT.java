@@ -1,9 +1,8 @@
 package dbtests.mysql.tests;
 
 import dbtests.OneColumnNaturalIdBaseTest;
-import dbtests.mysql.model.OneColumnNaturalIdMysqlEntity;
-import dbtests.mysql.model.OneColumnNaturalIdMysqlRepository;
-import dbtests.mysql.tests.MysqlITConfig;
+import dbtests.mysql.model.MOneColumnNaturalIdMysql;
+import dbtests.mysql.model.MOneColumnNaturalIdMysqlRepo;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -13,17 +12,17 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @ContextConfiguration(classes = {MysqlITConfig.class})
-@Import(OneColumnNaturalIdMysqlRepository.class)
+@Import(MOneColumnNaturalIdMysqlRepo.class)
 @RunWith(SpringRunner.class)
-public class MysqlOneColumnNaturalIdIT extends OneColumnNaturalIdBaseTest<OneColumnNaturalIdMysqlEntity, OneColumnNaturalIdMysqlRepository> {
+public class MysqlOneColumnNaturalIdIT extends OneColumnNaturalIdBaseTest<MOneColumnNaturalIdMysql, MOneColumnNaturalIdMysqlRepo> {
     @Autowired
     NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    OneColumnNaturalIdMysqlRepository repo;
+    MOneColumnNaturalIdMysqlRepo repo;
 
     @Override
-    protected OneColumnNaturalIdMysqlRepository getRepo() {
+    protected MOneColumnNaturalIdMysqlRepo getRepo() {
         return repo;
     }
 
@@ -34,7 +33,7 @@ public class MysqlOneColumnNaturalIdIT extends OneColumnNaturalIdBaseTest<OneCol
     }
 
     @Override
-    protected OneColumnNaturalIdMysqlEntity newEntity() {
-        return new OneColumnNaturalIdMysqlEntity();
+    protected MOneColumnNaturalIdMysql newEntity() {
+        return new MOneColumnNaturalIdMysql();
     }
 }

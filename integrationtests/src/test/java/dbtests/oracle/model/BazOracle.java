@@ -1,16 +1,16 @@
-package dbtests.mysql.model;
+package dbtests.oracle.model;
 
 import dbtests.framework.BaseEntity;
 
-public class BazMysqlEntity implements BaseEntity<Integer> {
+public class BazOracle implements BaseEntity<Integer> {
 
     private Integer id;
     private String name;
 
-    public BazMysqlEntity() {
+    public BazOracle() {
     }
 
-    public BazMysqlEntity(Integer id, String name) {
+    public BazOracle(Integer id, String name) {
         this.id = id;
         this.name = name;
     }
