@@ -13,14 +13,4 @@ public class BazMsSqlEntity implements BaseEntity<Integer> {
     private Integer id;
     private String name;
 
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
 }

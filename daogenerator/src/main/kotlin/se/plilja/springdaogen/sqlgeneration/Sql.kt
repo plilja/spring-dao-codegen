@@ -33,7 +33,7 @@ fun insert(table: Table, databaseDialect: DatabaseDialect): String {
 fun update(table: Table, databaseDialect: DatabaseDialect): String? {
     val updateColumns = table.columns.filter { it != table.primaryKey }
     return if (updateColumns.isEmpty()) {
-        null // Special case, update not supported
+        null // Special case, table only consists of PK-columns. Update is not supported.
     } else {
         """
             |"UPDATE ${formatTable(table, databaseDialect)} SET " +

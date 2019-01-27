@@ -12,14 +12,4 @@ public class OneColumnGeneratedIdMsSqlEntity implements BaseEntity<Integer> {
 
     private Integer id;
 
-    @Override
-    public Integer getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
 }

@@ -30,22 +30,25 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
             g.addField(column.fieldName(), column.javaType)
         }
     }
-    g.addCustomMethod(
-        """
+    val idMethodGeneratedByLombok = config.useLombok && table.primaryKey.name == "id"
+    if (!idMethodGeneratedByLombok) {
+        g.addCustomMethod(
+            """
         |   @Override
         |   public ${table.primaryKey.javaType.simpleName} getId() {
         |       return ${table.primaryKey.fieldName()};
         |   }
     """.trimMargin()
-    )
-    g.addCustomMethod(
-        """
+        )
+        g.addCustomMethod(
+            """
         |   @Override
         |   public void setId(${table.primaryKey.javaType.simpleName} id) {
         |       this.${table.primaryKey.fieldName()} = id;
         |   }
         """.trimMargin()
-    )
+        )
+    }
 
     if (config.frameworkOutputPackage != config.entityOutputPackage) {
         g.addImport("${config.frameworkOutputPackage}.${baseEntity(config.frameworkOutputPackage).first}")
