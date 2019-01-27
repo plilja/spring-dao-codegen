@@ -1,6 +1,6 @@
 package dbtests.oracle;
 
-import dbtests.OneColumnBaseTest;
+import dbtests.OneColumnGeneratedIdBaseTest;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -10,28 +10,28 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @ContextConfiguration(classes = {OracleITConfig.class})
-@Import(OneColumnOracleRepository.class)
+@Import(OneColumnGeneratedIdOracleRepository.class)
 @RunWith(SpringRunner.class)
-public class OracleOneColumnIT extends OneColumnBaseTest<OneColumnOracleEntity, OneColumnOracleRepository> {
+public class OracleOneColumnGeneratedIdIT extends OneColumnGeneratedIdBaseTest<OneColumnGeneratedIdOracleEntity, OneColumnGeneratedIdOracleRepository> {
     @Autowired
     NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    OneColumnOracleRepository repo;
+    OneColumnGeneratedIdOracleRepository repo;
 
     @Override
-    protected OneColumnOracleRepository getRepo() {
+    protected OneColumnGeneratedIdOracleRepository getRepo() {
         return repo;
     }
 
     @Override
     protected void clearTable() {
-        jdbcTemplate.update("DELETE FROM DOCKER.ONE_COLUMN_ORACLE", new MapSqlParameterSource());
+        jdbcTemplate.update("DELETE FROM DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE", new MapSqlParameterSource());
 
     }
 
     @Override
-    protected OneColumnOracleEntity newEntity() {
-        return new OneColumnOracleEntity();
+    protected OneColumnGeneratedIdOracleEntity newEntity() {
+        return new OneColumnGeneratedIdOracleEntity();
     }
 }

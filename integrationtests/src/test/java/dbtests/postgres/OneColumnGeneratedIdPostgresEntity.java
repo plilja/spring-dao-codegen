@@ -1,15 +1,15 @@
-package dbtests.mysql;
+package dbtests.postgres;
 
 import dbtests.framework.BaseEntity;
 
-public class OneColumnMysqlEntity implements BaseEntity<Integer> {
+public class OneColumnGeneratedIdPostgresEntity implements BaseEntity<Integer> {
 
     private Integer id;
 
-    public OneColumnMysqlEntity() {
+    public OneColumnGeneratedIdPostgresEntity() {
     }
 
-    public OneColumnMysqlEntity(Integer id) {
+    public OneColumnGeneratedIdPostgresEntity(Integer id) {
         this.id = id;
     }
 

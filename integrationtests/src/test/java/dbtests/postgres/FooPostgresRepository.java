@@ -1,7 +1,6 @@
 package dbtests.postgres;
 
 import dbtests.framework.BaseRepository;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,48 +8,50 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
+import java.util.UUID;
+
 @Repository
 public class FooPostgresRepository extends BaseRepository<FooPostgresEntity, Long> {
 
     private static final RowMapper<FooPostgresEntity> ROW_MAPPER = (rs, i) -> {
         FooPostgresEntity r = new FooPostgresEntity();
         r.setFooId((Long) rs.getObject("FOO_ID"));
-        r.setBooleanBit((Boolean) rs.getObject("BOOLEAN_BIT"));
+        r.setBigdecimal(rs.getBigDecimal("BIGDECIMAL"));
         r.setBooleanB((Boolean) rs.getObject("BOOLEAN_B"));
+        r.setBooleanBit((Boolean) rs.getObject("BOOLEAN_BIT"));
+        r.setBytea((byte[]) rs.getObject("BYTEA"));
         r.setChaR(rs.getString("CHAR"));
         r.setDate(rs.getDate("DATE").toLocalDate());
-        r.setTimestamp(rs.getTimestamp("TIMESTAMP").toLocalDateTime());
-        r.setBigdecimal(rs.getBigDecimal("BIGDECIMAL"));
-        r.setFloaT((Float) rs.getObject("FLOAT"));
         r.setDoublE((Double) rs.getObject("DOUBLE"));
+        r.setFloaT((Float) rs.getObject("FLOAT"));
         r.setGuid(UUID.fromString(rs.getString("GUID")));
-        r.setXml(rs.getString("XML"));
         r.setText(rs.getString("TEXT"));
-        r.setBytea((byte[]) rs.getObject("BYTEA"));
+        r.setTimestamp(rs.getTimestamp("TIMESTAMP").toLocalDateTime());
+        r.setXml(rs.getString("XML"));
         return r;
     };
 
     @Autowired
     public FooPostgresRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Long.class, jdbcTemplate, ROW_MAPPER);
+        super(Long.class, false, jdbcTemplate, ROW_MAPPER);
     }
 
     @Override
     public SqlParameterSource getParams(FooPostgresEntity o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("FOO_ID", o.getId());
-        m.addValue("BOOLEAN_BIT", o.getBooleanBit());
+        m.addValue("BIGDECIMAL", o.getBigdecimal());
         m.addValue("BOOLEAN_B", o.getBooleanB());
+        m.addValue("BOOLEAN_BIT", o.getBooleanBit());
+        m.addValue("BYTEA", o.getBytea());
         m.addValue("CHAR", o.getChaR());
         m.addValue("DATE", o.getDate());
-        m.addValue("TIMESTAMP", o.getTimestamp());
-        m.addValue("BIGDECIMAL", o.getBigdecimal());
-        m.addValue("FLOAT", o.getFloaT());
         m.addValue("DOUBLE", o.getDoublE());
+        m.addValue("FLOAT", o.getFloaT());
         m.addValue("GUID", o.getGuid());
-        m.addValue("XML", o.getXml());
         m.addValue("TEXT", o.getText());
-        m.addValue("BYTEA", o.getBytea());
+        m.addValue("TIMESTAMP", o.getTimestamp());
+        m.addValue("XML", o.getXml());
         return m;
     }
 
@@ -66,18 +67,18 @@ public class FooPostgresRepository extends BaseRepository<FooPostgresEntity, Lon
     protected String getSelectIdsSql() {
         return "SELECT " +
                 "\"FOO_ID\", " +
-                "\"BOOLEAN_BIT\", " +
+                "\"BIGDECIMAL\", " +
                 "\"BOOLEAN_B\", " +
+                "\"BOOLEAN_BIT\", " +
+                "\"BYTEA\", " +
                 "\"CHAR\", " +
                 "\"DATE\", " +
-                "\"TIMESTAMP\", " +
-                "\"BIGDECIMAL\", " +
-                "\"FLOAT\", " +
                 "\"DOUBLE\", " +
+                "\"FLOAT\", " +
                 "\"GUID\", " +
-                "\"XML\", " +
                 "\"TEXT\", " +
-                "\"BYTEA\" " +
+                "\"TIMESTAMP\", " +
+                "\"XML\" " +
                 "FROM public.\"FOO_POSTGRES\" " +
                 "WHERE \"FOO_ID\" IN (:ids)";
     }
@@ -86,18 +87,18 @@ public class FooPostgresRepository extends BaseRepository<FooPostgresEntity, Lon
     protected String getSelectManySql(int maxSelectCount) {
         return String.format("SELECT " +
                 "   \"FOO_ID\", " +
-                "   \"BOOLEAN_BIT\", " +
+                "   \"BIGDECIMAL\", " +
                 "   \"BOOLEAN_B\", " +
+                "   \"BOOLEAN_BIT\", " +
+                "   \"BYTEA\", " +
                 "   \"CHAR\", " +
                 "   \"DATE\", " +
-                "   \"TIMESTAMP\", " +
-                "   \"BIGDECIMAL\", " +
-                "   \"FLOAT\", " +
                 "   \"DOUBLE\", " +
+                "   \"FLOAT\", " +
                 "   \"GUID\", " +
-                "   \"XML\", " +
                 "   \"TEXT\", " +
-                "   \"BYTEA\" " +
+                "   \"TIMESTAMP\", " +
+                "   \"XML\" " +
                 "FROM public.\"FOO_POSTGRES\" " +
                 "LIMIT %d", maxSelectCount);
     }
@@ -106,18 +107,18 @@ public class FooPostgresRepository extends BaseRepository<FooPostgresEntity, Lon
     protected String getSelectPageSql(long start, int pageSize) {
         return String.format("SELECT %n" +
                 "\"FOO_ID\", %n" +
-                "\"BOOLEAN_BIT\", %n" +
+                "\"BIGDECIMAL\", %n" +
                 "\"BOOLEAN_B\", %n" +
+                "\"BOOLEAN_BIT\", %n" +
+                "\"BYTEA\", %n" +
                 "\"CHAR\", %n" +
                 "\"DATE\", %n" +
-                "\"TIMESTAMP\", %n" +
-                "\"BIGDECIMAL\", %n" +
-                "\"FLOAT\", %n" +
                 "\"DOUBLE\", %n" +
+                "\"FLOAT\", %n" +
                 "\"GUID\", %n" +
-                "\"XML\", %n" +
                 "\"TEXT\", %n" +
-                "\"BYTEA\" %n" +
+                "\"TIMESTAMP\", %n" +
+                "\"XML\" %n" +
                 "FROM public.\"FOO_POSTGRES\" %n" +
                 "LIMIT %d OFFSET %d", pageSize, start);
     }
@@ -125,50 +126,52 @@ public class FooPostgresRepository extends BaseRepository<FooPostgresEntity, Lon
     @Override
     protected String getInsertSql() {
         return "INSERT INTO public.\"FOO_POSTGRES\" (" +
-                "   \"BOOLEAN_BIT\", " +
+                "   \"FOO_ID\", " +
+                "   \"BIGDECIMAL\", " +
                 "   \"BOOLEAN_B\", " +
+                "   \"BOOLEAN_BIT\", " +
+                "   \"BYTEA\", " +
                 "   \"CHAR\", " +
                 "   \"DATE\", " +
-                "   \"TIMESTAMP\", " +
-                "   \"BIGDECIMAL\", " +
-                "   \"FLOAT\", " +
                 "   \"DOUBLE\", " +
+                "   \"FLOAT\", " +
                 "   \"GUID\", " +
-                "   \"XML\", " +
                 "   \"TEXT\", " +
-                "   \"BYTEA\"" +
+                "   \"TIMESTAMP\", " +
+                "   \"XML\"" +
                 ") " +
                 "VALUES (" +
-                "   :BOOLEAN_BIT, " +
+                "   :FOO_ID, " +
+                "   :BIGDECIMAL, " +
                 "   :BOOLEAN_B, " +
+                "   :BOOLEAN_BIT, " +
+                "   :BYTEA, " +
                 "   :CHAR, " +
                 "   :DATE, " +
-                "   :TIMESTAMP, " +
-                "   :BIGDECIMAL, " +
-                "   :FLOAT, " +
                 "   :DOUBLE, " +
+                "   :FLOAT, " +
                 "   :GUID, " +
-                "   :XML, " +
                 "   :TEXT, " +
-                "   :BYTEA" +
+                "   :TIMESTAMP, " +
+                "   :XML" +
                 ")";
     }
 
     @Override
     protected String getUpdateSql() {
         return "UPDATE public.\"FOO_POSTGRES\" SET " +
-                "   BOOLEAN_BIT = :BOOLEAN_BIT, " +
+                "   BIGDECIMAL = :BIGDECIMAL, " +
                 "   BOOLEAN_B = :BOOLEAN_B, " +
+                "   BOOLEAN_BIT = :BOOLEAN_BIT, " +
+                "   BYTEA = :BYTEA, " +
                 "   CHAR = :CHAR, " +
                 "   DATE = :DATE, " +
-                "   TIMESTAMP = :TIMESTAMP, " +
-                "   BIGDECIMAL = :BIGDECIMAL, " +
-                "   FLOAT = :FLOAT, " +
                 "   DOUBLE = :DOUBLE, " +
+                "   FLOAT = :FLOAT, " +
                 "   GUID = :GUID, " +
-                "   XML = :XML, " +
                 "   TEXT = :TEXT, " +
-                "   BYTEA = :BYTEA " +
+                "   TIMESTAMP = :TIMESTAMP, " +
+                "   XML = :XML " +
                 "WHERE FOO_ID = :FOO_ID";
     }
 

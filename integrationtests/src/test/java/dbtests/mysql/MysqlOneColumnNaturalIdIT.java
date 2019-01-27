@@ -1,6 +1,6 @@
 package dbtests.mysql;
 
-import dbtests.OneColumnBaseTest;
+import dbtests.OneColumnNaturalIdBaseTest;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
@@ -10,29 +10,28 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @ContextConfiguration(classes = {MysqlITConfig.class})
-@Import(OneColumnMysqlRepository.class)
+@Import(OneColumnNaturalIdMysqlRepository.class)
 @RunWith(SpringRunner.class)
-public class MysqlOneColumnIT extends OneColumnBaseTest<OneColumnMysqlEntity, OneColumnMysqlRepository> {
-
+public class MysqlOneColumnNaturalIdIT extends OneColumnNaturalIdBaseTest<OneColumnNaturalIdMysqlEntity, OneColumnNaturalIdMysqlRepository> {
     @Autowired
     NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    OneColumnMysqlRepository repo;
+    OneColumnNaturalIdMysqlRepository repo;
 
     @Override
-    protected OneColumnMysqlRepository getRepo() {
+    protected OneColumnNaturalIdMysqlRepository getRepo() {
         return repo;
     }
 
     @Override
     protected void clearTable() {
-        jdbcTemplate.update("DELETE FROM ONE_COLUMN_MYSQL", new MapSqlParameterSource());
+        jdbcTemplate.update("DELETE FROM ONE_COLUMN_NATURAL_ID_MYSQL", new MapSqlParameterSource());
 
     }
 
     @Override
-    protected OneColumnMysqlEntity newEntity() {
-        return new OneColumnMysqlEntity();
+    protected OneColumnNaturalIdMysqlEntity newEntity() {
+        return new OneColumnNaturalIdMysqlEntity();
     }
 }

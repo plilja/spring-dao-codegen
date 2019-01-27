@@ -13,10 +13,12 @@ public abstract class BaseRepository<T extends BaseEntity<ID>, ID> {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private Class<ID> idClass;
+    private boolean idIsGenerated;
     private final RowMapper<T> rowMapper;
 
-    protected BaseRepository(Class<ID> idClass, NamedParameterJdbcTemplate jdbcTemplate, RowMapper<T> rowMapper) {
+    protected BaseRepository(Class<ID> idClass, boolean idIsGenerated, NamedParameterJdbcTemplate jdbcTemplate, RowMapper<T> rowMapper) {
         this.idClass = idClass;
+        this.idIsGenerated = idIsGenerated;
         this.rowMapper = rowMapper;
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -92,15 +94,20 @@ public abstract class BaseRepository<T extends BaseEntity<ID>, ID> {
     }
 
     public void create(T object) {
-        if (object.getId() != null) {
-            // TODO non generated key
-            throw new IllegalArgumentException(String.format("Attempting to create a new object with an existing id %s", object.getId()));
+        if (idIsGenerated) {
+            if (object.getId() != null) {
+                throw new IllegalArgumentException(String.format("Attempting to create a new object with an existing id %s", object.getId()));
+            }
+            String sql = getInsertSql();
+            GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+            SqlParameterSource params = getParams(object);
+            jdbcTemplate.update(sql, params, keyHolder, new String[]{getPrimaryKeyColumnName()});
+            setId(object, keyHolder.getKey());
+        } else {
+            String sql = getInsertSql();
+            SqlParameterSource params = getParams(object);
+            jdbcTemplate.update(sql, params);
         }
-        String sql = getInsertSql();
-        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        SqlParameterSource params = getParams(object);
-        jdbcTemplate.update(sql, params, keyHolder, new String[]{getPrimaryKeyColumnName()});
-        setId(object, keyHolder.getKey());
     }
 
     @Transactional

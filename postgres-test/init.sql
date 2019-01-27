@@ -41,8 +41,14 @@ COMMENT ON TABLE test_schema."baz_postgres"
 
 CREATE SEQUENCE test_schema."ONE_COL_seq";
 
-CREATE TABLE test_schema."one_column_postgres"
+CREATE TABLE test_schema."one_column_generated_id_postgres"
 (
     "id" integer NOT NULL DEFAULT nextval('test_schema."ONE_COL_seq"'::regclass),
     CONSTRAINT "one_col_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE test_schema."one_column_natural_id_postgres"
+(
+    "id" character varying(10) NOT NULL,
+    CONSTRAINT "one_col_natural_id_pkey" PRIMARY KEY ("id")
 );

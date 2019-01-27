@@ -8,17 +8,17 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OneColumnMsSqlEntity implements BaseEntity<Integer> {
+public class OneColumnNaturalIdMsSqlEntity implements BaseEntity<String> {
 
-    private Integer id;
+    private String id;
 
     @Override
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
     @Override
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

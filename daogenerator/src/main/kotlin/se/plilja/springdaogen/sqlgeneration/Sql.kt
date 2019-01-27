@@ -5,7 +5,7 @@ import se.plilja.springdaogen.model.Table
 
 
 fun insert(table: Table, databaseDialect: DatabaseDialect): String {
-    val insertColumns = table.columns.filter { it != table.primaryKey }
+    val insertColumns = table.columns.filter { it != table.primaryKey || !table.primaryKey.generated }
     return if (insertColumns.isEmpty()) {
         when (databaseDialect) {
             DatabaseDialect.MYSQL -> "\"INSERT INTO ${formatTable(table, databaseDialect)}() VALUES()\""

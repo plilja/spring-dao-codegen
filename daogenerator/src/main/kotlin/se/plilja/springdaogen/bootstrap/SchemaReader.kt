@@ -46,15 +46,17 @@ fun catalogToSchema(catalog: Catalog, config: Config): Schema {
 }
 
 fun convertTable(table: schemacrawler.schema.Table, config: Config): Table {
+    val sortedColumns =
+        table.columns.sortedBy { c -> if (c.isPartOfPrimaryKey) "-${c.name.toLowerCase()}" else c.name.toLowerCase() } // Primary keys first, then other columns in alphabetic order
     return Table(
         if (table.schema != null) table.schema.name else null,
         table.name,
-        convertColumn(table.primaryKey.columns[0], config),
-        table.columns.map { convertColumn(it, config) })
+        convertColumn(table, table.primaryKey.columns[0], config),
+        sortedColumns.map { convertColumn(table, it, config) })
 }
 
-fun convertColumn(column: schemacrawler.schema.Column, config: Config): Column {
-    return Column(column.name, resolveType(column, config))
+fun convertColumn(table: schemacrawler.schema.Table, column: schemacrawler.schema.Column, config: Config): Column {
+    return Column(column.name, resolveType(column, config), isGenerated(table, column, config))
 }
 
 fun resolveType(column: schemacrawler.schema.Column, config: Config): Class<out Any> {
@@ -74,6 +76,11 @@ fun resolveType(column: schemacrawler.schema.Column, config: Config): Class<out 
     } else {
         column.type.typeMappedClass
     }
+}
+
+fun isGenerated(table: schemacrawler.schema.Table, column: schemacrawler.schema.Column, config: Config): Boolean {
+    return column.isAutoIncremented ||
+            (column.isPartOfPrimaryKey && config.hasGeneratedPrimaryKeysOverride.contains(table.name))
 }
 
 fun getConnection(config: Config): Connection {

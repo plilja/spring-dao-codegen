@@ -9,21 +9,21 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class OneColumnMysqlRepository extends BaseRepository<OneColumnMysqlEntity, Integer> {
+public class OneColumnNaturalIdMysqlRepository extends BaseRepository<OneColumnNaturalIdMysqlEntity, String> {
 
-    private static final RowMapper<OneColumnMysqlEntity> ROW_MAPPER = (rs, i) -> {
-        OneColumnMysqlEntity r = new OneColumnMysqlEntity();
-        r.setId(rs.getObject("id") != null ? rs.getInt("id") : null);
+    private static final RowMapper<OneColumnNaturalIdMysqlEntity> ROW_MAPPER = (rs, i) -> {
+        OneColumnNaturalIdMysqlEntity r = new OneColumnNaturalIdMysqlEntity();
+        r.setId(rs.getString("id"));
         return r;
     };
 
     @Autowired
-    public OneColumnMysqlRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, jdbcTemplate, ROW_MAPPER);
+    public OneColumnNaturalIdMysqlRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+        super(String.class, false, jdbcTemplate, ROW_MAPPER);
     }
 
     @Override
-    public SqlParameterSource getParams(OneColumnMysqlEntity o) {
+    public SqlParameterSource getParams(OneColumnNaturalIdMysqlEntity o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
         return m;
@@ -33,7 +33,7 @@ public class OneColumnMysqlRepository extends BaseRepository<OneColumnMysqlEntit
     protected String getExistsByIdSql() {
         return "SELECT " +
                 "COUNT(*) " +
-                "FROM ONE_COLUMN_MYSQL " +
+                "FROM ONE_COLUMN_NATURAL_ID_MYSQL " +
                 "WHERE id = :id";
     }
 
@@ -41,7 +41,7 @@ public class OneColumnMysqlRepository extends BaseRepository<OneColumnMysqlEntit
     protected String getSelectIdsSql() {
         return "SELECT " +
                 "id " +
-                "FROM ONE_COLUMN_MYSQL " +
+                "FROM ONE_COLUMN_NATURAL_ID_MYSQL " +
                 "WHERE id IN (:ids)";
     }
 
@@ -49,7 +49,7 @@ public class OneColumnMysqlRepository extends BaseRepository<OneColumnMysqlEntit
     protected String getSelectManySql(int maxSelectCount) {
         return String.format("SELECT " +
                 "   id " +
-                "FROM ONE_COLUMN_MYSQL " +
+                "FROM ONE_COLUMN_NATURAL_ID_MYSQL " +
                 "LIMIT %d", maxSelectCount);
     }
 
@@ -57,13 +57,18 @@ public class OneColumnMysqlRepository extends BaseRepository<OneColumnMysqlEntit
     protected String getSelectPageSql(long start, int pageSize) {
         return String.format("SELECT %n" +
                 "id %n" +
-                "FROM ONE_COLUMN_MYSQL %n" +
+                "FROM ONE_COLUMN_NATURAL_ID_MYSQL %n" +
                 "LIMIT %d OFFSET %d", pageSize, start);
     }
 
     @Override
     protected String getInsertSql() {
-        return "INSERT INTO ONE_COLUMN_MYSQL() VALUES()";
+        return "INSERT INTO ONE_COLUMN_NATURAL_ID_MYSQL (" +
+                "   id" +
+                ") " +
+                "VALUES (" +
+                "   :id" +
+                ")";
     }
 
     @Override
@@ -73,13 +78,13 @@ public class OneColumnMysqlRepository extends BaseRepository<OneColumnMysqlEntit
 
     @Override
     protected String getDeleteSql() {
-        return "DELETE FROM ONE_COLUMN_MYSQL " +
+        return "DELETE FROM ONE_COLUMN_NATURAL_ID_MYSQL " +
                 "WHERE id IN (:ids)";
     }
 
     @Override
     protected String getCountSql() {
-        return "SELECT COUNT(*) FROM ONE_COLUMN_MYSQL";
+        return "SELECT COUNT(*) FROM ONE_COLUMN_NATURAL_ID_MYSQL";
     }
 
     @Override

@@ -30,8 +30,12 @@ CREATE TABLE baz_ms_sql (
     name VARCHAR(30) NOT NULL
 )
 
-CREATE TABLE one_column_ms_sql (
+CREATE TABLE one_column_generated_id_ms_sql (
     id INT identity(1, 1) primary key
+)
+
+CREATE TABLE ONE_COLUMN_NATURAL_ID_MS_SQL (
+    id VARCHAR(10) primary key
 )
 
 SET NOEXEC OFF; 

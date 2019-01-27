@@ -10,36 +10,36 @@ import java.util.UUID;
 public class FooPostgresEntity implements BaseEntity<Long> {
 
     private Long fooId;
-    private Boolean booleanBit;
+    private BigDecimal bigdecimal;
     private Boolean booleanB;
+    private Boolean booleanBit;
+    private byte[] bytea;
     private String chaR;
     private LocalDate date;
-    private LocalDateTime timestamp;
-    private BigDecimal bigdecimal;
-    private Float floaT;
     private Double doublE;
+    private Float floaT;
     private UUID guid;
-    private String xml;
     private String text;
-    private byte[] bytea;
+    private LocalDateTime timestamp;
+    private String xml;
 
     public FooPostgresEntity() {
     }
 
-    public FooPostgresEntity(Long fooId, Boolean booleanBit, Boolean booleanB, String chaR, LocalDate date, LocalDateTime timestamp, BigDecimal bigdecimal, Float floaT, Double doublE, UUID guid, String xml, String text, byte[] bytea) {
+    public FooPostgresEntity(Long fooId, BigDecimal bigdecimal, Boolean booleanB, Boolean booleanBit, byte[] bytea, String chaR, LocalDate date, Double doublE, Float floaT, UUID guid, String text, LocalDateTime timestamp, String xml) {
         this.fooId = fooId;
-        this.booleanBit = booleanBit;
+        this.bigdecimal = bigdecimal;
         this.booleanB = booleanB;
+        this.booleanBit = booleanBit;
+        this.bytea = bytea;
         this.chaR = chaR;
         this.date = date;
-        this.timestamp = timestamp;
-        this.bigdecimal = bigdecimal;
-        this.floaT = floaT;
         this.doublE = doublE;
+        this.floaT = floaT;
         this.guid = guid;
-        this.xml = xml;
         this.text = text;
-        this.bytea = bytea;
+        this.timestamp = timestamp;
+        this.xml = xml;
     }
 
     public Long getFooId() {
@@ -50,12 +50,12 @@ public class FooPostgresEntity implements BaseEntity<Long> {
         this.fooId = fooId;
     }
 
-    public Boolean getBooleanBit() {
-        return booleanBit;
+    public BigDecimal getBigdecimal() {
+        return bigdecimal;
     }
 
-    public void setBooleanBit(Boolean booleanBit) {
-        this.booleanBit = booleanBit;
+    public void setBigdecimal(BigDecimal bigdecimal) {
+        this.bigdecimal = bigdecimal;
     }
 
     public Boolean getBooleanB() {
@@ -64,6 +64,22 @@ public class FooPostgresEntity implements BaseEntity<Long> {
 
     public void setBooleanB(Boolean booleanB) {
         this.booleanB = booleanB;
+    }
+
+    public Boolean getBooleanBit() {
+        return booleanBit;
+    }
+
+    public void setBooleanBit(Boolean booleanBit) {
+        this.booleanBit = booleanBit;
+    }
+
+    public byte[] getBytea() {
+        return bytea;
+    }
+
+    public void setBytea(byte[] bytea) {
+        this.bytea = bytea;
     }
 
     public String getChaR() {
@@ -82,20 +98,12 @@ public class FooPostgresEntity implements BaseEntity<Long> {
         this.date = date;
     }
 
-    public LocalDateTime getTimestamp() {
-        return timestamp;
+    public Double getDoublE() {
+        return doublE;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public BigDecimal getBigdecimal() {
-        return bigdecimal;
-    }
-
-    public void setBigdecimal(BigDecimal bigdecimal) {
-        this.bigdecimal = bigdecimal;
+    public void setDoublE(Double doublE) {
+        this.doublE = doublE;
     }
 
     public Float getFloaT() {
@@ -106,28 +114,12 @@ public class FooPostgresEntity implements BaseEntity<Long> {
         this.floaT = floaT;
     }
 
-    public Double getDoublE() {
-        return doublE;
-    }
-
-    public void setDoublE(Double doublE) {
-        this.doublE = doublE;
-    }
-
     public UUID getGuid() {
         return guid;
     }
 
     public void setGuid(UUID guid) {
         this.guid = guid;
-    }
-
-    public String getXml() {
-        return xml;
-    }
-
-    public void setXml(String xml) {
-        this.xml = xml;
     }
 
     public String getText() {
@@ -138,12 +130,20 @@ public class FooPostgresEntity implements BaseEntity<Long> {
         this.text = text;
     }
 
-    public byte[] getBytea() {
-        return bytea;
+    public LocalDateTime getTimestamp() {
+        return timestamp;
     }
 
-    public void setBytea(byte[] bytea) {
-        this.bytea = bytea;
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public String getXml() {
+        return xml;
+    }
+
+    public void setXml(String xml) {
+        this.xml = xml;
     }
 
     @Override

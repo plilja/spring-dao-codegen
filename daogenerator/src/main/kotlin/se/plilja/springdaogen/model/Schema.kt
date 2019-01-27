@@ -23,7 +23,8 @@ data class Table(val schemaName: String?, val name: String, val primaryKey: Colu
 
 data class Column(
     val name: String,
-    val javaType: Class<out Any>
+    val javaType: Class<out Any>,
+    val generated: Boolean = false
 ) {
     fun setter(): String {
         return "set${capitalizeFirst(fieldName())}"

@@ -38,7 +38,7 @@ class RepositoryGeneratorTest {
             emptyList(),
             false
         )
-        val pk = Column("ID", Integer::class.java)
+        val pk = Column("ID", Integer::class.java, true)
         val name = Column("name", String::class.java)
         val table = Table("dbo", "Table", pk, listOf(pk, name))
 
@@ -69,7 +69,7 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
 
     @Autowired
     public TableRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, jdbcTemplate, ROW_MAPPER);
+        super(Integer.class, true, jdbcTemplate, ROW_MAPPER);
     }
 
     @Override
@@ -178,7 +178,7 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
             emptyList(),
             false
         )
-        val pk = Column("tableId", Integer::class.java)
+        val pk = Column("tableId", Integer::class.java, true)
         val name = Column("name", String::class.java)
         val table = Table("dbo", "Table", pk, listOf(pk, name))
 
@@ -209,7 +209,7 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
 
     @Autowired
     public TableRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, jdbcTemplate, ROW_MAPPER);
+        super(Integer.class, true, jdbcTemplate, ROW_MAPPER);
     }
 
     @Override

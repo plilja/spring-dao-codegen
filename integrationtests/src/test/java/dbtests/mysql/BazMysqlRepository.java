@@ -20,7 +20,7 @@ public class BazMysqlRepository extends BaseRepository<BazMysqlEntity, Integer> 
 
     @Autowired
     public BazMysqlRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, jdbcTemplate, ROW_MAPPER);
+        super(Integer.class, true, jdbcTemplate, ROW_MAPPER);
     }
 
     @Override

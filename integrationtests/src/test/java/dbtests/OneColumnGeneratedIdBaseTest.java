@@ -8,7 +8,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public abstract class OneColumnBaseTest<Entity extends BaseEntity<Integer>, Repo extends BaseRepository<Entity, Integer>> {
+public abstract class OneColumnGeneratedIdBaseTest<Entity extends BaseEntity<Integer>, Repo extends BaseRepository<Entity, Integer>> {
     @Before
     public void before() {
         clearTable();

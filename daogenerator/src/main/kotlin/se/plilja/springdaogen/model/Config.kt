@@ -19,7 +19,8 @@ data class Config(
     val frameworkOutputPackage: String,
     val maxSelectAllCount: Int,
     val schemas: List<String>,
-    val useLombok: Boolean
+    val useLombok: Boolean,
+    val hasGeneratedPrimaryKeysOverride: List<String> = emptyList()
 ) {
 
     companion object {
@@ -61,7 +62,8 @@ private class ConfigReader {
             frameworkOutputPackage(),
             maxSelectAllCount(),
             getSchemas(),
-            useLombok()
+            useLombok(),
+            getGeneratedPrimaryKeysOverride()
         )
     }
 
@@ -124,6 +126,15 @@ private class ConfigReader {
 
     private fun getSchemas(): List<String> {
         val property = properties.getProperty("database.schemas", "").trim()
+        return if (property == "") {
+            emptyList()
+        } else {
+            property.split(",").map { it.trim() }
+        }
+    }
+
+    private fun getGeneratedPrimaryKeysOverride(): List<String> {
+        val property = properties.getProperty("generated_primary_keys_override", "").trim()
         return if (property == "") {
             emptyList()
         } else {

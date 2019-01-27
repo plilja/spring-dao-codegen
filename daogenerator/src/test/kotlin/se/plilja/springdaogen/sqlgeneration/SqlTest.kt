@@ -11,7 +11,7 @@ class SqlTest {
 
     @Test
     fun testUpdate() {
-        val pk = Column("FOO_ID", Integer::class.java)
+        val pk = Column("FOO_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
         val age = Column("AGE", Integer::class.java)
 
@@ -31,7 +31,7 @@ class SqlTest {
 
     @Test
     fun testSelectOne() {
-        val pk = Column("FOO_ID", Integer::class.java)
+        val pk = Column("FOO_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
 
         // when
@@ -51,7 +51,7 @@ class SqlTest {
 
     @Test
     fun testSelectNoSchema() {
-        val pk = Column("FOO_ID", Integer::class.java)
+        val pk = Column("FOO_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
 
         // when
@@ -71,7 +71,7 @@ class SqlTest {
 
     @Test
     fun testExistsById() {
-        val pk = Column("FOO_ID", Integer::class.java)
+        val pk = Column("FOO_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
 
         // when
@@ -90,7 +90,7 @@ class SqlTest {
 
     @Test
     fun testDelete() {
-        val pk = Column("FOO_ID", Integer::class.java)
+        val pk = Column("FOO_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
 
         // when
@@ -107,7 +107,7 @@ class SqlTest {
 
     @Test
     fun testSelectManyMysql() {
-        val pk = Column("FOO_ID", Integer::class.java)
+        val pk = Column("FOO_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
 
         // when
@@ -127,7 +127,7 @@ class SqlTest {
 
     @Test
     fun testSelectManyPostgres() {
-        val pk = Column("FOO_ID", Integer::class.java)
+        val pk = Column("FOO_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
 
         // when
@@ -147,7 +147,7 @@ class SqlTest {
 
     @Test
     fun testSelectManyOracle() {
-        val pk = Column("FOO_ID", Integer::class.java)
+        val pk = Column("FOO_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
 
         // when
@@ -167,7 +167,7 @@ class SqlTest {
 
     @Test
     fun testSelectManyMsSqlServer() {
-        val pk = Column("FOO_ID", Integer::class.java)
+        val pk = Column("FOO_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
 
         // when
@@ -186,7 +186,7 @@ class SqlTest {
 
     @Test
     fun testCount() {
-        val pk = Column("FOO_ID", Integer::class.java)
+        val pk = Column("FOO_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
 
         // when

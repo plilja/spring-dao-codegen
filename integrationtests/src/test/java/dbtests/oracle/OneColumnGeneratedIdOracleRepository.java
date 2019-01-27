@@ -9,21 +9,21 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class OneColumnOracleRepository extends BaseRepository<OneColumnOracleEntity, Integer> {
+public class OneColumnGeneratedIdOracleRepository extends BaseRepository<OneColumnGeneratedIdOracleEntity, Integer> {
 
-    private static final RowMapper<OneColumnOracleEntity> ROW_MAPPER = (rs, i) -> {
-        OneColumnOracleEntity r = new OneColumnOracleEntity();
+    private static final RowMapper<OneColumnGeneratedIdOracleEntity> ROW_MAPPER = (rs, i) -> {
+        OneColumnGeneratedIdOracleEntity r = new OneColumnGeneratedIdOracleEntity();
         r.setId(rs.getObject("ID") != null ? rs.getInt("ID") : null);
         return r;
     };
 
     @Autowired
-    public OneColumnOracleRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, jdbcTemplate, ROW_MAPPER);
+    public OneColumnGeneratedIdOracleRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+        super(Integer.class, true, jdbcTemplate, ROW_MAPPER);
     }
 
     @Override
-    public SqlParameterSource getParams(OneColumnOracleEntity o) {
+    public SqlParameterSource getParams(OneColumnGeneratedIdOracleEntity o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("ID", o.getId());
         return m;
@@ -33,7 +33,7 @@ public class OneColumnOracleRepository extends BaseRepository<OneColumnOracleEnt
     protected String getExistsByIdSql() {
         return "SELECT " +
                 "COUNT(*) " +
-                "FROM DOCKER.ONE_COLUMN_ORACLE " +
+                "FROM DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE " +
                 "WHERE ID = :ID";
     }
 
@@ -41,7 +41,7 @@ public class OneColumnOracleRepository extends BaseRepository<OneColumnOracleEnt
     protected String getSelectIdsSql() {
         return "SELECT " +
                 "ID " +
-                "FROM DOCKER.ONE_COLUMN_ORACLE " +
+                "FROM DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE " +
                 "WHERE ID IN (:ids)";
     }
 
@@ -49,7 +49,7 @@ public class OneColumnOracleRepository extends BaseRepository<OneColumnOracleEnt
     protected String getSelectManySql(int maxSelectCount) {
         return String.format("SELECT " +
                 "   ID " +
-                "FROM DOCKER.ONE_COLUMN_ORACLE " +
+                "FROM DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE " +
                 "WHERE ROWNUM <= %d", maxSelectCount);
     }
 
@@ -59,7 +59,7 @@ public class OneColumnOracleRepository extends BaseRepository<OneColumnOracleEnt
                 "SELECT rownum tmp_rownum_, a.* %n" +
                 "FROM (SELECT %n" +
                 "ID %n" +
-                "FROM DOCKER.ONE_COLUMN_ORACLE %n" +
+                "FROM DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE %n" +
                 "ORDER BY ID %n" +
                 ") a %n" +
                 "WHERE rownum < %d + %d %n" +
@@ -69,7 +69,7 @@ public class OneColumnOracleRepository extends BaseRepository<OneColumnOracleEnt
 
     @Override
     protected String getInsertSql() {
-        return "INSERT INTO DOCKER.ONE_COLUMN_ORACLE(ID) VALUES(null)";
+        return "INSERT INTO DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE(ID) VALUES(null)";
     }
 
     @Override
@@ -79,13 +79,13 @@ public class OneColumnOracleRepository extends BaseRepository<OneColumnOracleEnt
 
     @Override
     protected String getDeleteSql() {
-        return "DELETE FROM DOCKER.ONE_COLUMN_ORACLE " +
+        return "DELETE FROM DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE " +
                 "WHERE ID IN (:ids)";
     }
 
     @Override
     protected String getCountSql() {
-        return "SELECT COUNT(*) FROM DOCKER.ONE_COLUMN_ORACLE";
+        return "SELECT COUNT(*) FROM DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE";
     }
 
     @Override

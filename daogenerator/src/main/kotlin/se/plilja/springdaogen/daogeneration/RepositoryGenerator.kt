@@ -33,7 +33,7 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
         """
             @Autowired
             public ${g.name}(NamedParameterJdbcTemplate jdbcTemplate) {
-                super(${table.primaryKey.javaType.simpleName}.class, jdbcTemplate, ROW_MAPPER);
+                super(${table.primaryKey.javaType.simpleName}.class, ${table.primaryKey.generated}, jdbcTemplate, ROW_MAPPER);
             }
         """
     )

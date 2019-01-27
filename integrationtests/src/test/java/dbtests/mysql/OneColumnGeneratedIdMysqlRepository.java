@@ -1,4 +1,4 @@
-package dbtests.mssql;
+package dbtests.mysql;
 
 import dbtests.framework.BaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,25 +9,23 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class BazMsSqlRepository extends BaseRepository<BazMsSqlEntity, Integer> {
+public class OneColumnGeneratedIdMysqlRepository extends BaseRepository<OneColumnGeneratedIdMysqlEntity, Integer> {
 
-    private static final RowMapper<BazMsSqlEntity> ROW_MAPPER = (rs, i) -> {
-        BazMsSqlEntity r = new BazMsSqlEntity();
+    private static final RowMapper<OneColumnGeneratedIdMysqlEntity> ROW_MAPPER = (rs, i) -> {
+        OneColumnGeneratedIdMysqlEntity r = new OneColumnGeneratedIdMysqlEntity();
         r.setId(rs.getObject("id") != null ? rs.getInt("id") : null);
-        r.setName(rs.getString("name"));
         return r;
     };
 
     @Autowired
-    public BazMsSqlRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    public OneColumnGeneratedIdMysqlRepository(NamedParameterJdbcTemplate jdbcTemplate) {
         super(Integer.class, true, jdbcTemplate, ROW_MAPPER);
     }
 
     @Override
-    public SqlParameterSource getParams(BazMsSqlEntity o) {
+    public SqlParameterSource getParams(OneColumnGeneratedIdMysqlEntity o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
-        m.addValue("name", o.getName());
         return m;
     }
 
@@ -35,63 +33,53 @@ public class BazMsSqlRepository extends BaseRepository<BazMsSqlEntity, Integer> 
     protected String getExistsByIdSql() {
         return "SELECT " +
                 "COUNT(*) " +
-                "FROM dbo.baz_ms_sql " +
+                "FROM ONE_COLUMN_GENERATED_ID_MYSQL " +
                 "WHERE id = :id";
     }
 
     @Override
     protected String getSelectIdsSql() {
         return "SELECT " +
-                "id, " +
-                "name " +
-                "FROM dbo.baz_ms_sql " +
+                "id " +
+                "FROM ONE_COLUMN_GENERATED_ID_MYSQL " +
                 "WHERE id IN (:ids)";
     }
 
     @Override
     protected String getSelectManySql(int maxSelectCount) {
-        return String.format("SELECT TOP %d " +
-                "   id, " +
-                "   name " +
-                "FROM dbo.baz_ms_sql ", maxSelectCount);
+        return String.format("SELECT " +
+                "   id " +
+                "FROM ONE_COLUMN_GENERATED_ID_MYSQL " +
+                "LIMIT %d", maxSelectCount);
     }
 
     @Override
     protected String getSelectPageSql(long start, int pageSize) {
         return String.format("SELECT %n" +
-                "id, %n" +
-                "name %n" +
-                "FROM dbo.baz_ms_sql %n" +
-                "ORDER BY id %n" +
-                "OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", start, pageSize);
+                "id %n" +
+                "FROM ONE_COLUMN_GENERATED_ID_MYSQL %n" +
+                "LIMIT %d OFFSET %d", pageSize, start);
     }
 
     @Override
     protected String getInsertSql() {
-        return "INSERT INTO dbo.baz_ms_sql (" +
-                "   name" +
-                ") " +
-                "VALUES (" +
-                "   :name" +
-                ")";
+        return "INSERT INTO ONE_COLUMN_GENERATED_ID_MYSQL() VALUES()";
     }
 
     @Override
     protected String getUpdateSql() {
-        return "UPDATE dbo.baz_ms_sql SET " +
-                "   name = :name " +
-                "WHERE id = :id";
+        throw new UnsupportedOperationException();
     }
 
     @Override
     protected String getDeleteSql() {
-        return "DELETE FROM dbo.baz_ms_sql " +
+        return "DELETE FROM ONE_COLUMN_GENERATED_ID_MYSQL " +
                 "WHERE id IN (:ids)";
     }
 
     @Override
     protected String getCountSql() {
-        return "SELECT COUNT(*) FROM dbo.baz_ms_sql";
+        return "SELECT COUNT(*) FROM ONE_COLUMN_GENERATED_ID_MYSQL";
     }
 
     @Override

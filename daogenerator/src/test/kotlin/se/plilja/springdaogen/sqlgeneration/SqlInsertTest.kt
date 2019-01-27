@@ -1,6 +1,5 @@
 package se.plilja.springdaogen.sqlgeneration
 
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import se.plilja.springdaogen.model.Column
@@ -11,7 +10,7 @@ import se.plilja.springdaogen.model.Table
 class SqlInsertTest {
     @Test
     fun baseCase() {
-        val pk = Column("FOO_ID", Integer::class.java)
+        val pk = Column("FOO_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
         val age = Column("AGE", Integer::class.java)
 
@@ -19,7 +18,7 @@ class SqlInsertTest {
         val sql = insert(Table("public", "FOO", pk, listOf(pk, name, age)), DatabaseDialect.MSSQL_SERVER)
 
         // then
-        Assert.assertEquals(
+        assertEquals(
             """
             |"INSERT INTO public.FOO (" +
             |"   NAME, " +
@@ -34,8 +33,8 @@ class SqlInsertTest {
     }
 
     @Test
-    fun oneColumnPostgres() {
-        val pk = Column("foo_id", Integer::class.java)
+    fun oneGeneratedColumnPostgres() {
+        val pk = Column("foo_id", Integer::class.java, true)
 
         // when
         val sql = insert(Table("public", "foo", pk, listOf(pk)), DatabaseDialect.POSTGRES)
@@ -45,8 +44,8 @@ class SqlInsertTest {
     }
 
     @Test
-    fun oneColumnMssql() {
-        val pk = Column("foo_id", Integer::class.java)
+    fun oneGeneratedColumnMssql() {
+        val pk = Column("foo_id", Integer::class.java, true)
 
         // when
         val sql = insert(Table("public", "foo", pk, listOf(pk)), DatabaseDialect.MSSQL_SERVER)
@@ -56,8 +55,8 @@ class SqlInsertTest {
     }
 
     @Test
-    fun oneColumnMysql() {
-        val pk = Column("foo_id", Integer::class.java)
+    fun oneGeneratedColumnMysql() {
+        val pk = Column("foo_id", Integer::class.java, true)
 
         // when
         val sql = insert(Table("public", "foo", pk, listOf(pk)), DatabaseDialect.MYSQL)
@@ -67,13 +66,33 @@ class SqlInsertTest {
     }
 
     @Test
-    fun oneColumnOracle() {
-        val pk = Column("foo_id", Integer::class.java)
+    fun oneGeneratedColumnOracle() {
+        val pk = Column("foo_id", Integer::class.java, true)
 
         // when
         val sql = insert(Table("public", "foo", pk, listOf(pk)), DatabaseDialect.ORACLE)
 
         // then
         assertEquals("\"INSERT INTO public.foo(foo_id) VALUES(null)\"", sql)
+    }
+
+    @Test
+    fun oneNonGeneratedColumn() {
+        val pk = Column("foo_id", Integer::class.java, false)
+
+        // when
+        val sql = insert(Table("public", "foo", pk, listOf(pk)), DatabaseDialect.ORACLE)
+
+        // then
+        assertEquals(
+            """
+            |"INSERT INTO public.foo (" +
+            |"   foo_id" +
+            |") " +
+            |"VALUES (" +
+            |"   :foo_id" +
+            |")"
+        """.trimMargin(), sql
+        )
     }
 }
