@@ -70,7 +70,7 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
 
     @Autowired
     public TableRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, true, jdbcTemplate, ROW_MAPPER);
+        super(Integer.class, true, jdbcTemplate);
     }
 
     @Override
@@ -79,6 +79,11 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
         m.addValue("ID", o.getId());
         m.addValue("name", o.getName());
         return m;
+    }
+
+    @Override
+    protected RowMapper<TableEntity> getRowMapper() {
+        return ROW_MAPPER;
     }
 
     @Override
@@ -211,7 +216,7 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
 
     @Autowired
     public TableRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, true, jdbcTemplate, ROW_MAPPER);
+        super(Integer.class, true, jdbcTemplate);
     }
 
     @Override
@@ -220,6 +225,11 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
         m.addValue("tableId", o.getId());
         m.addValue("name", o.getName());
         return m;
+    }
+
+    @Override
+    protected RowMapper<TableEntity> getRowMapper() {
+        return ROW_MAPPER;
     }
 
     @Override
@@ -301,4 +311,148 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
         assertEquals(exp, act)
     }
 
+
+    @Test
+    fun getAbstractRepository() {
+        val config = Config(
+            "",
+            DatabaseDialect.MYSQL,
+            "",
+            "",
+            "",
+            "",
+            "",
+            "se.plilja.test",
+            "",
+            "se.plilja.test",
+            "",
+            "se.plilja.test",
+            10,
+            emptyList(),
+            false,
+            repositoriesAreAbstract = true,
+            repositoryPrefix = "Abstract"
+        )
+        val pk = Column("id", Integer::class.java, true)
+        val name = Column("name", String::class.java)
+        val table =
+            Table("dbo", "Table", pk, listOf(pk, name), repositoryPrefix = "Abstract", repositorySuffix = "Repository")
+
+        // when
+        val res = generateRepository(config, table)
+        val act = res.generate()
+
+        // then
+        val exp = """
+package se.plilja.test;
+
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+
+public abstract class AbstractTableRepository extends BaseRepository<Table, Integer> {
+
+    private static final RowMapper<Table> ROW_MAPPER = (rs, i) -> {
+        Table r = new Table();
+        r.setId(rs.getObject("id") != null ? rs.getInt("id") : null);
+        r.setName(rs.getString("name"));
+        return r;
+    };
+
+    public AbstractTableRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+        super(Integer.class, true, jdbcTemplate);
+    }
+
+    @Override
+    public SqlParameterSource getParams(Table o) {
+        MapSqlParameterSource m = new MapSqlParameterSource();
+        m.addValue("id", o.getId());
+        m.addValue("name", o.getName());
+        return m;
+    }
+
+    @Override
+    protected RowMapper<Table> getRowMapper() {
+        return ROW_MAPPER;
+    }
+
+    @Override
+    protected String getExistsByIdSql() {
+        return "SELECT " +
+                "COUNT(*) " +
+                "FROM dbo.Table " +
+                "WHERE id = :id";
+    }
+
+    @Override
+    protected String getSelectIdsSql() {
+        return "SELECT " +
+                "id, " +
+                "name " +
+                "FROM dbo.Table " +
+                "WHERE id IN (:ids)";
+    }
+
+    @Override
+    protected String getSelectManySql(int maxSelectCount) {
+        return String.format("SELECT " +
+                "   id, " +
+                "   name " +
+                "FROM dbo.Table " +
+                "LIMIT %d", maxSelectCount);
+    }
+
+    @Override
+    protected String getSelectPageSql(long start, int pageSize) {
+        return String.format("SELECT %n" +
+                "id, %n" +
+                "name %n" +
+                "FROM dbo.Table %n" +
+                "LIMIT %d OFFSET %d", pageSize, start);
+    }
+
+    @Override
+    protected String getInsertSql() {
+        return "INSERT INTO dbo.Table (" +
+                "   name" +
+                ") " +
+                "VALUES (" +
+                "   :name" +
+                ")";
+    }
+
+    @Override
+    protected String getUpdateSql() {
+        return "UPDATE dbo.Table SET " +
+                "   name = :name " +
+                "WHERE id = :id";
+    }
+
+    @Override
+    protected String getDeleteSql() {
+        return "DELETE FROM dbo.Table " +
+                "WHERE id IN (:ids)";
+    }
+
+    @Override
+    protected String getCountSql() {
+        return "SELECT COUNT(*) FROM dbo.Table";
+    }
+
+    @Override
+    protected String getPrimaryKeyColumnName() {
+        return "id";
+    }
+
+    @Override
+    protected int getSelectAllDefaultMaxCount() {
+        return 10;
+    }
+
+}
+
+        """.trimIndent()
+        assertEquals(exp, act)
+    }
 }

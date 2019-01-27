@@ -20,7 +20,7 @@ public class BazPostgresRepository extends BaseRepository<BazPostgresEntity, Int
 
     @Autowired
     public BazPostgresRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, true, jdbcTemplate, ROW_MAPPER);
+        super(Integer.class, true, jdbcTemplate);
     }
 
     @Override
@@ -29,6 +29,11 @@ public class BazPostgresRepository extends BaseRepository<BazPostgresEntity, Int
         m.addValue("baz_id", o.getId());
         m.addValue("baz_name", o.getBazName());
         return m;
+    }
+
+    @Override
+    protected RowMapper<BazPostgresEntity> getRowMapper() {
+        return ROW_MAPPER;
     }
 
     @Override

@@ -19,7 +19,7 @@ public class OneColumnGeneratedIdMsSqlRepository extends BaseRepository<OneColum
 
     @Autowired
     public OneColumnGeneratedIdMsSqlRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, true, jdbcTemplate, ROW_MAPPER);
+        super(Integer.class, true, jdbcTemplate);
     }
 
     @Override
@@ -27,6 +27,11 @@ public class OneColumnGeneratedIdMsSqlRepository extends BaseRepository<OneColum
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
         return m;
+    }
+
+    @Override
+    protected RowMapper<OneColumnGeneratedIdMsSqlEntity> getRowMapper() {
+        return ROW_MAPPER;
     }
 
     @Override

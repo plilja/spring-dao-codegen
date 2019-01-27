@@ -17,8 +17,10 @@ import java.util.*
 
 fun generateRepository(config: Config, table: Table): ClassGenerator {
     val g = ClassGenerator(table.repositoryName(), config.repositoryOutputPackage, config.repositoryOutputFolder)
-    g.addClassAnnotation("@Repository")
-    g.addImport(Repository::class.java)
+    if (!config.repositoriesAreAbstract) {
+        g.addClassAnnotation("@Repository")
+        g.addImport(Repository::class.java)
+    }
     g.extends = "BaseRepository<${table.entityName()}, ${table.primaryKey.javaType.simpleName}>"
     g.addPrivateConstant(
         "ROW_MAPPER", "RowMapper<${table.entityName()}>",
@@ -26,18 +28,38 @@ fun generateRepository(config: Config, table: Table): ClassGenerator {
     )
     g.addCustomMethod(rowUnmapper(table))
     g.addImport(RowMapper::class.java)
-    g.addImport(Autowired::class.java)
     g.addImport(MapSqlParameterSource::class.java)
     g.addImport(SqlParameterSource::class.java)
-    g.addCustomConstructor(
+    if (config.repositoriesAreAbstract) {
+        g.isAbstract = true
+        g.addCustomConstructor(
+            """
+            public ${g.name}(NamedParameterJdbcTemplate jdbcTemplate) {
+                super(${table.primaryKey.javaType.simpleName}.class, ${table.primaryKey.generated}, jdbcTemplate);
+            }
         """
+        )
+    } else {
+        g.addImport(Autowired::class.java)
+        g.addCustomConstructor(
+            """
             @Autowired
             public ${g.name}(NamedParameterJdbcTemplate jdbcTemplate) {
-                super(${table.primaryKey.javaType.simpleName}.class, ${table.primaryKey.generated}, jdbcTemplate, ROW_MAPPER);
+                super(${table.primaryKey.javaType.simpleName}.class, ${table.primaryKey.generated}, jdbcTemplate);
+            }
+        """
+        )
+    }
+    g.addImport(NamedParameterJdbcTemplate::class.java)
+
+    g.addCustomMethod(
+        """
+            @Override
+            protected RowMapper<${table.entityName()}> getRowMapper() {
+                return ROW_MAPPER;
             }
         """
     )
-    g.addImport(NamedParameterJdbcTemplate::class.java)
     g.addCustomMethod(
         """
             @Override

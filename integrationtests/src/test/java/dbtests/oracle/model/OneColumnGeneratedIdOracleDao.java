@@ -19,7 +19,7 @@ public class OneColumnGeneratedIdOracleDao extends BaseRepository<OneColumnGener
 
     @Autowired
     public OneColumnGeneratedIdOracleDao(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, true, jdbcTemplate, ROW_MAPPER);
+        super(Integer.class, true, jdbcTemplate);
     }
 
     @Override
@@ -27,6 +27,11 @@ public class OneColumnGeneratedIdOracleDao extends BaseRepository<OneColumnGener
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("ID", o.getId());
         return m;
+    }
+
+    @Override
+    protected RowMapper<OneColumnGeneratedIdOracle> getRowMapper() {
+        return ROW_MAPPER;
     }
 
     @Override

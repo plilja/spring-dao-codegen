@@ -20,7 +20,7 @@ public class BazMsSqlRepository extends BaseRepository<BazMsSqlEntity, Integer> 
 
     @Autowired
     public BazMsSqlRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, true, jdbcTemplate, ROW_MAPPER);
+        super(Integer.class, true, jdbcTemplate);
     }
 
     @Override
@@ -29,6 +29,11 @@ public class BazMsSqlRepository extends BaseRepository<BazMsSqlEntity, Integer> 
         m.addValue("id", o.getId());
         m.addValue("name", o.getName());
         return m;
+    }
+
+    @Override
+    protected RowMapper<BazMsSqlEntity> getRowMapper() {
+        return ROW_MAPPER;
     }
 
     @Override

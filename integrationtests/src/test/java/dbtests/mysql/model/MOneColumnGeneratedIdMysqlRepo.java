@@ -19,7 +19,7 @@ public class MOneColumnGeneratedIdMysqlRepo extends BaseRepository<MOneColumnGen
 
     @Autowired
     public MOneColumnGeneratedIdMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, true, jdbcTemplate, ROW_MAPPER);
+        super(Integer.class, true, jdbcTemplate);
     }
 
     @Override
@@ -27,6 +27,11 @@ public class MOneColumnGeneratedIdMysqlRepo extends BaseRepository<MOneColumnGen
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
         return m;
+    }
+
+    @Override
+    protected RowMapper<MOneColumnGeneratedIdMysql> getRowMapper() {
+        return ROW_MAPPER;
     }
 
     @Override

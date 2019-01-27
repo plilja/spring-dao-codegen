@@ -19,7 +19,7 @@ public class OneColumnGeneratedIdPostgresRepository extends BaseRepository<OneCo
 
     @Autowired
     public OneColumnGeneratedIdPostgresRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, true, jdbcTemplate, ROW_MAPPER);
+        super(Integer.class, true, jdbcTemplate);
     }
 
     @Override
@@ -27,6 +27,11 @@ public class OneColumnGeneratedIdPostgresRepository extends BaseRepository<OneCo
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
         return m;
+    }
+
+    @Override
+    protected RowMapper<OneColumnGeneratedIdPostgresEntity> getRowMapper() {
+        return ROW_MAPPER;
     }
 
     @Override

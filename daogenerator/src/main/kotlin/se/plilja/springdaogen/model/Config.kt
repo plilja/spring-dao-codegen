@@ -20,6 +20,7 @@ data class Config(
     val maxSelectAllCount: Int,
     val schemas: List<String>,
     val useLombok: Boolean,
+    val repositoriesAreAbstract: Boolean = false,
     val hasGeneratedPrimaryKeysOverride: List<String> = emptyList(),
     val entityPrefix: String = "",
     val entitySuffix: String = "",
@@ -52,26 +53,27 @@ private class ConfigReader {
 
     fun readConfig(): Config {
         return Config(
-            getDatabaseName(),
-            databaseDialect(),
-            databaseUrl(),
-            databaseUser(),
-            databasePassword(),
-            databaseDriver(),
-            entityOutputFolder(),
-            entityOutputPackage(),
-            repositoryOutputFolder(),
-            repositoryOutputPackage(),
-            frameworkOutputFolder(),
-            frameworkOutputPackage(),
-            maxSelectAllCount(),
-            getSchemas(),
-            useLombok(),
-            getGeneratedPrimaryKeysOverride(),
-            getEntityPrefix(),
-            getEntitySuffix(),
-            getRepositoryPrefix(),
-            getRepositorySuffix()
+            databaseName = getDatabaseName(),
+            databaseDialect = databaseDialect(),
+            databaseUrl = databaseUrl(),
+            databaseUser = databaseUser(),
+            databasePassword = databasePassword(),
+            databaseDriver = databaseDriver(),
+            entityOutputFolder = entityOutputFolder(),
+            entityOutputPackage = entityOutputPackage(),
+            repositoryOutputFolder = repositoryOutputFolder(),
+            repositoryOutputPackage = repositoryOutputPackage(),
+            frameworkOutputFolder = frameworkOutputFolder(),
+            frameworkOutputPackage = frameworkOutputPackage(),
+            maxSelectAllCount = maxSelectAllCount(),
+            schemas = getSchemas(),
+            useLombok = useLombok(),
+            repositoriesAreAbstract = repositoriesAreAbstract(),
+            hasGeneratedPrimaryKeysOverride = getGeneratedPrimaryKeysOverride(),
+            entityPrefix = getEntityPrefix(),
+            entitySuffix = getEntitySuffix(),
+            repositoryPrefix = getRepositoryPrefix(),
+            repositorySuffix = getRepositorySuffix()
         )
     }
 
@@ -121,6 +123,8 @@ private class ConfigReader {
     private fun getGeneratedPrimaryKeysOverride() = getListProperty("generated_primary_keys_override")
 
     private fun getDatabaseName() = properties.getProperty("database.name")
+
+    private fun repositoriesAreAbstract() = properties.getProperty("repository.output.abstract", "false") == "true"
 
     private fun useLombok() = properties.getProperty("use_lombok", "false") == "true"
 

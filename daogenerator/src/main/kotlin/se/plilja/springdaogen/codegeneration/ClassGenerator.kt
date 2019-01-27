@@ -16,6 +16,7 @@ class ClassGenerator(
     private val fields = ArrayList<Field>()
     private val customMethods = ArrayList<String>()
     var isFinal = false
+    var isAbstract = false
     var extends: String? = null
     var implements: String? = null
     var isConstantsClass = false
@@ -74,11 +75,11 @@ class ClassGenerator(
         customMethods.add(methodCode)
     }
 
-    fun getOutputFolder() : String {
+    fun getOutputFolder(): String {
         return "${sourceBaseFolder}${packageName.replace(".", "/")}"
     }
 
-    fun getOutputFileName() : String {
+    fun getOutputFileName(): String {
         return "${getOutputFolder()}/${name}.java"
     }
 
@@ -87,7 +88,7 @@ class ClassGenerator(
         val importsDeclaration = imports.map { "import $it;" }.joinToString("\n")
         val joinedClassAnnotation = classAnnotations.joinToString("\n")
         val classHeader =
-            "public${if (isFinal) " final" else ""} class $name${if (extends != null) " extends $extends" else ""}${if (implements != null) " implements $implements" else ""} {"
+            "public${if (isAbstract) " abstract" else ""}${if (isFinal) " final" else ""} class $name${if (extends != null) " extends $extends" else ""}${if (implements != null) " implements $implements" else ""} {"
         val classDeclaration =
             if (joinedClassAnnotation.isEmpty()) {
                 classHeader
@@ -106,12 +107,13 @@ class ClassGenerator(
             else
                 ""
 
-        val allArgsConstructor = if (!hideConstructors and !isConstantsClass and customConstructors.isEmpty() and !fields.isEmpty())
-            """public $name(${fields.map { "${it.type} ${it.name}" }.joinToString(", ")}) {
+        val allArgsConstructor =
+            if (!hideConstructors and !isConstantsClass and customConstructors.isEmpty() and !fields.isEmpty())
+                """public $name(${fields.map { "${it.type} ${it.name}" }.joinToString(", ")}) {
                 ${fields.map { "this.${it.name} = ${it.name};" }.joinToString("\n")}
             }"""
-        else
-            ""
+            else
+                ""
 
         val joinedCustomConstructors = customConstructors.joinToString("\n\n")
 

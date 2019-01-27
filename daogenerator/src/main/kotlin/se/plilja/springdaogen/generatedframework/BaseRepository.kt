@@ -19,12 +19,10 @@ public abstract class BaseRepository<T extends BaseEntity<ID>, ID> {
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private Class<ID> idClass;
     private boolean idIsGenerated;
-    private final RowMapper<T> rowMapper;
 
-    protected BaseRepository(Class<ID> idClass, boolean idIsGenerated, NamedParameterJdbcTemplate jdbcTemplate, RowMapper<T> rowMapper) {
+    protected BaseRepository(Class<ID> idClass, boolean idIsGenerated, NamedParameterJdbcTemplate jdbcTemplate) {
         this.idClass = idClass;
         this.idIsGenerated = idIsGenerated;
-        this.rowMapper = rowMapper;
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -39,7 +37,7 @@ public abstract class BaseRepository<T extends BaseEntity<ID>, ID> {
         String sql = getSelectIdsSql();
         Map<String, Object> params = new HashMap<>();
         params.put("ids", Collections.singletonList(id));
-        return jdbcTemplate.queryForObject(sql, params, rowMapper);
+        return jdbcTemplate.queryForObject(sql, params, getRowMapper());
     }
 
     public Optional<T> findOneById(ID id) {
@@ -59,7 +57,7 @@ public abstract class BaseRepository<T extends BaseEntity<ID>, ID> {
         }
         Map<String, Object> params = new HashMap<>();
         params.put("ids", idsList);
-        return jdbcTemplate.query(sql, params, rowMapper);
+        return jdbcTemplate.query(sql, params, getRowMapper());
     }
 
     public List<T> findPage(long start, int pageSize) {
@@ -67,7 +65,7 @@ public abstract class BaseRepository<T extends BaseEntity<ID>, ID> {
             return Collections.emptyList();
         }
         String sql = getSelectPageSql(start, pageSize);
-        return jdbcTemplate.query(sql, Collections.emptyMap(), rowMapper);
+        return jdbcTemplate.query(sql, Collections.emptyMap(), getRowMapper());
     }
 
     public List<T> findAll() {
@@ -75,7 +73,7 @@ public abstract class BaseRepository<T extends BaseEntity<ID>, ID> {
     }
 
     public List<T> findAll(int maxAllowedCount) {
-        List<T> result = jdbcTemplate.query(getSelectManySql(maxAllowedCount + 1), Collections.emptyMap(), rowMapper);
+        List<T> result = jdbcTemplate.query(getSelectManySql(maxAllowedCount + 1), Collections.emptyMap(), getRowMapper());
         if (result.size() > maxAllowedCount) {
             throw new MaxAllowedCountExceededException(String.format("Max allowed count of %d rows exceeded", maxAllowedCount));
         }
@@ -153,6 +151,8 @@ public abstract class BaseRepository<T extends BaseEntity<ID>, ID> {
         HashMap<String, Object> noParams = new HashMap<>();
         return jdbcTemplate.queryForObject(sql, noParams, Long.class);
     }
+
+    protected abstract RowMapper<T> getRowMapper();
 
     protected abstract SqlParameterSource getParams(T object);
 

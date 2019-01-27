@@ -19,7 +19,7 @@ public class OneColumnNaturalIdPostgresRepository extends BaseRepository<OneColu
 
     @Autowired
     public OneColumnNaturalIdPostgresRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(String.class, false, jdbcTemplate, ROW_MAPPER);
+        super(String.class, false, jdbcTemplate);
     }
 
     @Override
@@ -27,6 +27,11 @@ public class OneColumnNaturalIdPostgresRepository extends BaseRepository<OneColu
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
         return m;
+    }
+
+    @Override
+    protected RowMapper<OneColumnNaturalIdPostgresEntity> getRowMapper() {
+        return ROW_MAPPER;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package se.plilja.springdaogen.codegeneration
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.sql.Connection
 
@@ -123,6 +123,28 @@ public class Foo {
 }
 """
         assertEquals(exp, act)
+    }
+
+    @Test
+    fun testAbstractClass() {
+        val g = ClassGenerator("Foo", "se.plilja.test", "")
+        g.isAbstract = true
+
+        // when
+        val act = g.generate()
+
+        // then
+        val exp = """package se.plilja.test;
+
+public abstract class Foo {
+
+    public Foo() {
+    }
+
+}
+"""
+        assertEquals(exp, act)
+
     }
 
     class A

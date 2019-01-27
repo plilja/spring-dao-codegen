@@ -19,7 +19,7 @@ public class OneColumnNaturalIdOracleDao extends BaseRepository<OneColumnNatural
 
     @Autowired
     public OneColumnNaturalIdOracleDao(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(String.class, false, jdbcTemplate, ROW_MAPPER);
+        super(String.class, false, jdbcTemplate);
     }
 
     @Override
@@ -27,6 +27,11 @@ public class OneColumnNaturalIdOracleDao extends BaseRepository<OneColumnNatural
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("ID", o.getId());
         return m;
+    }
+
+    @Override
+    protected RowMapper<OneColumnNaturalIdOracle> getRowMapper() {
+        return ROW_MAPPER;
     }
 
     @Override

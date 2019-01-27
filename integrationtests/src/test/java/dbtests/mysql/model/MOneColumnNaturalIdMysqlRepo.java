@@ -19,7 +19,7 @@ public class MOneColumnNaturalIdMysqlRepo extends BaseRepository<MOneColumnNatur
 
     @Autowired
     public MOneColumnNaturalIdMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(String.class, false, jdbcTemplate, ROW_MAPPER);
+        super(String.class, false, jdbcTemplate);
     }
 
     @Override
@@ -27,6 +27,11 @@ public class MOneColumnNaturalIdMysqlRepo extends BaseRepository<MOneColumnNatur
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
         return m;
+    }
+
+    @Override
+    protected RowMapper<MOneColumnNaturalIdMysql> getRowMapper() {
+        return ROW_MAPPER;
     }
 
     @Override

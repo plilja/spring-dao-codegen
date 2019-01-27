@@ -20,7 +20,7 @@ public class BazOracleDao extends BaseRepository<BazOracle, Integer> {
 
     @Autowired
     public BazOracleDao(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, true, jdbcTemplate, ROW_MAPPER);
+        super(Integer.class, true, jdbcTemplate);
     }
 
     @Override
@@ -29,6 +29,11 @@ public class BazOracleDao extends BaseRepository<BazOracle, Integer> {
         m.addValue("ID", o.getId());
         m.addValue("NAME", o.getName());
         return m;
+    }
+
+    @Override
+    protected RowMapper<BazOracle> getRowMapper() {
+        return ROW_MAPPER;
     }
 
     @Override

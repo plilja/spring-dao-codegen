@@ -20,7 +20,7 @@ public class MBazMysqlRepo extends BaseRepository<MBazMysql, Integer> {
 
     @Autowired
     public MBazMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, true, jdbcTemplate, ROW_MAPPER);
+        super(Integer.class, true, jdbcTemplate);
     }
 
     @Override
@@ -29,6 +29,11 @@ public class MBazMysqlRepo extends BaseRepository<MBazMysql, Integer> {
         m.addValue("id", o.getId());
         m.addValue("name", o.getName());
         return m;
+    }
+
+    @Override
+    protected RowMapper<MBazMysql> getRowMapper() {
+        return ROW_MAPPER;
     }
 
     @Override

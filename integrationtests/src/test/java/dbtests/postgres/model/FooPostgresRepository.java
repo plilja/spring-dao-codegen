@@ -1,13 +1,14 @@
 package dbtests.postgres.model;
 
 import dbtests.framework.BaseRepository;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
+
+import java.util.UUID;
 
 @Repository
 public class FooPostgresRepository extends BaseRepository<FooPostgresEntity, Long> {
@@ -32,7 +33,7 @@ public class FooPostgresRepository extends BaseRepository<FooPostgresEntity, Lon
 
     @Autowired
     public FooPostgresRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Long.class, false, jdbcTemplate, ROW_MAPPER);
+        super(Long.class, false, jdbcTemplate);
     }
 
     @Override
@@ -52,6 +53,11 @@ public class FooPostgresRepository extends BaseRepository<FooPostgresEntity, Lon
         m.addValue("TIMESTAMP", o.getTimestamp());
         m.addValue("XML", o.getXml());
         return m;
+    }
+
+    @Override
+    protected RowMapper<FooPostgresEntity> getRowMapper() {
+        return ROW_MAPPER;
     }
 
     @Override

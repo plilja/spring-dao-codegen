@@ -2,7 +2,6 @@
 
 # TODO:s
 * Tables with composite id-columns
-* Ability to mark generated Repository as abstract
 * Generate test implementations for repositories (in memory)
 * SqlLite
 * MariaDb
