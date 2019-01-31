@@ -5,21 +5,19 @@ import dbtests.mssql.model.OneColumnNaturalIdMsSqlEntity;
 import dbtests.mssql.model.OneColumnNaturalIdMsSqlRepository;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @ContextConfiguration(classes = {MsSqlITConfig.class})
-@Import(OneColumnNaturalIdMsSqlRepository.class)
 @RunWith(SpringRunner.class)
 public class MsSqlOneColumnNaturalIdIT extends OneColumnNaturalIdBaseTest<OneColumnNaturalIdMsSqlEntity, OneColumnNaturalIdMsSqlRepository> {
     @Autowired
-    NamedParameterJdbcTemplate jdbcTemplate;
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    OneColumnNaturalIdMsSqlRepository repo;
+    private OneColumnNaturalIdMsSqlRepository repo;
 
     @Override
     protected OneColumnNaturalIdMsSqlRepository getRepo() {

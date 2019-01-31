@@ -1,12 +1,17 @@
 package dbtests.mssql.tests;
 
+import dbtests.mssql.model.BazMsSqlRepository;
+import dbtests.mssql.model.OneColumnGeneratedIdMsSqlRepository;
+import dbtests.mssql.model.OneColumnNaturalIdMsSqlRepository;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
 
+@Import({BazMsSqlRepository.class, OneColumnNaturalIdMsSqlRepository.class, OneColumnGeneratedIdMsSqlRepository.class})
 @Configuration
 public class MsSqlITConfig {
 

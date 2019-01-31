@@ -1,8 +1,8 @@
-package dbtests.oracle.tests;
+package dbtests.h2.tests;
 
 import dbtests.OneColumnNaturalIdBaseTest;
-import dbtests.oracle.model.OneColumnNaturalIdOracle;
-import dbtests.oracle.model.OneColumnNaturalIdOracleDao;
+import dbtests.h2.model.OneColumnNaturalIdH2;
+import dbtests.h2.model.OneColumnNaturalIdH2Repo;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -10,28 +10,28 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-@ContextConfiguration(classes = {OracleITConfig.class})
+@ContextConfiguration(classes = {H2Config.class})
 @RunWith(SpringRunner.class)
-public class OracleOneColumnNaturalIdIT extends OneColumnNaturalIdBaseTest<OneColumnNaturalIdOracle, OneColumnNaturalIdOracleDao> {
+public class H2OneColumnNaturalIdIT extends OneColumnNaturalIdBaseTest<OneColumnNaturalIdH2, OneColumnNaturalIdH2Repo> {
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    private OneColumnNaturalIdOracleDao repo;
+    private OneColumnNaturalIdH2Repo repo;
 
     @Override
-    protected OneColumnNaturalIdOracleDao getRepo() {
+    protected OneColumnNaturalIdH2Repo getRepo() {
         return repo;
     }
 
     @Override
     protected void clearTable() {
-        jdbcTemplate.update("DELETE FROM DOCKER.ONE_COLUMN_NATURAL_ID_ORACLE", new MapSqlParameterSource());
+        jdbcTemplate.update("DELETE FROM test_schema.one_column_natural_id_h2", new MapSqlParameterSource());
 
     }
 
     @Override
-    protected OneColumnNaturalIdOracle newEntity() {
-        return new OneColumnNaturalIdOracle();
+    protected OneColumnNaturalIdH2 newEntity() {
+        return new OneColumnNaturalIdH2();
     }
 }

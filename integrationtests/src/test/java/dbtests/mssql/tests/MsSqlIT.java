@@ -5,22 +5,20 @@ import dbtests.mssql.model.BazMsSqlEntity;
 import dbtests.mssql.model.BazMsSqlRepository;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @ContextConfiguration(classes = {MsSqlITConfig.class})
-@Import(BazMsSqlRepository.class)
 @RunWith(SpringRunner.class)
 public class MsSqlIT extends BaseIntegrationTest<BazMsSqlEntity, BazMsSqlRepository> {
 
     @Autowired
-    NamedParameterJdbcTemplate jdbcTemplate;
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    BazMsSqlRepository repo;
+    private BazMsSqlRepository repo;
 
     @Override
     protected BazMsSqlRepository getRepo() {

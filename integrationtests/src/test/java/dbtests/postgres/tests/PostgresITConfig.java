@@ -1,12 +1,17 @@
 package dbtests.postgres.tests;
 
+import dbtests.postgres.model.BazPostgresRepository;
+import dbtests.postgres.model.OneColumnGeneratedIdPostgresRepository;
+import dbtests.postgres.model.OneColumnNaturalIdPostgresRepository;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
 
+@Import({BazPostgresRepository.class, OneColumnNaturalIdPostgresRepository.class, OneColumnGeneratedIdPostgresRepository.class})
 @Configuration
 public class PostgresITConfig {
     @Bean

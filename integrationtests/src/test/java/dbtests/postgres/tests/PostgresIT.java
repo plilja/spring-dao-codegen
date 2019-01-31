@@ -5,22 +5,20 @@ import dbtests.postgres.model.BazPostgresEntity;
 import dbtests.postgres.model.BazPostgresRepository;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @ContextConfiguration(classes = {PostgresITConfig.class})
-@Import(BazPostgresRepository.class)
 @RunWith(SpringRunner.class)
 public class PostgresIT extends BaseIntegrationTest<BazPostgresEntity, BazPostgresRepository> {
 
     @Autowired
-    NamedParameterJdbcTemplate jdbcTemplate;
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    BazPostgresRepository repo;
+    private BazPostgresRepository repo;
 
     @Override
     protected BazPostgresRepository getRepo() {

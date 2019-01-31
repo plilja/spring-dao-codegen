@@ -9,10 +9,12 @@ import java.time.LocalDateTime
 import java.util.*
 
 
-data class Schema(val tables: List<Table>)
+data class Schema(
+    val tables: List<Table>
+)
 
 data class Table(
-    val schemaName: String?,
+    val schemaName: String?, // TODO should this be lifted to the schema object?
     val name: String,
     val primaryKey: Column,
     val columns: List<Column>,
@@ -36,6 +38,8 @@ data class Column(
     val javaType: Class<out Any>,
     val generated: Boolean = false
 ) {
+    var references: Pair<Table, Column>? = null
+
     fun setter(): String {
         return "set${capitalizeFirst(fieldName())}"
     }

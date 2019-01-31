@@ -25,7 +25,9 @@ data class Config(
     val entityPrefix: String = "",
     val entitySuffix: String = "",
     val repositoryPrefix: String = "",
-    val repositorySuffix: String = "Repository"
+    val repositorySuffix: String = "Repository",
+    val generateTestDdl: Boolean = false,
+    val testResourceFolder: String? = null
 ) {
 
     companion object {
@@ -73,7 +75,9 @@ private class ConfigReader {
             entityPrefix = getEntityPrefix(),
             entitySuffix = getEntitySuffix(),
             repositoryPrefix = getRepositoryPrefix(),
-            repositorySuffix = getRepositorySuffix()
+            repositorySuffix = getRepositorySuffix(),
+            generateTestDdl = generateTestDdl(),
+            testResourceFolder = getTestResourceFolder()
         )
     }
 
@@ -103,6 +107,10 @@ private class ConfigReader {
     private fun getRepositoryPrefix() = properties.getProperty("repository.output.prefix", "")
 
     private fun getRepositorySuffix() = properties.getProperty("repository.output.suffix", "Repository")
+
+    private fun getTestResourceFolder() = properties.getProperty("test.resource_folder", null)
+
+    private fun generateTestDdl() = properties.getProperty("test.generate_ddl", "false") == "true"
 
     private fun frameworkOutputFolder() = getFolderProperty("framework.output.folder")
 

@@ -5,20 +5,20 @@ import dbtests.postgres.model.OneColumnGeneratedIdPostgresEntity;
 import dbtests.postgres.model.OneColumnGeneratedIdPostgresRepository;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @ContextConfiguration(classes = {PostgresITConfig.class})
-@Import(OneColumnGeneratedIdPostgresRepository.class)
 @RunWith(SpringRunner.class)
 public class PostgresOneColumnGeneratedIdIT extends OneColumnGeneratedIdBaseTest<OneColumnGeneratedIdPostgresEntity, OneColumnGeneratedIdPostgresRepository> {
     @Autowired
+    private
     NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
+    private
     OneColumnGeneratedIdPostgresRepository repo;
 
     @Override

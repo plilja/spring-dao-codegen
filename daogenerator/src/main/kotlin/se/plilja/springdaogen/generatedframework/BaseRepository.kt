@@ -74,6 +74,9 @@ public abstract class BaseRepository<T extends BaseEntity<ID>, ID> {
 
     public List<T> findAll(int maxAllowedCount) {
         List<T> result = jdbcTemplate.query(getSelectManySql(maxAllowedCount + 1), Collections.emptyMap(), getRowMapper());
+        // If queries have been correctly generated it should never be possible to select
+        // more than maxAllowedCount + 1 even if the table is larger than that
+        assert result.size() <= maxAllowedCount + 1;
         if (result.size() > maxAllowedCount) {
             throw new MaxAllowedCountExceededException(String.format("Max allowed count of %d rows exceeded", maxAllowedCount));
         }
@@ -183,7 +186,7 @@ public abstract class BaseRepository<T extends BaseEntity<ID>, ID> {
         } else if (idClass.isAssignableFrom(Long.class)) {
             object.setId((ID) Long.valueOf(newKey.longValue()));
         } else {
-            throw new IllegalArgumentException(String.format("Unkown type of generated key %s", idClass.getSimpleName()));
+            throw new IllegalArgumentException(String.format("Unknown type of generated key %s", idClass.getSimpleName()));
         }
     }
 

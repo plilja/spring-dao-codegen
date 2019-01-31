@@ -1,8 +1,8 @@
-package dbtests.oracle.tests;
+package dbtests.h2.tests;
 
-import dbtests.oracle.model.BazOracleDao;
-import dbtests.oracle.model.OneColumnGeneratedIdOracleDao;
-import dbtests.oracle.model.OneColumnNaturalIdOracleDao;
+import dbtests.h2.model.BazH2Repo;
+import dbtests.h2.model.OneColumnGeneratedIdH2Repo;
+import dbtests.h2.model.OneColumnNaturalIdH2Repo;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,16 +11,18 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
 
-@Import({BazOracleDao.class, OneColumnNaturalIdOracleDao.class, OneColumnGeneratedIdOracleDao.class})
+@Import({BazH2Repo.class, OneColumnNaturalIdH2Repo.class, OneColumnGeneratedIdH2Repo.class})
 @Configuration
-public class OracleITConfig {
+public class H2Config {
+
     @Bean
     public DataSource dataSource() {
+        String file = H2Config.class.getClassLoader().getResource("init.sql").getFile();
         return DataSourceBuilder.create()
-                .url("jdbc:oracle:thin:@(DESCRIPTION =(ADDRESS_LIST =(ADDRESS =(PROTOCOL=TCP)(HOST=localhost)(PORT=4006)))(CONNECT_DATA=(SID=xe)(GLOBAL_NAME=xe.WORLD)(SERVER=DEDICATED)))")
-                .driverClassName("oracle.jdbc.OracleDriver")
+                .url(String.format("jdbc:h2:mem:db;INIT=RUNSCRIPT FROM '%s'", file))
+                .driverClassName("org.h2.Driver")
                 .username("docker")
-                .password("password")
+                .password("docker")
                 .build();
     }
 

@@ -5,21 +5,19 @@ import dbtests.oracle.model.OneColumnGeneratedIdOracle;
 import dbtests.oracle.model.OneColumnGeneratedIdOracleDao;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @ContextConfiguration(classes = {OracleITConfig.class})
-@Import(OneColumnGeneratedIdOracleDao.class)
 @RunWith(SpringRunner.class)
 public class OracleOneColumnGeneratedIdIT extends OneColumnGeneratedIdBaseTest<OneColumnGeneratedIdOracle, OneColumnGeneratedIdOracleDao> {
     @Autowired
-    NamedParameterJdbcTemplate jdbcTemplate;
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    OneColumnGeneratedIdOracleDao repo;
+    private OneColumnGeneratedIdOracleDao repo;
 
     @Override
     protected OneColumnGeneratedIdOracleDao getRepo() {

@@ -9,7 +9,6 @@
         <version>0.1</version>
     </parent>
 
-    <groupId>se.plilja.springdaogen</groupId>
     <artifactId>integrationtests</artifactId>
     <version>0.1</version>
     <properties>
@@ -78,6 +77,13 @@
         </dependency>
 
         <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
@@ -90,6 +96,11 @@
         </dependency>
     </dependencies>
     <build>
+        <resources>
+            <resource>
+                <directory>resources</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

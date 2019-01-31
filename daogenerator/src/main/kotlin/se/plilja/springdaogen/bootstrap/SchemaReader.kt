@@ -12,6 +12,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 import java.util.regex.Pattern
+import kotlin.collections.HashMap
 
 
 fun readSchema(config: Config): Schema {
@@ -38,30 +39,64 @@ fun readSchema(config: Config): Schema {
 }
 
 fun catalogToSchema(catalog: Catalog, config: Config): Schema {
-    val filteredTables = catalog.tables
+    val tablesMap = HashMap<schemacrawler.schema.Table, Table>()
+    val columnsMap = HashMap<schemacrawler.schema.Column, Column>()
+    catalog.tables
         .filter { it.hasPrimaryKey() }
-    val convertedTables = filteredTables
-        .map { convertTable(it, config) }
-    return Schema(convertedTables)
+        .forEach { convertTable(it, config, tablesMap, columnsMap) }
+    setForeignKeys(catalog, tablesMap, columnsMap)
+    return Schema(tablesMap.values.toList())
 }
 
-fun convertTable(table: schemacrawler.schema.Table, config: Config): Table {
+fun convertTable(
+    table: schemacrawler.schema.Table,
+    config: Config,
+    tablesMap: HashMap<schemacrawler.schema.Table, Table>,
+    columnsMap: HashMap<schemacrawler.schema.Column, Column>
+) {
+    for (column in table.columns) {
+        columnsMap[column] = convertColumn(table, column, config)
+    }
     val sortedColumns =
         table.columns.sortedBy { c -> if (c.isPartOfPrimaryKey) "-${c.name.toLowerCase()}" else c.name.toLowerCase() } // Primary keys first, then other columns in alphabetic order
-    return Table(
+
+    val convertedTable = Table(
         if (table.schema != null) table.schema.name else null,
         table.name,
-        convertColumn(table, table.primaryKey.columns[0], config),
-        sortedColumns.map { convertColumn(table, it, config) },
+        columnsMap[table.primaryKey.columns[0]]!!,
+        sortedColumns.map { columnsMap[it]!! },
         config.entityPrefix,
         config.entitySuffix,
         config.repositoryPrefix,
         config.repositorySuffix
     )
+    tablesMap[table] = convertedTable
+}
+
+fun setForeignKeys(
+    catalog: Catalog,
+    tablesMap: HashMap<schemacrawler.schema.Table, Table>,
+    columnsMap: HashMap<schemacrawler.schema.Column, Column>
+) {
+    val columnToTable = catalog.tables.flatMap { t -> t.columns.map { Pair(it, t) } }.toMap()
+    for (table in catalog.tables) {
+        for (column in table.columns) {
+            val referencedColumn = column.referencedColumn
+            if (referencedColumn != null) {
+
+                columnsMap[column]?.references =
+                        Pair(tablesMap[columnToTable[referencedColumn]]!!, columnsMap[referencedColumn]!!)
+            }
+        }
+    }
 }
 
 fun convertColumn(table: schemacrawler.schema.Table, column: schemacrawler.schema.Column, config: Config): Column {
-    return Column(column.name, resolveType(column, config), isGenerated(table, column, config))
+    return Column(
+        column.name,
+        resolveType(column, config),
+        isGenerated(table, column, config)
+    )
 }
 
 fun resolveType(column: schemacrawler.schema.Column, config: Config): Class<out Any> {

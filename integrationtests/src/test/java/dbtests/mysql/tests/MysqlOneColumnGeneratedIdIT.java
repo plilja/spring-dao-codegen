@@ -5,22 +5,20 @@ import dbtests.mysql.model.MOneColumnGeneratedIdMysql;
 import dbtests.mysql.model.MOneColumnGeneratedIdMysqlRepo;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @ContextConfiguration(classes = {MysqlITConfig.class})
-@Import(MOneColumnGeneratedIdMysqlRepo.class)
 @RunWith(SpringRunner.class)
 public class MysqlOneColumnGeneratedIdIT extends OneColumnGeneratedIdBaseTest<MOneColumnGeneratedIdMysql, MOneColumnGeneratedIdMysqlRepo> {
 
     @Autowired
-    NamedParameterJdbcTemplate jdbcTemplate;
+    private NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    MOneColumnGeneratedIdMysqlRepo repo;
+    private MOneColumnGeneratedIdMysqlRepo repo;
 
     @Override
     protected MOneColumnGeneratedIdMysqlRepo getRepo() {
