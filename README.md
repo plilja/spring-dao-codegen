@@ -1,5 +1,7 @@
 # Generate daos
 
+ Work in progress
+
 # TODO:s
 * Tables with composite id-columns
 * Generate test implementations for repositories (in memory)
