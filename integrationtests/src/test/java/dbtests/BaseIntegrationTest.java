@@ -3,8 +3,8 @@ package dbtests;
 import dbtests.framework.BaseEntity;
 import dbtests.framework.BaseRepository;
 import dbtests.framework.MaxAllowedCountExceededException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.util.List;
@@ -12,12 +12,17 @@ import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Repo extends BaseRepository<Entity, Integer>> {
 
-    @Before
-    public void before() {
+    @BeforeEach
+    void before() {
         clearTable();
     }
 
@@ -30,7 +35,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     protected abstract String getName(Entity entity);
 
     @Test
-    public void findAll() {
+    void findAll() {
         assertEquals(emptyList(), getRepo().findAll());
 
         for (int i = 1; i <= 10; i++) {
@@ -41,17 +46,19 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
         assertEquals(10, getRepo().findAll().size());
     }
 
-    @Test(expected = MaxAllowedCountExceededException.class)
-    public void findAllExceedsMaxLimit() {
-        for (int i = 0; i < 11; i++) {
-            Entity bazEntity = newEntity(String.format("Bar %d", i));
-            getRepo().create(bazEntity);
-        }
-        getRepo().findAll();
+    @Test
+    void findAllExceedsMaxLimit() {
+        assertThrows(MaxAllowedCountExceededException.class, () -> {
+            for (int i = 0; i < 11; i++) {
+                Entity bazEntity = newEntity(String.format("Bar %d", i));
+                getRepo().create(bazEntity);
+            }
+            getRepo().findAll();
+        });
     }
 
     @Test
-    public void create() {
+    void create() {
         Entity bazEntity = newEntity("Bar");
         getRepo().create(bazEntity);
         assertNotNull(bazEntity.getId());
@@ -62,7 +69,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     }
 
     @Test
-    public void getOneAndFindOne() {
+    void getOneAndFindOne() {
         Entity entity = newEntity("Bar");
         getRepo().create(entity);
 
@@ -73,7 +80,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     }
 
     @Test
-    public void findAllByIds() {
+    void findAllByIds() {
         assertEquals(emptyList(), getRepo().findAllById(List.of(0, 1, 2, 3)));
 
         Entity entity1 = newEntity("Bar1");
@@ -88,7 +95,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     }
 
     @Test
-    public void findPage() {
+    void findPage() {
         assertEquals(emptyList(), getRepo().findPage(0, 10));
 
         for (int i = 1; i <= 10; i++) {
@@ -104,7 +111,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     }
 
     @Test
-    public void existsById() {
+    void existsById() {
         assertFalse(getRepo().existsById(4711));
         Entity entity = newEntity("Bar");
         getRepo().create(entity);
@@ -112,7 +119,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     }
 
     @Test
-    public void saveOnExistingObject() {
+    void saveOnExistingObject() {
         Entity bazEntity = newEntity("Bar");
         getRepo().create(bazEntity);
 
@@ -126,7 +133,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     }
 
     @Test
-    public void saveOnNewObject() {
+    void saveOnNewObject() {
         Entity bazEntity = newEntity("Bar");
         getRepo().save(bazEntity);
 
@@ -138,7 +145,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     }
 
     @Test
-    public void delete() {
+    void delete() {
         Entity bazEntity = newEntity("Bar");
 
         getRepo().create(bazEntity);
@@ -149,7 +156,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     }
 
     @Test
-    public void deleteById() {
+    void deleteById() {
         Entity bazEntity = newEntity("Bar");
 
         getRepo().create(bazEntity);
@@ -160,7 +167,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     }
 
     @Test
-    public void deleteAll() {
+    void deleteAll() {
         Entity entity1 = newEntity("Bar1");
         Entity entity2 = newEntity("Bar2");
         Entity entity3 = newEntity("Bar3");
@@ -179,19 +186,21 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
         assertTrue(getRepo().existsById(entity4.getId()));
     }
 
-    @Test(expected = EmptyResultDataAccessException.class)
-    public void getOneNonExistingThrowsException() {
-        getRepo().getOne(4711);
+    @Test
+    void getOneNonExistingThrowsException() {
+        assertThrows(EmptyResultDataAccessException.class, () -> {
+            getRepo().getOne(4711);
+        });
     }
 
     @Test
-    public void findOneNonExistingReturnsEmpty() {
+    void findOneNonExistingReturnsEmpty() {
         Optional<Entity> maybeT = getRepo().findOneById(4711);
         assertEquals(Optional.empty(), maybeT);
     }
 
     @Test
-    public void count() {
+    void count() {
         assertEquals(0, getRepo().count());
 
         Entity entity1 = newEntity("Bar3");

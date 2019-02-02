@@ -2,15 +2,16 @@ package dbtests;
 
 import dbtests.framework.BaseEntity;
 import dbtests.framework.BaseRepository;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public abstract class OneColumnNaturalIdBaseTest<Entity extends BaseEntity<String>, Repo extends BaseRepository<Entity, String>> {
-    @Before
-    public void before() {
+    @BeforeEach
+    void before() {
         clearTable();
     }
 
@@ -21,7 +22,7 @@ public abstract class OneColumnNaturalIdBaseTest<Entity extends BaseEntity<Strin
     protected abstract Entity newEntity();
 
     @Test
-    public void create() {
+    void create() {
         Entity entity = newEntity();
         entity.setId("Ole");
         getRepo().create(entity);
@@ -31,12 +32,14 @@ public abstract class OneColumnNaturalIdBaseTest<Entity extends BaseEntity<Strin
         assertEquals("Ole", retrievedEntity.getId());
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void updatesAreNotSupported() {
-        Entity entity = newEntity();
-        entity.setId("Ole");
-        getRepo().create(entity);
-        getRepo().save(entity);
+    @Test
+    void updatesAreNotSupported() {
+        assertThrows(UnsupportedOperationException.class, () -> {
+            Entity entity = newEntity();
+            entity.setId("Ole");
+            getRepo().create(entity);
+            getRepo().save(entity);
+        });
     }
 
 }

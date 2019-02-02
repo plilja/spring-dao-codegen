@@ -3,15 +3,15 @@ package dbtests.mssql.tests;
 import dbtests.OneColumnGeneratedIdBaseTest;
 import dbtests.mssql.model.OneColumnGeneratedIdMsSqlEntity;
 import dbtests.mssql.model.OneColumnGeneratedIdMsSqlRepository;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {MsSqlITConfig.class})
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class MsSqlOneColumnGeneratedIdIT extends OneColumnGeneratedIdBaseTest<OneColumnGeneratedIdMsSqlEntity, OneColumnGeneratedIdMsSqlRepository> {
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;

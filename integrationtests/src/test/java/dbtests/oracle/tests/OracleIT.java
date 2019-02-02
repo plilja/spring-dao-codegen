@@ -3,15 +3,15 @@ package dbtests.oracle.tests;
 import dbtests.BaseIntegrationTest;
 import dbtests.oracle.model.BazOracle;
 import dbtests.oracle.model.BazOracleDao;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {OracleITConfig.class})
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class OracleIT extends BaseIntegrationTest<BazOracle, BazOracleDao> {
 
     @Autowired

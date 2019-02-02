@@ -3,15 +3,15 @@ package dbtests.h2.tests;
 import dbtests.OneColumnGeneratedIdBaseTest;
 import dbtests.h2.model.OneColumnGeneratedIdH2;
 import dbtests.h2.model.OneColumnGeneratedIdH2Repo;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {H2Config.class})
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class H2OneColumnGeneratedIdIT extends OneColumnGeneratedIdBaseTest<OneColumnGeneratedIdH2, OneColumnGeneratedIdH2Repo> {
 
     @Autowired

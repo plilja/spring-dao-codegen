@@ -3,15 +3,15 @@ package dbtests.postgres.tests;
 import dbtests.OneColumnNaturalIdBaseTest;
 import dbtests.postgres.model.OneColumnNaturalIdPostgresEntity;
 import dbtests.postgres.model.OneColumnNaturalIdPostgresRepository;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {PostgresITConfig.class})
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class PostgresOneColumnNaturalIdIT extends OneColumnNaturalIdBaseTest<OneColumnNaturalIdPostgresEntity, OneColumnNaturalIdPostgresRepository> {
     @Autowired
     private
