@@ -1,14 +1,13 @@
 package se.plilja.springdaogen.util
 
-import org.junit.Assert.assertEquals
-import org.junit.Test
-import se.plilja.springdaogen.util.camelCase
-import se.plilja.springdaogen.util.snakeCase
+import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
+
 
 class StringUtilTest {
 
     @Test
-    fun testCamelCase() {
+    fun `camel case`() {
         assertEquals("", camelCase(""))
         assertEquals("foo", camelCase("foo"))
         assertEquals("foo", camelCase("FOO"))
@@ -17,7 +16,7 @@ class StringUtilTest {
     }
 
     @Test
-    fun testSnakeCase() {
+    fun `snake case`() {
         assertEquals("", snakeCase(""))
         assertEquals("foo", snakeCase("foo"))
         assertEquals("foo_bar", snakeCase("fooBar"))

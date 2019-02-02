@@ -1,16 +1,15 @@
 package se.plilja.springdaogen.sqlgeneration
 
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import se.plilja.springdaogen.model.Column
 import se.plilja.springdaogen.model.DatabaseDialect
 import se.plilja.springdaogen.model.Table
+import kotlin.test.assertEquals
 
 class SqlTest {
 
-
     @Test
-    fun testUpdate() {
+    fun update() {
         val pk = Column("FOO_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
         val age = Column("AGE", Integer::class.java)
@@ -30,7 +29,7 @@ class SqlTest {
     }
 
     @Test
-    fun testSelectOne() {
+    fun `select one`() {
         val pk = Column("FOO_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
 
@@ -50,7 +49,7 @@ class SqlTest {
     }
 
     @Test
-    fun testSelectNoSchema() {
+    fun `select no schema`() {
         val pk = Column("FOO_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
 
@@ -70,7 +69,7 @@ class SqlTest {
     }
 
     @Test
-    fun testExistsById() {
+    fun existsById() {
         val pk = Column("FOO_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
 
@@ -89,7 +88,7 @@ class SqlTest {
     }
 
     @Test
-    fun testDelete() {
+    fun delete() {
         val pk = Column("FOO_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
 
@@ -106,7 +105,7 @@ class SqlTest {
     }
 
     @Test
-    fun testSelectManyMysql() {
+    fun `select many Mysql`() {
         val pk = Column("FOO_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
 
@@ -126,7 +125,7 @@ class SqlTest {
     }
 
     @Test
-    fun testSelectManyPostgres() {
+    fun `select many Postgres`() {
         val pk = Column("FOO_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
 
@@ -146,7 +145,7 @@ class SqlTest {
     }
 
     @Test
-    fun testSelectManyOracle() {
+    fun `select many Oracle`() {
         val pk = Column("FOO_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
 
@@ -166,7 +165,7 @@ class SqlTest {
     }
 
     @Test
-    fun testSelectManyMsSqlServer() {
+    fun `select many MS Sql`() {
         val pk = Column("FOO_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
 
@@ -185,7 +184,7 @@ class SqlTest {
     }
 
     @Test
-    fun testCount() {
+    fun count() {
         val pk = Column("FOO_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
 

@@ -1,6 +1,6 @@
 package se.plilja.springdaogen.daogeneration
 
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import se.plilja.springdaogen.model.Column
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.DatabaseDialect
@@ -10,7 +10,7 @@ import kotlin.test.assertEquals
 
 class EntityGeneratorTest {
     @Test
-    fun generateEntityWithPropertyNamedId() {
+    fun `entity with property named "id"`() {
         val config =
             Config(
                 "",
@@ -68,7 +68,7 @@ public class Table implements BaseEntity<Integer> {
     }
 
     @Test
-    fun entityWithOneField() {
+    fun `entity with one field`() {
         val config =
             Config(
                 "",

@@ -16,5 +16,4 @@
 * Evil Oracle dependency optional
 * Smart way to build and run all IT-tests
 * Possibility to choose some formatting (for example lower case SQL vs upper case)
-* Junit5, look into Kotlin test libraries
 * Remove create-method and look over interfaces

@@ -1,12 +1,12 @@
 package se.plilja.springdaogen.codegeneration
 
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.sql.Connection
+import kotlin.test.assertEquals
 
 class ClassGeneratorTest {
     @Test
-    fun testGen() {
+    fun `base case`() {
         val g = ClassGenerator("Foo", "se.plilja.test", "")
         g.addImport(Connection::class.java)
         g.addField("bar", String::class.java)
@@ -55,7 +55,7 @@ public class Foo {
     }
 
     @Test
-    fun testGenExtends() {
+    fun `with extends`() {
         val g = ClassGenerator("Foo", "se.plilja.test", "")
         g.setExtends(A::class.java)
 
@@ -78,7 +78,7 @@ public class Foo extends A {
     }
 
     @Test
-    fun testGenExtendsWithGenerics() {
+    fun `extends with generics`() {
         val g = ClassGenerator("Foo", "se.plilja.test", "")
         g.extends = "B<Integer>"
         g.addImport(B::class.java)
@@ -102,7 +102,7 @@ public class Foo extends B<Integer> {
     }
 
     @Test
-    fun testGenExtendsWithConstant() {
+    fun `with static constant`() {
         val g = ClassGenerator("Foo", "se.plilja.test", "")
         g.addConstant("BAR", String::class.java, "\"BAZ\"")
         g.isConstantsClass = true
@@ -126,7 +126,7 @@ public class Foo {
     }
 
     @Test
-    fun testAbstractClass() {
+    fun `abstract class`() {
         val g = ClassGenerator("Foo", "se.plilja.test", "")
         g.isAbstract = true
 

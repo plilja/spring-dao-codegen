@@ -1,15 +1,15 @@
 package se.plilja.springdaogen.sqlgeneration
 
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import se.plilja.springdaogen.model.Column
 import se.plilja.springdaogen.model.DatabaseDialect
 import se.plilja.springdaogen.model.Table
+import kotlin.test.assertEquals
 
 
 class SqlInsertTest {
     @Test
-    fun baseCase() {
+    fun `base case`() {
         val pk = Column("FOO_ID", Integer::class.java, true)
         val name = Column("NAME", String::class.java)
         val age = Column("AGE", Integer::class.java)
@@ -33,7 +33,7 @@ class SqlInsertTest {
     }
 
     @Test
-    fun oneGeneratedColumnPostgres() {
+    fun `only one generated column Postgres`() {
         val pk = Column("foo_id", Integer::class.java, true)
 
         // when
@@ -44,7 +44,7 @@ class SqlInsertTest {
     }
 
     @Test
-    fun oneGeneratedColumnMssql() {
+    fun `only one generated column MS Sql`() {
         val pk = Column("foo_id", Integer::class.java, true)
 
         // when
@@ -55,7 +55,7 @@ class SqlInsertTest {
     }
 
     @Test
-    fun oneGeneratedColumnMysql() {
+    fun `only one generated column Mysql`() {
         val pk = Column("foo_id", Integer::class.java, true)
 
         // when
@@ -66,7 +66,7 @@ class SqlInsertTest {
     }
 
     @Test
-    fun oneGeneratedColumnOracle() {
+    fun `only one generated column Oracle`() {
         val pk = Column("foo_id", Integer::class.java, true)
 
         // when
@@ -77,7 +77,7 @@ class SqlInsertTest {
     }
 
     @Test
-    fun oneNonGeneratedColumn() {
+    fun `only one non generated column`() {
         val pk = Column("foo_id", Integer::class.java, false)
 
         // when

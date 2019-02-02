@@ -1,26 +1,26 @@
 package se.plilja.springdaogen.daogeneration
 
-import org.junit.Assert.assertEquals
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import se.plilja.springdaogen.model.Column
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.DatabaseDialect
 import se.plilja.springdaogen.model.Table
+import kotlin.test.assertEquals
 
 class RepositoryGeneratorTest {
 
     @Test
-    fun tableWithOnlyOneColumn() {
+    fun `table with only one column`() {
         // TODO
     }
 
     @Test
-    fun tableWithAggregateIdColumns() {
+    fun `table with aggregate id columns`() {
         // TODO
     }
 
     @Test
-    fun tableWithIdColumnNamedID() {
+    fun `table with column named "id"`() {
         val config = Config(
             "",
             DatabaseDialect.MYSQL,
@@ -166,7 +166,7 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
     }
 
     @Test
-    fun tableGenerateTable() {
+    fun `generate table`() {
         val config = Config(
             "",
             DatabaseDialect.MYSQL,
@@ -313,7 +313,7 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
 
 
     @Test
-    fun getAbstractRepository() {
+    fun `abstract repository`() {
         val config = Config(
             "",
             DatabaseDialect.MYSQL,
