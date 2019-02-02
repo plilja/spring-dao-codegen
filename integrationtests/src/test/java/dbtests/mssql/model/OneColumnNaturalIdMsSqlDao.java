@@ -1,4 +1,4 @@
-package dbtests.mysql.model;
+package dbtests.mssql.model;
 
 import dbtests.framework.Dao;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,30 +9,28 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
+public class OneColumnNaturalIdMsSqlDao extends Dao<OneColumnNaturalIdMsSqlEntity, String> {
 
-    private static final RowMapper<MBazMysql> ROW_MAPPER = (rs, i) -> {
-        MBazMysql r = new MBazMysql();
-        r.setId(rs.getObject("id") != null ? rs.getInt("id") : null);
-        r.setName(rs.getString("name"));
+    private static final RowMapper<OneColumnNaturalIdMsSqlEntity> ROW_MAPPER = (rs, i) -> {
+        OneColumnNaturalIdMsSqlEntity r = new OneColumnNaturalIdMsSqlEntity();
+        r.setId(rs.getString("id"));
         return r;
     };
 
     @Autowired
-    public MBazMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, true, jdbcTemplate);
+    public OneColumnNaturalIdMsSqlDao(NamedParameterJdbcTemplate jdbcTemplate) {
+        super(String.class, false, jdbcTemplate);
     }
 
     @Override
-    public SqlParameterSource getParams(MBazMysql o) {
+    public SqlParameterSource getParams(OneColumnNaturalIdMsSqlEntity o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
-        m.addValue("name", o.getName());
         return m;
     }
 
     @Override
-    protected RowMapper<MBazMysql> getRowMapper() {
+    protected RowMapper<OneColumnNaturalIdMsSqlEntity> getRowMapper() {
         return ROW_MAPPER;
     }
 
@@ -40,63 +38,58 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
     protected String getExistsByIdSql() {
         return "SELECT " +
                 "COUNT(*) " +
-                "FROM BazMysql " +
+                "FROM dbo.ONE_COLUMN_NATURAL_ID_MS_SQL " +
                 "WHERE id = :id";
     }
 
     @Override
     protected String getSelectIdsSql() {
         return "SELECT " +
-                "id, " +
-                "name " +
-                "FROM BazMysql " +
+                "id " +
+                "FROM dbo.ONE_COLUMN_NATURAL_ID_MS_SQL " +
                 "WHERE id IN (:ids)";
     }
 
     @Override
     protected String getSelectManySql(int maxSelectCount) {
-        return String.format("SELECT " +
-                "   id, " +
-                "   name " +
-                "FROM BazMysql " +
-                "LIMIT %d", maxSelectCount);
+        return String.format("SELECT TOP %d " +
+                "   id " +
+                "FROM dbo.ONE_COLUMN_NATURAL_ID_MS_SQL ", maxSelectCount);
     }
 
     @Override
     protected String getSelectPageSql(long start, int pageSize) {
         return String.format("SELECT %n" +
-                "id, %n" +
-                "name %n" +
-                "FROM BazMysql %n" +
-                "LIMIT %d OFFSET %d", pageSize, start);
+                "id %n" +
+                "FROM dbo.ONE_COLUMN_NATURAL_ID_MS_SQL %n" +
+                "ORDER BY id %n" +
+                "OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", start, pageSize);
     }
 
     @Override
     protected String getInsertSql() {
-        return "INSERT INTO BazMysql (" +
-                "   name" +
+        return "INSERT INTO dbo.ONE_COLUMN_NATURAL_ID_MS_SQL (" +
+                "   id" +
                 ") " +
                 "VALUES (" +
-                "   :name" +
+                "   :id" +
                 ")";
     }
 
     @Override
     protected String getUpdateSql() {
-        return "UPDATE BazMysql SET " +
-                "   name = :name " +
-                "WHERE id = :id";
+        throw new UnsupportedOperationException();
     }
 
     @Override
     protected String getDeleteSql() {
-        return "DELETE FROM BazMysql " +
+        return "DELETE FROM dbo.ONE_COLUMN_NATURAL_ID_MS_SQL " +
                 "WHERE id IN (:ids)";
     }
 
     @Override
     protected String getCountSql() {
-        return "SELECT COUNT(*) FROM BazMysql";
+        return "SELECT COUNT(*) FROM dbo.ONE_COLUMN_NATURAL_ID_MS_SQL";
     }
 
     @Override

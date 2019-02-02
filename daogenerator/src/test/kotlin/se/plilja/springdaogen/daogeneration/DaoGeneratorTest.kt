@@ -7,7 +7,7 @@ import se.plilja.springdaogen.model.DatabaseDialect
 import se.plilja.springdaogen.model.Table
 import kotlin.test.assertEquals
 
-class RepositoryGeneratorTest {
+class DaoGeneratorTest {
 
     @Test
     fun `table with only one column`() {
@@ -41,10 +41,10 @@ class RepositoryGeneratorTest {
         val pk = Column("ID", Integer::class.java, true)
         val name = Column("name", String::class.java)
         val table =
-            Table("dbo", "Table", pk, listOf(pk, name), repositorySuffix = "Repository", entitySuffix = "Entity")
+            Table("dbo", "Table", pk, listOf(pk, name), daoSuffix = "Repository", entitySuffix = "Entity")
 
         // when
-        val res = generateRepository(config, table)
+        val res = generateDao(config, table)
         val act = res.generate()
 
         // then
@@ -59,7 +59,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class TableRepository extends BaseRepository<TableEntity, Integer> {
+public class TableRepository extends Dao<TableEntity, Integer> {
 
     private static final RowMapper<TableEntity> ROW_MAPPER = (rs, i) -> {
         TableEntity r = new TableEntity();
@@ -187,10 +187,10 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
         val pk = Column("tableId", Integer::class.java, true)
         val name = Column("name", String::class.java)
         val table =
-            Table("dbo", "Table", pk, listOf(pk, name), repositorySuffix = "Repository", entitySuffix = "Entity")
+            Table("dbo", "Table", pk, listOf(pk, name), daoSuffix = "Repository", entitySuffix = "Entity")
 
         // when
-        val res = generateRepository(config, table)
+        val res = generateDao(config, table)
         val act = res.generate()
 
         // then
@@ -205,7 +205,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class TableRepository extends BaseRepository<TableEntity, Integer> {
+public class TableRepository extends Dao<TableEntity, Integer> {
 
     private static final RowMapper<TableEntity> ROW_MAPPER = (rs, i) -> {
         TableEntity r = new TableEntity();
@@ -330,16 +330,16 @@ public class TableRepository extends BaseRepository<TableEntity, Integer> {
             10,
             emptyList(),
             false,
-            repositoriesAreAbstract = true,
-            repositoryPrefix = "Abstract"
+            daosAreAbstract = true,
+            daoPrefix = "Abstract"
         )
         val pk = Column("id", Integer::class.java, true)
         val name = Column("name", String::class.java)
         val table =
-            Table("dbo", "Table", pk, listOf(pk, name), repositoryPrefix = "Abstract", repositorySuffix = "Repository")
+            Table("dbo", "Table", pk, listOf(pk, name), daoPrefix = "Abstract", daoSuffix = "Repository")
 
         // when
-        val res = generateRepository(config, table)
+        val res = generateDao(config, table)
         val act = res.generate()
 
         // then
@@ -351,7 +351,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 
-public abstract class AbstractTableRepository extends BaseRepository<Table, Integer> {
+public abstract class AbstractTableRepository extends Dao<Table, Integer> {
 
     private static final RowMapper<Table> ROW_MAPPER = (rs, i) -> {
         Table r = new Table();

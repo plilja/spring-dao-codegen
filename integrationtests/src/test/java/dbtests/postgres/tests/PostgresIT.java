@@ -1,8 +1,8 @@
 package dbtests.postgres.tests;
 
 import dbtests.BaseIntegrationTest;
+import dbtests.postgres.model.BazPostgresDao;
 import dbtests.postgres.model.BazPostgresEntity;
-import dbtests.postgres.model.BazPostgresRepository;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -12,16 +12,16 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {PostgresITConfig.class})
 @ExtendWith(SpringExtension.class)
-public class PostgresIT extends BaseIntegrationTest<BazPostgresEntity, BazPostgresRepository> {
+public class PostgresIT extends BaseIntegrationTest<BazPostgresEntity, BazPostgresDao> {
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    private BazPostgresRepository repo;
+    private BazPostgresDao repo;
 
     @Override
-    protected BazPostgresRepository getRepo() {
+    protected BazPostgresDao getRepo() {
         return repo;
     }
 

@@ -2,7 +2,7 @@ package dbtests.oracle.tests;
 
 import dbtests.OneColumnGeneratedIdBaseTest;
 import dbtests.oracle.model.OneColumnGeneratedIdOracle;
-import dbtests.oracle.model.OneColumnGeneratedIdOracleDao;
+import dbtests.oracle.model.OneColumnGeneratedIdOracleRepository;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -12,15 +12,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {OracleITConfig.class})
 @ExtendWith(SpringExtension.class)
-public class OracleOneColumnGeneratedIdIT extends OneColumnGeneratedIdBaseTest<OneColumnGeneratedIdOracle, OneColumnGeneratedIdOracleDao> {
+public class OracleOneColumnGeneratedIdIT extends OneColumnGeneratedIdBaseTest<OneColumnGeneratedIdOracle, OneColumnGeneratedIdOracleRepository> {
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    private OneColumnGeneratedIdOracleDao repo;
+    private OneColumnGeneratedIdOracleRepository repo;
 
     @Override
-    protected OneColumnGeneratedIdOracleDao getRepo() {
+    protected OneColumnGeneratedIdOracleRepository getRepo() {
         return repo;
     }
 

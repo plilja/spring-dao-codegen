@@ -1,8 +1,8 @@
 package dbtests.mssql.tests;
 
 import dbtests.BaseIntegrationTest;
+import dbtests.mssql.model.BazMsSqlDao;
 import dbtests.mssql.model.BazMsSqlEntity;
-import dbtests.mssql.model.BazMsSqlRepository;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -12,16 +12,16 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {MsSqlITConfig.class})
 @ExtendWith(SpringExtension.class)
-public class MsSqlIT extends BaseIntegrationTest<BazMsSqlEntity, BazMsSqlRepository> {
+public class MsSqlIT extends BaseIntegrationTest<BazMsSqlEntity, BazMsSqlDao> {
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    private BazMsSqlRepository repo;
+    private BazMsSqlDao repo;
 
     @Override
-    protected BazMsSqlRepository getRepo() {
+    protected BazMsSqlDao getRepo() {
         return repo;
     }
 

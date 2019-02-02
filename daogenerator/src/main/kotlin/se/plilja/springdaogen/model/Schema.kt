@@ -20,16 +20,16 @@ data class Table(
     val columns: List<Column>,
     val entityPrefix: String = "",
     val entitySuffix: String = "",
-    val repositoryPrefix: String = "", // TODO better to get the config object?
-    val repositorySuffix: String = ""
+    val daoPrefix: String = "", // TODO better to get the config object?
+    val daoSuffix: String = ""
 ) {
 
     fun entityName(): String {
         return entityPrefix + capitalizeFirst(camelCase(name)) + entitySuffix
     }
 
-    fun repositoryName(): String {
-        return repositoryPrefix + capitalizeFirst(camelCase(name)) + repositorySuffix
+    fun daoName(): String {
+        return daoPrefix + capitalizeFirst(camelCase(name)) + daoSuffix
     }
 }
 

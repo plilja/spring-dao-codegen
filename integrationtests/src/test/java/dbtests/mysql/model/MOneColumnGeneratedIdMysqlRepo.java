@@ -1,6 +1,6 @@
 package dbtests.mysql.model;
 
-import dbtests.framework.BaseRepository;
+import dbtests.framework.Dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class MOneColumnGeneratedIdMysqlRepo extends BaseRepository<MOneColumnGeneratedIdMysql, Integer> {
+public class MOneColumnGeneratedIdMysqlRepo extends Dao<MOneColumnGeneratedIdMysql, Integer> {
 
     private static final RowMapper<MOneColumnGeneratedIdMysql> ROW_MAPPER = (rs, i) -> {
         MOneColumnGeneratedIdMysql r = new MOneColumnGeneratedIdMysql();

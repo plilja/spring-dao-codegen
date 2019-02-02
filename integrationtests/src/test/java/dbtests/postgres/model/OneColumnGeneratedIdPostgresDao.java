@@ -1,6 +1,6 @@
 package dbtests.postgres.model;
 
-import dbtests.framework.BaseRepository;
+import dbtests.framework.Dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class OneColumnGeneratedIdPostgresRepository extends BaseRepository<OneColumnGeneratedIdPostgresEntity, Integer> {
+public class OneColumnGeneratedIdPostgresDao extends Dao<OneColumnGeneratedIdPostgresEntity, Integer> {
 
     private static final RowMapper<OneColumnGeneratedIdPostgresEntity> ROW_MAPPER = (rs, i) -> {
         OneColumnGeneratedIdPostgresEntity r = new OneColumnGeneratedIdPostgresEntity();
@@ -18,7 +18,7 @@ public class OneColumnGeneratedIdPostgresRepository extends BaseRepository<OneCo
     };
 
     @Autowired
-    public OneColumnGeneratedIdPostgresRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    public OneColumnGeneratedIdPostgresDao(NamedParameterJdbcTemplate jdbcTemplate) {
         super(Integer.class, true, jdbcTemplate);
     }
 

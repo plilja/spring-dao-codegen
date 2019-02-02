@@ -1,7 +1,7 @@
 package dbtests;
 
 import dbtests.framework.BaseEntity;
-import dbtests.framework.BaseRepository;
+import dbtests.framework.Dao;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
-public abstract class OneColumnGeneratedIdBaseTest<Entity extends BaseEntity<Integer>, Repo extends BaseRepository<Entity, Integer>> {
+public abstract class OneColumnGeneratedIdBaseTest<Entity extends BaseEntity<Integer>, Repo extends Dao<Entity, Integer>> {
     @BeforeEach
     void before() {
         clearTable();

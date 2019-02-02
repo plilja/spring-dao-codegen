@@ -13,19 +13,19 @@ data class Config(
     val databaseDriver: String,
     val entityOutputFolder: String,
     val entityOutputPackage: String,
-    val repositoryOutputFolder: String,
-    val repositoryOutputPackage: String,
+    val daoOutputFolder: String,
+    val daoOutputPackage: String,
     val frameworkOutputFolder: String,
     val frameworkOutputPackage: String,
     val maxSelectAllCount: Int,
     val schemas: List<String>,
     val useLombok: Boolean,
-    val repositoriesAreAbstract: Boolean = false,
+    val daosAreAbstract: Boolean = false,
     val hasGeneratedPrimaryKeysOverride: List<String> = emptyList(),
     val entityPrefix: String = "",
     val entitySuffix: String = "",
-    val repositoryPrefix: String = "",
-    val repositorySuffix: String = "Repository",
+    val daoPrefix: String = "",
+    val daoSuffix: String = "Dao",
     val generateTestDdl: Boolean = false,
     val testResourceFolder: String? = null
 ) {
@@ -63,19 +63,19 @@ private class ConfigReader {
             databaseDriver = databaseDriver(),
             entityOutputFolder = entityOutputFolder(),
             entityOutputPackage = entityOutputPackage(),
-            repositoryOutputFolder = repositoryOutputFolder(),
-            repositoryOutputPackage = repositoryOutputPackage(),
+            daoOutputFolder = daoOutputFolder(),
+            daoOutputPackage = daoOutputPackage(),
             frameworkOutputFolder = frameworkOutputFolder(),
             frameworkOutputPackage = frameworkOutputPackage(),
             maxSelectAllCount = maxSelectAllCount(),
             schemas = getSchemas(),
             useLombok = useLombok(),
-            repositoriesAreAbstract = repositoriesAreAbstract(),
+            daosAreAbstract = daoAreAbstract(),
             hasGeneratedPrimaryKeysOverride = getGeneratedPrimaryKeysOverride(),
             entityPrefix = getEntityPrefix(),
             entitySuffix = getEntitySuffix(),
-            repositoryPrefix = getRepositoryPrefix(),
-            repositorySuffix = getRepositorySuffix(),
+            daoPrefix = getDaoPrefix(),
+            daoSuffix = getDaoSuffix(),
             generateTestDdl = generateTestDdl(),
             testResourceFolder = getTestResourceFolder()
         )
@@ -96,17 +96,17 @@ private class ConfigReader {
 
     private fun entityOutputPackage() = properties.getProperty("entity.output.package")
 
-    private fun repositoryOutputFolder() = getFolderProperty("repository.output.folder")
+    private fun daoOutputFolder() = getFolderProperty("dao.output.folder")
 
-    private fun repositoryOutputPackage() = properties.getProperty("repository.output.package")
+    private fun daoOutputPackage() = properties.getProperty("dao.output.package")
 
     private fun getEntityPrefix() = properties.getProperty("entity.output.prefix", "")
 
     private fun getEntitySuffix() = properties.getProperty("entity.output.suffix", "")
 
-    private fun getRepositoryPrefix() = properties.getProperty("repository.output.prefix", "")
+    private fun getDaoPrefix() = properties.getProperty("dao.output.prefix", "")
 
-    private fun getRepositorySuffix() = properties.getProperty("repository.output.suffix", "Repository")
+    private fun getDaoSuffix() = properties.getProperty("dao.output.suffix", "Dao")
 
     private fun getTestResourceFolder() = properties.getProperty("test.resource_folder", null)
 
@@ -132,7 +132,7 @@ private class ConfigReader {
 
     private fun getDatabaseName() = properties.getProperty("database.name")
 
-    private fun repositoriesAreAbstract() = properties.getProperty("repository.output.abstract", "false") == "true"
+    private fun daoAreAbstract() = properties.getProperty("dao.output.abstract", "false") == "true"
 
     private fun useLombok() = properties.getProperty("use_lombok", "false") == "true"
 

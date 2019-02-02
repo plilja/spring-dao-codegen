@@ -1,6 +1,6 @@
 package dbtests.oracle.model;
 
-import dbtests.framework.BaseRepository;
+import dbtests.framework.Dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,28 +9,28 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class OneColumnNaturalIdOracleDao extends BaseRepository<OneColumnNaturalIdOracle, String> {
+public class OneColumnGeneratedIdOracleRepository extends Dao<OneColumnGeneratedIdOracle, Integer> {
 
-    private static final RowMapper<OneColumnNaturalIdOracle> ROW_MAPPER = (rs, i) -> {
-        OneColumnNaturalIdOracle r = new OneColumnNaturalIdOracle();
-        r.setId(rs.getString("ID"));
+    private static final RowMapper<OneColumnGeneratedIdOracle> ROW_MAPPER = (rs, i) -> {
+        OneColumnGeneratedIdOracle r = new OneColumnGeneratedIdOracle();
+        r.setId(rs.getObject("ID") != null ? rs.getInt("ID") : null);
         return r;
     };
 
     @Autowired
-    public OneColumnNaturalIdOracleDao(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(String.class, false, jdbcTemplate);
+    public OneColumnGeneratedIdOracleRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+        super(Integer.class, true, jdbcTemplate);
     }
 
     @Override
-    public SqlParameterSource getParams(OneColumnNaturalIdOracle o) {
+    public SqlParameterSource getParams(OneColumnGeneratedIdOracle o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("ID", o.getId());
         return m;
     }
 
     @Override
-    protected RowMapper<OneColumnNaturalIdOracle> getRowMapper() {
+    protected RowMapper<OneColumnGeneratedIdOracle> getRowMapper() {
         return ROW_MAPPER;
     }
 
@@ -38,7 +38,7 @@ public class OneColumnNaturalIdOracleDao extends BaseRepository<OneColumnNatural
     protected String getExistsByIdSql() {
         return "SELECT " +
                 "COUNT(*) " +
-                "FROM DOCKER.ONE_COLUMN_NATURAL_ID_ORACLE " +
+                "FROM DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE " +
                 "WHERE ID = :ID";
     }
 
@@ -46,7 +46,7 @@ public class OneColumnNaturalIdOracleDao extends BaseRepository<OneColumnNatural
     protected String getSelectIdsSql() {
         return "SELECT " +
                 "ID " +
-                "FROM DOCKER.ONE_COLUMN_NATURAL_ID_ORACLE " +
+                "FROM DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE " +
                 "WHERE ID IN (:ids)";
     }
 
@@ -54,7 +54,7 @@ public class OneColumnNaturalIdOracleDao extends BaseRepository<OneColumnNatural
     protected String getSelectManySql(int maxSelectCount) {
         return String.format("SELECT " +
                 "   ID " +
-                "FROM DOCKER.ONE_COLUMN_NATURAL_ID_ORACLE " +
+                "FROM DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE " +
                 "WHERE ROWNUM <= %d", maxSelectCount);
     }
 
@@ -64,7 +64,7 @@ public class OneColumnNaturalIdOracleDao extends BaseRepository<OneColumnNatural
                 "SELECT rownum tmp_rownum_, a.* %n" +
                 "FROM (SELECT %n" +
                 "ID %n" +
-                "FROM DOCKER.ONE_COLUMN_NATURAL_ID_ORACLE %n" +
+                "FROM DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE %n" +
                 "ORDER BY ID %n" +
                 ") a %n" +
                 "WHERE rownum < %d + %d %n" +
@@ -74,12 +74,7 @@ public class OneColumnNaturalIdOracleDao extends BaseRepository<OneColumnNatural
 
     @Override
     protected String getInsertSql() {
-        return "INSERT INTO DOCKER.ONE_COLUMN_NATURAL_ID_ORACLE (" +
-                "   ID" +
-                ") " +
-                "VALUES (" +
-                "   :ID" +
-                ")";
+        return "INSERT INTO DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE(ID) VALUES(null)";
     }
 
     @Override
@@ -89,13 +84,13 @@ public class OneColumnNaturalIdOracleDao extends BaseRepository<OneColumnNatural
 
     @Override
     protected String getDeleteSql() {
-        return "DELETE FROM DOCKER.ONE_COLUMN_NATURAL_ID_ORACLE " +
+        return "DELETE FROM DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE " +
                 "WHERE ID IN (:ids)";
     }
 
     @Override
     protected String getCountSql() {
-        return "SELECT COUNT(*) FROM DOCKER.ONE_COLUMN_NATURAL_ID_ORACLE";
+        return "SELECT COUNT(*) FROM DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE";
     }
 
     @Override

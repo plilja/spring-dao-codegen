@@ -3,11 +3,10 @@
  Work in progress
 
 # TODO:s
+* Test different data types for columns (especially Oracle numbers)
 * Tables with composite id-columns
-* Generate test implementations for repositories (in memory)
 * SqlLite
 * MariaDb
-* H2
 * Nicer console output
 * Command line interface
 * Customize lombok annotations?
@@ -17,3 +16,4 @@
 * Smart way to build and run all IT-tests
 * Possibility to choose some formatting (for example lower case SQL vs upper case)
 * Remove create-method and look over interfaces
+* Database patterns? (modifiedAt, changedBy, version, soft delete etc...)

@@ -1,6 +1,6 @@
 package dbtests.mssql.model;
 
-import dbtests.framework.BaseRepository;
+import dbtests.framework.Dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class OneColumnGeneratedIdMsSqlRepository extends BaseRepository<OneColumnGeneratedIdMsSqlEntity, Integer> {
+public class OneColumnGeneratedIdMsSqlDao extends Dao<OneColumnGeneratedIdMsSqlEntity, Integer> {
 
     private static final RowMapper<OneColumnGeneratedIdMsSqlEntity> ROW_MAPPER = (rs, i) -> {
         OneColumnGeneratedIdMsSqlEntity r = new OneColumnGeneratedIdMsSqlEntity();
@@ -18,7 +18,7 @@ public class OneColumnGeneratedIdMsSqlRepository extends BaseRepository<OneColum
     };
 
     @Autowired
-    public OneColumnGeneratedIdMsSqlRepository(NamedParameterJdbcTemplate jdbcTemplate) {
+    public OneColumnGeneratedIdMsSqlDao(NamedParameterJdbcTemplate jdbcTemplate) {
         super(Integer.class, true, jdbcTemplate);
     }
 

@@ -1,6 +1,6 @@
 package dbtests.h2.model;
 
-import dbtests.framework.BaseRepository;
+import dbtests.framework.Dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class OneColumnNaturalIdH2Repo extends BaseRepository<OneColumnNaturalIdH2, String> {
+public class OneColumnNaturalIdH2Repo extends Dao<OneColumnNaturalIdH2, String> {
 
     private static final RowMapper<OneColumnNaturalIdH2> ROW_MAPPER = (rs, i) -> {
         OneColumnNaturalIdH2 r = new OneColumnNaturalIdH2();

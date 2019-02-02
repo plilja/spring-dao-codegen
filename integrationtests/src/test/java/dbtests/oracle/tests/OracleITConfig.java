@@ -1,8 +1,8 @@
 package dbtests.oracle.tests;
 
-import dbtests.oracle.model.BazOracleDao;
-import dbtests.oracle.model.OneColumnGeneratedIdOracleDao;
-import dbtests.oracle.model.OneColumnNaturalIdOracleDao;
+import dbtests.oracle.model.BazOracleRepository;
+import dbtests.oracle.model.OneColumnGeneratedIdOracleRepository;
+import dbtests.oracle.model.OneColumnNaturalIdOracleRepository;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +11,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
 
-@Import({BazOracleDao.class, OneColumnNaturalIdOracleDao.class, OneColumnGeneratedIdOracleDao.class})
+@Import({BazOracleRepository.class, OneColumnNaturalIdOracleRepository.class, OneColumnGeneratedIdOracleRepository.class})
 @Configuration
 public class OracleITConfig {
     @Bean

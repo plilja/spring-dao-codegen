@@ -2,10 +2,17 @@ package se.plilja.springdaogen.bootstrap
 
 import org.springframework.boot.jdbc.DataSourceBuilder
 import schemacrawler.schema.Catalog
-import schemacrawler.schemacrawler.*
+import schemacrawler.schemacrawler.ExcludeAll
+import schemacrawler.schemacrawler.IncludeAll
+import schemacrawler.schemacrawler.RegularExpressionInclusionRule
+import schemacrawler.schemacrawler.SchemaCrawlerOptionsBuilder
+import schemacrawler.schemacrawler.SchemaInfoLevelBuilder
 import schemacrawler.utility.SchemaCrawlerUtility
-import se.plilja.springdaogen.model.*
+import se.plilja.springdaogen.model.Column
 import se.plilja.springdaogen.model.Config
+import se.plilja.springdaogen.model.DatabaseDialect
+import se.plilja.springdaogen.model.Schema
+import se.plilja.springdaogen.model.Table
 import java.sql.Connection
 import java.sql.SQLXML
 import java.time.LocalDate
@@ -67,8 +74,8 @@ fun convertTable(
         sortedColumns.map { columnsMap[it]!! },
         config.entityPrefix,
         config.entitySuffix,
-        config.repositoryPrefix,
-        config.repositorySuffix
+        config.daoPrefix,
+        config.daoSuffix
     )
     tablesMap[table] = convertedTable
 }

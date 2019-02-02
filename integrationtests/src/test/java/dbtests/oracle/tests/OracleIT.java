@@ -2,7 +2,7 @@ package dbtests.oracle.tests;
 
 import dbtests.BaseIntegrationTest;
 import dbtests.oracle.model.BazOracle;
-import dbtests.oracle.model.BazOracleDao;
+import dbtests.oracle.model.BazOracleRepository;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -12,7 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {OracleITConfig.class})
 @ExtendWith(SpringExtension.class)
-public class OracleIT extends BaseIntegrationTest<BazOracle, BazOracleDao> {
+public class OracleIT extends BaseIntegrationTest<BazOracle, BazOracleRepository> {
 
     @Autowired
     private
@@ -20,10 +20,10 @@ public class OracleIT extends BaseIntegrationTest<BazOracle, BazOracleDao> {
 
     @Autowired
     private
-    BazOracleDao repo;
+    BazOracleRepository repo;
 
     @Override
-    protected BazOracleDao getRepo() {
+    protected BazOracleRepository getRepo() {
         return repo;
     }
 

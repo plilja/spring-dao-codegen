@@ -23,15 +23,15 @@ class TableTest {
         val pk = Column("id", Int::class.java, true)
         val table = Table("entityfoo", "Table", pk, listOf(pk))
 
-        assertEquals("Table", table.repositoryName())
-        assertEquals("Table", table.copy(name = "TABLE").repositoryName())
-        assertEquals("Table", table.copy(name = "table").repositoryName())
-        assertEquals("TableSuffix", table.copy(repositorySuffix = "Suffix").repositoryName())
-        assertEquals("PrefixTable", table.copy(repositoryPrefix = "Prefix").repositoryName())
-        assertEquals("PrefixTable", table.copy(name = "table", repositoryPrefix = "Prefix").repositoryName())
+        assertEquals("Table", table.daoName())
+        assertEquals("Table", table.copy(name = "TABLE").daoName())
+        assertEquals("Table", table.copy(name = "table").daoName())
+        assertEquals("TableSuffix", table.copy(daoSuffix = "Suffix").daoName())
+        assertEquals("PrefixTable", table.copy(daoPrefix = "Prefix").daoName())
+        assertEquals("PrefixTable", table.copy(name = "table", daoPrefix = "Prefix").daoName())
         assertEquals(
             "PrefixTableSuffix",
-            table.copy(repositoryPrefix = "Prefix", repositorySuffix = "Suffix").repositoryName()
+            table.copy(daoPrefix = "Prefix", daoSuffix = "Suffix").daoName()
         )
     }
 }

@@ -1,4 +1,10 @@
-package dbtests.framework;
+package se.plilja.springdaogen.generatedframework
+
+
+fun dao(_package: String): Pair<String, String> {
+    return Pair(
+        "Dao", """
+package $_package;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -7,15 +13,20 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-public abstract class BaseRepository<T extends BaseEntity<ID>, ID> {
+public abstract class Dao<T extends BaseEntity<ID>, ID> {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private Class<ID> idClass;
     private boolean idIsGenerated;
 
-    protected BaseRepository(Class<ID> idClass, boolean idIsGenerated, NamedParameterJdbcTemplate jdbcTemplate) {
+    protected Dao(Class<ID> idClass, boolean idIsGenerated, NamedParameterJdbcTemplate jdbcTemplate) {
         this.idClass = idClass;
         this.idIsGenerated = idIsGenerated;
         this.jdbcTemplate = jdbcTemplate;
@@ -190,4 +201,6 @@ public abstract class BaseRepository<T extends BaseEntity<ID>, ID> {
      * unexpectedly large queries that may cause performance degradation.
      */
     protected abstract int getSelectAllDefaultMaxCount();
+}
+    """.trimIndent())
 }

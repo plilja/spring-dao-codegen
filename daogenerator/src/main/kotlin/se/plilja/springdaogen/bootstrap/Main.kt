@@ -1,9 +1,9 @@
 package se.plilja.springdaogen.bootstrap
 
 import se.plilja.springdaogen.codegeneration.toH2Ddl
-import se.plilja.springdaogen.daogeneration.generateDaos
+import se.plilja.springdaogen.daogeneration.generateCode
 import se.plilja.springdaogen.generatedframework.baseEntity
-import se.plilja.springdaogen.generatedframework.baseRepository
+import se.plilja.springdaogen.generatedframework.dao
 import se.plilja.springdaogen.generatedframework.frameworkExceptions
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Schema
@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
 }
 
 private fun writeDaos(config: Config, schema: Schema) {
-    val classes = generateDaos(config, schema)
+    val classes = generateCode(config, schema)
     for (classGenerator in classes) {
         val dir = File(classGenerator.getOutputFolder())
         dir.mkdirs()
@@ -48,7 +48,7 @@ fun copyFrameworkClasses(config: Config) {
     }
 
     writeFrameworkClass(baseEntity(config.frameworkOutputPackage))
-    writeFrameworkClass(baseRepository(config.frameworkOutputPackage))
+    writeFrameworkClass(dao(config.frameworkOutputPackage))
     for (exceptionClass in frameworkExceptions(config.frameworkOutputPackage)) {
         writeFrameworkClass(exceptionClass)
     }

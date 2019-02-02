@@ -1,8 +1,8 @@
 package dbtests.postgres.tests;
 
 import dbtests.OneColumnGeneratedIdBaseTest;
+import dbtests.postgres.model.OneColumnGeneratedIdPostgresDao;
 import dbtests.postgres.model.OneColumnGeneratedIdPostgresEntity;
-import dbtests.postgres.model.OneColumnGeneratedIdPostgresRepository;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -12,17 +12,17 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {PostgresITConfig.class})
 @ExtendWith(SpringExtension.class)
-public class PostgresOneColumnGeneratedIdIT extends OneColumnGeneratedIdBaseTest<OneColumnGeneratedIdPostgresEntity, OneColumnGeneratedIdPostgresRepository> {
+public class PostgresOneColumnGeneratedIdIT extends OneColumnGeneratedIdBaseTest<OneColumnGeneratedIdPostgresEntity, OneColumnGeneratedIdPostgresDao> {
     @Autowired
     private
     NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
     private
-    OneColumnGeneratedIdPostgresRepository repo;
+    OneColumnGeneratedIdPostgresDao repo;
 
     @Override
-    protected OneColumnGeneratedIdPostgresRepository getRepo() {
+    protected OneColumnGeneratedIdPostgresDao getRepo() {
         return repo;
     }
 

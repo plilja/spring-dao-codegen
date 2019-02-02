@@ -1,8 +1,8 @@
 package dbtests.mssql.tests;
 
 import dbtests.OneColumnGeneratedIdBaseTest;
+import dbtests.mssql.model.OneColumnGeneratedIdMsSqlDao;
 import dbtests.mssql.model.OneColumnGeneratedIdMsSqlEntity;
-import dbtests.mssql.model.OneColumnGeneratedIdMsSqlRepository;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -12,15 +12,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {MsSqlITConfig.class})
 @ExtendWith(SpringExtension.class)
-public class MsSqlOneColumnGeneratedIdIT extends OneColumnGeneratedIdBaseTest<OneColumnGeneratedIdMsSqlEntity, OneColumnGeneratedIdMsSqlRepository> {
+public class MsSqlOneColumnGeneratedIdIT extends OneColumnGeneratedIdBaseTest<OneColumnGeneratedIdMsSqlEntity, OneColumnGeneratedIdMsSqlDao> {
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
 
     @Autowired
-    private OneColumnGeneratedIdMsSqlRepository repo;
+    private OneColumnGeneratedIdMsSqlDao repo;
 
     @Override
-    protected OneColumnGeneratedIdMsSqlRepository getRepo() {
+    protected OneColumnGeneratedIdMsSqlDao getRepo() {
         return repo;
     }
 
