@@ -139,12 +139,18 @@ fun formatTable(table: Table, databaseDialect: DatabaseDialect): String {
     return schema + identifier
 }
 
-fun formatIdentifier(id: String, databaseDialect: DatabaseDialect): String {
-    if (databaseDialect == DatabaseDialect.POSTGRES && id.toLowerCase() != id) {
-        return "\\\"$id\\\""
+fun formatIdentifier(identifier: String, databaseDialect: DatabaseDialect): String {
+    val needsPostgresCaseEscaping =
+        databaseDialect == DatabaseDialect.POSTGRES && identifier.toLowerCase() != identifier
+    if (needsPostgresCaseEscaping || isDatabaseIdentifier(identifier, databaseDialect)) {
+        return "\\\"$identifier\\\""
     } else {
-        return id
+        return identifier
     }
+}
+
+fun isDatabaseIdentifier(identifier: String, databaseDialect: DatabaseDialect): Boolean {
+    return SqlKeywords.get(databaseDialect).contains(identifier.toUpperCase())
 }
 
 

@@ -11,7 +11,7 @@ import se.plilja.springdaogen.model.Table
 
 fun generateEntity(config: Config, table: Table): ClassGenerator {
     val g = ClassGenerator(table.entityName(), config.entityOutputPackage, config.entityOutputFolder)
-    g.implements = "BaseEntity<${table.primaryKey.javaType.simpleName}>"
+    g.implements = "BaseEntity<${table.primaryKey.type().simpleName}>"
     if (config.useLombok) {
         g.addClassAnnotation("@Data")
         g.addClassAnnotation("@NoArgsConstructor")
@@ -23,11 +23,11 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
     }
     for (column in table.columns) {
         if (config.useLombok) {
-            g.addPrivateField(column.fieldName(), column.javaType)
+            g.addPrivateField(column.fieldName(), column.type())
         } else if (column == table.primaryKey && column.name.toLowerCase() == "id") {
-            g.addPrivateField(column.fieldName(), column.javaType)
+            g.addPrivateField(column.fieldName(), column.type())
         } else {
-            g.addField(column.fieldName(), column.javaType)
+            g.addField(column.fieldName(), column.type())
         }
     }
     val idMethodGeneratedByLombok = config.useLombok && table.primaryKey.name == "id"
@@ -35,7 +35,7 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
         g.addCustomMethod(
             """
         |   @Override
-        |   public ${table.primaryKey.javaType.simpleName} getId() {
+        |   public ${table.primaryKey.type().simpleName} getId() {
         |       return ${table.primaryKey.fieldName()};
         |   }
     """.trimMargin()
@@ -43,7 +43,7 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
         g.addCustomMethod(
             """
         |   @Override
-        |   public void setId(${table.primaryKey.javaType.simpleName} id) {
+        |   public void setId(${table.primaryKey.type().simpleName} id) {
         |       this.${table.primaryKey.fieldName()} = id;
         |   }
         """.trimMargin()

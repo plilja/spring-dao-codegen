@@ -3,26 +3,26 @@
 CREATE SCHEMA test_schema
     AUTHORIZATION "docker";
 
-CREATE TABLE public."FOO_POSTGRES"
-(
-    "FOO_ID" bigint NOT NULL,
-    "BOOLEAN_BIT" bit(1) NOT NULL,
-    "BOOLEAN_B" boolean NOT NULL,
-    "CHAR" "char" NOT NULL,
-    "DATE" date,
-    "TIMESTAMP" timestamp with time zone,
-    "BIGDECIMAL" numeric NOT NULL,
-    "FLOAT" real,
-    "DOUBLE" double precision,
-    "GUID" uuid,
-    "XML" xml,
-    "TEXT" text COLLATE pg_catalog."default",
-    "BYTEA" bytea,
-    CONSTRAINT "Foo_pkey" PRIMARY KEY ("FOO_ID")
-)
-WITH (
-    OIDS = FALSE
-);
+-- CREATE TABLE public."FOO_POSTGRES"
+-- (
+--     "FOO_ID" bigint NOT NULL,
+--     "BOOLEAN_BIT" bit(1) NOT NULL,
+--     "BOOLEAN_B" boolean NOT NULL,
+--     "CHAR" "char" NOT NULL,
+--     "DATE" date,
+--     "TIMESTAMP" timestamp with time zone,
+--     "BIGDECIMAL" numeric NOT NULL,
+--     "FLOAT" real,
+--     "DOUBLE" double precision,
+--     "GUID" uuid,
+--     "XML" xml,
+--     "TEXT" text COLLATE pg_catalog."default",
+--     "BYTEA" bytea,
+--     CONSTRAINT "Foo_pkey" PRIMARY KEY ("FOO_ID")
+-- )
+-- WITH (
+--     OIDS = FALSE
+-- );
 
 CREATE SEQUENCE test_schema."BAZ_BAZ_ID_seq";
 

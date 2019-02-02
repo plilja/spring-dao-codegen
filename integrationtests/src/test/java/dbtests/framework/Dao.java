@@ -87,15 +87,12 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
     public void save(T object) {
         if (object.getId() == null) {
             create(object);
+        } else if (idIsGenerated) {
+            update(object);
+        } else if (existsById(object.getId())) {
+            update(object);
         } else {
-            String sql = getUpdateSql();
-            SqlParameterSource params = getParams(object);
-            int updated = jdbcTemplate.update(sql, params);
-            if (updated == 0) {
-                throw new SqlUpdateException(String.format("No rows affected when trying to update object with id %s", object.getId())); // TODO more informative message
-            } else if (updated > 1) {
-                throw new SqlUpdateException(String.format("More than one row [%d] affected by update", updated));
-            }
+            create(object);
         }
     }
 
@@ -113,6 +110,17 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
             String sql = getInsertSql();
             SqlParameterSource params = getParams(object);
             jdbcTemplate.update(sql, params);
+        }
+    }
+
+    private void update(T object) {
+        String sql = getUpdateSql();
+        SqlParameterSource params = getParams(object);
+        int updated = jdbcTemplate.update(sql, params);
+        if (updated == 0) {
+            throw new SqlUpdateException(String.format("No rows affected when trying to update object with id %s", object.getId())); // TODO more informative message
+        } else if (updated > 1) {
+            throw new SqlUpdateException(String.format("More than one row [%d] affected by update", updated));
         }
     }
 

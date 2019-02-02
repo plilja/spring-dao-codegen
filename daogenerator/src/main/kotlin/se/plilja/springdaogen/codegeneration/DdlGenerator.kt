@@ -58,7 +58,7 @@ private fun dataType(column: Column): String {
     if (column.generated) {
         return "IDENTITY"
     }
-    return when (column.javaType) {
+    return when (column.type()) {
         Integer::class.java -> "INTEGER"
         LocalDate::class.java -> "DATE"
         LocalDateTime::class.java -> "TIMESTAMP"

@@ -19,6 +19,11 @@ import se.plilja.springdaogen.sqlgeneration.selectMany
 import se.plilja.springdaogen.sqlgeneration.selectOne
 import se.plilja.springdaogen.sqlgeneration.selectPage
 import se.plilja.springdaogen.sqlgeneration.update
+import java.io.IOException
+import java.math.BigDecimal
+import java.sql.Blob
+import java.sql.Clob
+import java.sql.NClob
 import java.util.*
 
 
@@ -28,10 +33,10 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         g.addClassAnnotation("@Repository")
         g.addImport(Repository::class.java)
     }
-    g.extends = "Dao<${table.entityName()}, ${table.primaryKey.javaType.simpleName}>"
+    g.extends = "Dao<${table.entityName()}, ${table.primaryKey.type().simpleName}>"
     g.addPrivateConstant(
         "ROW_MAPPER", "RowMapper<${table.entityName()}>",
-        rowMapper(table)
+        rowMapper(table, g)
     )
     g.addCustomMethod(rowUnmapper(table))
     g.addImport(RowMapper::class.java)
@@ -42,7 +47,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         g.addCustomConstructor(
             """
             public ${g.name}(NamedParameterJdbcTemplate jdbcTemplate) {
-                super(${table.primaryKey.javaType.simpleName}.class, ${table.primaryKey.generated}, jdbcTemplate);
+                super(${table.primaryKey.type().simpleName}.class, ${table.primaryKey.generated}, jdbcTemplate);
             }
         """
         )
@@ -52,7 +57,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
             """
             @Autowired
             public ${g.name}(NamedParameterJdbcTemplate jdbcTemplate) {
-                super(${table.primaryKey.javaType.simpleName}.class, ${table.primaryKey.generated}, jdbcTemplate);
+                super(${table.primaryKey.type().simpleName}.class, ${table.primaryKey.generated}, jdbcTemplate);
             }
         """
         )
@@ -149,9 +154,11 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         """
     )
 
+    val mayNeedImport =
+        listOf(UUID::class.java, Clob::class.java, NClob::class.java, Blob::class.java, BigDecimal::class.java)
     for (column in table.columns) {
-        if (column.javaType == UUID::class.java) {
-            g.addImport(column.javaType)
+        if (column.type() in mayNeedImport) {
+            g.addImport(column.type())
         }
     }
     if (config.entityOutputPackage != config.daoOutputPackage) {
@@ -163,13 +170,28 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
     return g
 }
 
-private fun rowMapper(table: Table): String {
+private fun rowMapper(table: Table, classGenerator: ClassGenerator): String {
+    val needsTryCatch = table.columns.map { it.type() == ByteArray::class.java }.any { it }
     val setters = table.columns.map { "r.${it.setter()}(${it.recordSetMethod("rs")});" }.joinToString("\n")
-    return """(rs, i) -> {
+    return if (needsTryCatch) {
+        classGenerator.addImport(IOException::class.java)
+        """(rs, i) -> {
+                try {
+                ${table.entityName()} r = new ${table.entityName()}();
+                $setters
+                return r;
+            } catch (IOException ex) {
+                // TODO custom exception (also auto indent doesn't work on comments unless ended by semi) ;
+                throw new RuntimeException(ex);
+            }
+        }"""
+    } else {
+        """(rs, i) -> {
                 ${table.entityName()} r = new ${table.entityName()}();
                 $setters
                 return r;
               }"""
+    }
 }
 
 private fun rowUnmapper(table: Table): String {

@@ -1,6 +1,7 @@
 package dbtests.oracle.tests;
 
 import dbtests.oracle.model.BazOracleRepository;
+import dbtests.oracle.model.DataTypesOracleRepository;
 import dbtests.oracle.model.OneColumnGeneratedIdOracleRepository;
 import dbtests.oracle.model.OneColumnNaturalIdOracleRepository;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -11,7 +12,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
 
-@Import({BazOracleRepository.class, OneColumnNaturalIdOracleRepository.class, OneColumnGeneratedIdOracleRepository.class})
+@Import({BazOracleRepository.class, OneColumnNaturalIdOracleRepository.class, OneColumnGeneratedIdOracleRepository.class, DataTypesOracleRepository.class})
 @Configuration
 public class OracleITConfig {
     @Bean

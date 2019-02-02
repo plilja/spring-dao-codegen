@@ -13,6 +13,8 @@ import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.DatabaseDialect
 import se.plilja.springdaogen.model.Schema
 import se.plilja.springdaogen.model.Table
+import java.math.BigDecimal
+import java.math.BigInteger
 import java.sql.Connection
 import java.sql.SQLXML
 import java.time.LocalDate
@@ -107,6 +109,24 @@ fun convertColumn(table: schemacrawler.schema.Table, column: schemacrawler.schem
 }
 
 fun resolveType(column: schemacrawler.schema.Column, config: Config): Class<out Any> {
+    if (config.databaseDialect == DatabaseDialect.ORACLE) {
+        if (column.type.name == "BINARY_DOUBLE") {
+            return java.lang.Double::class.java
+        } else if (column.type.name == "BINARY_FLOAT") {
+            return java.lang.Float::class.java
+        } else if (column.type.name == "NUMBER") {
+            // These doesn't get cleanly mapped by Schemacrawler for some reason
+            if (column.decimalDigits > 0) {
+                return BigDecimal::class.java
+            } else if (column.size < 10) {
+                return java.lang.Integer::class.java
+            } else if (column.size < 19) {
+                return java.lang.Long::class.java
+            } else {
+                return BigInteger::class.java
+            }
+        }
+    }
     return if (config.databaseDialect == DatabaseDialect.ORACLE && column.type.name == "NUMBER") {
         Integer::class.java
     } else if (column.type.name.toLowerCase().contains("char") && column.type.typeMappedClass.simpleName == "Array") {

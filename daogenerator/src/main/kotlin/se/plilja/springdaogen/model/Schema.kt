@@ -4,6 +4,10 @@ import se.plilja.springdaogen.util.camelCase
 import se.plilja.springdaogen.util.capitalizeFirst
 import se.plilja.springdaogen.util.capitalizeLast
 import java.math.BigDecimal
+import java.math.BigInteger
+import java.sql.Blob
+import java.sql.Clob
+import java.sql.NClob
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
@@ -35,7 +39,7 @@ data class Table(
 
 data class Column(
     val name: String,
-    val javaType: Class<out Any>,
+    private val javaType: Class<out Any>,
     val generated: Boolean = false
 ) {
     var references: Pair<Table, Column>? = null
@@ -44,13 +48,22 @@ data class Column(
         return "set${capitalizeFirst(fieldName())}"
     }
 
+    fun type() : Class<out Any> {
+        return when (javaType) {
+            Clob::class.java -> ByteArray::class.java
+            Blob::class.java -> ByteArray::class.java
+            NClob::class.java -> ByteArray::class.java
+            else -> javaType
+        }
+    }
+
     fun getter(): String {
         return "get${capitalizeFirst(fieldName())}"
     }
 
     fun fieldName(): String {
         val s = camelCase(name)
-        if (isReservedKeyword(s)) {
+        if (isReservedJavaKeyword(s)) {
             return capitalizeLast(s)
         } else {
             return s
@@ -62,30 +75,37 @@ data class Column(
             return "$rs.getBigDecimal(\"${name}\")"
         } else if (javaType == String::class.java) {
             return "$rs.getString(\"${name}\")"
-        } else if (javaType == Boolean::class.java) {
+        } else if (javaType == java.lang.Boolean::class.java) {
             return "$rs.getObject(\"${name}\") != null ? $rs.getBoolean(\"${name}\") : null"
         } else if (javaType == Integer::class.java) {
             return "$rs.getObject(\"${name}\") != null ? $rs.getInt(\"${name}\") : null"
-        } else if (javaType == Long::class.java) {
+        } else if (javaType == java.lang.Long::class.java) {
             return "$rs.getObject(\"${name}\") != null ? $rs.getLong(\"${name}\") : null"
-        } else if (javaType == Float::class.java) {
+        } else if (javaType == java.lang.Float::class.java) {
             return "$rs.getObject(\"${name}\") != null ? $rs.getFloat(\"${name}\") : null"
-        } else if (javaType == Double::class.java) {
+        } else if (javaType == java.lang.Double::class.java) {
             return "$rs.getObject(\"${name}\") != null ? $rs.getDouble(\"${name}\") : null"
         } else if (javaType == UUID::class.java) {
             return "UUID.fromString($rs.getString(\"${name}\"))"
         } else if (javaType == LocalDate::class.java) {
-            return "$rs.getDate(\"${name}\").toLocalDate()"
+            return "$rs.getObject(\"${name}\") != null ? $rs.getDate(\"${name}\").toLocalDate() : null"
         } else if (javaType == LocalDateTime::class.java) {
-            return "$rs.getTimestamp(\"${name}\").toLocalDateTime()"
+            return "$rs.getObject(\"${name}\") != null ? $rs.getTimestamp(\"${name}\").toLocalDateTime() : null"
+        } else if (javaType == Clob::class.java) {
+            return "$rs.getObject(\"${name}\") != null ? $rs.getClob(\"${name}\").getAsciiStream().readAllBytes() : null"
+        } else if (javaType == Blob::class.java) {
+            return "$rs.getObject(\"${name}\") != null ? $rs.getBlob(\"${name}\").getBinaryStream().readAllBytes() : null"
+        } else if (javaType == NClob::class.java) {
+            return "$rs.getObject(\"${name}\") != null ? $rs.getNClob(\"${name}\").getAsciiStream().readAllBytes() : null"
+        } else if (javaType == BigInteger::class.java) {
+            return "$rs.getObject(\"${name}\") != null ? $rs.getBigDecimal(\"${name}\").toBigInteger() : null"
         } else {
             return "(${javaType.simpleName}) $rs.getObject(\"${name}\")"
         }
-
     }
 }
 
-fun isReservedKeyword(s: String): Boolean {
+fun isReservedJavaKeyword(s: String): Boolean {
     return s in setOf(
         "abstract", "assert", "boolean", "break", "byte", "case", "catch",
         "char", "class", "const", "continue", "default", "double", "do",
