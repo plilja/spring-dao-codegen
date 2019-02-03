@@ -24,6 +24,7 @@ import java.math.BigDecimal
 import java.sql.Blob
 import java.sql.Clob
 import java.sql.NClob
+import java.sql.Types
 import java.util.*
 
 
@@ -38,7 +39,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         "ROW_MAPPER", "RowMapper<${table.entityName()}>",
         rowMapper(table, g)
     )
-    g.addCustomMethod(rowUnmapper(table))
+    g.addCustomMethod(rowUnmapper(table, g))
     g.addImport(RowMapper::class.java)
     g.addImport(MapSqlParameterSource::class.java)
     g.addImport(SqlParameterSource::class.java)
@@ -171,7 +172,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
 }
 
 private fun rowMapper(table: Table, classGenerator: ClassGenerator): String {
-    val needsTryCatch = table.columns.map { it.type() == ByteArray::class.java }.any { it }
+    val needsTryCatch = table.containsClobLikeField()
     val setters = table.columns.map { "r.${it.setter()}(${it.recordSetMethod("rs")});" }.joinToString("\n")
     return if (needsTryCatch) {
         classGenerator.addImport(IOException::class.java)
@@ -194,12 +195,19 @@ private fun rowMapper(table: Table, classGenerator: ClassGenerator): String {
     }
 }
 
-private fun rowUnmapper(table: Table): String {
+private fun rowUnmapper(table: Table, classGenerator: ClassGenerator): String {
     val attributes = table.columns.map {
+        val jdbcSqlType = it.jdbcSqlType()
+        var typeDeclaration = ""
+        if (jdbcSqlType != null) {
+            typeDeclaration = ", $jdbcSqlType"
+            classGenerator.addImport(Types::class.java)
+        }
+
         if (table.primaryKey == it) {
-            "m.addValue(\"${it.name}\", o.getId());"
+            "m.addValue(\"${it.name}\", o.getId()$typeDeclaration);"
         } else {
-            "m.addValue(\"${it.name}\", o.${it.getter()}());"
+            "m.addValue(\"${it.name}\", o.${it.getter()}()$typeDeclaration);"
         }
     }.joinToString("\n")
     return """

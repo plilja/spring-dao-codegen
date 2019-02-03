@@ -158,7 +158,7 @@ class SqlTest {
             |"SELECT " +
             |"   FOO_ID, " +
             |"   NAME " +
-            |"FROM public.FOO " +
+            |"FROM \"public\".FOO " +
             |"WHERE ROWNUM <= %d"
         """.trimMargin(), sql
         )

@@ -1,14 +1,15 @@
 package dbtests.oracle.model;
 
 import dbtests.framework.Dao;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.Types;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
-
-import java.io.IOException;
 
 @Repository
 public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
@@ -22,8 +23,9 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
             r.setBlob(rs.getObject("BLOB") != null ? rs.getBlob("BLOB").getBinaryStream().readAllBytes() : null);
             r.setChar1(rs.getString("CHAR1"));
             r.setChar10(rs.getString("CHAR10"));
-            r.setClob(rs.getObject("CLOB") != null ? rs.getClob("CLOB").getAsciiStream().readAllBytes() : null);
+            r.setClob(rs.getObject("CLOB") != null ? rs.getClob("CLOB").getSubString(1, (int)rs.getClob("CLOB").length()) : null);
             r.setDate(rs.getObject("DATE") != null ? rs.getDate("DATE").toLocalDate() : null);
+            r.setNlob(rs.getObject("NLOB") != null ? rs.getNClob("NLOB").getSubString(1, (int)rs.getClob("NLOB").length()) : null);
             r.setNumberEighteenZero(rs.getObject("NUMBER_EIGHTEEN_ZERO") != null ? rs.getLong("NUMBER_EIGHTEEN_ZERO") : null);
             r.setNumberNineZero(rs.getObject("NUMBER_NINE_ZERO") != null ? rs.getInt("NUMBER_NINE_ZERO") : null);
             r.setNumberNineteenZero(rs.getObject("NUMBER_NINETEEN_ZERO") != null ? rs.getBigDecimal("NUMBER_NINETEEN_ZERO").toBigInteger() : null);
@@ -48,17 +50,18 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
         public SqlParameterSource getParams(DataTypesOracle o) {
             MapSqlParameterSource m = new MapSqlParameterSource();
             m.addValue("ID", o.getId());
-            m.addValue("BINARY_DOUBLE", o.getBinaryDouble());
-            m.addValue("BINARY_FLOAT", o.getBinaryFloat());
+            m.addValue("BINARY_DOUBLE", o.getBinaryDouble(), Types.DOUBLE);
+            m.addValue("BINARY_FLOAT", o.getBinaryFloat(), Types.FLOAT);
             m.addValue("BLOB", o.getBlob());
             m.addValue("CHAR1", o.getChar1());
             m.addValue("CHAR10", o.getChar10());
             m.addValue("CLOB", o.getClob());
-            m.addValue("DATE", o.getDate());
+            m.addValue("DATE", o.getDate(), Types.DATE);
+            m.addValue("NLOB", o.getNlob());
             m.addValue("NUMBER_EIGHTEEN_ZERO", o.getNumberEighteenZero());
             m.addValue("NUMBER_NINE_ZERO", o.getNumberNineZero());
             m.addValue("NUMBER_NINETEEN_ZERO", o.getNumberNineteenZero());
-            m.addValue("NUMBER_TEN_TWO", o.getNumberTenTwo());
+            m.addValue("NUMBER_TEN_TWO", o.getNumberTenTwo(), Types.NUMERIC);
             m.addValue("NUMBER_TEN_ZERO", o.getNumberTenZero());
             m.addValue("TIMESTAMP", o.getTimestamp());
             m.addValue("VARCHAR", o.getVarchar());
@@ -90,6 +93,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
                     "CHAR10, " +
                     "CLOB, " +
                     "\"DATE\", " +
+                    "NLOB, " +
                     "NUMBER_EIGHTEEN_ZERO, " +
                     "NUMBER_NINE_ZERO, " +
                     "NUMBER_NINETEEN_ZERO, " +
@@ -113,6 +117,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
                     "   CHAR10, " +
                     "   CLOB, " +
                     "   \"DATE\", " +
+                    "   NLOB, " +
                     "   NUMBER_EIGHTEEN_ZERO, " +
                     "   NUMBER_NINE_ZERO, " +
                     "   NUMBER_NINETEEN_ZERO, " +
@@ -138,6 +143,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
                     "CHAR10, %n" +
                     "CLOB, %n" +
                     "\"DATE\", %n" +
+                    "NLOB, %n" +
                     "NUMBER_EIGHTEEN_ZERO, %n" +
                     "NUMBER_NINE_ZERO, %n" +
                     "NUMBER_NINETEEN_ZERO, %n" +
@@ -165,6 +171,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
                     "   CHAR10, " +
                     "   CLOB, " +
                     "   \"DATE\", " +
+                    "   NLOB, " +
                     "   NUMBER_EIGHTEEN_ZERO, " +
                     "   NUMBER_NINE_ZERO, " +
                     "   NUMBER_NINETEEN_ZERO, " +
@@ -183,6 +190,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
                     "   :CHAR10, " +
                     "   :CLOB, " +
                     "   :DATE, " +
+                    "   :NLOB, " +
                     "   :NUMBER_EIGHTEEN_ZERO, " +
                     "   :NUMBER_NINE_ZERO, " +
                     "   :NUMBER_NINETEEN_ZERO, " +
@@ -204,6 +212,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
                     "   CHAR10 = :CHAR10, " +
                     "   CLOB = :CLOB, " +
                     "   DATE = :DATE, " +
+                    "   NLOB = :NLOB, " +
                     "   NUMBER_EIGHTEEN_ZERO = :NUMBER_EIGHTEEN_ZERO, " +
                     "   NUMBER_NINE_ZERO = :NUMBER_NINE_ZERO, " +
                     "   NUMBER_NINETEEN_ZERO = :NUMBER_NINETEEN_ZERO, " +

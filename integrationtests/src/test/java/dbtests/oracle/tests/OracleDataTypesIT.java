@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ContextConfiguration(classes = {OracleITConfig.class})
@@ -42,16 +43,17 @@ public class OracleDataTypesIT {
         r.setBlob(new byte[]{1, 2, 3});
         r.setChar1("A");
         r.setChar10("ABCDEFGHI");
-        r.setClob(new byte[]{4, 5, 6});
+        r.setClob("a clob...");
         r.setDate(now.toLocalDate());
+        r.setNlob("a nlob...");
         r.setNumberEighteenZero(123412341224L);
         r.setNumberNineZero(4711);
         r.setNumberNineteenZero(new BigInteger("999999999999999999"));
         r.setNumberTenTwo(new BigDecimal("242112.23"));
         r.setNumberTenZero(213412234L);
         r.setTimestamp(now);
-        r.setVarchar("foo bar");
-        r.setVarchar2("foo bar");
+        r.setVarchar("foo bar1");
+        r.setVarchar2("foo bar2");
 
         // when
         repo.save(r);
@@ -61,14 +63,19 @@ public class OracleDataTypesIT {
         assertEquals(r.getId(), r2.getId());
         assertEquals(r.getBinaryDouble(), r2.getBinaryDouble(), 1e-10);
         assertEquals(r.getBinaryFloat(), r2.getBinaryFloat(), 1e-10);
+        assertArrayEquals(r.getBlob(), r2.getBlob());
         assertEquals(r.getChar1(), r2.getChar1());
         assertEquals(r.getChar10(), r2.getChar10().strip()); // Gets padded by DB
+        assertEquals(r.getClob(), r2.getClob());
         assertEquals(r.getDate(), r2.getDate());
+        assertEquals(r.getNlob(), r2.getNlob());
         assertEquals(r.getNumberEighteenZero(), r2.getNumberEighteenZero());
         assertEquals(r.getNumberNineZero(), r2.getNumberNineZero());
         assertEquals(r.getNumberNineteenZero(), r2.getNumberNineteenZero());
         assertEquals(r.getNumberTenTwo(), r2.getNumberTenTwo());
         assertEquals(r.getNumberTenZero(), r2.getNumberTenZero());
-        assertEquals(r.getVarchar(), r2.getVarchar2());
+        assertEquals(r.getTimestamp(), r2.getTimestamp());
+        assertEquals(r.getVarchar(), r2.getVarchar());
+        assertEquals(r.getVarchar2(), r2.getVarchar2());
     }
 }

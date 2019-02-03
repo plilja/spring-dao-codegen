@@ -1,6 +1,7 @@
 package dbtests.postgres.tests;
 
 import dbtests.postgres.model.BazPostgresDao;
+import dbtests.postgres.model.DataTypesPostgresDao;
 import dbtests.postgres.model.OneColumnGeneratedIdPostgresDao;
 import dbtests.postgres.model.OneColumnNaturalIdPostgresDao;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -11,7 +12,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
 
-@Import({BazPostgresDao.class, OneColumnNaturalIdPostgresDao.class, OneColumnGeneratedIdPostgresDao.class})
+@Import({BazPostgresDao.class, OneColumnNaturalIdPostgresDao.class, OneColumnGeneratedIdPostgresDao.class, DataTypesPostgresDao.class})
 @Configuration
 public class PostgresITConfig {
     @Bean

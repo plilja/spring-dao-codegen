@@ -16,7 +16,6 @@ import se.plilja.springdaogen.model.Table
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.sql.Connection
-import java.sql.SQLXML
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
@@ -116,15 +115,19 @@ fun resolveType(column: schemacrawler.schema.Column, config: Config): Class<out 
             return java.lang.Float::class.java
         } else if (column.type.name == "NUMBER") {
             // These doesn't get cleanly mapped by Schemacrawler for some reason
-            if (column.decimalDigits > 0) {
-                return BigDecimal::class.java
-            } else if (column.size < 10) {
-                return java.lang.Integer::class.java
-            } else if (column.size < 19) {
-                return java.lang.Long::class.java
-            } else {
-                return BigInteger::class.java
+            return when {
+                column.decimalDigits > 0 -> BigDecimal::class.java
+                column.size < 10 -> java.lang.Integer::class.java
+                column.size < 19 -> java.lang.Long::class.java
+                else -> BigInteger::class.java
             }
+        }
+    }
+    if (column.type.typeMappedClass == BigDecimal::class.java && column.decimalDigits == 0) {
+        return when {
+            column.size < 10 -> java.lang.Integer::class.java
+            column.size < 19 -> java.lang.Long::class.java
+            else -> BigInteger::class.java
         }
     }
     return if (config.databaseDialect == DatabaseDialect.ORACLE && column.type.name == "NUMBER") {
@@ -138,8 +141,6 @@ fun resolveType(column: schemacrawler.schema.Column, config: Config): Class<out 
         LocalDateTime::class.java
     } else if (column.type.name == "uuid") {
         UUID::class.java
-    } else if (column.type.typeMappedClass == SQLXML::class.java) {
-        String::class.java
     } else {
         column.type.typeMappedClass
     }

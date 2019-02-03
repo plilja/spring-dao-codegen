@@ -73,7 +73,7 @@ class SqlInsertTest {
         val sql = insert(Table("public", "foo", pk, listOf(pk)), DatabaseDialect.ORACLE)
 
         // then
-        assertEquals("\"INSERT INTO public.foo(foo_id) VALUES(null)\"", sql)
+        assertEquals("\"INSERT INTO \\\"public\\\".foo(foo_id) VALUES(null)\"", sql)
     }
 
     @Test
@@ -86,7 +86,7 @@ class SqlInsertTest {
         // then
         assertEquals(
             """
-            |"INSERT INTO public.foo (" +
+            |"INSERT INTO \"public\".foo (" +
             |"   foo_id" +
             |") " +
             |"VALUES (" +

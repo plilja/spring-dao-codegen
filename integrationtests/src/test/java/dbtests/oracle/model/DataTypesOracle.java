@@ -1,7 +1,6 @@
 package dbtests.oracle.model;
 
 import dbtests.framework.BaseEntity;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -15,8 +14,9 @@ public class DataTypesOracle implements BaseEntity<String> {
     private byte[] blob;
     private String char1;
     private String char10;
-    private byte[] clob;
+    private String clob;
     private LocalDate date;
+    private String nlob;
     private Long numberEighteenZero;
     private Integer numberNineZero;
     private BigInteger numberNineteenZero;
@@ -29,7 +29,7 @@ public class DataTypesOracle implements BaseEntity<String> {
     public DataTypesOracle() {
     }
 
-    public DataTypesOracle(String id, Double binaryDouble, Float binaryFloat, byte[] blob, String char1, String char10, byte[] clob, LocalDate date, Long numberEighteenZero, Integer numberNineZero, BigInteger numberNineteenZero, BigDecimal numberTenTwo, Long numberTenZero, LocalDateTime timestamp, String varchar, String varchar2) {
+    public DataTypesOracle(String id, Double binaryDouble, Float binaryFloat, byte[] blob, String char1, String char10, String clob, LocalDate date, String nlob, Long numberEighteenZero, Integer numberNineZero, BigInteger numberNineteenZero, BigDecimal numberTenTwo, Long numberTenZero, LocalDateTime timestamp, String varchar, String varchar2) {
         this.id = id;
         this.binaryDouble = binaryDouble;
         this.binaryFloat = binaryFloat;
@@ -38,6 +38,7 @@ public class DataTypesOracle implements BaseEntity<String> {
         this.char10 = char10;
         this.clob = clob;
         this.date = date;
+        this.nlob = nlob;
         this.numberEighteenZero = numberEighteenZero;
         this.numberNineZero = numberNineZero;
         this.numberNineteenZero = numberNineteenZero;
@@ -88,11 +89,11 @@ public class DataTypesOracle implements BaseEntity<String> {
         this.char10 = char10;
     }
 
-    public byte[] getClob() {
+    public String getClob() {
         return clob;
     }
 
-    public void setClob(byte[] clob) {
+    public void setClob(String clob) {
         this.clob = clob;
     }
 
@@ -102,6 +103,14 @@ public class DataTypesOracle implements BaseEntity<String> {
 
     public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public String getNlob() {
+        return nlob;
+    }
+
+    public void setNlob(String nlob) {
+        this.nlob = nlob;
     }
 
     public Long getNumberEighteenZero() {
