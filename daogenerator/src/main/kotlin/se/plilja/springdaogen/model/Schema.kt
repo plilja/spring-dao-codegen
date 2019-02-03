@@ -119,11 +119,11 @@ data class Column(
         } else if (javaType == LocalDateTime::class.java) {
             return "$rs.getObject(\"$name\") != null ? $rs.getTimestamp(\"$name\").toLocalDateTime() : null"
         } else if (javaType == Clob::class.java) {
-            return "$rs.getObject(\"$name\") != null ? $rs.getClob(\"$name\").getSubString(1, (int)$rs.getClob(\"$name\").length()) : null"
+            return "$rs.getObject(\"$name\") != null ? $rs.getClob(\"$name\").getSubString(1, (int) $rs.getClob(\"$name\").length()) : null"
         } else if (javaType == Blob::class.java) {
             return "$rs.getObject(\"$name\") != null ? $rs.getBlob(\"$name\").getBinaryStream().readAllBytes() : null"
         } else if (javaType == NClob::class.java) {
-            return "$rs.getObject(\"$name\") != null ? $rs.getNClob(\"$name\").getSubString(1, (int)$rs.getClob(\"$name\").length()) : null"
+            return "$rs.getObject(\"$name\") != null ? $rs.getNClob(\"$name\").getSubString(1, (int) $rs.getClob(\"$name\").length()) : null"
         } else if (javaType == BigInteger::class.java) {
             return "$rs.getObject(\"$name\") != null ? $rs.getBigDecimal(\"$name\").toBigInteger() : null"
         } else {

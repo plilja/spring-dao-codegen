@@ -1,15 +1,15 @@
 package dbtests.postgres.model;
 
 import dbtests.framework.Dao;
+import java.math.BigDecimal;
+import java.sql.Types;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
-
-import java.sql.Types;
-import java.util.UUID;
 
 @Repository
 public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {

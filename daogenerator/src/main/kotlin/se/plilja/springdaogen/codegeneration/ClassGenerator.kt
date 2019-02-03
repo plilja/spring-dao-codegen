@@ -162,13 +162,13 @@ fun indent(code: String): String {
         if (prevLine.trim() == "" && line == "") {
             continue
         }
-        val extraIndent = if (prevLine != "" && !(prevLine.last() in listOf(';', '{', '}')) && prevLine[0] != '@') {
+        val extraIndent = if (prevLine != "" && prevLine.last() !in listOf(';', '{', '}') && !prevLine.startsWith("//") && prevLine[0] != '@') {
             tab + tab
         } else {
             ""
         }
 
-        if (line.endsWith("}") || line.endsWith("};")) {
+        if (line.endsWith("}") || line.endsWith("};") || line.startsWith("}")) {
             indent -= 1
         }
 

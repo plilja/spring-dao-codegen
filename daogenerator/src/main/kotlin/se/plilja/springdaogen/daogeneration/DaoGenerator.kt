@@ -184,7 +184,7 @@ private fun rowMapper(table: Table, classGenerator: ClassGenerator): String {
                 $setters
                 return r;
             } catch (IOException ex) {
-                // TODO custom exception (also auto indent doesn't work on comments unless ended by semi) ;
+                // TODO custom exception
                 throw new RuntimeException(ex);
             }
         }"""

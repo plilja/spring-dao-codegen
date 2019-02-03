@@ -147,6 +147,50 @@ public abstract class Foo {
 
     }
 
+    @Test
+    fun `static lambda constant with try catch`() {
+        val g = ClassGenerator("Foo", "se.plilja.test", "")
+        g.addPrivateConstant(
+            "rowMapper", "RowMapper<Foo>", """private static final RowMapper<DataTypesOracle> ROW_MAPPER = (rs, i) -> {
+            try {
+                Foo r = new Foo();
+                r.setBlob(rs.getObject("BLOB") != null ? rs.getBlob("BLOB").getBinaryStream().readAllBytes() : null);
+                return r;
+            } catch (IOException ex) {
+                // A comment that doesn't end with semicolon
+                throw new RuntimeException(ex);
+            }
+        }
+        """.trimMargin()
+        )
+
+        // when
+        val act = g.generate()
+
+        // then
+        val exp = """package se.plilja.test;
+
+public class Foo {
+
+    private static final RowMapper<Foo> rowMapper = private static final RowMapper<DataTypesOracle> ROW_MAPPER = (rs, i) -> {
+        try {
+            Foo r = new Foo();
+            r.setBlob(rs.getObject("BLOB") != null ? rs.getBlob("BLOB").getBinaryStream().readAllBytes() : null);
+            return r;
+        } catch (IOException ex) {
+            // A comment that doesn't end with semicolon
+            throw new RuntimeException(ex);
+        }
+    };
+
+    public Foo() {
+    }
+
+}
+"""
+        assertEquals(exp, act)
+    }
+
     class A
     class B<T>
 }
