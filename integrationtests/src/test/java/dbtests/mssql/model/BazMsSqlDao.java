@@ -17,6 +17,7 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
         r.setName(rs.getString("name"));
         return r;
     };
+    private static final String ALL_COLUMNS = " id, name ";
 
     @Autowired
     public BazMsSqlDao(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -47,8 +48,7 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
     @Override
     protected String getSelectIdsSql() {
         return "SELECT " +
-                "id, " +
-                "name " +
+                ALL_COLUMNS +
                 "FROM dbo.baz_ms_sql " +
                 "WHERE id IN (:ids)";
     }
@@ -56,16 +56,14 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
     @Override
     protected String getSelectManySql(int maxSelectCount) {
         return String.format("SELECT TOP %d " +
-                "   id, " +
-                "   name " +
+                ALL_COLUMNS +
                 "FROM dbo.baz_ms_sql ", maxSelectCount);
     }
 
     @Override
     protected String getSelectPageSql(long start, int pageSize) {
         return String.format("SELECT %n" +
-                "id, %n" +
-                "name %n" +
+                ALL_COLUMNS +
                 "FROM dbo.baz_ms_sql %n" +
                 "ORDER BY id %n" +
                 "OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", start, pageSize);
@@ -74,17 +72,17 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
     @Override
     protected String getInsertSql() {
         return "INSERT INTO dbo.baz_ms_sql (" +
-                "   name" +
+                "name" +
                 ") " +
                 "VALUES (" +
-                "   :name" +
+                ":name" +
                 ")";
     }
 
     @Override
     protected String getUpdateSql() {
         return "UPDATE dbo.baz_ms_sql SET " +
-                "   name = :name " +
+                "name = :name " +
                 "WHERE id = :id";
     }
 

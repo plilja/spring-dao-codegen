@@ -17,6 +17,7 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
         r.setBazName(rs.getString("baz_name"));
         return r;
     };
+    private static final String ALL_COLUMNS = " baz_id, baz_name ";
 
     @Autowired
     public BazPostgresDao(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -47,8 +48,7 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
     @Override
     protected String getSelectIdsSql() {
         return "SELECT " +
-                "baz_id, " +
-                "baz_name " +
+                ALL_COLUMNS +
                 "FROM test_schema.baz_postgres " +
                 "WHERE baz_id IN (:ids)";
     }
@@ -56,8 +56,7 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
     @Override
     protected String getSelectManySql(int maxSelectCount) {
         return String.format("SELECT " +
-                "   baz_id, " +
-                "   baz_name " +
+                ALL_COLUMNS +
                 "FROM test_schema.baz_postgres " +
                 "LIMIT %d", maxSelectCount);
     }
@@ -65,8 +64,7 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
     @Override
     protected String getSelectPageSql(long start, int pageSize) {
         return String.format("SELECT %n" +
-                "baz_id, %n" +
-                "baz_name %n" +
+                ALL_COLUMNS +
                 "FROM test_schema.baz_postgres %n" +
                 "LIMIT %d OFFSET %d", pageSize, start);
     }
@@ -74,17 +72,17 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
     @Override
     protected String getInsertSql() {
         return "INSERT INTO test_schema.baz_postgres (" +
-                "   baz_name" +
+                "baz_name" +
                 ") " +
                 "VALUES (" +
-                "   :baz_name" +
+                ":baz_name" +
                 ")";
     }
 
     @Override
     protected String getUpdateSql() {
         return "UPDATE test_schema.baz_postgres SET " +
-                "   baz_name = :baz_name " +
+                "baz_name = :baz_name " +
                 "WHERE baz_id = :baz_id";
     }
 

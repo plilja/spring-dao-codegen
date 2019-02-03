@@ -17,6 +17,7 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
         r.setName(rs.getString("name"));
         return r;
     };
+    private static final String ALL_COLUMNS = " id, `name` ";
 
     @Autowired
     public MBazMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -47,8 +48,7 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
     @Override
     protected String getSelectIdsSql() {
         return "SELECT " +
-                "id, " +
-                "`name` " +
+                ALL_COLUMNS +
                 "FROM BazMysql " +
                 "WHERE id IN (:ids)";
     }
@@ -56,8 +56,7 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
     @Override
     protected String getSelectManySql(int maxSelectCount) {
         return String.format("SELECT " +
-                "   id, " +
-                "   `name` " +
+                ALL_COLUMNS +
                 "FROM BazMysql " +
                 "LIMIT %d", maxSelectCount);
     }
@@ -65,8 +64,7 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
     @Override
     protected String getSelectPageSql(long start, int pageSize) {
         return String.format("SELECT %n" +
-                "id, %n" +
-                "`name` %n" +
+                ALL_COLUMNS +
                 "FROM BazMysql %n" +
                 "LIMIT %d OFFSET %d", pageSize, start);
     }
@@ -74,17 +72,17 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
     @Override
     protected String getInsertSql() {
         return "INSERT INTO BazMysql (" +
-                "   `name`" +
+                "`name`" +
                 ") " +
                 "VALUES (" +
-                "   :name" +
+                ":name" +
                 ")";
     }
 
     @Override
     protected String getUpdateSql() {
         return "UPDATE BazMysql SET " +
-                "   name = :name " +
+                "name = :name " +
                 "WHERE id = :id";
     }
 

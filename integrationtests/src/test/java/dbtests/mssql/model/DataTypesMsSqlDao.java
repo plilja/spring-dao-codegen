@@ -1,14 +1,14 @@
 package dbtests.mssql.model;
 
 import dbtests.framework.Dao;
-import java.math.BigDecimal;
-import java.sql.Types;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
+
+import java.sql.Types;
 
 @Repository
 public class DataTypesMsSqlDao extends Dao<DataTypesMsSqlEntity, Long> {
@@ -45,6 +45,12 @@ public class DataTypesMsSqlDao extends Dao<DataTypesMsSqlEntity, Long> {
         r.setXml(rs.getString("xml"));
         return r;
     };
+    private static final String ALL_COLUMNS = " id, binary10, bit, char, char10, " +
+            " date, datetime, datetime2, decimal_eighteen_zero, decimal_nine_zero, " +
+            " decimal_nineteen_zero, decimal_ten_two, decimal_ten_zero, float, int, " +
+            " money, nchar10, ntext, nvarchar10, real, " +
+            " smallint, smallmoney, text, time, tinyint, " +
+            " varbinary10, varchar10, xml ";
 
     @Autowired
     public DataTypesMsSqlDao(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -101,7 +107,30 @@ public class DataTypesMsSqlDao extends Dao<DataTypesMsSqlEntity, Long> {
     @Override
     protected String getSelectIdsSql() {
         return "SELECT " +
-                "id, " +
+                ALL_COLUMNS +
+                "FROM dbo.DATA_TYPES_MS_SQL " +
+                "WHERE id IN (:ids)";
+    }
+
+    @Override
+    protected String getSelectManySql(int maxSelectCount) {
+        return String.format("SELECT TOP %d " +
+                ALL_COLUMNS +
+                "FROM dbo.DATA_TYPES_MS_SQL ", maxSelectCount);
+    }
+
+    @Override
+    protected String getSelectPageSql(long start, int pageSize) {
+        return String.format("SELECT %n" +
+                ALL_COLUMNS +
+                "FROM dbo.DATA_TYPES_MS_SQL %n" +
+                "ORDER BY id %n" +
+                "OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", start, pageSize);
+    }
+
+    @Override
+    protected String getInsertSql() {
+        return "INSERT INTO dbo.DATA_TYPES_MS_SQL (" +
                 "binary10, " +
                 "bit, " +
                 "char, " +
@@ -128,173 +157,69 @@ public class DataTypesMsSqlDao extends Dao<DataTypesMsSqlEntity, Long> {
                 "tinyint, " +
                 "varbinary10, " +
                 "varchar10, " +
-                "xml " +
-                "FROM dbo.DATA_TYPES_MS_SQL " +
-                "WHERE id IN (:ids)";
-    }
-
-    @Override
-    protected String getSelectManySql(int maxSelectCount) {
-        return String.format("SELECT TOP %d " +
-                "   id, " +
-                "   binary10, " +
-                "   bit, " +
-                "   char, " +
-                "   char10, " +
-                "   date, " +
-                "   datetime, " +
-                "   datetime2, " +
-                "   decimal_eighteen_zero, " +
-                "   decimal_nine_zero, " +
-                "   decimal_nineteen_zero, " +
-                "   decimal_ten_two, " +
-                "   decimal_ten_zero, " +
-                "   float, " +
-                "   int, " +
-                "   money, " +
-                "   nchar10, " +
-                "   ntext, " +
-                "   nvarchar10, " +
-                "   real, " +
-                "   smallint, " +
-                "   smallmoney, " +
-                "   text, " +
-                "   time, " +
-                "   tinyint, " +
-                "   varbinary10, " +
-                "   varchar10, " +
-                "   xml " +
-                "FROM dbo.DATA_TYPES_MS_SQL ", maxSelectCount);
-    }
-
-    @Override
-    protected String getSelectPageSql(long start, int pageSize) {
-        return String.format("SELECT %n" +
-                "id, %n" +
-                "binary10, %n" +
-                "bit, %n" +
-                "char, %n" +
-                "char10, %n" +
-                "date, %n" +
-                "datetime, %n" +
-                "datetime2, %n" +
-                "decimal_eighteen_zero, %n" +
-                "decimal_nine_zero, %n" +
-                "decimal_nineteen_zero, %n" +
-                "decimal_ten_two, %n" +
-                "decimal_ten_zero, %n" +
-                "float, %n" +
-                "int, %n" +
-                "money, %n" +
-                "nchar10, %n" +
-                "ntext, %n" +
-                "nvarchar10, %n" +
-                "real, %n" +
-                "smallint, %n" +
-                "smallmoney, %n" +
-                "text, %n" +
-                "time, %n" +
-                "tinyint, %n" +
-                "varbinary10, %n" +
-                "varchar10, %n" +
-                "xml %n" +
-                "FROM dbo.DATA_TYPES_MS_SQL %n" +
-                "ORDER BY id %n" +
-                "OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", start, pageSize);
-    }
-
-    @Override
-    protected String getInsertSql() {
-        return "INSERT INTO dbo.DATA_TYPES_MS_SQL (" +
-                "   binary10, " +
-                "   bit, " +
-                "   char, " +
-                "   char10, " +
-                "   date, " +
-                "   datetime, " +
-                "   datetime2, " +
-                "   decimal_eighteen_zero, " +
-                "   decimal_nine_zero, " +
-                "   decimal_nineteen_zero, " +
-                "   decimal_ten_two, " +
-                "   decimal_ten_zero, " +
-                "   float, " +
-                "   int, " +
-                "   money, " +
-                "   nchar10, " +
-                "   ntext, " +
-                "   nvarchar10, " +
-                "   real, " +
-                "   smallint, " +
-                "   smallmoney, " +
-                "   text, " +
-                "   time, " +
-                "   tinyint, " +
-                "   varbinary10, " +
-                "   varchar10, " +
-                "   xml" +
+                "xml" +
                 ") " +
                 "VALUES (" +
-                "   :binary10, " +
-                "   :bit, " +
-                "   :char, " +
-                "   :char10, " +
-                "   :date, " +
-                "   :datetime, " +
-                "   :datetime2, " +
-                "   :decimal_eighteen_zero, " +
-                "   :decimal_nine_zero, " +
-                "   :decimal_nineteen_zero, " +
-                "   :decimal_ten_two, " +
-                "   :decimal_ten_zero, " +
-                "   :float, " +
-                "   :int, " +
-                "   :money, " +
-                "   :nchar10, " +
-                "   :ntext, " +
-                "   :nvarchar10, " +
-                "   :real, " +
-                "   :smallint, " +
-                "   :smallmoney, " +
-                "   :text, " +
-                "   :time, " +
-                "   :tinyint, " +
-                "   :varbinary10, " +
-                "   :varchar10, " +
-                "   :xml" +
+                ":binary10, " +
+                ":bit, " +
+                ":char, " +
+                ":char10, " +
+                ":date, " +
+                ":datetime, " +
+                ":datetime2, " +
+                ":decimal_eighteen_zero, " +
+                ":decimal_nine_zero, " +
+                ":decimal_nineteen_zero, " +
+                ":decimal_ten_two, " +
+                ":decimal_ten_zero, " +
+                ":float, " +
+                ":int, " +
+                ":money, " +
+                ":nchar10, " +
+                ":ntext, " +
+                ":nvarchar10, " +
+                ":real, " +
+                ":smallint, " +
+                ":smallmoney, " +
+                ":text, " +
+                ":time, " +
+                ":tinyint, " +
+                ":varbinary10, " +
+                ":varchar10, " +
+                ":xml" +
                 ")";
     }
 
     @Override
     protected String getUpdateSql() {
         return "UPDATE dbo.DATA_TYPES_MS_SQL SET " +
-                "   binary10 = :binary10, " +
-                "   bit = :bit, " +
-                "   char = :char, " +
-                "   char10 = :char10, " +
-                "   date = :date, " +
-                "   datetime = :datetime, " +
-                "   datetime2 = :datetime2, " +
-                "   decimal_eighteen_zero = :decimal_eighteen_zero, " +
-                "   decimal_nine_zero = :decimal_nine_zero, " +
-                "   decimal_nineteen_zero = :decimal_nineteen_zero, " +
-                "   decimal_ten_two = :decimal_ten_two, " +
-                "   decimal_ten_zero = :decimal_ten_zero, " +
-                "   float = :float, " +
-                "   int = :int, " +
-                "   money = :money, " +
-                "   nchar10 = :nchar10, " +
-                "   ntext = :ntext, " +
-                "   nvarchar10 = :nvarchar10, " +
-                "   real = :real, " +
-                "   smallint = :smallint, " +
-                "   smallmoney = :smallmoney, " +
-                "   text = :text, " +
-                "   time = :time, " +
-                "   tinyint = :tinyint, " +
-                "   varbinary10 = :varbinary10, " +
-                "   varchar10 = :varchar10, " +
-                "   xml = :xml " +
+                "binary10 = :binary10, " +
+                "bit = :bit, " +
+                "char = :char, " +
+                "char10 = :char10, " +
+                "date = :date, " +
+                "datetime = :datetime, " +
+                "datetime2 = :datetime2, " +
+                "decimal_eighteen_zero = :decimal_eighteen_zero, " +
+                "decimal_nine_zero = :decimal_nine_zero, " +
+                "decimal_nineteen_zero = :decimal_nineteen_zero, " +
+                "decimal_ten_two = :decimal_ten_two, " +
+                "decimal_ten_zero = :decimal_ten_zero, " +
+                "float = :float, " +
+                "int = :int, " +
+                "money = :money, " +
+                "nchar10 = :nchar10, " +
+                "ntext = :ntext, " +
+                "nvarchar10 = :nvarchar10, " +
+                "real = :real, " +
+                "smallint = :smallint, " +
+                "smallmoney = :smallmoney, " +
+                "text = :text, " +
+                "time = :time, " +
+                "tinyint = :tinyint, " +
+                "varbinary10 = :varbinary10, " +
+                "varchar10 = :varchar10, " +
+                "xml = :xml " +
                 "WHERE id = :id";
     }
 

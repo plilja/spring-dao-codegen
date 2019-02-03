@@ -16,6 +16,7 @@ public class OneColumnGeneratedIdMsSqlDao extends Dao<OneColumnGeneratedIdMsSqlE
         r.setId(rs.getObject("id") != null ? rs.getInt("id") : null);
         return r;
     };
+    private static final String ALL_COLUMNS = " id ";
 
     @Autowired
     public OneColumnGeneratedIdMsSqlDao(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -45,7 +46,7 @@ public class OneColumnGeneratedIdMsSqlDao extends Dao<OneColumnGeneratedIdMsSqlE
     @Override
     protected String getSelectIdsSql() {
         return "SELECT " +
-                "id " +
+                ALL_COLUMNS +
                 "FROM dbo.one_column_generated_id_ms_sql " +
                 "WHERE id IN (:ids)";
     }
@@ -53,14 +54,14 @@ public class OneColumnGeneratedIdMsSqlDao extends Dao<OneColumnGeneratedIdMsSqlE
     @Override
     protected String getSelectManySql(int maxSelectCount) {
         return String.format("SELECT TOP %d " +
-                "   id " +
+                ALL_COLUMNS +
                 "FROM dbo.one_column_generated_id_ms_sql ", maxSelectCount);
     }
 
     @Override
     protected String getSelectPageSql(long start, int pageSize) {
         return String.format("SELECT %n" +
-                "id %n" +
+                ALL_COLUMNS +
                 "FROM dbo.one_column_generated_id_ms_sql %n" +
                 "ORDER BY id %n" +
                 "OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", start, pageSize);

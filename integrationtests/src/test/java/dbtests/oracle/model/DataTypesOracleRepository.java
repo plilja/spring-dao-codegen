@@ -1,15 +1,15 @@
 package dbtests.oracle.model;
 
 import dbtests.framework.Dao;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.sql.Types;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
+
+import java.io.IOException;
+import java.sql.Types;
 
 @Repository
 public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
@@ -40,6 +40,10 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
                 throw new RuntimeException(ex);
             }
         };
+    private static final String ALL_COLUMNS = " ID, BINARY_DOUBLE, BINARY_FLOAT, BLOB, CHAR1, " +
+            " CHAR10, CLOB, \"DATE\", NLOB, NUMBER_EIGHTEEN_ZERO, " +
+            " NUMBER_NINE_ZERO, NUMBER_NINETEEN_ZERO, NUMBER_TEN_TWO, NUMBER_TEN_ZERO, TIMESTAMP, " +
+            " \"VARCHAR\", \"VARCHAR2\" ";
 
         @Autowired
         public DataTypesOracleRepository(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -85,6 +89,36 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
         @Override
         protected String getSelectIdsSql() {
             return "SELECT " +
+                    ALL_COLUMNS +
+                    "FROM DOCKER.DATA_TYPES_ORACLE " +
+                    "WHERE ID IN (:ids)";
+        }
+
+        @Override
+        protected String getSelectManySql(int maxSelectCount) {
+            return String.format("SELECT " +
+                    ALL_COLUMNS +
+                    "FROM DOCKER.DATA_TYPES_ORACLE " +
+                    "WHERE ROWNUM <= %d", maxSelectCount);
+        }
+
+        @Override
+        protected String getSelectPageSql(long start, int pageSize) {
+            return String.format("SELECT * FROM (%n" +
+                    "SELECT rownum tmp_rownum_, a.* %n" +
+                    "FROM (SELECT %n" +
+                    ALL_COLUMNS +
+                    "FROM DOCKER.DATA_TYPES_ORACLE %n" +
+                    "ORDER BY ID %n" +
+                    ") a %n" +
+                    "WHERE rownum < %d + %d %n" +
+                    ")%n" +
+                    "WHERE tmp_rownum_ >= %d", start + 1, pageSize, start + 1);
+        }
+
+        @Override
+        protected String getInsertSql() {
+            return "INSERT INTO DOCKER.DATA_TYPES_ORACLE (" +
                     "ID, " +
                     "BINARY_DOUBLE, " +
                     "BINARY_FLOAT, " +
@@ -101,126 +135,48 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
                     "NUMBER_TEN_ZERO, " +
                     "TIMESTAMP, " +
                     "\"VARCHAR\", " +
-                    "\"VARCHAR2\" " +
-                    "FROM DOCKER.DATA_TYPES_ORACLE " +
-                    "WHERE ID IN (:ids)";
-        }
-
-        @Override
-        protected String getSelectManySql(int maxSelectCount) {
-            return String.format("SELECT " +
-                    "   ID, " +
-                    "   BINARY_DOUBLE, " +
-                    "   BINARY_FLOAT, " +
-                    "   BLOB, " +
-                    "   CHAR1, " +
-                    "   CHAR10, " +
-                    "   CLOB, " +
-                    "   \"DATE\", " +
-                    "   NLOB, " +
-                    "   NUMBER_EIGHTEEN_ZERO, " +
-                    "   NUMBER_NINE_ZERO, " +
-                    "   NUMBER_NINETEEN_ZERO, " +
-                    "   NUMBER_TEN_TWO, " +
-                    "   NUMBER_TEN_ZERO, " +
-                    "   TIMESTAMP, " +
-                    "   \"VARCHAR\", " +
-                    "   \"VARCHAR2\" " +
-                    "FROM DOCKER.DATA_TYPES_ORACLE " +
-                    "WHERE ROWNUM <= %d", maxSelectCount);
-        }
-
-        @Override
-        protected String getSelectPageSql(long start, int pageSize) {
-            return String.format("SELECT * FROM (%n" +
-                    "SELECT rownum tmp_rownum_, a.* %n" +
-                    "FROM (SELECT %n" +
-                    "ID, %n" +
-                    "BINARY_DOUBLE, %n" +
-                    "BINARY_FLOAT, %n" +
-                    "BLOB, %n" +
-                    "CHAR1, %n" +
-                    "CHAR10, %n" +
-                    "CLOB, %n" +
-                    "\"DATE\", %n" +
-                    "NLOB, %n" +
-                    "NUMBER_EIGHTEEN_ZERO, %n" +
-                    "NUMBER_NINE_ZERO, %n" +
-                    "NUMBER_NINETEEN_ZERO, %n" +
-                    "NUMBER_TEN_TWO, %n" +
-                    "NUMBER_TEN_ZERO, %n" +
-                    "TIMESTAMP, %n" +
-                    "\"VARCHAR\", %n" +
-                    "\"VARCHAR2\" %n" +
-                    "FROM DOCKER.DATA_TYPES_ORACLE %n" +
-                    "ORDER BY ID %n" +
-                    ") a %n" +
-                    "WHERE rownum < %d + %d %n" +
-                    ")%n" +
-                    "WHERE tmp_rownum_ >= %d", start + 1, pageSize, start + 1);
-        }
-
-        @Override
-        protected String getInsertSql() {
-            return "INSERT INTO DOCKER.DATA_TYPES_ORACLE (" +
-                    "   ID, " +
-                    "   BINARY_DOUBLE, " +
-                    "   BINARY_FLOAT, " +
-                    "   BLOB, " +
-                    "   CHAR1, " +
-                    "   CHAR10, " +
-                    "   CLOB, " +
-                    "   \"DATE\", " +
-                    "   NLOB, " +
-                    "   NUMBER_EIGHTEEN_ZERO, " +
-                    "   NUMBER_NINE_ZERO, " +
-                    "   NUMBER_NINETEEN_ZERO, " +
-                    "   NUMBER_TEN_TWO, " +
-                    "   NUMBER_TEN_ZERO, " +
-                    "   TIMESTAMP, " +
-                    "   \"VARCHAR\", " +
-                    "   \"VARCHAR2\"" +
+                    "\"VARCHAR2\"" +
                     ") " +
                     "VALUES (" +
-                    "   :ID, " +
-                    "   :BINARY_DOUBLE, " +
-                    "   :BINARY_FLOAT, " +
-                    "   :BLOB, " +
-                    "   :CHAR1, " +
-                    "   :CHAR10, " +
-                    "   :CLOB, " +
-                    "   :DATE, " +
-                    "   :NLOB, " +
-                    "   :NUMBER_EIGHTEEN_ZERO, " +
-                    "   :NUMBER_NINE_ZERO, " +
-                    "   :NUMBER_NINETEEN_ZERO, " +
-                    "   :NUMBER_TEN_TWO, " +
-                    "   :NUMBER_TEN_ZERO, " +
-                    "   :TIMESTAMP, " +
-                    "   :VARCHAR, " +
-                    "   :VARCHAR2" +
+                    ":ID, " +
+                    ":BINARY_DOUBLE, " +
+                    ":BINARY_FLOAT, " +
+                    ":BLOB, " +
+                    ":CHAR1, " +
+                    ":CHAR10, " +
+                    ":CLOB, " +
+                    ":DATE, " +
+                    ":NLOB, " +
+                    ":NUMBER_EIGHTEEN_ZERO, " +
+                    ":NUMBER_NINE_ZERO, " +
+                    ":NUMBER_NINETEEN_ZERO, " +
+                    ":NUMBER_TEN_TWO, " +
+                    ":NUMBER_TEN_ZERO, " +
+                    ":TIMESTAMP, " +
+                    ":VARCHAR, " +
+                    ":VARCHAR2" +
                     ")";
         }
 
         @Override
         protected String getUpdateSql() {
             return "UPDATE DOCKER.DATA_TYPES_ORACLE SET " +
-                    "   BINARY_DOUBLE = :BINARY_DOUBLE, " +
-                    "   BINARY_FLOAT = :BINARY_FLOAT, " +
-                    "   BLOB = :BLOB, " +
-                    "   CHAR1 = :CHAR1, " +
-                    "   CHAR10 = :CHAR10, " +
-                    "   CLOB = :CLOB, " +
-                    "   DATE = :DATE, " +
-                    "   NLOB = :NLOB, " +
-                    "   NUMBER_EIGHTEEN_ZERO = :NUMBER_EIGHTEEN_ZERO, " +
-                    "   NUMBER_NINE_ZERO = :NUMBER_NINE_ZERO, " +
-                    "   NUMBER_NINETEEN_ZERO = :NUMBER_NINETEEN_ZERO, " +
-                    "   NUMBER_TEN_TWO = :NUMBER_TEN_TWO, " +
-                    "   NUMBER_TEN_ZERO = :NUMBER_TEN_ZERO, " +
-                    "   TIMESTAMP = :TIMESTAMP, " +
-                    "   VARCHAR = :VARCHAR, " +
-                    "   VARCHAR2 = :VARCHAR2 " +
+                    "BINARY_DOUBLE = :BINARY_DOUBLE, " +
+                    "BINARY_FLOAT = :BINARY_FLOAT, " +
+                    "BLOB = :BLOB, " +
+                    "CHAR1 = :CHAR1, " +
+                    "CHAR10 = :CHAR10, " +
+                    "CLOB = :CLOB, " +
+                    "DATE = :DATE, " +
+                    "NLOB = :NLOB, " +
+                    "NUMBER_EIGHTEEN_ZERO = :NUMBER_EIGHTEEN_ZERO, " +
+                    "NUMBER_NINE_ZERO = :NUMBER_NINE_ZERO, " +
+                    "NUMBER_NINETEEN_ZERO = :NUMBER_NINETEEN_ZERO, " +
+                    "NUMBER_TEN_TWO = :NUMBER_TEN_TWO, " +
+                    "NUMBER_TEN_ZERO = :NUMBER_TEN_ZERO, " +
+                    "TIMESTAMP = :TIMESTAMP, " +
+                    "VARCHAR = :VARCHAR, " +
+                    "VARCHAR2 = :VARCHAR2 " +
                     "WHERE ID = :ID";
         }
 

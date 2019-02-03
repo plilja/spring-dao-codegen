@@ -17,6 +17,7 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
         r.setName(rs.getString("NAME"));
         return r;
     };
+    private static final String ALL_COLUMNS = " ID, NAME ";
 
     @Autowired
     public BazOracleRepository(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -47,8 +48,7 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
     @Override
     protected String getSelectIdsSql() {
         return "SELECT " +
-                "ID, " +
-                "NAME " +
+                ALL_COLUMNS +
                 "FROM DOCKER.BAZ_ORACLE " +
                 "WHERE ID IN (:ids)";
     }
@@ -56,8 +56,7 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
     @Override
     protected String getSelectManySql(int maxSelectCount) {
         return String.format("SELECT " +
-                "   ID, " +
-                "   NAME " +
+                ALL_COLUMNS +
                 "FROM DOCKER.BAZ_ORACLE " +
                 "WHERE ROWNUM <= %d", maxSelectCount);
     }
@@ -67,8 +66,7 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
         return String.format("SELECT * FROM (%n" +
                 "SELECT rownum tmp_rownum_, a.* %n" +
                 "FROM (SELECT %n" +
-                "ID, %n" +
-                "NAME %n" +
+                ALL_COLUMNS +
                 "FROM DOCKER.BAZ_ORACLE %n" +
                 "ORDER BY ID %n" +
                 ") a %n" +
@@ -80,17 +78,17 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
     @Override
     protected String getInsertSql() {
         return "INSERT INTO DOCKER.BAZ_ORACLE (" +
-                "   NAME" +
+                "NAME" +
                 ") " +
                 "VALUES (" +
-                "   :NAME" +
+                ":NAME" +
                 ")";
     }
 
     @Override
     protected String getUpdateSql() {
         return "UPDATE DOCKER.BAZ_ORACLE SET " +
-                "   NAME = :NAME " +
+                "NAME = :NAME " +
                 "WHERE ID = :ID";
     }
 

@@ -16,6 +16,7 @@ public class OneColumnGeneratedIdPostgresDao extends Dao<OneColumnGeneratedIdPos
         r.setId(rs.getObject("id") != null ? rs.getInt("id") : null);
         return r;
     };
+    private static final String ALL_COLUMNS = " id ";
 
     @Autowired
     public OneColumnGeneratedIdPostgresDao(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -45,7 +46,7 @@ public class OneColumnGeneratedIdPostgresDao extends Dao<OneColumnGeneratedIdPos
     @Override
     protected String getSelectIdsSql() {
         return "SELECT " +
-                "id " +
+                ALL_COLUMNS +
                 "FROM test_schema.one_column_generated_id_postgres " +
                 "WHERE id IN (:ids)";
     }
@@ -53,7 +54,7 @@ public class OneColumnGeneratedIdPostgresDao extends Dao<OneColumnGeneratedIdPos
     @Override
     protected String getSelectManySql(int maxSelectCount) {
         return String.format("SELECT " +
-                "   id " +
+                ALL_COLUMNS +
                 "FROM test_schema.one_column_generated_id_postgres " +
                 "LIMIT %d", maxSelectCount);
     }
@@ -61,7 +62,7 @@ public class OneColumnGeneratedIdPostgresDao extends Dao<OneColumnGeneratedIdPos
     @Override
     protected String getSelectPageSql(long start, int pageSize) {
         return String.format("SELECT %n" +
-                "id %n" +
+                ALL_COLUMNS +
                 "FROM test_schema.one_column_generated_id_postgres %n" +
                 "LIMIT %d OFFSET %d", pageSize, start);
     }

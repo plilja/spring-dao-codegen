@@ -16,6 +16,7 @@ public class MOneColumnNaturalIdMysqlRepo extends Dao<MOneColumnNaturalIdMysql, 
         r.setId(rs.getString("id"));
         return r;
     };
+    private static final String ALL_COLUMNS = " id ";
 
     @Autowired
     public MOneColumnNaturalIdMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -45,7 +46,7 @@ public class MOneColumnNaturalIdMysqlRepo extends Dao<MOneColumnNaturalIdMysql, 
     @Override
     protected String getSelectIdsSql() {
         return "SELECT " +
-                "id " +
+                ALL_COLUMNS +
                 "FROM ONE_COLUMN_NATURAL_ID_MYSQL " +
                 "WHERE id IN (:ids)";
     }
@@ -53,7 +54,7 @@ public class MOneColumnNaturalIdMysqlRepo extends Dao<MOneColumnNaturalIdMysql, 
     @Override
     protected String getSelectManySql(int maxSelectCount) {
         return String.format("SELECT " +
-                "   id " +
+                ALL_COLUMNS +
                 "FROM ONE_COLUMN_NATURAL_ID_MYSQL " +
                 "LIMIT %d", maxSelectCount);
     }
@@ -61,7 +62,7 @@ public class MOneColumnNaturalIdMysqlRepo extends Dao<MOneColumnNaturalIdMysql, 
     @Override
     protected String getSelectPageSql(long start, int pageSize) {
         return String.format("SELECT %n" +
-                "id %n" +
+                ALL_COLUMNS +
                 "FROM ONE_COLUMN_NATURAL_ID_MYSQL %n" +
                 "LIMIT %d OFFSET %d", pageSize, start);
     }
@@ -69,10 +70,10 @@ public class MOneColumnNaturalIdMysqlRepo extends Dao<MOneColumnNaturalIdMysql, 
     @Override
     protected String getInsertSql() {
         return "INSERT INTO ONE_COLUMN_NATURAL_ID_MYSQL (" +
-                "   id" +
+                "id" +
                 ") " +
                 "VALUES (" +
-                "   :id" +
+                ":id" +
                 ")";
     }
 

@@ -16,6 +16,7 @@ public class MOneColumnGeneratedIdMysqlRepo extends Dao<MOneColumnGeneratedIdMys
         r.setId(rs.getObject("id") != null ? rs.getInt("id") : null);
         return r;
     };
+    private static final String ALL_COLUMNS = " id ";
 
     @Autowired
     public MOneColumnGeneratedIdMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -45,7 +46,7 @@ public class MOneColumnGeneratedIdMysqlRepo extends Dao<MOneColumnGeneratedIdMys
     @Override
     protected String getSelectIdsSql() {
         return "SELECT " +
-                "id " +
+                ALL_COLUMNS +
                 "FROM ONE_COLUMN_GENERATED_ID_MYSQL " +
                 "WHERE id IN (:ids)";
     }
@@ -53,7 +54,7 @@ public class MOneColumnGeneratedIdMysqlRepo extends Dao<MOneColumnGeneratedIdMys
     @Override
     protected String getSelectManySql(int maxSelectCount) {
         return String.format("SELECT " +
-                "   id " +
+                ALL_COLUMNS +
                 "FROM ONE_COLUMN_GENERATED_ID_MYSQL " +
                 "LIMIT %d", maxSelectCount);
     }
@@ -61,7 +62,7 @@ public class MOneColumnGeneratedIdMysqlRepo extends Dao<MOneColumnGeneratedIdMys
     @Override
     protected String getSelectPageSql(long start, int pageSize) {
         return String.format("SELECT %n" +
-                "id %n" +
+                ALL_COLUMNS +
                 "FROM ONE_COLUMN_GENERATED_ID_MYSQL %n" +
                 "LIMIT %d OFFSET %d", pageSize, start);
     }

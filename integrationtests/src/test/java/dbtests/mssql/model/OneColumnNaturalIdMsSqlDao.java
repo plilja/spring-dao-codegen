@@ -16,6 +16,7 @@ public class OneColumnNaturalIdMsSqlDao extends Dao<OneColumnNaturalIdMsSqlEntit
         r.setId(rs.getString("id"));
         return r;
     };
+    private static final String ALL_COLUMNS = " id ";
 
     @Autowired
     public OneColumnNaturalIdMsSqlDao(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -45,7 +46,7 @@ public class OneColumnNaturalIdMsSqlDao extends Dao<OneColumnNaturalIdMsSqlEntit
     @Override
     protected String getSelectIdsSql() {
         return "SELECT " +
-                "id " +
+                ALL_COLUMNS +
                 "FROM dbo.ONE_COLUMN_NATURAL_ID_MS_SQL " +
                 "WHERE id IN (:ids)";
     }
@@ -53,14 +54,14 @@ public class OneColumnNaturalIdMsSqlDao extends Dao<OneColumnNaturalIdMsSqlEntit
     @Override
     protected String getSelectManySql(int maxSelectCount) {
         return String.format("SELECT TOP %d " +
-                "   id " +
+                ALL_COLUMNS +
                 "FROM dbo.ONE_COLUMN_NATURAL_ID_MS_SQL ", maxSelectCount);
     }
 
     @Override
     protected String getSelectPageSql(long start, int pageSize) {
         return String.format("SELECT %n" +
-                "id %n" +
+                ALL_COLUMNS +
                 "FROM dbo.ONE_COLUMN_NATURAL_ID_MS_SQL %n" +
                 "ORDER BY id %n" +
                 "OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", start, pageSize);
@@ -69,10 +70,10 @@ public class OneColumnNaturalIdMsSqlDao extends Dao<OneColumnNaturalIdMsSqlEntit
     @Override
     protected String getInsertSql() {
         return "INSERT INTO dbo.ONE_COLUMN_NATURAL_ID_MS_SQL (" +
-                "   id" +
+                "id" +
                 ") " +
                 "VALUES (" +
-                "   :id" +
+                ":id" +
                 ")";
     }
 

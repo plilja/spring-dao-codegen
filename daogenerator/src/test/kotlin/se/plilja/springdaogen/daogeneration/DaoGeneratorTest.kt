@@ -1,5 +1,6 @@
 package se.plilja.springdaogen.daogeneration
 
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import se.plilja.springdaogen.model.Column
 import se.plilja.springdaogen.model.Config
@@ -7,6 +8,7 @@ import se.plilja.springdaogen.model.DatabaseDialect
 import se.plilja.springdaogen.model.Table
 import kotlin.test.assertEquals
 
+@Disabled("Does this cost more to maintain than gained from having it? It's covered by the IT tests anyway")
 class DaoGeneratorTest {
 
     @Test

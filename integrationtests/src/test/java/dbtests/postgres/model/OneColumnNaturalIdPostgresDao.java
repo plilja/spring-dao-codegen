@@ -16,6 +16,7 @@ public class OneColumnNaturalIdPostgresDao extends Dao<OneColumnNaturalIdPostgre
         r.setId(rs.getString("id"));
         return r;
     };
+    private static final String ALL_COLUMNS = " id ";
 
     @Autowired
     public OneColumnNaturalIdPostgresDao(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -45,7 +46,7 @@ public class OneColumnNaturalIdPostgresDao extends Dao<OneColumnNaturalIdPostgre
     @Override
     protected String getSelectIdsSql() {
         return "SELECT " +
-                "id " +
+                ALL_COLUMNS +
                 "FROM test_schema.one_column_natural_id_postgres " +
                 "WHERE id IN (:ids)";
     }
@@ -53,7 +54,7 @@ public class OneColumnNaturalIdPostgresDao extends Dao<OneColumnNaturalIdPostgre
     @Override
     protected String getSelectManySql(int maxSelectCount) {
         return String.format("SELECT " +
-                "   id " +
+                ALL_COLUMNS +
                 "FROM test_schema.one_column_natural_id_postgres " +
                 "LIMIT %d", maxSelectCount);
     }
@@ -61,7 +62,7 @@ public class OneColumnNaturalIdPostgresDao extends Dao<OneColumnNaturalIdPostgre
     @Override
     protected String getSelectPageSql(long start, int pageSize) {
         return String.format("SELECT %n" +
-                "id %n" +
+                ALL_COLUMNS +
                 "FROM test_schema.one_column_natural_id_postgres %n" +
                 "LIMIT %d OFFSET %d", pageSize, start);
     }
@@ -69,10 +70,10 @@ public class OneColumnNaturalIdPostgresDao extends Dao<OneColumnNaturalIdPostgre
     @Override
     protected String getInsertSql() {
         return "INSERT INTO test_schema.one_column_natural_id_postgres (" +
-                "   id" +
+                "id" +
                 ") " +
                 "VALUES (" +
-                "   :id" +
+                ":id" +
                 ")";
     }
 

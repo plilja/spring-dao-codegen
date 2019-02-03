@@ -16,6 +16,7 @@ public class OneColumnNaturalIdH2Repo extends Dao<OneColumnNaturalIdH2, String> 
         r.setId(rs.getString("id"));
         return r;
     };
+    private static final String ALL_COLUMNS = " id ";
 
     @Autowired
     public OneColumnNaturalIdH2Repo(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -45,7 +46,7 @@ public class OneColumnNaturalIdH2Repo extends Dao<OneColumnNaturalIdH2, String> 
     @Override
     protected String getSelectIdsSql() {
         return "SELECT " +
-                "id " +
+                ALL_COLUMNS +
                 "FROM test_schema.one_column_natural_id_h2 " +
                 "WHERE id IN (:ids)";
     }
@@ -53,7 +54,7 @@ public class OneColumnNaturalIdH2Repo extends Dao<OneColumnNaturalIdH2, String> 
     @Override
     protected String getSelectManySql(int maxSelectCount) {
         return String.format("SELECT " +
-                "   id " +
+                ALL_COLUMNS +
                 "FROM test_schema.one_column_natural_id_h2 " +
                 "LIMIT %d", maxSelectCount);
     }
@@ -61,7 +62,7 @@ public class OneColumnNaturalIdH2Repo extends Dao<OneColumnNaturalIdH2, String> 
     @Override
     protected String getSelectPageSql(long start, int pageSize) {
         return String.format("SELECT %n" +
-                "id %n" +
+                ALL_COLUMNS +
                 "FROM test_schema.one_column_natural_id_h2 %n" +
                 "LIMIT %d OFFSET %d", pageSize, start);
     }
@@ -69,10 +70,10 @@ public class OneColumnNaturalIdH2Repo extends Dao<OneColumnNaturalIdH2, String> 
     @Override
     protected String getInsertSql() {
         return "INSERT INTO test_schema.one_column_natural_id_h2 (" +
-                "   id" +
+                "id" +
                 ") " +
                 "VALUES (" +
-                "   :id" +
+                ":id" +
                 ")";
     }
 

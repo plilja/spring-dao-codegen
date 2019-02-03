@@ -21,12 +21,12 @@ class SqlInsertTest {
         assertEquals(
             """
             |"INSERT INTO public.FOO (" +
-            |"   NAME, " +
-            |"   AGE" +
+            |"NAME, " +
+            |"AGE" +
             |") " +
             |"VALUES (" +
-            |"   :NAME, " +
-            |"   :AGE" +
+            |":NAME, " +
+            |":AGE" +
             |")"
         """.trimMargin(), sql
         )
@@ -87,10 +87,10 @@ class SqlInsertTest {
         assertEquals(
             """
             |"INSERT INTO \"public\".foo (" +
-            |"   foo_id" +
+            |"foo_id" +
             |") " +
             |"VALUES (" +
-            |"   :foo_id" +
+            |":foo_id" +
             |")"
         """.trimMargin(), sql
         )

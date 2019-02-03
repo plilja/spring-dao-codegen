@@ -1,15 +1,15 @@
 package dbtests.postgres.model;
 
 import dbtests.framework.Dao;
-import java.math.BigDecimal;
-import java.sql.Types;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
+
+import java.sql.Types;
+import java.util.UUID;
 
 @Repository
 public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
@@ -40,6 +40,11 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
         r.setXml(rs.getString("xml"));
         return r;
     };
+    private static final String ALL_COLUMNS = " id, bigint, boolean_b, bytea, char, " +
+            " char10, date, decimal_eighteen_zero, decimal_nine_zero, decimal_nineteen_zero, " +
+            " decimal_ten_two, decimal_ten_zero, double, float, guid, " +
+            " integer, numeric_ten_two, smallint, text, timestamp, " +
+            " varchar10, xml ";
 
     @Autowired
     public DataTypesPostgresDao(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -90,7 +95,30 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
     @Override
     protected String getSelectIdsSql() {
         return "SELECT " +
-                "id, " +
+                ALL_COLUMNS +
+                "FROM public.data_types_postgres " +
+                "WHERE id IN (:ids)";
+    }
+
+    @Override
+    protected String getSelectManySql(int maxSelectCount) {
+        return String.format("SELECT " +
+                ALL_COLUMNS +
+                "FROM public.data_types_postgres " +
+                "LIMIT %d", maxSelectCount);
+    }
+
+    @Override
+    protected String getSelectPageSql(long start, int pageSize) {
+        return String.format("SELECT %n" +
+                ALL_COLUMNS +
+                "FROM public.data_types_postgres %n" +
+                "LIMIT %d OFFSET %d", pageSize, start);
+    }
+
+    @Override
+    protected String getInsertSql() {
+        return "INSERT INTO public.data_types_postgres (" +
                 "bigint, " +
                 "boolean_b, " +
                 "bytea, " +
@@ -111,143 +139,57 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
                 "text, " +
                 "timestamp, " +
                 "varchar10, " +
-                "xml " +
-                "FROM public.data_types_postgres " +
-                "WHERE id IN (:ids)";
-    }
-
-    @Override
-    protected String getSelectManySql(int maxSelectCount) {
-        return String.format("SELECT " +
-                "   id, " +
-                "   bigint, " +
-                "   boolean_b, " +
-                "   bytea, " +
-                "   char, " +
-                "   char10, " +
-                "   date, " +
-                "   decimal_eighteen_zero, " +
-                "   decimal_nine_zero, " +
-                "   decimal_nineteen_zero, " +
-                "   decimal_ten_two, " +
-                "   decimal_ten_zero, " +
-                "   double, " +
-                "   float, " +
-                "   guid, " +
-                "   integer, " +
-                "   numeric_ten_two, " +
-                "   smallint, " +
-                "   text, " +
-                "   timestamp, " +
-                "   varchar10, " +
-                "   xml " +
-                "FROM public.data_types_postgres " +
-                "LIMIT %d", maxSelectCount);
-    }
-
-    @Override
-    protected String getSelectPageSql(long start, int pageSize) {
-        return String.format("SELECT %n" +
-                "id, %n" +
-                "bigint, %n" +
-                "boolean_b, %n" +
-                "bytea, %n" +
-                "char, %n" +
-                "char10, %n" +
-                "date, %n" +
-                "decimal_eighteen_zero, %n" +
-                "decimal_nine_zero, %n" +
-                "decimal_nineteen_zero, %n" +
-                "decimal_ten_two, %n" +
-                "decimal_ten_zero, %n" +
-                "double, %n" +
-                "float, %n" +
-                "guid, %n" +
-                "integer, %n" +
-                "numeric_ten_two, %n" +
-                "smallint, %n" +
-                "text, %n" +
-                "timestamp, %n" +
-                "varchar10, %n" +
-                "xml %n" +
-                "FROM public.data_types_postgres %n" +
-                "LIMIT %d OFFSET %d", pageSize, start);
-    }
-
-    @Override
-    protected String getInsertSql() {
-        return "INSERT INTO public.data_types_postgres (" +
-                "   bigint, " +
-                "   boolean_b, " +
-                "   bytea, " +
-                "   char, " +
-                "   char10, " +
-                "   date, " +
-                "   decimal_eighteen_zero, " +
-                "   decimal_nine_zero, " +
-                "   decimal_nineteen_zero, " +
-                "   decimal_ten_two, " +
-                "   decimal_ten_zero, " +
-                "   double, " +
-                "   float, " +
-                "   guid, " +
-                "   integer, " +
-                "   numeric_ten_two, " +
-                "   smallint, " +
-                "   text, " +
-                "   timestamp, " +
-                "   varchar10, " +
-                "   xml" +
+                "xml" +
                 ") " +
                 "VALUES (" +
-                "   :bigint, " +
-                "   :boolean_b, " +
-                "   :bytea, " +
-                "   :char, " +
-                "   :char10, " +
-                "   :date, " +
-                "   :decimal_eighteen_zero, " +
-                "   :decimal_nine_zero, " +
-                "   :decimal_nineteen_zero, " +
-                "   :decimal_ten_two, " +
-                "   :decimal_ten_zero, " +
-                "   :double, " +
-                "   :float, " +
-                "   :guid, " +
-                "   :integer, " +
-                "   :numeric_ten_two, " +
-                "   :smallint, " +
-                "   :text, " +
-                "   :timestamp, " +
-                "   :varchar10, " +
-                "   :xml" +
+                ":bigint, " +
+                ":boolean_b, " +
+                ":bytea, " +
+                ":char, " +
+                ":char10, " +
+                ":date, " +
+                ":decimal_eighteen_zero, " +
+                ":decimal_nine_zero, " +
+                ":decimal_nineteen_zero, " +
+                ":decimal_ten_two, " +
+                ":decimal_ten_zero, " +
+                ":double, " +
+                ":float, " +
+                ":guid, " +
+                ":integer, " +
+                ":numeric_ten_two, " +
+                ":smallint, " +
+                ":text, " +
+                ":timestamp, " +
+                ":varchar10, " +
+                ":xml" +
                 ")";
     }
 
     @Override
     protected String getUpdateSql() {
         return "UPDATE public.data_types_postgres SET " +
-                "   bigint = :bigint, " +
-                "   boolean_b = :boolean_b, " +
-                "   bytea = :bytea, " +
-                "   char = :char, " +
-                "   char10 = :char10, " +
-                "   date = :date, " +
-                "   decimal_eighteen_zero = :decimal_eighteen_zero, " +
-                "   decimal_nine_zero = :decimal_nine_zero, " +
-                "   decimal_nineteen_zero = :decimal_nineteen_zero, " +
-                "   decimal_ten_two = :decimal_ten_two, " +
-                "   decimal_ten_zero = :decimal_ten_zero, " +
-                "   double = :double, " +
-                "   float = :float, " +
-                "   guid = :guid, " +
-                "   integer = :integer, " +
-                "   numeric_ten_two = :numeric_ten_two, " +
-                "   smallint = :smallint, " +
-                "   text = :text, " +
-                "   timestamp = :timestamp, " +
-                "   varchar10 = :varchar10, " +
-                "   xml = :xml " +
+                "bigint = :bigint, " +
+                "boolean_b = :boolean_b, " +
+                "bytea = :bytea, " +
+                "char = :char, " +
+                "char10 = :char10, " +
+                "date = :date, " +
+                "decimal_eighteen_zero = :decimal_eighteen_zero, " +
+                "decimal_nine_zero = :decimal_nine_zero, " +
+                "decimal_nineteen_zero = :decimal_nineteen_zero, " +
+                "decimal_ten_two = :decimal_ten_two, " +
+                "decimal_ten_zero = :decimal_ten_zero, " +
+                "double = :double, " +
+                "float = :float, " +
+                "guid = :guid, " +
+                "integer = :integer, " +
+                "numeric_ten_two = :numeric_ten_two, " +
+                "smallint = :smallint, " +
+                "text = :text, " +
+                "timestamp = :timestamp, " +
+                "varchar10 = :varchar10, " +
+                "xml = :xml " +
                 "WHERE id = :id";
     }
 

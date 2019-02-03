@@ -21,8 +21,8 @@ class SqlTest {
         assertEquals(
             """
             |"UPDATE public.FOO SET " +
-            |"   NAME = :NAME, " +
-            |"   AGE = :AGE " +
+            |"NAME = :NAME, " +
+            |"AGE = :AGE " +
             |"WHERE FOO_ID = :FOO_ID"
         """.trimMargin(), sql
         )
@@ -40,8 +40,7 @@ class SqlTest {
         assertEquals(
             """
             |"SELECT " +
-            |"FOO_ID, " +
-            |"NAME " +
+            |ALL_COLUMNS +
             |"FROM public.FOO " +
             |"WHERE FOO_ID IN (:ids)"
         """.trimMargin(), sql
@@ -60,8 +59,7 @@ class SqlTest {
         assertEquals(
             """
             |"SELECT " +
-            |"FOO_ID, " +
-            |"NAME " +
+            |ALL_COLUMNS +
             |"FROM FOO " +
             |"WHERE FOO_ID IN (:ids)"
         """.trimMargin(), sql
@@ -116,8 +114,7 @@ class SqlTest {
         assertEquals(
             """
             |"SELECT " +
-            |"   FOO_ID, " +
-            |"   NAME " +
+            |ALL_COLUMNS +
             |"FROM public.FOO " +
             |"LIMIT %d"
         """.trimMargin(), sql
@@ -136,8 +133,7 @@ class SqlTest {
         assertEquals(
             """
             |"SELECT " +
-            |"   \"FOO_ID\", " +
-            |"   \"NAME\" " +
+            |ALL_COLUMNS +
             |"FROM public.\"FOO\" " +
             |"LIMIT %d"
         """.trimMargin(), sql
@@ -156,8 +152,7 @@ class SqlTest {
         assertEquals(
             """
             |"SELECT " +
-            |"   FOO_ID, " +
-            |"   NAME " +
+            |ALL_COLUMNS +
             |"FROM \"public\".FOO " +
             |"WHERE ROWNUM <= %d"
         """.trimMargin(), sql
@@ -176,8 +171,7 @@ class SqlTest {
         assertEquals(
             """
             |"SELECT TOP %d " +
-            |"   FOO_ID, " +
-            |"   NAME " +
+            |ALL_COLUMNS +
             |"FROM public.FOO "
         """.trimMargin(), sql
         )

@@ -16,6 +16,7 @@ public class OneColumnNaturalIdOracleRepository extends Dao<OneColumnNaturalIdOr
         r.setId(rs.getString("ID"));
         return r;
     };
+    private static final String ALL_COLUMNS = " ID ";
 
     @Autowired
     public OneColumnNaturalIdOracleRepository(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -45,7 +46,7 @@ public class OneColumnNaturalIdOracleRepository extends Dao<OneColumnNaturalIdOr
     @Override
     protected String getSelectIdsSql() {
         return "SELECT " +
-                "ID " +
+                ALL_COLUMNS +
                 "FROM DOCKER.ONE_COLUMN_NATURAL_ID_ORACLE " +
                 "WHERE ID IN (:ids)";
     }
@@ -53,7 +54,7 @@ public class OneColumnNaturalIdOracleRepository extends Dao<OneColumnNaturalIdOr
     @Override
     protected String getSelectManySql(int maxSelectCount) {
         return String.format("SELECT " +
-                "   ID " +
+                ALL_COLUMNS +
                 "FROM DOCKER.ONE_COLUMN_NATURAL_ID_ORACLE " +
                 "WHERE ROWNUM <= %d", maxSelectCount);
     }
@@ -63,7 +64,7 @@ public class OneColumnNaturalIdOracleRepository extends Dao<OneColumnNaturalIdOr
         return String.format("SELECT * FROM (%n" +
                 "SELECT rownum tmp_rownum_, a.* %n" +
                 "FROM (SELECT %n" +
-                "ID %n" +
+                ALL_COLUMNS +
                 "FROM DOCKER.ONE_COLUMN_NATURAL_ID_ORACLE %n" +
                 "ORDER BY ID %n" +
                 ") a %n" +
@@ -75,10 +76,10 @@ public class OneColumnNaturalIdOracleRepository extends Dao<OneColumnNaturalIdOr
     @Override
     protected String getInsertSql() {
         return "INSERT INTO DOCKER.ONE_COLUMN_NATURAL_ID_ORACLE (" +
-                "   ID" +
+                "ID" +
                 ") " +
                 "VALUES (" +
-                "   :ID" +
+                ":ID" +
                 ")";
     }
 

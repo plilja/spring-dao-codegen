@@ -11,6 +11,7 @@ import se.plilja.springdaogen.codegeneration.ClassGenerator
 import se.plilja.springdaogen.generatedframework.dao
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Table
+import se.plilja.springdaogen.sqlgeneration.columnsList
 import se.plilja.springdaogen.sqlgeneration.count
 import se.plilja.springdaogen.sqlgeneration.delete
 import se.plilja.springdaogen.sqlgeneration.existsById
@@ -39,6 +40,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         "ROW_MAPPER", "RowMapper<${table.entityName()}>",
         rowMapper(table, g)
     )
+    g.addPrivateConstant("ALL_COLUMNS", "String", columnsList(table, config.databaseDialect))
     g.addCustomMethod(rowUnmapper(table, g))
     g.addImport(RowMapper::class.java)
     g.addImport(MapSqlParameterSource::class.java)

@@ -21,10 +21,10 @@ fun insert(table: Table, databaseDialect: DatabaseDialect): String {
     } else {
         """
             |"INSERT INTO ${formatTable(table, databaseDialect)} (" +
-            |${insertColumns.map { "\"   ${formatIdentifier(it.name, databaseDialect)}" }.joinToString(", \" +\n")}" +
+            |${insertColumns.map { "\"${formatIdentifier(it.name, databaseDialect)}" }.joinToString(", \" +\n")}" +
             |") " +
             |"VALUES (" +
-            |${insertColumns.map { "\"   :${it.name}" }.joinToString(", \" +\n")}" +
+            |${insertColumns.map { "\":${it.name}" }.joinToString(", \" +\n")}" +
             |")"
             """.trimMargin()
     }
@@ -37,35 +37,40 @@ fun update(table: Table, databaseDialect: DatabaseDialect): String? {
     } else {
         """
             |"UPDATE ${formatTable(table, databaseDialect)} SET " +
-            |${updateColumns.map { "\"   ${it.name} = :${it.name}" }.joinToString(", \" +\n")} " +
+            |${updateColumns.map { "\"${it.name} = :${it.name}" }.joinToString(", \" +\n")} " +
             |"WHERE ${table.primaryKey.name} = :${table.primaryKey.name}"
             """.trimMargin()
     }
 }
 
+fun columnsList(table: Table, databaseDialect: DatabaseDialect): String {
+    return table.columns
+        .map { formatIdentifier(it.name, databaseDialect) }
+        .chunked(5).map { "\" ${it.joinToString(", ")}" }
+        .joinToString(", \" +\n") + " \""
+}
+
 fun selectOne(table: Table, databaseDialect: DatabaseDialect): String {
-    val columns = table.columns
     return """
             |"SELECT " +
-            |${columns.map { "\"${formatIdentifier(it.name, databaseDialect)}" }.joinToString(", \" +\n")} " +
+            |ALL_COLUMNS +
             |"FROM ${formatTable(table, databaseDialect)} " +
             |"WHERE ${formatIdentifier(table.primaryKey.name, databaseDialect)} IN (:ids)"
             """.trimMargin()
 }
 
 fun selectPage(table: Table, databaseDialect: DatabaseDialect): String {
-    val columns = table.columns
     return when {
         databaseDialect in listOf(DatabaseDialect.MYSQL, DatabaseDialect.POSTGRES) -> """
             |String.format("SELECT %n" +
-            |${columns.map { "\"${formatIdentifier(it.name, databaseDialect)}" }.joinToString(", %n\" +\n")} %n" +
+            |ALL_COLUMNS +
             |"FROM ${formatTable(table, databaseDialect)} %n" +
             |"LIMIT %d OFFSET %d", pageSize, start);
         """.trimMargin()
 
         databaseDialect == DatabaseDialect.MSSQL_SERVER -> """
             |String.format("SELECT %n" +
-            |${columns.map { "\"${formatIdentifier(it.name, databaseDialect)}" }.joinToString(", %n\" +\n")} %n" +
+            |ALL_COLUMNS +
             |"FROM ${formatTable(table, databaseDialect)} %n" +
             |"ORDER BY ${formatIdentifier(table.primaryKey.name, databaseDialect)} %n" +
             |"OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", start, pageSize);
@@ -73,13 +78,13 @@ fun selectPage(table: Table, databaseDialect: DatabaseDialect): String {
 
         databaseDialect == DatabaseDialect.ORACLE -> """
             |String.format("SELECT * FROM (%n" +
-            |"    SELECT rownum tmp_rownum_, a.* %n" +
-            |"    FROM (SELECT %n" +
-            |${columns.map { "\"${formatIdentifier(it.name, databaseDialect)}" }.joinToString(", %n\" +\n")} %n" +
-            |"        FROM ${formatTable(table, databaseDialect)} %n" +
-            |"        ORDER BY ${formatIdentifier(table.primaryKey.name, databaseDialect)} %n" +
-            |"    ) a %n" +
-            |"    WHERE rownum < %d + %d %n" +
+            |"SELECT rownum tmp_rownum_, a.* %n" +
+            |"FROM (SELECT %n" +
+            |ALL_COLUMNS +
+            |"FROM ${formatTable(table, databaseDialect)} %n" +
+            |"ORDER BY ${formatIdentifier(table.primaryKey.name, databaseDialect)} %n" +
+            |") a %n" +
+            |"WHERE rownum < %d + %d %n" +
             |")%n" +
             |"WHERE tmp_rownum_ >= %d", start + 1, pageSize, start + 1);
         """.trimMargin()
@@ -105,10 +110,9 @@ fun existsById(table: Table, databaseDialect: DatabaseDialect): String {
 }
 
 fun selectMany(table: Table, databaseDialect: DatabaseDialect): String {
-    val columns = table.columns
     var result = """
             |"SELECT${if (databaseDialect == DatabaseDialect.MSSQL_SERVER) " TOP %d" else ""} " +
-            |${columns.map { "\"   ${formatIdentifier(it.name, databaseDialect)}" }.joinToString(", \" +\n")} " +
+            |ALL_COLUMNS +
             |"FROM ${formatTable(table, databaseDialect)} "
             """.trimMargin()
     if (databaseDialect == DatabaseDialect.ORACLE) {
