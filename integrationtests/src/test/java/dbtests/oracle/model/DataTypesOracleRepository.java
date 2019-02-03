@@ -1,14 +1,14 @@
 package dbtests.oracle.model;
 
 import dbtests.framework.Dao;
-import java.io.IOException;
-import java.math.BigDecimal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
+
+import java.io.IOException;
 
 @Repository
 public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
@@ -20,8 +20,8 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
             r.setBinaryDouble(rs.getObject("BINARY_DOUBLE") != null ? rs.getDouble("BINARY_DOUBLE") : null);
             r.setBinaryFloat(rs.getObject("BINARY_FLOAT") != null ? rs.getFloat("BINARY_FLOAT") : null);
             r.setBlob(rs.getObject("BLOB") != null ? rs.getBlob("BLOB").getBinaryStream().readAllBytes() : null);
-            r.setCHAR1(rs.getString("CHAR1"));
-            r.setCHAR10(rs.getString("CHAR10"));
+            r.setChar1(rs.getString("CHAR1"));
+            r.setChar10(rs.getString("CHAR10"));
             r.setClob(rs.getObject("CLOB") != null ? rs.getClob("CLOB").getAsciiStream().readAllBytes() : null);
             r.setDate(rs.getObject("DATE") != null ? rs.getDate("DATE").toLocalDate() : null);
             r.setNumberEighteenZero(rs.getObject("NUMBER_EIGHTEEN_ZERO") != null ? rs.getLong("NUMBER_EIGHTEEN_ZERO") : null);
@@ -31,7 +31,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
             r.setNumberTenZero(rs.getObject("NUMBER_TEN_ZERO") != null ? rs.getLong("NUMBER_TEN_ZERO") : null);
             r.setTimestamp(rs.getObject("TIMESTAMP") != null ? rs.getTimestamp("TIMESTAMP").toLocalDateTime() : null);
             r.setVarchar(rs.getString("VARCHAR"));
-            r.setVARCHAR2(rs.getString("VARCHAR2"));
+            r.setVarchar2(rs.getString("VARCHAR2"));
             return r;
             } catch (IOException ex) {
                 // TODO custom exception (also auto indent doesn't work on comments unless ended by semi) ;
@@ -51,8 +51,8 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
             m.addValue("BINARY_DOUBLE", o.getBinaryDouble());
             m.addValue("BINARY_FLOAT", o.getBinaryFloat());
             m.addValue("BLOB", o.getBlob());
-            m.addValue("CHAR1", o.getCHAR1());
-            m.addValue("CHAR10", o.getCHAR10());
+            m.addValue("CHAR1", o.getChar1());
+            m.addValue("CHAR10", o.getChar10());
             m.addValue("CLOB", o.getClob());
             m.addValue("DATE", o.getDate());
             m.addValue("NUMBER_EIGHTEEN_ZERO", o.getNumberEighteenZero());
@@ -62,7 +62,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
             m.addValue("NUMBER_TEN_ZERO", o.getNumberTenZero());
             m.addValue("TIMESTAMP", o.getTimestamp());
             m.addValue("VARCHAR", o.getVarchar());
-            m.addValue("VARCHAR2", o.getVARCHAR2());
+            m.addValue("VARCHAR2", o.getVarchar2());
             return m;
         }
 

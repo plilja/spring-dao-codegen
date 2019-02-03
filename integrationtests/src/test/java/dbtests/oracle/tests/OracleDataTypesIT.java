@@ -40,8 +40,8 @@ public class OracleDataTypesIT {
         r.setBinaryDouble(0.7);
         r.setBinaryFloat(0.4F);
         r.setBlob(new byte[]{1, 2, 3});
-        r.setCHAR1("A");
-        r.setCHAR10("ABCDEFGHI");
+        r.setChar1("A");
+        r.setChar10("ABCDEFGHI");
         r.setClob(new byte[]{4, 5, 6});
         r.setDate(now.toLocalDate());
         r.setNumberEighteenZero(123412341224L);
@@ -51,7 +51,7 @@ public class OracleDataTypesIT {
         r.setNumberTenZero(213412234L);
         r.setTimestamp(now);
         r.setVarchar("foo bar");
-        r.setVARCHAR2("foo bar");
+        r.setVarchar2("foo bar");
 
         // when
         repo.save(r);
@@ -61,14 +61,14 @@ public class OracleDataTypesIT {
         assertEquals(r.getId(), r2.getId());
         assertEquals(r.getBinaryDouble(), r2.getBinaryDouble(), 1e-10);
         assertEquals(r.getBinaryFloat(), r2.getBinaryFloat(), 1e-10);
-        assertEquals(r.getCHAR1(), r2.getCHAR1());
-        assertEquals(r.getCHAR10(), r2.getCHAR10().strip()); // Gets padded by DB
+        assertEquals(r.getChar1(), r2.getChar1());
+        assertEquals(r.getChar10(), r2.getChar10().strip()); // Gets padded by DB
         assertEquals(r.getDate(), r2.getDate());
         assertEquals(r.getNumberEighteenZero(), r2.getNumberEighteenZero());
         assertEquals(r.getNumberNineZero(), r2.getNumberNineZero());
         assertEquals(r.getNumberNineteenZero(), r2.getNumberNineteenZero());
         assertEquals(r.getNumberTenTwo(), r2.getNumberTenTwo());
         assertEquals(r.getNumberTenZero(), r2.getNumberTenZero());
-        assertEquals(r.getVarchar(), r2.getVARCHAR2());
+        assertEquals(r.getVarchar(), r2.getVarchar2());
     }
 }

@@ -13,6 +13,8 @@ class StringUtilTest {
         assertEquals("foo", camelCase("FOO"))
         assertEquals("fooBar", camelCase("fOo_bAR"))
         assertEquals("fooBar", camelCase("fooBar"))
+        assertEquals("foo1", camelCase("FOO1"))
+        assertEquals("foo1bar", camelCase("FOO1BAR"))
     }
 
     @Test
@@ -23,6 +25,8 @@ class StringUtilTest {
         assertEquals("foo_bar", snakeCase("FooBar"))
         assertEquals("foo_bar", snakeCase("foo_bar"))
         assertEquals("foo", snakeCase("FOO"))
+        assertEquals("foo1", snakeCase("FOO1"))
+        assertEquals("foo1bar", snakeCase("FOO1BAR"))
     }
 
 }

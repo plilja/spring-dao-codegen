@@ -16,9 +16,9 @@ fun camelCase(s: String): String {
     }
 }
 
-private fun isAllUpper(s: String) = s.matches(Regex("[A-Z]*"))
+private fun isAllUpper(s: String) = s.matches(Regex("[A-Z0-9]*"))
 
-private fun isAllLower(s: String) = s.matches(Regex("[a-z]*"))
+private fun isAllLower(s: String) = s.matches(Regex("[a-z0-9]*"))
 
 fun snakeCase(s: String): String {
     if (s.contains("_")) {

@@ -17,4 +17,3 @@
 * Possibility to choose some formatting (for example lower case SQL vs upper case)
 * Remove create-method and look over interfaces
 * Database patterns? (modifiedAt, changedBy, version, soft delete etc...)
-* Fix snake case/camel case conversion (se OracleDataTypeEntity)

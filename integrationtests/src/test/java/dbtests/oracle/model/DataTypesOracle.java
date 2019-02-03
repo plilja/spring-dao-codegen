@@ -1,6 +1,7 @@
 package dbtests.oracle.model;
 
 import dbtests.framework.BaseEntity;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -12,8 +13,8 @@ public class DataTypesOracle implements BaseEntity<String> {
     private Double binaryDouble;
     private Float binaryFloat;
     private byte[] blob;
-    private String CHAR1;
-    private String CHAR10;
+    private String char1;
+    private String char10;
     private byte[] clob;
     private LocalDate date;
     private Long numberEighteenZero;
@@ -23,18 +24,18 @@ public class DataTypesOracle implements BaseEntity<String> {
     private Long numberTenZero;
     private LocalDateTime timestamp;
     private String varchar;
-    private String VARCHAR2;
+    private String varchar2;
 
     public DataTypesOracle() {
     }
 
-    public DataTypesOracle(String id, Double binaryDouble, Float binaryFloat, byte[] blob, String CHAR1, String CHAR10, byte[] clob, LocalDate date, Long numberEighteenZero, Integer numberNineZero, BigInteger numberNineteenZero, BigDecimal numberTenTwo, Long numberTenZero, LocalDateTime timestamp, String varchar, String VARCHAR2) {
+    public DataTypesOracle(String id, Double binaryDouble, Float binaryFloat, byte[] blob, String char1, String char10, byte[] clob, LocalDate date, Long numberEighteenZero, Integer numberNineZero, BigInteger numberNineteenZero, BigDecimal numberTenTwo, Long numberTenZero, LocalDateTime timestamp, String varchar, String varchar2) {
         this.id = id;
         this.binaryDouble = binaryDouble;
         this.binaryFloat = binaryFloat;
         this.blob = blob;
-        this.CHAR1 = CHAR1;
-        this.CHAR10 = CHAR10;
+        this.char1 = char1;
+        this.char10 = char10;
         this.clob = clob;
         this.date = date;
         this.numberEighteenZero = numberEighteenZero;
@@ -44,7 +45,7 @@ public class DataTypesOracle implements BaseEntity<String> {
         this.numberTenZero = numberTenZero;
         this.timestamp = timestamp;
         this.varchar = varchar;
-        this.VARCHAR2 = VARCHAR2;
+        this.varchar2 = varchar2;
     }
 
     public Double getBinaryDouble() {
@@ -71,20 +72,20 @@ public class DataTypesOracle implements BaseEntity<String> {
         this.blob = blob;
     }
 
-    public String getCHAR1() {
-        return CHAR1;
+    public String getChar1() {
+        return char1;
     }
 
-    public void setCHAR1(String CHAR1) {
-        this.CHAR1 = CHAR1;
+    public void setChar1(String char1) {
+        this.char1 = char1;
     }
 
-    public String getCHAR10() {
-        return CHAR10;
+    public String getChar10() {
+        return char10;
     }
 
-    public void setCHAR10(String CHAR10) {
-        this.CHAR10 = CHAR10;
+    public void setChar10(String char10) {
+        this.char10 = char10;
     }
 
     public byte[] getClob() {
@@ -159,12 +160,12 @@ public class DataTypesOracle implements BaseEntity<String> {
         this.varchar = varchar;
     }
 
-    public String getVARCHAR2() {
-        return VARCHAR2;
+    public String getVarchar2() {
+        return varchar2;
     }
 
-    public void setVARCHAR2(String VARCHAR2) {
-        this.VARCHAR2 = VARCHAR2;
+    public void setVarchar2(String varchar2) {
+        this.varchar2 = varchar2;
     }
 
     @Override
