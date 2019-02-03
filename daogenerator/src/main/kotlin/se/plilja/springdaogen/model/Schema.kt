@@ -11,6 +11,7 @@ import java.sql.NClob
 import java.sql.SQLXML
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.*
 
 
@@ -70,7 +71,7 @@ data class Column(
     fun jdbcSqlType(): String? {
         return when (javaType) {
             // This is not a complete list. It seems like sometimes
-            // the type hint helps and sometimes and causes trouble.
+            // the type hint helps and sometimes it causes trouble.
             java.lang.Double::class.java -> "Types.DOUBLE"
             java.lang.Float::class.java -> "Types.FLOAT"
             java.lang.Boolean::class.java -> "Types.BOOLEAN"
@@ -113,6 +114,8 @@ data class Column(
             return "UUID.fromString($rs.getString(\"$name\"))"
         } else if (javaType == LocalDate::class.java) {
             return "$rs.getObject(\"$name\") != null ? $rs.getDate(\"$name\").toLocalDate() : null"
+        } else if (javaType == LocalTime::class.java) {
+            return "$rs.getObject(\"$name\") != null ? $rs.getTime(\"$name\").toLocalTime() : null"
         } else if (javaType == LocalDateTime::class.java) {
             return "$rs.getObject(\"$name\") != null ? $rs.getTimestamp(\"$name\").toLocalDateTime() : null"
         } else if (javaType == Clob::class.java) {

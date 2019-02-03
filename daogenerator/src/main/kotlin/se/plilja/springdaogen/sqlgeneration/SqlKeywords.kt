@@ -6,9 +6,11 @@ import se.plilja.springdaogen.model.DatabaseDialect
 class SqlKeywords {
     companion object {
         private val cache = HashMap<DatabaseDialect, List<String>>()
+
         fun get(databaseDialect: DatabaseDialect): List<String> {
             return when (databaseDialect) {
                 DatabaseDialect.ORACLE -> cache.getOrPut(DatabaseDialect.ORACLE) { readKeyWords("/oracle_keywords.txt") }
+                DatabaseDialect.MYSQL -> cache.getOrPut(DatabaseDialect.MYSQL) { readKeyWords("/mysql_keywords.txt") }
                 else -> emptyList() // TODO
             }
         }

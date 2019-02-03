@@ -18,6 +18,7 @@ import java.math.BigInteger
 import java.sql.Connection
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.*
 import java.util.regex.Pattern
 import kotlin.collections.HashMap
@@ -135,10 +136,14 @@ fun resolveType(column: schemacrawler.schema.Column, config: Config): Class<out 
     } else if (column.type.name.toLowerCase().contains("char") && column.type.typeMappedClass.simpleName == "Array") {
         // Varchar
         String::class.java
+    } else if (column.type.name.toUpperCase() == "FLOAT") {
+        java.lang.Float::class.java
     } else if (column.type.typeMappedClass == java.sql.Date::class.java) {
         LocalDate::class.java
     } else if (column.type.typeMappedClass == java.sql.Timestamp::class.java) {
         LocalDateTime::class.java
+    } else if (column.type.typeMappedClass == java.sql.Time::class.java) {
+        LocalTime::class.java
     } else if (column.type.name == "uuid") {
         UUID::class.java
     } else {

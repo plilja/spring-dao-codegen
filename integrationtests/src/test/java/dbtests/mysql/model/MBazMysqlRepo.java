@@ -48,7 +48,7 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
     protected String getSelectIdsSql() {
         return "SELECT " +
                 "id, " +
-                "name " +
+                "`name` " +
                 "FROM BazMysql " +
                 "WHERE id IN (:ids)";
     }
@@ -57,7 +57,7 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
     protected String getSelectManySql(int maxSelectCount) {
         return String.format("SELECT " +
                 "   id, " +
-                "   name " +
+                "   `name` " +
                 "FROM BazMysql " +
                 "LIMIT %d", maxSelectCount);
     }
@@ -66,7 +66,7 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
     protected String getSelectPageSql(long start, int pageSize) {
         return String.format("SELECT %n" +
                 "id, %n" +
-                "name %n" +
+                "`name` %n" +
                 "FROM BazMysql %n" +
                 "LIMIT %d OFFSET %d", pageSize, start);
     }
@@ -74,7 +74,7 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
     @Override
     protected String getInsertSql() {
         return "INSERT INTO BazMysql (" +
-                "   name" +
+                "   `name`" +
                 ") " +
                 "VALUES (" +
                 "   :name" +

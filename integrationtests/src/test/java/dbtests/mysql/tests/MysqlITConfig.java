@@ -1,6 +1,7 @@
 package dbtests.mysql.tests;
 
 import dbtests.mysql.model.MBazMysqlRepo;
+import dbtests.mysql.model.MDataTypesMysqlRepo;
 import dbtests.mysql.model.MOneColumnGeneratedIdMysqlRepo;
 import dbtests.mysql.model.MOneColumnNaturalIdMysqlRepo;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -11,7 +12,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
 
-@Import({MBazMysqlRepo.class, MOneColumnNaturalIdMysqlRepo.class, MOneColumnGeneratedIdMysqlRepo.class})
+@Import({MBazMysqlRepo.class, MOneColumnNaturalIdMysqlRepo.class, MOneColumnGeneratedIdMysqlRepo.class, MDataTypesMysqlRepo.class})
 @Configuration
 public class MysqlITConfig {
     @Bean

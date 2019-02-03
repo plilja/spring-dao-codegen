@@ -140,10 +140,14 @@ fun formatTable(table: Table, databaseDialect: DatabaseDialect): String {
 }
 
 fun formatIdentifier(identifier: String, databaseDialect: DatabaseDialect): String {
+    val escapeSeq = when (databaseDialect) {
+        DatabaseDialect.MYSQL -> "`"
+        else -> "\\\""
+    }
     val needsPostgresCaseEscaping =
         databaseDialect == DatabaseDialect.POSTGRES && identifier.toLowerCase() != identifier
     if (needsPostgresCaseEscaping || isDatabaseIdentifier(identifier, databaseDialect)) {
-        return "\\\"$identifier\\\""
+        return "$escapeSeq$identifier$escapeSeq"
     } else {
         return identifier
     }
