@@ -25,7 +25,7 @@ public abstract class OneColumnNaturalIdBaseTest<Entity extends BaseEntity<Strin
     void create() {
         Entity entity = newEntity();
         entity.setId("Ole");
-        getRepo().create(entity);
+        getRepo().save(entity);
 
         Entity retrievedEntity = getRepo().getOne("Ole");
         assertNotNull(retrievedEntity);
@@ -37,7 +37,7 @@ public abstract class OneColumnNaturalIdBaseTest<Entity extends BaseEntity<Strin
         assertThrows(UnsupportedOperationException.class, () -> {
             Entity entity = newEntity();
             entity.setId("Ole");
-            getRepo().create(entity);
+            getRepo().save(entity);
             getRepo().save(entity);
         });
     }

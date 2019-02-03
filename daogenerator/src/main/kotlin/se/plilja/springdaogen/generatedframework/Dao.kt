@@ -102,7 +102,7 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         }
     }
 
-    public void create(T object) {
+    private void create(T object) {
         if (idIsGenerated) {
             if (object.getId() != null) {
                 throw new IllegalArgumentException(String.format("Attempting to create a new object with an existing id %s", object.getId()));
