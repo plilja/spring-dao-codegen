@@ -14,6 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,10 +34,9 @@ public class MysqlDataTypesTest {
         jdbcTemplate.update("DELETE FROM DATA_TYPES_MYSQL", new MapSqlParameterSource());
     }
 
-
     @Test
     void test() {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS); // Nano seconds gets truncated by DB
 
         MDataTypesMysql r = new MDataTypesMysql();
         r.setBigint(214234123412341234L);
@@ -64,7 +64,7 @@ public class MysqlDataTypesTest {
         r.setTinyint(127);
         r.setVarchar10("AAAAAAAAAA");
         r.setVarcharBinary10(new byte[]{7, 8, 9});
-        //r.setYear(2019);  TODO
+        r.setYear(2019);
 
         // when
         repo.save(r);
@@ -77,7 +77,7 @@ public class MysqlDataTypesTest {
         assertEquals(r.getBool(), r2.getBool());
         assertArrayEquals(r.getBlob(), r2.getBlob());
         assertEquals(r.getDate(), r2.getDate());
-        assertEquals(r.getDatetime(), LocalDateTime.of(now.toLocalDate(), now.toLocalTime())); // Nano seconds gets truncated by DB
+        assertEquals(r.getDatetime(), r2.getDatetime());
         assertEquals(r.getDecimalEighteenZero(), r2.getDecimalEighteenZero());
         assertEquals(r.getDecimalNineZero(), r2.getDecimalNineZero());
         assertEquals(r.getDecimalNineteenZero(), r2.getDecimalNineteenZero());
@@ -92,7 +92,7 @@ public class MysqlDataTypesTest {
         assertEquals(r.getSmallint(), r2.getSmallint());
         assertEquals(r.getText(), r2.getText());
         assertEquals(r.getTime(), now.toLocalTime());
-        assertEquals(r.getTimestamp(), LocalDateTime.of(now.toLocalDate(), now.toLocalTime()));
+        assertEquals(r.getTimestamp(), r2.getTimestamp());
         assertArrayEquals(r.getTinyblob(), r2.getTinyblob());
         assertEquals(r.getTinyint(), r2.getTinyint());
         assertEquals(r.getVarchar10(), r2.getVarchar10());

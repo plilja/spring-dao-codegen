@@ -131,7 +131,7 @@ fun resolveType(column: schemacrawler.schema.Column, config: Config): Class<out 
             else -> BigInteger::class.java
         }
     }
-    return if (config.databaseDialect == DatabaseDialect.ORACLE && column.type.name == "NUMBER") {
+    return if (config.databaseDialect == DatabaseDialect.MYSQL && column.type.name == "YEAR") {
         Integer::class.java
     } else if (column.type.name.toLowerCase().contains("char") && column.type.typeMappedClass.simpleName == "Array") {
         // Varchar

@@ -1,6 +1,7 @@
 package dbtests.mssql.tests;
 
 import dbtests.mssql.model.BazMsSqlDao;
+import dbtests.mssql.model.DataTypesMsSqlDao;
 import dbtests.mssql.model.OneColumnGeneratedIdMsSqlDao;
 import dbtests.mssql.model.OneColumnNaturalIdMsSqlDao;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -11,7 +12,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import javax.sql.DataSource;
 
-@Import({BazMsSqlDao.class, OneColumnNaturalIdMsSqlDao.class, OneColumnGeneratedIdMsSqlDao.class})
+@Import({BazMsSqlDao.class, OneColumnNaturalIdMsSqlDao.class, OneColumnGeneratedIdMsSqlDao.class, DataTypesMsSqlDao.class})
 @Configuration
 public class MsSqlITConfig {
 

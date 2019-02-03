@@ -43,7 +43,7 @@ public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
             r.setTinyint(rs.getObject("tinyint") != null ? rs.getInt("tinyint") : null);
             r.setVarchar10(rs.getString("varchar_10"));
             r.setVarcharBinary10((byte[]) rs.getObject("varchar_binary_10"));
-            r.setYear(rs.getObject("year") != null ? rs.getDate("year").toLocalDate() : null);
+            r.setYear(rs.getObject("year") != null ? rs.getInt("year") : null);
             return r;
             } catch (IOException ex) {
                 // TODO custom exception (also auto indent doesn't work on comments unless ended by semi) ;
@@ -85,7 +85,7 @@ public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
             m.addValue("tinyint", o.getTinyint());
             m.addValue("varchar_10", o.getVarchar10());
             m.addValue("varchar_binary_10", o.getVarcharBinary10());
-            m.addValue("year", o.getYear(), Types.DATE);
+            m.addValue("year", o.getYear());
             return m;
         }
 

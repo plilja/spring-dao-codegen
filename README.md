@@ -3,7 +3,6 @@
  Work in progress
 
 # TODO:s
-* Test different data types for columns (especially Oracle numbers)
 * Tables with composite id-columns
 * SqlLite
 * MariaDb

@@ -38,4 +38,35 @@ CREATE TABLE ONE_COLUMN_NATURAL_ID_MS_SQL (
     id VARCHAR(10) primary key
 )
 
+CREATE TABLE DATA_TYPES_MS_SQL (
+    id bigint identity(1, 1) primary key,
+    bit bit,
+    decimal_nine_zero decimal(9,0),
+    decimal_ten_zero decimal(10,0),
+    decimal_eighteen_zero decimal(18,0),
+    decimal_nineteen_zero decimal(19,0),
+    decimal_ten_two decimal(10,2),
+    int int,
+    money money,
+    smallint smallint,
+    smallmoney smallmoney,
+    tinyint tinyint,
+    float float,
+    real real,
+    date date,
+    datetime2 datetime2,
+    datetime datetime,
+    time time,
+    char char,
+    char10 char(10),
+    varchar10 varchar(10),
+    text text,
+    nchar10 nchar(10),
+    nvarchar10 nvarchar(10),
+    ntext ntext,
+    binary10 binary(10),
+    varbinary10 varbinary(10),
+    xml xml
+)
+
 SET NOEXEC OFF; 

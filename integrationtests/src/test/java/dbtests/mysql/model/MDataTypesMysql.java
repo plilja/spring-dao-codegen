@@ -35,12 +35,12 @@ public class MDataTypesMysql implements BaseEntity<Long> {
     private Integer tinyint;
     private String varchar10;
     private byte[] varcharBinary10;
-    private LocalDate year;
+    private Integer year;
 
     public MDataTypesMysql() {
     }
 
-    public MDataTypesMysql(Long id, Long bigint, Boolean bit, byte[] blob, Boolean bool, LocalDate date, LocalDateTime datetime, Long decimalEighteenZero, Integer decimalNineZero, BigInteger decimalNineteenZero, BigDecimal decimalTenTwo, Long decimalTenZero, Double doublE, Float floaT, Integer inT, Integer integer, String json, Integer mediumint, Integer smallint, String text, LocalTime time, LocalDateTime timestamp, byte[] tinyblob, Integer tinyint, String varchar10, byte[] varcharBinary10, LocalDate year) {
+    public MDataTypesMysql(Long id, Long bigint, Boolean bit, byte[] blob, Boolean bool, LocalDate date, LocalDateTime datetime, Long decimalEighteenZero, Integer decimalNineZero, BigInteger decimalNineteenZero, BigDecimal decimalTenTwo, Long decimalTenZero, Double doublE, Float floaT, Integer inT, Integer integer, String json, Integer mediumint, Integer smallint, String text, LocalTime time, LocalDateTime timestamp, byte[] tinyblob, Integer tinyint, String varchar10, byte[] varcharBinary10, Integer year) {
         this.id = id;
         this.bigint = bigint;
         this.bit = bit;
@@ -270,11 +270,11 @@ public class MDataTypesMysql implements BaseEntity<Long> {
         this.varcharBinary10 = varcharBinary10;
     }
 
-    public LocalDate getYear() {
+    public Integer getYear() {
         return year;
     }
 
-    public void setYear(LocalDate year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
 
