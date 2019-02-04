@@ -24,28 +24,37 @@ data class Table(
     val name: String,
     val primaryKey: Column,
     val columns: List<Column>,
-    val entityPrefix: String = "",
-    val entitySuffix: String = "",
-    val daoPrefix: String = "", // TODO better to get the config object?
-    val daoSuffix: String = ""
+    val config: Config
 ) {
 
     fun entityName(): String {
-        return entityPrefix + capitalizeFirst(camelCase(name)) + entitySuffix
+        return config.entityPrefix + capitalizeFirst(camelCase(name)) + config.entitySuffix
     }
 
     fun daoName(): String {
-        return daoPrefix + capitalizeFirst(camelCase(name)) + daoSuffix
+        return config.daoPrefix + capitalizeFirst(camelCase(name)) + config.daoSuffix
     }
 
     fun containsClobLikeField(): Boolean {
         return columns.map { it.isClobLike() }.any { it }
     }
+
+    fun changedAtColumns(): List<Column> {
+        return columns
+            .filter { config.changedAtColumnNames.contains(it.name.toUpperCase()) }
+            .filter { it.type() in listOf(LocalDateTime::class.java, LocalDate::class.java) }
+    }
+
+    fun createdAtColumns(): List<Column> {
+        return columns
+            .filter { config.createdAtColumnNames.contains(it.name.toUpperCase()) }
+            .filter { it.type() in listOf(LocalDateTime::class.java, LocalDate::class.java) }
+    }
 }
 
 data class Column(
     val name: String,
-    protected val javaType: Class<out Any>,
+    private val javaType: Class<out Any>,
     val generated: Boolean = false
 ) {
     var references: Pair<Table, Column>? = null

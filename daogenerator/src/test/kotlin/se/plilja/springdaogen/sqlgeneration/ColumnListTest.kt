@@ -1,6 +1,7 @@
 package se.plilja.springdaogen.sqlgeneration
 
 import org.junit.jupiter.api.Test
+import se.plilja.springdaogen.defaultTestConfig
 import se.plilja.springdaogen.model.Column
 import se.plilja.springdaogen.model.DatabaseDialect
 import se.plilja.springdaogen.model.Table
@@ -15,7 +16,7 @@ class ColumnListTest {
         val age = Column("AGE", Integer::class.java)
 
         // when
-        val res = columnsList(Table("public", "FOO", pk, listOf(pk, name, age)), DatabaseDialect.MSSQL_SERVER)
+        val res = columnsList(Table("public", "FOO", pk, listOf(pk, name, age), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals("\" FOO_ID, NAME, AGE \"", res)
@@ -39,7 +40,7 @@ class ColumnListTest {
 
         // when
         val res = columnsList(
-            Table("public", "FOO", pk, listOf(pk, a, b, c, d, e, f, g, h, i, j, k, l)),
+            Table("public", "FOO", pk, listOf(pk, a, b, c, d, e, f, g, h, i, j, k, l), defaultTestConfig()),
             DatabaseDialect.MYSQL
         )
 

@@ -7,6 +7,8 @@ create table test_schema.baz_h2
 (
     baz_id integer not null default nextval('test_schema."baz_baz_id_seq"'::regclass),
     baz_name character varying(100) collate pg_catalog.default,
+    created_at timestamp not null,
+    changed_at timestamp,
     constraint baz_pkey primary key (baz_id)
 );
 

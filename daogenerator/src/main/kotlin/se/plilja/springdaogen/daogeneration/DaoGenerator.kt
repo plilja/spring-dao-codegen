@@ -26,6 +26,7 @@ import java.sql.Blob
 import java.sql.Clob
 import java.sql.NClob
 import java.sql.Types
+import java.time.LocalDate
 import java.util.*
 
 
@@ -156,6 +157,34 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
             }
         """
     )
+    val createdAtColumns = table.createdAtColumns()
+    if (!createdAtColumns.isEmpty()) {
+        createdAtColumns.forEach { g.addImport(it.type()) }
+        g.addCustomMethod(
+            """
+            @Override
+            protected void setCreatedAt(${table.entityName()} o) {
+                ${createdAtColumns
+                .map { "o.${it.setter()}(${if (it.type() == LocalDate::class.java) "LocalDate.now()" else "LocalDateTime.now()"});" }
+                .joinToString("\n")}
+            }
+        """
+        )
+    }
+    val changedAtColumns = table.changedAtColumns()
+    if (!changedAtColumns.isEmpty()) {
+        changedAtColumns.forEach { g.addImport(it.type()) }
+        g.addCustomMethod(
+            """
+            @Override
+            protected void setChangedAt(${table.entityName()} o) {
+                ${changedAtColumns
+                .map { "o.${it.setter()}(${if (it.type() == LocalDate::class.java) "LocalDate.now()" else "LocalDateTime.now()"});" }
+                .joinToString("\n")}
+            }
+        """
+        )
+    }
 
     val mayNeedImport =
         listOf(UUID::class.java, Clob::class.java, NClob::class.java, Blob::class.java, BigDecimal::class.java)

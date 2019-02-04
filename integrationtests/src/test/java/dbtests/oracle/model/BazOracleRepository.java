@@ -1,6 +1,7 @@
 package dbtests.oracle.model;
 
 import dbtests.framework.Dao;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -14,10 +15,12 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
     private static final RowMapper<BazOracle> ROW_MAPPER = (rs, i) -> {
         BazOracle r = new BazOracle();
         r.setId(rs.getObject("ID") != null ? rs.getInt("ID") : null);
+        r.setChangedAt(rs.getObject("CHANGED_AT") != null ? rs.getTimestamp("CHANGED_AT").toLocalDateTime() : null);
+        r.setCreatedAt(rs.getObject("CREATED_AT") != null ? rs.getTimestamp("CREATED_AT").toLocalDateTime() : null);
         r.setName(rs.getString("NAME"));
         return r;
     };
-    private static final String ALL_COLUMNS = " ID, NAME ";
+    private static final String ALL_COLUMNS = " ID, CHANGED_AT, CREATED_AT, NAME ";
 
     @Autowired
     public BazOracleRepository(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -28,6 +31,8 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
     public SqlParameterSource getParams(BazOracle o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("ID", o.getId());
+        m.addValue("CHANGED_AT", o.getChangedAt());
+        m.addValue("CREATED_AT", o.getCreatedAt());
         m.addValue("NAME", o.getName());
         return m;
     }
@@ -78,9 +83,13 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
     @Override
     protected String getInsertSql() {
         return "INSERT INTO DOCKER.BAZ_ORACLE (" +
+                "CHANGED_AT, " +
+                "CREATED_AT, " +
                 "NAME" +
                 ") " +
                 "VALUES (" +
+                ":CHANGED_AT, " +
+                ":CREATED_AT, " +
                 ":NAME" +
                 ")";
     }
@@ -88,6 +97,8 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
     @Override
     protected String getUpdateSql() {
         return "UPDATE DOCKER.BAZ_ORACLE SET " +
+                "CHANGED_AT = :CHANGED_AT, " +
+                "CREATED_AT = :CREATED_AT, " +
                 "NAME = :NAME " +
                 "WHERE ID = :ID";
     }
@@ -111,6 +122,16 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
     @Override
     protected int getSelectAllDefaultMaxCount() {
         return 10;
+    }
+
+    @Override
+    protected void setCreatedAt(BazOracle o) {
+        o.setCreatedAt(LocalDateTime.now());
+    }
+
+    @Override
+    protected void setChangedAt(BazOracle o) {
+        o.setChangedAt(LocalDateTime.now());
     }
 
 }

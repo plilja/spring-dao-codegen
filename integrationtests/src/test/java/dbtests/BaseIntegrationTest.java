@@ -7,6 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.EmptyResultDataAccessException;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +17,7 @@ import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -33,6 +36,12 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     protected abstract Entity newEntity(String name);
 
     protected abstract String getName(Entity entity);
+
+    protected abstract void setName(Entity entity, String name);
+
+    protected abstract LocalDateTime getCreatedAt(Entity entity);
+
+    protected abstract LocalDateTime getChangedAt(Entity entity);
 
     @Test
     void findAll() {
@@ -62,10 +71,16 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
         Entity bazEntity = newEntity("Bar");
         getRepo().save(bazEntity);
         assertNotNull(bazEntity.getId());
+        assertNotNull(getCreatedAt(bazEntity));
+        assertEquals(LocalDateTime.now().truncatedTo(ChronoUnit.HOURS), getCreatedAt(bazEntity).truncatedTo(ChronoUnit.HOURS));
+        assertNull(getChangedAt(bazEntity));
 
         Entity retrievedEntity = getRepo().getOne(bazEntity.getId());
         assertNotNull(retrievedEntity);
         assertEquals("Bar", getName(retrievedEntity));
+        // Truncate to avoid false error due to precision loss from db
+        assertEquals(getCreatedAt(bazEntity).truncatedTo(ChronoUnit.HOURS), getCreatedAt(retrievedEntity).truncatedTo(ChronoUnit.HOURS));
+        assertNull(getChangedAt(retrievedEntity));
     }
 
     @Test
@@ -123,25 +138,18 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
         Entity bazEntity = newEntity("Bar");
         getRepo().save(bazEntity);
 
-        Entity bazEntity2 = newEntity("Bar updated");
+        assertNull(getChangedAt(bazEntity));
+        Entity bazEntity2 = getRepo().getOne(bazEntity.getId());
+        setName(bazEntity2, "Bar updated");
         bazEntity2.setId(bazEntity.getId());
 
         getRepo().save(bazEntity2);
 
         Entity retrievedEntity = getRepo().getOne(bazEntity.getId());
         assertEquals("Bar updated", getName(retrievedEntity));
-    }
-
-    @Test
-    void insertNewObject() {
-        Entity bazEntity = newEntity("Bar");
-        getRepo().save(bazEntity);
-
-        assertNotNull(bazEntity.getId());
-
-        Entity retrievedEntity = getRepo().getOne(bazEntity.getId());
-        assertEquals(bazEntity.getId(), retrievedEntity.getId());
-        assertEquals("Bar", getName(retrievedEntity));
+        assertNotNull(getChangedAt(bazEntity2));
+        assertNotNull(getChangedAt(retrievedEntity));
+        assertEquals(LocalDateTime.now().truncatedTo(ChronoUnit.HOURS), getChangedAt(retrievedEntity).truncatedTo(ChronoUnit.HOURS));
     }
 
     @Test

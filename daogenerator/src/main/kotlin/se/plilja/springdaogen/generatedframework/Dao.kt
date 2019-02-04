@@ -103,6 +103,7 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
     }
 
     private void create(T object) {
+        setCreatedAt(object);
         if (idIsGenerated) {
             if (object.getId() != null) {
                 throw new IllegalArgumentException(String.format("Attempting to create a new object with an existing id %s", object.getId()));
@@ -120,6 +121,7 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
     }
 
     private void update(T object) {
+        setChangedAt(object);
         String sql = getUpdateSql();
         SqlParameterSource params = getParams(object);
         int updated = jdbcTemplate.update(sql, params);
@@ -209,6 +211,15 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
      * unexpectedly large queries that may cause performance degradation.
      */
     protected abstract int getSelectAllDefaultMaxCount();
+
+    protected void setCreatedAt(T object) {
+        // default does nothing, tables with a created_at column should override this method
+    }
+
+    protected void setChangedAt(T object) {
+        // default does nothing, tables with a changed_at column should override this method
+    }
+
 }
     """.trimIndent())
 }

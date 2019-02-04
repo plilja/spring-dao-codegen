@@ -12,7 +12,11 @@ PRIMARY KEY(id));
 CREATE TABLE test_schema.baz_h2 (
 baz_id IDENTITY,
 baz_name VARCHAR(100),
+changed_at TIMESTAMP,
+created_at TIMESTAMP,
 PRIMARY KEY(baz_id));
+
+
 
 
 

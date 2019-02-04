@@ -11,6 +11,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDateTime;
+
 @ContextConfiguration(classes = {H2Config.class})
 @ExtendWith(SpringExtension.class)
 public class H2IT extends BaseIntegrationTest<BazH2, BazH2Repo> {
@@ -33,12 +35,29 @@ public class H2IT extends BaseIntegrationTest<BazH2, BazH2Repo> {
 
     @Override
     protected BazH2 newEntity(String name) {
-        return new BazH2(null, name);
+        BazH2 r = new BazH2();
+        r.setBazName(name);
+        return r;
     }
 
     @Override
     protected String getName(BazH2 entity) {
         return entity.getBazName();
+    }
+
+    @Override
+    protected void setName(BazH2 entity, String name) {
+        entity.setBazName(name);
+    }
+
+    @Override
+    protected LocalDateTime getCreatedAt(BazH2 entity) {
+        return entity.getCreatedAt();
+    }
+
+    @Override
+    protected LocalDateTime getChangedAt(BazH2 entity) {
+        return entity.getChangedAt();
     }
 
 }

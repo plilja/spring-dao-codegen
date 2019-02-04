@@ -11,6 +11,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDateTime;
+
 @ContextConfiguration(classes = {MysqlITConfig.class})
 @ExtendWith(SpringExtension.class)
 public class MysqlIT extends BaseIntegrationTest<MBazMysql, MBazMysqlRepo> {
@@ -33,12 +35,29 @@ public class MysqlIT extends BaseIntegrationTest<MBazMysql, MBazMysqlRepo> {
 
     @Override
     protected MBazMysql newEntity(String name) {
-        return new MBazMysql(null, name);
+        MBazMysql r = new MBazMysql();
+        r.setName(name);
+        return r;
     }
 
     @Override
     protected String getName(MBazMysql entity) {
         return entity.getName();
+    }
+
+    @Override
+    protected void setName(MBazMysql entity, String name) {
+        entity.setName(name);
+    }
+
+    @Override
+    protected LocalDateTime getCreatedAt(MBazMysql entity) {
+        return entity.getCreatedAt();
+    }
+
+    @Override
+    protected LocalDateTime getChangedAt(MBazMysql entity) {
+        return entity.getChangedAt();
     }
 
 }

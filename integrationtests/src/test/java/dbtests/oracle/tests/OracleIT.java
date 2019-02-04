@@ -10,6 +10,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDateTime;
+
 @ContextConfiguration(classes = {OracleITConfig.class})
 @ExtendWith(SpringExtension.class)
 public class OracleIT extends BaseIntegrationTest<BazOracle, BazOracleRepository> {
@@ -34,12 +36,29 @@ public class OracleIT extends BaseIntegrationTest<BazOracle, BazOracleRepository
 
     @Override
     protected BazOracle newEntity(String name) {
-        return new BazOracle(null, name);
+        BazOracle r =  new BazOracle();
+        r.setName(name);
+        return r;
     }
 
     @Override
     protected String getName(BazOracle entity) {
         return entity.getName();
+    }
+
+    @Override
+    protected void setName(BazOracle entity, String name) {
+        entity.setName(name);
+    }
+
+    @Override
+    protected LocalDateTime getCreatedAt(BazOracle entity) {
+        return entity.getCreatedAt();
+    }
+
+    @Override
+    protected LocalDateTime getChangedAt(BazOracle entity) {
+        return entity.getChangedAt();
     }
 
 }

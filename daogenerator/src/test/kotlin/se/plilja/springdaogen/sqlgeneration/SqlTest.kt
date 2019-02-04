@@ -1,6 +1,7 @@
 package se.plilja.springdaogen.sqlgeneration
 
 import org.junit.jupiter.api.Test
+import se.plilja.springdaogen.defaultTestConfig
 import se.plilja.springdaogen.model.Column
 import se.plilja.springdaogen.model.DatabaseDialect
 import se.plilja.springdaogen.model.Table
@@ -15,7 +16,7 @@ class SqlTest {
         val age = Column("AGE", Integer::class.java)
 
         // when
-        val sql = update(Table("public", "FOO", pk, listOf(pk, name, age)), DatabaseDialect.MSSQL_SERVER)
+        val sql = update(Table("public", "FOO", pk, listOf(pk, name, age), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals(
@@ -34,7 +35,7 @@ class SqlTest {
         val name = Column("NAME", String::class.java)
 
         // when
-        val sql = selectOne(Table("public", "FOO", pk, listOf(pk, name)), DatabaseDialect.MSSQL_SERVER)
+        val sql = selectOne(Table("public", "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals(
@@ -53,7 +54,7 @@ class SqlTest {
         val name = Column("NAME", String::class.java)
 
         // when
-        val sql = selectOne(Table(null, "FOO", pk, listOf(pk, name)), DatabaseDialect.MSSQL_SERVER)
+        val sql = selectOne(Table(null, "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals(
@@ -72,7 +73,7 @@ class SqlTest {
         val name = Column("NAME", String::class.java)
 
         // when
-        val sql = existsById(Table(null, "FOO", pk, listOf(pk, name)), DatabaseDialect.MSSQL_SERVER)
+        val sql = existsById(Table(null, "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals(
@@ -91,7 +92,7 @@ class SqlTest {
         val name = Column("NAME", String::class.java)
 
         // when
-        val sql = delete(Table(null, "FOO", pk, listOf(pk, name)), DatabaseDialect.MSSQL_SERVER)
+        val sql = delete(Table(null, "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals(
@@ -108,7 +109,7 @@ class SqlTest {
         val name = Column("NAME", String::class.java)
 
         // when
-        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name)), DatabaseDialect.MYSQL)
+        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.MYSQL)
 
         // then
         assertEquals(
@@ -127,7 +128,7 @@ class SqlTest {
         val name = Column("NAME", String::class.java)
 
         // when
-        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name)), DatabaseDialect.POSTGRES)
+        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.POSTGRES)
 
         // then
         assertEquals(
@@ -146,7 +147,7 @@ class SqlTest {
         val name = Column("NAME", String::class.java)
 
         // when
-        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name)), DatabaseDialect.ORACLE)
+        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.ORACLE)
 
         // then
         assertEquals(
@@ -165,7 +166,7 @@ class SqlTest {
         val name = Column("NAME", String::class.java)
 
         // when
-        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name)), DatabaseDialect.MSSQL_SERVER)
+        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals(
@@ -183,7 +184,7 @@ class SqlTest {
         val name = Column("NAME", String::class.java)
 
         // when
-        val sql = count(Table(null, "FOO", pk, listOf(pk, name)), DatabaseDialect.MSSQL_SERVER)
+        val sql = count(Table(null, "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals("\"SELECT COUNT(*) FROM FOO\"", sql)

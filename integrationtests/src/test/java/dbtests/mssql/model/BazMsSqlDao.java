@@ -1,6 +1,7 @@
 package dbtests.mssql.model;
 
 import dbtests.framework.Dao;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -14,10 +15,12 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
     private static final RowMapper<BazMsSqlEntity> ROW_MAPPER = (rs, i) -> {
         BazMsSqlEntity r = new BazMsSqlEntity();
         r.setId(rs.getObject("id") != null ? rs.getInt("id") : null);
+        r.setInsertedAt(rs.getObject("inserted_at") != null ? rs.getTimestamp("inserted_at").toLocalDateTime() : null);
+        r.setModifiedAt(rs.getObject("modified_at") != null ? rs.getTimestamp("modified_at").toLocalDateTime() : null);
         r.setName(rs.getString("name"));
         return r;
     };
-    private static final String ALL_COLUMNS = " id, name ";
+    private static final String ALL_COLUMNS = " id, inserted_at, modified_at, name ";
 
     @Autowired
     public BazMsSqlDao(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -28,6 +31,8 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
     public SqlParameterSource getParams(BazMsSqlEntity o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
+        m.addValue("inserted_at", o.getInsertedAt());
+        m.addValue("modified_at", o.getModifiedAt());
         m.addValue("name", o.getName());
         return m;
     }
@@ -72,9 +77,13 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
     @Override
     protected String getInsertSql() {
         return "INSERT INTO dbo.baz_ms_sql (" +
+                "inserted_at, " +
+                "modified_at, " +
                 "name" +
                 ") " +
                 "VALUES (" +
+                ":inserted_at, " +
+                ":modified_at, " +
                 ":name" +
                 ")";
     }
@@ -82,6 +91,8 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
     @Override
     protected String getUpdateSql() {
         return "UPDATE dbo.baz_ms_sql SET " +
+                "inserted_at = :inserted_at, " +
+                "modified_at = :modified_at, " +
                 "name = :name " +
                 "WHERE id = :id";
     }
@@ -105,6 +116,16 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
     @Override
     protected int getSelectAllDefaultMaxCount() {
         return 10;
+    }
+
+    @Override
+    protected void setCreatedAt(BazMsSqlEntity o) {
+        o.setInsertedAt(LocalDateTime.now());
+    }
+
+    @Override
+    protected void setChangedAt(BazMsSqlEntity o) {
+        o.setModifiedAt(LocalDateTime.now());
     }
 
 }

@@ -74,10 +74,7 @@ fun convertTable(
         table.name,
         columnsMap[table.primaryKey.columns[0]]!!,
         sortedColumns.map { columnsMap[it]!! },
-        config.entityPrefix,
-        config.entitySuffix,
-        config.daoPrefix,
-        config.daoSuffix
+        config
     )
     tablesMap[table] = convertedTable
 }

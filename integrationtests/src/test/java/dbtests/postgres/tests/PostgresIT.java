@@ -10,6 +10,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDateTime;
+
 @ContextConfiguration(classes = {PostgresITConfig.class})
 @ExtendWith(SpringExtension.class)
 public class PostgresIT extends BaseIntegrationTest<BazPostgresEntity, BazPostgresDao> {
@@ -32,12 +34,29 @@ public class PostgresIT extends BaseIntegrationTest<BazPostgresEntity, BazPostgr
 
     @Override
     protected BazPostgresEntity newEntity(String name) {
-        return new BazPostgresEntity(null, name);
+        BazPostgresEntity r = new BazPostgresEntity();
+        r.setBazName(name);
+        return r;
     }
 
     @Override
     protected String getName(BazPostgresEntity entity) {
         return entity.getBazName();
+    }
+
+    @Override
+    protected void setName(BazPostgresEntity entity, String name) {
+        entity.setBazName(name);
+    }
+
+    @Override
+    protected LocalDateTime getCreatedAt(BazPostgresEntity entity) {
+        return entity.getCreatedAt();
+    }
+
+    @Override
+    protected LocalDateTime getChangedAt(BazPostgresEntity entity) {
+        return entity.getChangedAt();
     }
 
 }

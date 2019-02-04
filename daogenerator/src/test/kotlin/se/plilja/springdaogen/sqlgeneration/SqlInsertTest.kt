@@ -1,6 +1,7 @@
 package se.plilja.springdaogen.sqlgeneration
 
 import org.junit.jupiter.api.Test
+import se.plilja.springdaogen.defaultTestConfig
 import se.plilja.springdaogen.model.Column
 import se.plilja.springdaogen.model.DatabaseDialect
 import se.plilja.springdaogen.model.Table
@@ -15,7 +16,7 @@ class SqlInsertTest {
         val age = Column("AGE", Integer::class.java)
 
         // when
-        val sql = insert(Table("public", "FOO", pk, listOf(pk, name, age)), DatabaseDialect.MSSQL_SERVER)
+        val sql = insert(Table("public", "FOO", pk, listOf(pk, name, age), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals(
@@ -37,7 +38,7 @@ class SqlInsertTest {
         val pk = Column("foo_id", Integer::class.java, true)
 
         // when
-        val sql = insert(Table("public", "foo", pk, listOf(pk)), DatabaseDialect.POSTGRES)
+        val sql = insert(Table("public", "foo", pk, listOf(pk), defaultTestConfig()), DatabaseDialect.POSTGRES)
 
         // then
         assertEquals("\"INSERT INTO public.foo DEFAULT VALUES\"", sql)
@@ -48,7 +49,7 @@ class SqlInsertTest {
         val pk = Column("foo_id", Integer::class.java, true)
 
         // when
-        val sql = insert(Table("public", "foo", pk, listOf(pk)), DatabaseDialect.MSSQL_SERVER)
+        val sql = insert(Table("public", "foo", pk, listOf(pk), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals("\"INSERT INTO public.foo DEFAULT VALUES\"", sql)
@@ -59,7 +60,7 @@ class SqlInsertTest {
         val pk = Column("foo_id", Integer::class.java, true)
 
         // when
-        val sql = insert(Table("public", "foo", pk, listOf(pk)), DatabaseDialect.MYSQL)
+        val sql = insert(Table("public", "foo", pk, listOf(pk), defaultTestConfig()), DatabaseDialect.MYSQL)
 
         // then
         assertEquals("\"INSERT INTO public.foo() VALUES()\"", sql)
@@ -70,7 +71,7 @@ class SqlInsertTest {
         val pk = Column("foo_id", Integer::class.java, true)
 
         // when
-        val sql = insert(Table("public", "foo", pk, listOf(pk)), DatabaseDialect.ORACLE)
+        val sql = insert(Table("public", "foo", pk, listOf(pk), defaultTestConfig()), DatabaseDialect.ORACLE)
 
         // then
         assertEquals("\"INSERT INTO \\\"public\\\".foo(foo_id) VALUES(null)\"", sql)
@@ -81,7 +82,7 @@ class SqlInsertTest {
         val pk = Column("foo_id", Integer::class.java, false)
 
         // when
-        val sql = insert(Table("public", "foo", pk, listOf(pk)), DatabaseDialect.ORACLE)
+        val sql = insert(Table("public", "foo", pk, listOf(pk), defaultTestConfig()), DatabaseDialect.ORACLE)
 
         // then
         assertEquals(

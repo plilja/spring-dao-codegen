@@ -9,6 +9,8 @@ CREATE TABLE test_schema."baz_postgres"
 (
     "baz_id" integer NOT NULL DEFAULT nextval('test_schema."BAZ_BAZ_ID_seq"'::regclass),
     "baz_name" character varying(100) COLLATE pg_catalog."default",
+    "created_at" timestamp with time zone not null,
+    "changed_at" timestamp with time zone,
     CONSTRAINT "baz_pkey" PRIMARY KEY ("baz_id")
 );
 

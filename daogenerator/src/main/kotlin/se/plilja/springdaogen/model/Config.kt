@@ -27,7 +27,9 @@ data class Config(
     val daoPrefix: String = "",
     val daoSuffix: String = "Dao",
     val generateTestDdl: Boolean = false,
-    val testResourceFolder: String? = null
+    val testResourceFolder: String? = null,
+    val createdAtColumnNames: List<String> = emptyList(),
+    val changedAtColumnNames: List<String> = emptyList()
 ) {
 
     companion object {
@@ -77,7 +79,9 @@ private class ConfigReader {
             daoPrefix = getDaoPrefix(),
             daoSuffix = getDaoSuffix(),
             generateTestDdl = generateTestDdl(),
-            testResourceFolder = getTestResourceFolder()
+            testResourceFolder = getTestResourceFolder(),
+            createdAtColumnNames = getListProperty("entity.created_at_names").map { it.toUpperCase() },
+            changedAtColumnNames = getListProperty("entity.changed_at_names").map { it.toUpperCase() }
         )
     }
 

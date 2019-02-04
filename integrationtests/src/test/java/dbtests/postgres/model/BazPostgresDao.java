@@ -1,6 +1,7 @@
 package dbtests.postgres.model;
 
 import dbtests.framework.Dao;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -15,9 +16,11 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
         BazPostgresEntity r = new BazPostgresEntity();
         r.setBazId(rs.getObject("baz_id") != null ? rs.getInt("baz_id") : null);
         r.setBazName(rs.getString("baz_name"));
+        r.setChangedAt(rs.getObject("changed_at") != null ? rs.getTimestamp("changed_at").toLocalDateTime() : null);
+        r.setCreatedAt(rs.getObject("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null);
         return r;
     };
-    private static final String ALL_COLUMNS = " baz_id, baz_name ";
+    private static final String ALL_COLUMNS = " baz_id, baz_name, changed_at, created_at ";
 
     @Autowired
     public BazPostgresDao(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -29,6 +32,8 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("baz_id", o.getId());
         m.addValue("baz_name", o.getBazName());
+        m.addValue("changed_at", o.getChangedAt());
+        m.addValue("created_at", o.getCreatedAt());
         return m;
     }
 
@@ -72,17 +77,23 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
     @Override
     protected String getInsertSql() {
         return "INSERT INTO test_schema.baz_postgres (" +
-                "baz_name" +
+                "baz_name, " +
+                "changed_at, " +
+                "created_at" +
                 ") " +
                 "VALUES (" +
-                ":baz_name" +
+                ":baz_name, " +
+                ":changed_at, " +
+                ":created_at" +
                 ")";
     }
 
     @Override
     protected String getUpdateSql() {
         return "UPDATE test_schema.baz_postgres SET " +
-                "baz_name = :baz_name " +
+                "baz_name = :baz_name, " +
+                "changed_at = :changed_at, " +
+                "created_at = :created_at " +
                 "WHERE baz_id = :baz_id";
     }
 
@@ -105,6 +116,16 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
     @Override
     protected int getSelectAllDefaultMaxCount() {
         return 10;
+    }
+
+    @Override
+    protected void setCreatedAt(BazPostgresEntity o) {
+        o.setCreatedAt(LocalDateTime.now());
+    }
+
+    @Override
+    protected void setChangedAt(BazPostgresEntity o) {
+        o.setChangedAt(LocalDateTime.now());
     }
 
 }
