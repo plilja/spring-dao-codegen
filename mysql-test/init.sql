@@ -4,7 +4,8 @@ CREATE TABLE BazMysql (
     id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(30) NOT NULL,
     created_at DATETIME NOT NULL,
-    changed_at DATETIME
+    changed_at DATETIME,
+    version tinyint not null
 );
 
 CREATE TABLE ONE_COLUMN_GENERATED_ID_MYSQL (

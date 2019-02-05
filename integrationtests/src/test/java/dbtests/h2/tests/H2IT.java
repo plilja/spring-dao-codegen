@@ -60,5 +60,10 @@ public class H2IT extends BaseIntegrationTest<BazH2, BazH2Repo> {
         return entity.getChangedAt();
     }
 
+    @Override
+    protected int getVersion(BazH2 entity) {
+        return entity.getVersion();
+    }
+
 }
 

@@ -1,6 +1,8 @@
 package dbtests;
 
 import dbtests.framework.BaseEntity;
+import dbtests.framework.ChangedAtTracked;
+import dbtests.framework.CreatedAtTracked;
 import dbtests.framework.Dao;
 import dbtests.framework.MaxAllowedCountExceededException;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,6 +44,8 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     protected abstract LocalDateTime getCreatedAt(Entity entity);
 
     protected abstract LocalDateTime getChangedAt(Entity entity);
+
+    protected abstract int getVersion(Entity entity);
 
     @Test
     void findAll() {
@@ -150,6 +154,36 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
         assertNotNull(getChangedAt(bazEntity2));
         assertNotNull(getChangedAt(retrievedEntity));
         assertEquals(LocalDateTime.now().truncatedTo(ChronoUnit.HOURS), getChangedAt(retrievedEntity).truncatedTo(ChronoUnit.HOURS));
+    }
+
+    @Test
+    void updateEnsureVersionChangesCorrectly() {
+        Entity entity = newEntity("Bar");
+        for (int i = 0; i < 130; i++) {
+            getRepo().save(entity);
+            assertEquals(i % 128, getVersion(entity));
+        }
+    }
+
+    @Test
+    void createdAtCannotBeModified() {
+        Entity entity = newEntity("Bar");
+        getRepo().save(entity);
+
+        Entity retrieved = getRepo().getOne(entity.getId());
+        try {
+            Thread.sleep(5);
+        } catch (InterruptedException e) {
+        }
+
+        LocalDateTime createdAtBeforeSave = getCreatedAt(retrieved);
+
+        ((CreatedAtTracked<?>)retrieved).setCreatedNow();
+        getRepo().save(retrieved);
+
+        Entity retrievedAgain = getRepo().getOne(entity.getId());
+
+        assertEquals(createdAtBeforeSave, getCreatedAt(retrievedAgain));
     }
 
     @Test

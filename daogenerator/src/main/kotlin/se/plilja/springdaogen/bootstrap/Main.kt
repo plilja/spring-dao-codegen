@@ -4,6 +4,7 @@ import se.plilja.springdaogen.codegeneration.toH2Ddl
 import se.plilja.springdaogen.daogeneration.generateCode
 import se.plilja.springdaogen.generatedframework.baseEntity
 import se.plilja.springdaogen.generatedframework.dao
+import se.plilja.springdaogen.generatedframework.entityInterfaces
 import se.plilja.springdaogen.generatedframework.frameworkExceptions
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Schema
@@ -51,6 +52,9 @@ fun copyFrameworkClasses(config: Config) {
     writeFrameworkClass(dao(config.frameworkOutputPackage))
     for (exceptionClass in frameworkExceptions(config.frameworkOutputPackage)) {
         writeFrameworkClass(exceptionClass)
+    }
+    for (entityInterface in entityInterfaces(config.frameworkOutputPackage)) {
+        writeFrameworkClass(entityInterface)
     }
 }
 

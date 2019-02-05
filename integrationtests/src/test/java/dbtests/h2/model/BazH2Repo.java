@@ -1,7 +1,6 @@
 package dbtests.h2.model;
 
 import dbtests.framework.Dao;
-import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -18,9 +17,10 @@ public class BazH2Repo extends Dao<BazH2, Integer> {
         r.setBazName(rs.getString("baz_name"));
         r.setChangedAt(rs.getObject("changed_at") != null ? rs.getTimestamp("changed_at").toLocalDateTime() : null);
         r.setCreatedAt(rs.getObject("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null);
+        r.setVersion(rs.getObject("version") != null ? rs.getInt("version") : null);
         return r;
     };
-    private static final String ALL_COLUMNS = " baz_id, baz_name, changed_at, created_at ";
+    private static final String ALL_COLUMNS = " baz_id, baz_name, changed_at, created_at, version ";
 
     @Autowired
     public BazH2Repo(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -34,6 +34,7 @@ public class BazH2Repo extends Dao<BazH2, Integer> {
         m.addValue("baz_name", o.getBazName());
         m.addValue("changed_at", o.getChangedAt());
         m.addValue("created_at", o.getCreatedAt());
+        m.addValue("version", o.getVersion());
         return m;
     }
 
@@ -79,12 +80,14 @@ public class BazH2Repo extends Dao<BazH2, Integer> {
         return "INSERT INTO test_schema.baz_h2 (" +
                 "baz_name, " +
                 "changed_at, " +
-                "created_at" +
+                "created_at, " +
+                "version" +
                 ") " +
                 "VALUES (" +
                 ":baz_name, " +
                 ":changed_at, " +
-                ":created_at" +
+                ":created_at, " +
+                ":version" +
                 ")";
     }
 
@@ -93,8 +96,8 @@ public class BazH2Repo extends Dao<BazH2, Integer> {
         return "UPDATE test_schema.baz_h2 SET " +
                 "baz_name = :baz_name, " +
                 "changed_at = :changed_at, " +
-                "created_at = :created_at " +
-                "WHERE baz_id = :baz_id";
+                "version = (version + 1) % 128 " +
+                "WHERE baz_id = :baz_id AND version = :version";
     }
 
     @Override
@@ -116,16 +119,6 @@ public class BazH2Repo extends Dao<BazH2, Integer> {
     @Override
     protected int getSelectAllDefaultMaxCount() {
         return 10;
-    }
-
-    @Override
-    protected void setCreatedAt(BazH2 o) {
-        o.setCreatedAt(LocalDateTime.now());
-    }
-
-    @Override
-    protected void setChangedAt(BazH2 o) {
-        o.setChangedAt(LocalDateTime.now());
     }
 
 }

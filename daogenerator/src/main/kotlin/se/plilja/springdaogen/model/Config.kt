@@ -29,7 +29,8 @@ data class Config(
     val generateTestDdl: Boolean = false,
     val testResourceFolder: String? = null,
     val createdAtColumnNames: List<String> = emptyList(),
-    val changedAtColumnNames: List<String> = emptyList()
+    val changedAtColumnNames: List<String> = emptyList(),
+    val versionColumnNames: List<String> = emptyList()
 ) {
 
     companion object {
@@ -80,8 +81,9 @@ private class ConfigReader {
             daoSuffix = getDaoSuffix(),
             generateTestDdl = generateTestDdl(),
             testResourceFolder = getTestResourceFolder(),
-            createdAtColumnNames = getListProperty("entity.created_at_names").map { it.toUpperCase() },
-            changedAtColumnNames = getListProperty("entity.changed_at_names").map { it.toUpperCase() }
+            createdAtColumnNames = getListProperty("entity.created_at_name").map { it.toUpperCase() },
+            changedAtColumnNames = getListProperty("entity.changed_at_name").map { it.toUpperCase() },
+            versionColumnNames = getListProperty("entity.version_name").map { it.toUpperCase() }
         )
     }
 

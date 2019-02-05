@@ -1,7 +1,6 @@
 package dbtests.oracle.model;
 
 import dbtests.framework.Dao;
-import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -18,9 +17,10 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
         r.setChangedAt(rs.getObject("CHANGED_AT") != null ? rs.getTimestamp("CHANGED_AT").toLocalDateTime() : null);
         r.setCreatedAt(rs.getObject("CREATED_AT") != null ? rs.getTimestamp("CREATED_AT").toLocalDateTime() : null);
         r.setName(rs.getString("NAME"));
+        r.setVersion(rs.getObject("VERSION") != null ? rs.getInt("VERSION") : null);
         return r;
     };
-    private static final String ALL_COLUMNS = " ID, CHANGED_AT, CREATED_AT, NAME ";
+    private static final String ALL_COLUMNS = " ID, CHANGED_AT, CREATED_AT, NAME, VERSION ";
 
     @Autowired
     public BazOracleRepository(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -34,6 +34,7 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
         m.addValue("CHANGED_AT", o.getChangedAt());
         m.addValue("CREATED_AT", o.getCreatedAt());
         m.addValue("NAME", o.getName());
+        m.addValue("VERSION", o.getVersion());
         return m;
     }
 
@@ -85,12 +86,14 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
         return "INSERT INTO DOCKER.BAZ_ORACLE (" +
                 "CHANGED_AT, " +
                 "CREATED_AT, " +
-                "NAME" +
+                "NAME, " +
+                "VERSION" +
                 ") " +
                 "VALUES (" +
                 ":CHANGED_AT, " +
                 ":CREATED_AT, " +
-                ":NAME" +
+                ":NAME, " +
+                ":VERSION" +
                 ")";
     }
 
@@ -98,9 +101,9 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
     protected String getUpdateSql() {
         return "UPDATE DOCKER.BAZ_ORACLE SET " +
                 "CHANGED_AT = :CHANGED_AT, " +
-                "CREATED_AT = :CREATED_AT, " +
-                "NAME = :NAME " +
-                "WHERE ID = :ID";
+                "NAME = :NAME, " +
+                "VERSION = MOD(VERSION + 1, 128) " +
+                "WHERE ID = :ID AND VERSION = :VERSION";
     }
 
     @Override
@@ -122,16 +125,6 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
     @Override
     protected int getSelectAllDefaultMaxCount() {
         return 10;
-    }
-
-    @Override
-    protected void setCreatedAt(BazOracle o) {
-        o.setCreatedAt(LocalDateTime.now());
-    }
-
-    @Override
-    protected void setChangedAt(BazOracle o) {
-        o.setChangedAt(LocalDateTime.now());
     }
 
 }

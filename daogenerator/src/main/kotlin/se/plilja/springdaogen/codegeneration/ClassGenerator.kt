@@ -18,7 +18,7 @@ class ClassGenerator(
     var isFinal = false
     var isAbstract = false
     var extends: String? = null
-    var implements: String? = null
+    private var implements = ArrayList<String>()
     var isConstantsClass = false
     var hideConstructors = false
     private val customConstructors = ArrayList<String>()
@@ -30,6 +30,10 @@ class ClassGenerator(
     fun addConstant(name: String, type: Class<out Any>, initialization: String) {
         constants.add(Pair(Field(name, type.simpleName, false), initialization))
         addImport(type)
+    }
+
+    fun addImplements(iface: String) {
+        implements.add(iface)
     }
 
     fun addPrivateConstant(name: String, type: String, initialization: String) {
@@ -87,8 +91,9 @@ class ClassGenerator(
         val packageDeclaration = "package $packageName;"
         val importsDeclaration = imports.map { "import $it;" }.joinToString("\n")
         val joinedClassAnnotation = classAnnotations.joinToString("\n")
+        val implementsDecl = if (implements.isEmpty()) "" else " implements " + implements.joinToString(", ")
         val classHeader =
-            "public${if (isAbstract) " abstract" else ""}${if (isFinal) " final" else ""} class $name${if (extends != null) " extends $extends" else ""}${if (implements != null) " implements $implements" else ""} {"
+            "public${if (isAbstract) " abstract" else ""}${if (isFinal) " final" else ""} class $name${if (extends != null) " extends $extends" else ""}$implementsDecl {"
         val classDeclaration =
             if (joinedClassAnnotation.isEmpty()) {
                 classHeader

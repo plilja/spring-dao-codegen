@@ -14,7 +14,9 @@ baz_id IDENTITY,
 baz_name VARCHAR(100),
 changed_at TIMESTAMP,
 created_at TIMESTAMP,
+version INTEGER,
 PRIMARY KEY(baz_id));
+
 
 
 

@@ -104,6 +104,7 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
 
     private void create(T object) {
         setCreatedAt(object);
+        initializeVersion(object);
         if (idIsGenerated) {
             if (object.getId() != null) {
                 throw new IllegalArgumentException(String.format("Attempting to create a new object with an existing id %s", object.getId()));
@@ -130,6 +131,7 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         } else if (updated > 1) {
             throw new SqlUpdateException(String.format("More than one row [%d] affected by update", updated));
         }
+        bumpVersion(object);
     }
 
     @Transactional
@@ -193,9 +195,7 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
 
     protected abstract String getCountSql();
 
-    /**
-     * @noinspection unchecked
-     */
+    @SuppressWarnings("unchecked")
     private void setId(T object, Number newKey) {
         if (idClass.isAssignableFrom(Integer.class)) {
             object.setId((ID) Integer.valueOf(newKey.intValue()));
@@ -212,12 +212,32 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
      */
     protected abstract int getSelectAllDefaultMaxCount();
 
-    protected void setCreatedAt(T object) {
-        // default does nothing, tables with a created_at column should override this method
+    private void setCreatedAt(T object) {
+        if (object instanceof CreatedAtTracked<?>) {
+            ((CreatedAtTracked<?>) object).setCreatedNow();
+        }
     }
 
-    protected void setChangedAt(T object) {
-        // default does nothing, tables with a changed_at column should override this method
+    private void setChangedAt(T object) {
+        if (object instanceof ChangedAtTracked<?>) {
+            ((ChangedAtTracked<?>) object).setChangedNow();
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void bumpVersion(T object) {
+        if (object instanceof VersionTracked) {
+            VersionTracked versionTracked = (VersionTracked) object;
+            int v = versionTracked.getVersion();
+            versionTracked.setVersion((v + 1) % 128);
+        }
+    }
+
+    private void initializeVersion(T object) {
+        if (object instanceof VersionTracked) {
+            VersionTracked versionTracked = (VersionTracked) object;
+            versionTracked.setVersion(0);
+        }
     }
 
 }

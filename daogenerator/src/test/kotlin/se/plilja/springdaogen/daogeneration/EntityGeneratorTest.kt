@@ -29,7 +29,7 @@ class EntityGeneratorTest {
                 emptyList(),
                 false
             )
-        val pk = Column("ID", Integer::class.java, true)
+        val pk = Column("ID", Integer::class.java, config, true)
         val table = Table("dbo", "Table", pk, listOf(pk), config)
 
         // when
@@ -88,8 +88,8 @@ public class Table implements BaseEntity<Integer> {
                 false,
                 entitySuffix = "Entity"
             )
-        val pk = Column("TABLE_ID", Integer::class.java, true)
-        val name = Column("NAME", String::class.java)
+        val pk = Column("TABLE_ID", Integer::class.java, config, true)
+        val name = Column("NAME", String::class.java, config)
         val table = Table("dbo", "TABLE", pk, listOf(pk, name), config)
 
         // when

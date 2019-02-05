@@ -14,8 +14,7 @@
 * Evil Oracle dependency optional
 * Smart way to build and run all IT-tests
 * Possibility to choose some formatting (for example lower case SQL vs upper case)
-* Remove create-method and look over interfaces
-* Database patterns? (modifiedAt, changedBy, version, soft delete etc...)
+* More database patterns? (createdBy, changedBy, soft delete etc...)
 * Enum types
 * Test time stamps with time zones
 * No unused imports should be generated

@@ -1,5 +1,6 @@
 package se.plilja.springdaogen.sqlgeneration
 
+import se.plilja.springdaogen.model.Column
 import se.plilja.springdaogen.model.DatabaseDialect
 import se.plilja.springdaogen.model.Table
 
@@ -31,14 +32,34 @@ fun insert(table: Table, databaseDialect: DatabaseDialect): String {
 }
 
 fun update(table: Table, databaseDialect: DatabaseDialect): String? {
-    val updateColumns = table.columns.filter { it != table.primaryKey }
+    fun assignment(column: Column): String {
+        return if (table.versionColumn() == column && DatabaseDialect.ORACLE == databaseDialect) {
+            "${column.name} = MOD(${column.name} + 1, 128)"
+        } else if (table.versionColumn() == column) {
+            "${column.name} = (${column.name} + 1) % 128"
+        } else {
+            "${column.name} = :${column.name}"
+        }
+
+    }
+
+    val updateColumns = table.columns
+        .filter { it != table.primaryKey }
+        .filter { it != table.createdAtColumn() }
     return if (updateColumns.isEmpty()) {
         null // Special case, table only consists of PK-columns. Update is not supported.
     } else {
+        val versionColumn = table.versionColumn()
+        val extraVersionClause = if (versionColumn != null) {
+            " AND ${versionColumn.name} = :${versionColumn.name}"
+
+        } else {
+            ""
+        }
         """
             |"UPDATE ${formatTable(table, databaseDialect)} SET " +
-            |${updateColumns.map { "\"${it.name} = :${it.name}" }.joinToString(", \" +\n")} " +
-            |"WHERE ${table.primaryKey.name} = :${table.primaryKey.name}"
+            |${updateColumns.map { "\"${assignment(it)}" }.joinToString(", \" +\n")} " +
+            |"WHERE ${table.primaryKey.name} = :${table.primaryKey.name}$extraVersionClause"
             """.trimMargin()
     }
 }

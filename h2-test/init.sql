@@ -9,6 +9,7 @@ create table test_schema.baz_h2
     baz_name character varying(100) collate pg_catalog.default,
     created_at timestamp not null,
     changed_at timestamp,
+    version smallint not null,
     constraint baz_pkey primary key (baz_id)
 );
 

@@ -61,4 +61,9 @@ public class OracleIT extends BaseIntegrationTest<BazOracle, BazOracleRepository
         return entity.getChangedAt();
     }
 
+    @Override
+    protected int getVersion(BazOracle entity) {
+        return entity.getVersion();
+    }
+
 }

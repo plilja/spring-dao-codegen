@@ -1,39 +1,28 @@
 package dbtests.oracle.model;
 
 import dbtests.framework.BaseEntity;
+import dbtests.framework.ChangedAtTracked;
+import dbtests.framework.CreatedAtTracked;
+import dbtests.framework.VersionTracked;
 import java.time.LocalDateTime;
 
-public class BazOracle implements BaseEntity<Integer> {
+public class BazOracle implements BaseEntity<Integer>, CreatedAtTracked<LocalDateTime>, ChangedAtTracked<LocalDateTime>, VersionTracked {
 
     private Integer id;
     private LocalDateTime changedAt;
     private LocalDateTime createdAt;
     private String name;
+    private Integer version;
 
     public BazOracle() {
     }
 
-    public BazOracle(Integer id, LocalDateTime changedAt, LocalDateTime createdAt, String name) {
+    public BazOracle(Integer id, LocalDateTime changedAt, LocalDateTime createdAt, String name, Integer version) {
         this.id = id;
         this.changedAt = changedAt;
         this.createdAt = createdAt;
         this.name = name;
-    }
-
-    public LocalDateTime getChangedAt() {
-        return changedAt;
-    }
-
-    public void setChangedAt(LocalDateTime changedAt) {
-        this.changedAt = changedAt;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+        this.version = version;
     }
 
     public String getName() {
@@ -52,6 +41,44 @@ public class BazOracle implements BaseEntity<Integer> {
     @Override
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    @Override
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime value) {
+        this.createdAt = value;
+    }
+
+    @Override
+    public void setCreatedNow() {
+        createdAt = LocalDateTime.now();
+    }
+
+    @Override
+    public LocalDateTime getChangedAt() {
+        return changedAt;
+    }
+
+    public void setChangedAt(LocalDateTime value) {
+        this.changedAt = value;
+    }
+
+    @Override
+    public void setChangedNow() {
+        changedAt = LocalDateTime.now();
+    }
+
+    @Override
+    public Integer getVersion() {
+        return version;
+    }
+
+    @Override
+    public void setVersion(Integer value) {
+        this.version = value;
     }
 
 }

@@ -59,4 +59,9 @@ public class MsSqlIT extends BaseIntegrationTest<BazMsSqlEntity, BazMsSqlDao> {
         return entity.getModifiedAt();
     }
 
+    @Override
+    protected int getVersion(BazMsSqlEntity entity) {
+        return entity.getVersion();
+    }
+
 }

@@ -11,9 +11,10 @@ class SqlTest {
 
     @Test
     fun update() {
-        val pk = Column("FOO_ID", Integer::class.java, true)
-        val name = Column("NAME", String::class.java)
-        val age = Column("AGE", Integer::class.java)
+        val config = defaultTestConfig()
+        val pk = Column("FOO_ID", Integer::class.java, config, true)
+        val name = Column("NAME", String::class.java, config)
+        val age = Column("AGE", Integer::class.java, config)
 
         // when
         val sql = update(Table("public", "FOO", pk, listOf(pk, name, age), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
@@ -31,8 +32,9 @@ class SqlTest {
 
     @Test
     fun `select one`() {
-        val pk = Column("FOO_ID", Integer::class.java, true)
-        val name = Column("NAME", String::class.java)
+        val config = defaultTestConfig()
+        val pk = Column("FOO_ID", Integer::class.java, config, true)
+        val name = Column("NAME", String::class.java, config)
 
         // when
         val sql = selectOne(Table("public", "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
@@ -50,8 +52,9 @@ class SqlTest {
 
     @Test
     fun `select no schema`() {
-        val pk = Column("FOO_ID", Integer::class.java, true)
-        val name = Column("NAME", String::class.java)
+        val config = defaultTestConfig()
+        val pk = Column("FOO_ID", Integer::class.java, config, true)
+        val name = Column("NAME", String::class.java, config)
 
         // when
         val sql = selectOne(Table(null, "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
@@ -69,8 +72,9 @@ class SqlTest {
 
     @Test
     fun existsById() {
-        val pk = Column("FOO_ID", Integer::class.java, true)
-        val name = Column("NAME", String::class.java)
+        val config = defaultTestConfig()
+        val pk = Column("FOO_ID", Integer::class.java, config, true)
+        val name = Column("NAME", String::class.java, config)
 
         // when
         val sql = existsById(Table(null, "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
@@ -88,8 +92,9 @@ class SqlTest {
 
     @Test
     fun delete() {
-        val pk = Column("FOO_ID", Integer::class.java, true)
-        val name = Column("NAME", String::class.java)
+        val config = defaultTestConfig()
+        val pk = Column("FOO_ID", Integer::class.java, config, true)
+        val name = Column("NAME", String::class.java, config)
 
         // when
         val sql = delete(Table(null, "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
@@ -105,8 +110,9 @@ class SqlTest {
 
     @Test
     fun `select many Mysql`() {
-        val pk = Column("FOO_ID", Integer::class.java, true)
-        val name = Column("NAME", String::class.java)
+        val config = defaultTestConfig()
+        val pk = Column("FOO_ID", Integer::class.java, config, true)
+        val name = Column("NAME", String::class.java, config)
 
         // when
         val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.MYSQL)
@@ -124,8 +130,9 @@ class SqlTest {
 
     @Test
     fun `select many Postgres`() {
-        val pk = Column("FOO_ID", Integer::class.java, true)
-        val name = Column("NAME", String::class.java)
+        val config = defaultTestConfig()
+        val pk = Column("FOO_ID", Integer::class.java, config, true)
+        val name = Column("NAME", String::class.java, config)
 
         // when
         val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.POSTGRES)
@@ -143,8 +150,9 @@ class SqlTest {
 
     @Test
     fun `select many Oracle`() {
-        val pk = Column("FOO_ID", Integer::class.java, true)
-        val name = Column("NAME", String::class.java)
+        val config = defaultTestConfig()
+        val pk = Column("FOO_ID", Integer::class.java, config, true)
+        val name = Column("NAME", String::class.java, config)
 
         // when
         val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.ORACLE)
@@ -162,8 +170,9 @@ class SqlTest {
 
     @Test
     fun `select many MS Sql`() {
-        val pk = Column("FOO_ID", Integer::class.java, true)
-        val name = Column("NAME", String::class.java)
+        val config = defaultTestConfig()
+        val pk = Column("FOO_ID", Integer::class.java, config, true)
+        val name = Column("NAME", String::class.java, config)
 
         // when
         val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
@@ -180,8 +189,9 @@ class SqlTest {
 
     @Test
     fun count() {
-        val pk = Column("FOO_ID", Integer::class.java, true)
-        val name = Column("NAME", String::class.java)
+        val config = defaultTestConfig()
+        val pk = Column("FOO_ID", Integer::class.java, config, true)
+        val name = Column("NAME", String::class.java, config)
 
         // when
         val sql = count(Table(null, "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)

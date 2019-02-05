@@ -11,9 +11,10 @@ import kotlin.test.assertEquals
 class SqlInsertTest {
     @Test
     fun `base case`() {
-        val pk = Column("FOO_ID", Integer::class.java, true)
-        val name = Column("NAME", String::class.java)
-        val age = Column("AGE", Integer::class.java)
+        val config = defaultTestConfig()
+        val pk = Column("FOO_ID", Integer::class.java, config, true)
+        val name = Column("NAME", String::class.java, config)
+        val age = Column("AGE", Integer::class.java, config)
 
         // when
         val sql = insert(Table("public", "FOO", pk, listOf(pk, name, age), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
@@ -35,7 +36,8 @@ class SqlInsertTest {
 
     @Test
     fun `only one generated column Postgres`() {
-        val pk = Column("foo_id", Integer::class.java, true)
+        val config = defaultTestConfig()
+        val pk = Column("foo_id", Integer::class.java, config, true)
 
         // when
         val sql = insert(Table("public", "foo", pk, listOf(pk), defaultTestConfig()), DatabaseDialect.POSTGRES)
@@ -46,7 +48,8 @@ class SqlInsertTest {
 
     @Test
     fun `only one generated column MS Sql`() {
-        val pk = Column("foo_id", Integer::class.java, true)
+        val config = defaultTestConfig()
+        val pk = Column("foo_id", Integer::class.java, config, true)
 
         // when
         val sql = insert(Table("public", "foo", pk, listOf(pk), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
@@ -57,7 +60,8 @@ class SqlInsertTest {
 
     @Test
     fun `only one generated column Mysql`() {
-        val pk = Column("foo_id", Integer::class.java, true)
+        val config = defaultTestConfig()
+        val pk = Column("foo_id", Integer::class.java, config, true)
 
         // when
         val sql = insert(Table("public", "foo", pk, listOf(pk), defaultTestConfig()), DatabaseDialect.MYSQL)
@@ -68,7 +72,8 @@ class SqlInsertTest {
 
     @Test
     fun `only one generated column Oracle`() {
-        val pk = Column("foo_id", Integer::class.java, true)
+        val config = defaultTestConfig()
+        val pk = Column("foo_id", Integer::class.java, config, true)
 
         // when
         val sql = insert(Table("public", "foo", pk, listOf(pk), defaultTestConfig()), DatabaseDialect.ORACLE)
@@ -79,7 +84,8 @@ class SqlInsertTest {
 
     @Test
     fun `only one non generated column`() {
-        val pk = Column("foo_id", Integer::class.java, false)
+        val config = defaultTestConfig()
+        val pk = Column("foo_id", Integer::class.java, config, false)
 
         // when
         val sql = insert(Table("public", "foo", pk, listOf(pk), defaultTestConfig()), DatabaseDialect.ORACLE)

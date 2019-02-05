@@ -7,8 +7,8 @@ import kotlin.test.assertEquals
 class TableTest {
     @Test
     fun getEntityName() {
-        val pk = Column("id", Int::class.java, true)
         val config = defaultTestConfig().copy(entityPrefix = "", entitySuffix = "")
+        val pk = Column("id", Int::class.java, config, true)
         val table = Table("entityfoo", "Table", pk, listOf(pk), config)
 
         assertEquals("Table", table.entityName())
@@ -22,8 +22,8 @@ class TableTest {
 
     @Test
     fun getRepositoryName() {
-        val pk = Column("id", Int::class.java, true)
         val config = defaultTestConfig().copy(daoPrefix = "", daoSuffix = "")
+        val pk = Column("id", Int::class.java, config, true)
         val table = Table("entityfoo", "Table", pk, listOf(pk), config)
 
         assertEquals("Table", table.daoName())

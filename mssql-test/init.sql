@@ -29,7 +29,8 @@ CREATE TABLE baz_ms_sql (
     id INT identity(1, 1) primary key,
     name VARCHAR(30) NOT NULL,
     inserted_at datetime not null,
-    modified_at datetime
+    modified_at datetime,
+    version tinyint not null
 )
 
 CREATE TABLE one_column_generated_id_ms_sql (

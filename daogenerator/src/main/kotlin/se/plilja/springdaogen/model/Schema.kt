@@ -39,31 +39,61 @@ data class Table(
         return columns.map { it.isClobLike() }.any { it }
     }
 
-    fun changedAtColumns(): List<Column> {
-        return columns
-            .filter { config.changedAtColumnNames.contains(it.name.toUpperCase()) }
-            .filter { it.type() in listOf(LocalDateTime::class.java, LocalDate::class.java) }
+    fun changedAtColumn(): Column? {
+        return columns.firstOrNull { it.isChangedAtColumn() }
     }
 
-    fun createdAtColumns(): List<Column> {
-        return columns
-            .filter { config.createdAtColumnNames.contains(it.name.toUpperCase()) }
-            .filter { it.type() in listOf(LocalDateTime::class.java, LocalDate::class.java) }
+    fun createdAtColumn(): Column? {
+        return columns.firstOrNull { it.isCreatedAtColumn() }
+    }
+
+    fun versionColumn(): Column? {
+        return columns.firstOrNull { it.isVersionColumn() }
     }
 }
 
 data class Column(
     val name: String,
     private val javaType: Class<out Any>,
+    private val config: Config,
     val generated: Boolean = false
 ) {
     var references: Pair<Table, Column>? = null
+
+    fun isChangedAtColumn(): Boolean {
+        val types = listOf(
+            LocalDate::class.java,
+            LocalDateTime::class.java
+        )
+        return config.changedAtColumnNames.contains(name.toUpperCase()) && javaType in types
+    }
+
+    fun isCreatedAtColumn(): Boolean {
+        val types = listOf(
+            LocalDate::class.java,
+            LocalDateTime::class.java
+        )
+        return config.createdAtColumnNames.contains(name.toUpperCase()) && javaType in types
+    }
+
+    fun isVersionColumn(): Boolean {
+        val types = listOf(
+            java.lang.Integer::class.java,
+            java.lang.Long::class.java,
+            java.lang.Short::class.java,
+            java.lang.Byte::class.java
+        )
+        return config.versionColumnNames.contains(name.toUpperCase()) && javaType in types
+    }
 
     fun setter(): String {
         return "set${capitalizeFirst(fieldName())}"
     }
 
     fun type(): Class<out Any> {
+        if (isVersionColumn()) {
+            return java.lang.Integer::class.java
+        }
         return when (javaType) {
             Clob::class.java -> String::class.java
             Blob::class.java -> ByteArray::class.java
@@ -111,7 +141,7 @@ data class Column(
             return "$rs.getString(\"$name\")"
         } else if (javaType == java.lang.Boolean::class.java) {
             return "$rs.getObject(\"$name\") != null ? $rs.getBoolean(\"$name\") : null"
-        } else if (javaType == Integer::class.java) {
+        } else if (isVersionColumn() || javaType == Integer::class.java) {
             return "$rs.getObject(\"$name\") != null ? $rs.getInt(\"$name\") : null"
         } else if (javaType == java.lang.Long::class.java) {
             return "$rs.getObject(\"$name\") != null ? $rs.getLong(\"$name\") : null"

@@ -101,6 +101,7 @@ fun convertColumn(table: schemacrawler.schema.Table, column: schemacrawler.schem
     return Column(
         column.name,
         resolveType(column, config),
+        config,
         isGenerated(table, column, config)
     )
 }

@@ -60,5 +60,10 @@ public class MysqlIT extends BaseIntegrationTest<MBazMysql, MBazMysqlRepo> {
         return entity.getChangedAt();
     }
 
+    @Override
+    protected int getVersion(MBazMysql entity) {
+        return entity.getVersion();
+    }
+
 }
 

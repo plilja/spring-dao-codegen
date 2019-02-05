@@ -59,4 +59,9 @@ public class PostgresIT extends BaseIntegrationTest<BazPostgresEntity, BazPostgr
         return entity.getChangedAt();
     }
 
+    @Override
+    protected int getVersion(BazPostgresEntity entity) {
+        return entity.getVersion().intValue();
+    }
+
 }

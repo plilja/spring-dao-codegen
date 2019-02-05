@@ -11,6 +11,7 @@ CREATE TABLE test_schema."baz_postgres"
     "baz_name" character varying(100) COLLATE pg_catalog."default",
     "created_at" timestamp with time zone not null,
     "changed_at" timestamp with time zone,
+    "counter" bigint not null,
     CONSTRAINT "baz_pkey" PRIMARY KEY ("baz_id")
 );
 
