@@ -18,4 +18,3 @@
 * Enum types
 * Test time stamps with time zones
 * No unused imports should be generated
-* Column list as variable (useful for tables with many columns)
