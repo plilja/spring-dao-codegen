@@ -1,10 +1,9 @@
 package dbtests;
 
 import dbtests.framework.BaseEntity;
-import dbtests.framework.ChangedAtTracked;
 import dbtests.framework.CreatedAtTracked;
 import dbtests.framework.Dao;
-import dbtests.framework.MaxAllowedCountExceededException;
+import dbtests.framework.TooManyRowsAvailableException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -61,7 +60,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
 
     @Test
     void findAllExceedsMaxLimit() {
-        assertThrows(MaxAllowedCountExceededException.class, () -> {
+        assertThrows(TooManyRowsAvailableException.class, () -> {
             for (int i = 0; i < 11; i++) {
                 Entity bazEntity = newEntity(String.format("Bar %d", i));
                 getRepo().save(bazEntity);

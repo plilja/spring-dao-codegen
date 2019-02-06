@@ -14,7 +14,14 @@ fun createdAtTracked(_package: String): Pair<String, String> {
         "CreatedAtTracked", """
 package $_package;
 
+/**
+ * An entity with a column tracking when
+ * it was last created.
+ */
 public interface CreatedAtTracked<T> {
+    /**
+     * Mark the entity as created right now.
+     */
     void setCreatedNow();
 
     T getCreatedAt();
@@ -28,7 +35,14 @@ fun changedAtTracked(_package: String): Pair<String, String> {
         "ChangedAtTracked", """
 package $_package;
 
+/**
+ * An entity with a column tracking when
+ * it was last changed.
+ */
 public interface ChangedAtTracked<T> {
+    /**
+     * Mark the entity as changed right now.
+     */
     void setChangedNow();
 
     T getChangedAt();
@@ -42,6 +56,11 @@ fun versionTracked(_package: String): Pair<String, String> {
         "VersionTracked", """
 package $_package;
 
+/**
+ * An entity with a column tracking the version
+ * of the entity. This protects it from concurrent
+ * updates with stale state.
+ */
 public interface VersionTracked {
 
     void setVersion(Integer value);

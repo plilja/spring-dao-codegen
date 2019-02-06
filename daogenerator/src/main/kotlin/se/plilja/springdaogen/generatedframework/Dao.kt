@@ -20,6 +20,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Base class providing basic CRUD access to a database
+ * table.
+ */
 public abstract class Dao<T extends BaseEntity<ID>, ID> {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
@@ -66,6 +70,16 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         return jdbcTemplate.query(sql, params, getRowMapper());
     }
 
+    /**
+     * Find a page in a table. Will return a smaller list or
+     * an empty list if start + pageSize reaches outside of table.
+     * An iteration over the pages should end whenever the returned
+     * list is smaller than the pageSize.
+     *
+     * @param start    what offset to start at
+     * @param pageSize size of retrieved page
+     * @return a list of rows between index start (inclusive) and start + page_size (exclusive)
+     */
     public List<T> findPage(long start, int pageSize) {
         if (pageSize == 0) {
             return Collections.emptyList();
@@ -74,17 +88,30 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         return jdbcTemplate.query(sql, Collections.emptyMap(), getRowMapper());
     }
 
-    public List<T> findAll() {
+    /**
+     * Finds all rows in the table. Note that
+     * this will throw a {@link TooManyRowsAvailableException}
+     * if the table is larger than expected. If you
+     * expect many rows to be returned, you should either
+     * use the {@link #findPage} method. If you know that the table
+     * will fit in memory you can also use {@link #findAll(int)}
+     * or reconfigure the limit for when to throw the exception.
+     */
+    public List<T> findAll() throws TooManyRowsAvailableException {
         return findAll(getSelectAllDefaultMaxCount());
     }
 
-    public List<T> findAll(int maxAllowedCount) {
+    /**
+     * Same as {@link #findAll()} but with a parameter indicating
+     * what is considered too many rows.
+     */
+    public List<T> findAll(int maxAllowedCount) throws TooManyRowsAvailableException {
         List<T> result = jdbcTemplate.query(getSelectManySql(maxAllowedCount + 1), Collections.emptyMap(), getRowMapper());
         // If queries have been correctly generated it should never be possible to select
         // more than maxAllowedCount + 1 even if the table is larger than that
         assert result.size() <= maxAllowedCount + 1;
         if (result.size() > maxAllowedCount) {
-            throw new MaxAllowedCountExceededException(String.format("Max allowed count of %d rows exceeded", maxAllowedCount));
+            throw new TooManyRowsAvailableException(String.format("Max allowed count of %d rows exceeded", maxAllowedCount));
         }
         return result;
     }
@@ -127,9 +154,9 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         SqlParameterSource params = getParams(object);
         int updated = jdbcTemplate.update(sql, params);
         if (updated == 0) {
-            throw new SqlUpdateException(String.format("No rows affected when trying to update object with id %s", object.getId())); // TODO more informative message
+            throw new NoRowsUpdatedException(String.format("No rows affected when trying to update object with id %s", object.getId()));
         } else if (updated > 1) {
-            throw new SqlUpdateException(String.format("More than one row [%d] affected by update", updated));
+            throw new TooManyRowsUpdatedException(String.format("More than one row (%d) affected by update of object with id %s", updated, object.getId()));
         }
         bumpVersion(object);
     }
@@ -146,9 +173,9 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         params.put("ids", Collections.singletonList(id));
         int updated = jdbcTemplate.update(sql, params);
         if (updated == 0) {
-            throw new SqlUpdateException(String.format("No rows affected when trying to delete object with id %s", id));
+            throw new NoRowsUpdatedException(String.format("No rows affected when trying to delete object with id %s", id));
         } else if (updated > 1) {
-            throw new SqlUpdateException(String.format("More than one row [%d] affected by update", updated));
+            throw new TooManyRowsUpdatedException(String.format("More than one row [%d] deleted when trying to delete object with id %s", updated, id));
         }
     }
 
@@ -163,7 +190,7 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         params.put("ids", ids);
         int updated = jdbcTemplate.update(sql, params);
         if (updated > ids.size()) {
-            throw new SqlUpdateException(String.format("%d objects was affected by delete, but only %d was expected", updated, ids.size()));
+            throw new TooManyRowsUpdatedException(String.format("%d objects was affected by delete, but only %d was expected", updated, ids.size()));
         }
     }
 
