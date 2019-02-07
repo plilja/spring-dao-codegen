@@ -89,6 +89,12 @@ public class OneColumnGeneratedIdMsSqlDao extends Dao<OneColumnGeneratedIdMsSqlE
     }
 
     @Override
+    protected String getLockSql() {
+        return "SELECT * FROM dbo.one_column_generated_id_ms_sql WITH (UPDLOCK) " +
+                "WHERE id = :id";
+    }
+
+    @Override
     protected String getPrimaryKeyColumnName() {
         return "id";
     }

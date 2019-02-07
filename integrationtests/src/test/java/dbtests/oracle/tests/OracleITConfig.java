@@ -1,5 +1,6 @@
 package dbtests.oracle.tests;
 
+import dbtests.TransactionUtil;
 import dbtests.oracle.model.BazOracleRepository;
 import dbtests.oracle.model.DataTypesOracleRepository;
 import dbtests.oracle.model.OneColumnGeneratedIdOracleRepository;
@@ -9,10 +10,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
-@Import({BazOracleRepository.class, OneColumnNaturalIdOracleRepository.class, OneColumnGeneratedIdOracleRepository.class, DataTypesOracleRepository.class})
+@Import({BazOracleRepository.class, OneColumnNaturalIdOracleRepository.class, OneColumnGeneratedIdOracleRepository.class, DataTypesOracleRepository.class, TransactionUtil.class})
+@EnableTransactionManagement
 @Configuration
 public class OracleITConfig {
     @Bean
@@ -29,4 +34,10 @@ public class OracleITConfig {
     public NamedParameterJdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new NamedParameterJdbcTemplate(dataSource);
     }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
+
 }

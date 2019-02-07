@@ -1,5 +1,6 @@
 package dbtests.mysql.tests;
 
+import dbtests.TransactionUtil;
 import dbtests.mysql.model.MBazMysqlRepo;
 import dbtests.mysql.model.MDataTypesMysqlRepo;
 import dbtests.mysql.model.MOneColumnGeneratedIdMysqlRepo;
@@ -9,10 +10,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
-@Import({MBazMysqlRepo.class, MOneColumnNaturalIdMysqlRepo.class, MOneColumnGeneratedIdMysqlRepo.class, MDataTypesMysqlRepo.class})
+@Import({MBazMysqlRepo.class, MOneColumnNaturalIdMysqlRepo.class, MOneColumnGeneratedIdMysqlRepo.class, MDataTypesMysqlRepo.class, TransactionUtil.class})
+@EnableTransactionManagement
 @Configuration
 public class MysqlITConfig {
     @Bean
@@ -29,4 +34,10 @@ public class MysqlITConfig {
     public NamedParameterJdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new NamedParameterJdbcTemplate(dataSource);
     }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
+
 }

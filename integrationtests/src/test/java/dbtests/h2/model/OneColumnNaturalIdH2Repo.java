@@ -94,6 +94,13 @@ public class OneColumnNaturalIdH2Repo extends Dao<OneColumnNaturalIdH2, String> 
     }
 
     @Override
+    protected String getLockSql() {
+        return "SELECT * FROM test_schema.one_column_natural_id_h2 " +
+                "WHERE id = :id " +
+                "FOR UPDATE";
+    }
+
+    @Override
     protected String getPrimaryKeyColumnName() {
         return "id";
     }

@@ -200,6 +200,27 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         return jdbcTemplate.queryForObject(sql, noParams, Long.class);
     }
 
+    /**
+     * Lock a row in the database. Note that this
+     * method must be called in a @Transaction
+     * scope at a higher application layer for this
+     * to be useful. The lock is held while the transaction
+     * is committed/rolled back and hence it doesn't need
+     * to be explicitly released by the caller.
+     * <p/>
+     * The usability of this method depends on what
+     * transaction isolation level is used. Typically
+     * this is mostly useful if the isolation level is
+     * READ_COMMITTED which is also most often the
+     * default isolation level.
+     */
+    public void lockById(ID id) {
+        String sql = getLockSql();
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        jdbcTemplate.query(sql, params, getRowMapper()); // Discard result
+    }
+
     protected abstract RowMapper<T> getRowMapper();
 
     protected abstract SqlParameterSource getParams(T object);
@@ -221,6 +242,8 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
     protected abstract String getDeleteSql();
 
     protected abstract String getCountSql();
+
+    protected abstract String getLockSql();
 
     @SuppressWarnings("unchecked")
     private void setId(T object, Number newKey) {

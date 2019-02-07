@@ -1,5 +1,6 @@
 package dbtests.postgres.tests;
 
+import dbtests.TransactionUtil;
 import dbtests.postgres.model.BazPostgresDao;
 import dbtests.postgres.model.DataTypesPostgresDao;
 import dbtests.postgres.model.OneColumnGeneratedIdPostgresDao;
@@ -9,10 +10,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
-@Import({BazPostgresDao.class, OneColumnNaturalIdPostgresDao.class, OneColumnGeneratedIdPostgresDao.class, DataTypesPostgresDao.class})
+@Import({BazPostgresDao.class, OneColumnNaturalIdPostgresDao.class, OneColumnGeneratedIdPostgresDao.class, DataTypesPostgresDao.class, TransactionUtil.class})
+@EnableTransactionManagement
 @Configuration
 public class PostgresITConfig {
     @Bean
@@ -28,6 +33,11 @@ public class PostgresITConfig {
     @Bean
     public NamedParameterJdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new NamedParameterJdbcTemplate(dataSource);
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
     }
 
 }

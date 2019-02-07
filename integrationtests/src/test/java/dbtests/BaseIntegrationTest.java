@@ -3,15 +3,21 @@ package dbtests;
 import dbtests.framework.BaseEntity;
 import dbtests.framework.CreatedAtTracked;
 import dbtests.framework.Dao;
+import dbtests.framework.NoRowsUpdatedException;
 import dbtests.framework.TooManyRowsAvailableException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
@@ -22,13 +28,15 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Repo extends Dao<Entity, Integer>> {
 
     @BeforeEach
     void before() {
         clearTable();
     }
+
+    @Autowired
+    private TransactionUtil transactionUtil;
 
     protected abstract Repo getRepo();
 
@@ -177,7 +185,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
 
         LocalDateTime createdAtBeforeSave = getCreatedAt(retrieved);
 
-        ((CreatedAtTracked<?>)retrieved).setCreatedNow();
+        ((CreatedAtTracked<?>) retrieved).setCreatedNow();
         getRepo().save(retrieved);
 
         Entity retrievedAgain = getRepo().getOne(entity.getId());
@@ -254,4 +262,88 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
 
         assertEquals(2, getRepo().count());
     }
+
+    @Test
+    void concurrentUpdatesCausesOptimisticLockingFailure() {
+        Entity entity = newEntity("Bar");
+        getRepo().save(entity);
+
+        assertThrows(NoRowsUpdatedException.class, () -> {
+            List<CompletableFuture<Void>> futures = new ArrayList<>();
+            for (int i = 0; i < 50; i++) {
+                final int tmp = i;
+                futures.add(CompletableFuture.runAsync(() -> {
+                    Entity retrieved = getRepo().getOne(entity.getId());
+                    setName(retrieved, String.valueOf(tmp));
+                    getRepo().save(retrieved);
+                }));
+            }
+            for (CompletableFuture<Void> future : futures) {
+                try {
+                    future.get();
+                } catch (ExecutionException ex) {
+                    throw ex.getCause(); // Future wraps our exception in an ExecutionException
+                }
+            }
+        });
+    }
+
+    @Test
+    void lockWithoutConcurrentModification() {
+        transactionUtil.inTransaction(() -> {
+            Entity entity = newEntity("Bar");
+            getRepo().save(entity);
+            getRepo().lockById(entity.getId());
+
+            setName(entity, "Foo");
+            getRepo().save(entity); // Ok since we have the lock in the transaction
+
+            Entity retrieved = getRepo().getOne(entity.getId());
+            assertEquals(entity.getId(), retrieved.getId());
+            assertEquals("Foo", getName(retrieved));
+            return null;
+        });
+    }
+
+    @Test
+    void lockWithConcurrentModification() throws Exception {
+        Entity entity = newEntity("A");
+        getRepo().save(entity);
+
+        System.err.println("STARTING CHANGING");
+        Future<String> change1 = changeInTransaction(entity, "B", 0, 75, 75);
+        // Change2 sleeps less, but it will get stuck waiting for the lock that change1 acquires directly
+        Future<String> change2 = changeInTransaction(entity, "C", 25, 0, 0);
+
+        String beforeChange1 = change1.get();
+        String beforeChange2 = change2.get();
+        assertEquals("A", beforeChange1);
+        assertEquals("B", beforeChange2);
+        assertEquals("C", getName(getRepo().getOne(entity.getId())));
+    }
+
+    private Future<String> changeInTransaction(Entity entity, String name, int sleepBeforeLock, int sleepAfterLockBeforeUpdate, int sleepAfter) {
+        return CompletableFuture.supplyAsync(() -> transactionUtil.inTransaction(() -> {
+            sleep2(sleepBeforeLock);
+            getRepo().lockById(entity.getId());
+            sleep2(sleepAfterLockBeforeUpdate);
+            // Reload after lock has been acquired to avoid NoRowsUpdatedException from concurrent modification
+            Entity reloaded = getRepo().getOne(entity.getId());
+            String nameBefore = getName(reloaded);
+            setName(reloaded, name);
+            getRepo().save(reloaded);
+            sleep2(sleepAfter);
+            return nameBefore;
+        }));
+    }
+
+    private void sleep2(int millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            // ignore
+        }
+    }
+
+
 }

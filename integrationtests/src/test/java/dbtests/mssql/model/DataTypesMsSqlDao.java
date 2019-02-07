@@ -1,14 +1,14 @@
 package dbtests.mssql.model;
 
 import dbtests.framework.Dao;
-import java.math.BigDecimal;
-import java.sql.Types;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
+
+import java.sql.Types;
 
 @Repository
 public class DataTypesMsSqlDao extends Dao<DataTypesMsSqlEntity, Long> {
@@ -232,6 +232,12 @@ public class DataTypesMsSqlDao extends Dao<DataTypesMsSqlEntity, Long> {
     @Override
     protected String getCountSql() {
         return "SELECT COUNT(*) FROM dbo.DATA_TYPES_MS_SQL";
+    }
+
+    @Override
+    protected String getLockSql() {
+        return "SELECT * FROM dbo.DATA_TYPES_MS_SQL WITH (UPDLOCK) " +
+                "WHERE id = :id";
     }
 
     @Override

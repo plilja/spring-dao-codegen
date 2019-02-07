@@ -1,15 +1,15 @@
 package dbtests.oracle.model;
 
 import dbtests.framework.Dao;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.sql.Types;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
+
+import java.io.IOException;
+import java.sql.Types;
 
 @Repository
 public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
@@ -189,6 +189,13 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
     @Override
     protected String getCountSql() {
         return "SELECT COUNT(*) FROM DOCKER.DATA_TYPES_ORACLE";
+    }
+
+    @Override
+    protected String getLockSql() {
+        return "SELECT * FROM DOCKER.DATA_TYPES_ORACLE " +
+                "WHERE ID = :id " +
+                "FOR UPDATE";
     }
 
     @Override

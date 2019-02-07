@@ -94,6 +94,12 @@ public class OneColumnNaturalIdMsSqlDao extends Dao<OneColumnNaturalIdMsSqlEntit
     }
 
     @Override
+    protected String getLockSql() {
+        return "SELECT * FROM dbo.ONE_COLUMN_NATURAL_ID_MS_SQL WITH (UPDLOCK) " +
+                "WHERE id = :id";
+    }
+
+    @Override
     protected String getPrimaryKeyColumnName() {
         return "id";
     }

@@ -1,5 +1,6 @@
 package dbtests.h2.tests;
 
+import dbtests.TransactionUtil;
 import dbtests.h2.model.BazH2Repo;
 import dbtests.h2.model.OneColumnGeneratedIdH2Repo;
 import dbtests.h2.model.OneColumnNaturalIdH2Repo;
@@ -8,10 +9,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
-@Import({BazH2Repo.class, OneColumnNaturalIdH2Repo.class, OneColumnGeneratedIdH2Repo.class})
+@Import({BazH2Repo.class, OneColumnNaturalIdH2Repo.class, OneColumnGeneratedIdH2Repo.class, TransactionUtil.class})
+@EnableTransactionManagement
 @Configuration
 public class H2Config {
 
@@ -29,5 +34,10 @@ public class H2Config {
     @Bean
     public NamedParameterJdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new NamedParameterJdbcTemplate(dataSource);
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
     }
 }

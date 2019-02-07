@@ -80,6 +80,20 @@ fun selectOne(table: Table, databaseDialect: DatabaseDialect): String {
             """.trimMargin()
 }
 
+fun lock(table: Table, databaseDialect: DatabaseDialect): String {
+    return when (databaseDialect) {
+        DatabaseDialect.MSSQL_SERVER -> """
+            "SELECT * FROM ${formatTable(table, databaseDialect)} WITH (UPDLOCK) " +
+            "WHERE ${formatIdentifier(table.primaryKey.name, databaseDialect)} = :id"
+        """.trimIndent()
+        else -> """
+            "SELECT * FROM ${formatTable(table, databaseDialect)} " +
+            "WHERE ${formatIdentifier(table.primaryKey.name, databaseDialect)} = :id " +
+            "FOR UPDATE"
+        """.trimIndent()
+    }
+}
+
 fun selectPage(table: Table, databaseDialect: DatabaseDialect): String {
     return when {
         databaseDialect in listOf(DatabaseDialect.MYSQL, DatabaseDialect.POSTGRES) -> """

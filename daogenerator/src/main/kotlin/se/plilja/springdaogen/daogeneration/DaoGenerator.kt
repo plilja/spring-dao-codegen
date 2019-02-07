@@ -11,15 +11,7 @@ import se.plilja.springdaogen.codegeneration.ClassGenerator
 import se.plilja.springdaogen.generatedframework.dao
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Table
-import se.plilja.springdaogen.sqlgeneration.columnsList
-import se.plilja.springdaogen.sqlgeneration.count
-import se.plilja.springdaogen.sqlgeneration.delete
-import se.plilja.springdaogen.sqlgeneration.existsById
-import se.plilja.springdaogen.sqlgeneration.insert
-import se.plilja.springdaogen.sqlgeneration.selectMany
-import se.plilja.springdaogen.sqlgeneration.selectOne
-import se.plilja.springdaogen.sqlgeneration.selectPage
-import se.plilja.springdaogen.sqlgeneration.update
+import se.plilja.springdaogen.sqlgeneration.*
 import java.io.IOException
 import java.math.BigDecimal
 import java.sql.Blob
@@ -137,6 +129,14 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
             @Override
             protected String getCountSql() {
                 return ${count(table, config.databaseDialect)};
+            }
+        """
+    )
+    g.addCustomMethod(
+        """
+            @Override
+            protected String getLockSql() {
+                return ${lock(table, config.databaseDialect)};
             }
         """
     )

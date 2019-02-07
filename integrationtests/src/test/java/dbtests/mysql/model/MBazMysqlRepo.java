@@ -112,6 +112,13 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
     }
 
     @Override
+    protected String getLockSql() {
+        return "SELECT * FROM BazMysql " +
+                "WHERE id = :id " +
+                "FOR UPDATE";
+    }
+
+    @Override
     protected String getPrimaryKeyColumnName() {
         return "id";
     }
