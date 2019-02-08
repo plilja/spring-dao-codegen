@@ -237,7 +237,7 @@ public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
 
     @Override
     protected String getLockSql() {
-        return "SELECT * FROM DATA_TYPES_MYSQL " +
+        return "SELECT id FROM DATA_TYPES_MYSQL " +
                 "WHERE id = :id " +
                 "FOR UPDATE";
     }

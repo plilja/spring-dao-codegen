@@ -95,7 +95,7 @@ public class OneColumnNaturalIdPostgresDao extends Dao<OneColumnNaturalIdPostgre
 
     @Override
     protected String getLockSql() {
-        return "SELECT * FROM test_schema.one_column_natural_id_postgres " +
+        return "SELECT id FROM test_schema.one_column_natural_id_postgres " +
                 "WHERE id = :id " +
                 "FOR UPDATE";
     }

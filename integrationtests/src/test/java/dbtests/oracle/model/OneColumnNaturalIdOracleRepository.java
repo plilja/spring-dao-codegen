@@ -101,7 +101,7 @@ public class OneColumnNaturalIdOracleRepository extends Dao<OneColumnNaturalIdOr
 
     @Override
     protected String getLockSql() {
-        return "SELECT * FROM DOCKER.ONE_COLUMN_NATURAL_ID_ORACLE " +
+        return "SELECT ID FROM DOCKER.ONE_COLUMN_NATURAL_ID_ORACLE " +
                 "WHERE ID = :id " +
                 "FOR UPDATE";
     }

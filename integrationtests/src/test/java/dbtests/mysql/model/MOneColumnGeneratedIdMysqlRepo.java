@@ -90,7 +90,7 @@ public class MOneColumnGeneratedIdMysqlRepo extends Dao<MOneColumnGeneratedIdMys
 
     @Override
     protected String getLockSql() {
-        return "SELECT * FROM ONE_COLUMN_GENERATED_ID_MYSQL " +
+        return "SELECT id FROM ONE_COLUMN_GENERATED_ID_MYSQL " +
                 "WHERE id = :id " +
                 "FOR UPDATE";
     }

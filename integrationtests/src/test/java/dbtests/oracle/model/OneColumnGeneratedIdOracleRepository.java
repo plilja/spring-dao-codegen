@@ -96,7 +96,7 @@ public class OneColumnGeneratedIdOracleRepository extends Dao<OneColumnGenerated
 
     @Override
     protected String getLockSql() {
-        return "SELECT * FROM DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE " +
+        return "SELECT ID FROM DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE " +
                 "WHERE ID = :id " +
                 "FOR UPDATE";
     }

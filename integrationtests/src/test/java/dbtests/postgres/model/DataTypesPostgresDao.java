@@ -206,7 +206,7 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
 
     @Override
     protected String getLockSql() {
-        return "SELECT * FROM public.data_types_postgres " +
+        return "SELECT id FROM public.data_types_postgres " +
                 "WHERE id = :id " +
                 "FOR UPDATE";
     }

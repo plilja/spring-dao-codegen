@@ -113,7 +113,7 @@ public class BazH2Repo extends Dao<BazH2, Integer> {
 
     @Override
     protected String getLockSql() {
-        return "SELECT * FROM test_schema.baz_h2 " +
+        return "SELECT baz_id FROM test_schema.baz_h2 " +
                 "WHERE baz_id = :id " +
                 "FOR UPDATE";
     }

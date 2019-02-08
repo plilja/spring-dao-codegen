@@ -193,7 +193,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
 
     @Override
     protected String getLockSql() {
-        return "SELECT * FROM DOCKER.DATA_TYPES_ORACLE " +
+        return "SELECT ID FROM DOCKER.DATA_TYPES_ORACLE " +
                 "WHERE ID = :id " +
                 "FOR UPDATE";
     }

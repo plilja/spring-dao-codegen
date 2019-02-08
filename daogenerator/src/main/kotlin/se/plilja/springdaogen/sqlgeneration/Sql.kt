@@ -81,14 +81,16 @@ fun selectOne(table: Table, databaseDialect: DatabaseDialect): String {
 }
 
 fun lock(table: Table, databaseDialect: DatabaseDialect): String {
+    val pk = formatIdentifier(table.primaryKey.name, databaseDialect)
+    val tb = formatTable(table, databaseDialect)
     return when (databaseDialect) {
         DatabaseDialect.MSSQL_SERVER -> """
-            "SELECT * FROM ${formatTable(table, databaseDialect)} WITH (UPDLOCK) " +
-            "WHERE ${formatIdentifier(table.primaryKey.name, databaseDialect)} = :id"
+            "SELECT $pk FROM $tb WITH (UPDLOCK) " +
+            "WHERE $pk = :id"
         """.trimIndent()
         else -> """
-            "SELECT * FROM ${formatTable(table, databaseDialect)} " +
-            "WHERE ${formatIdentifier(table.primaryKey.name, databaseDialect)} = :id " +
+            "SELECT $pk FROM $tb " +
+            "WHERE $pk = :id " +
             "FOR UPDATE"
         """.trimIndent()
     }

@@ -212,7 +212,7 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         String sql = getLockSql();
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
-        jdbcTemplate.query(sql, params, getRowMapper()); // Discard result
+        jdbcTemplate.query(sql, params, (r, i) -> new Object()); // Discard result
     }
 
     protected abstract RowMapper<T> getRowMapper();

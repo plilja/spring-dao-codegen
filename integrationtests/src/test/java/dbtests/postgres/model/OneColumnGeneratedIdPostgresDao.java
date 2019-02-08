@@ -90,7 +90,7 @@ public class OneColumnGeneratedIdPostgresDao extends Dao<OneColumnGeneratedIdPos
 
     @Override
     protected String getLockSql() {
-        return "SELECT * FROM test_schema.one_column_generated_id_postgres " +
+        return "SELECT id FROM test_schema.one_column_generated_id_postgres " +
                 "WHERE id = :id " +
                 "FOR UPDATE";
     }

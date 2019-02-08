@@ -119,7 +119,7 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
 
     @Override
     protected String getLockSql() {
-        return "SELECT * FROM DOCKER.BAZ_ORACLE " +
+        return "SELECT ID FROM DOCKER.BAZ_ORACLE " +
                 "WHERE ID = :id " +
                 "FOR UPDATE";
     }
