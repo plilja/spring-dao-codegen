@@ -100,7 +100,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
         getRepo().save(entity);
 
         Entity retrievedEntity1 = getRepo().getOne(entity.getId());
-        Optional<Entity> retrievedEntity2 = getRepo().findOneById(entity.getId());
+        Optional<Entity> retrievedEntity2 = getRepo().findOne(entity.getId());
         assertTrue(((Optional) retrievedEntity2).isPresent());
         assertEquals(retrievedEntity1.getId(), retrievedEntity2.get().getId());
     }
@@ -138,10 +138,10 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
 
     @Test
     void existsById() {
-        assertFalse(getRepo().existsById(4711));
+        assertFalse(getRepo().exists(4711));
         Entity entity = newEntity("Bar");
         getRepo().save(entity);
-        assertTrue(getRepo().existsById(entity.getId()));
+        assertTrue(getRepo().exists(entity.getId()));
     }
 
     @Test
@@ -201,7 +201,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
         getRepo().delete(bazEntity);
 
         assertNotNull(bazEntity.getId());
-        assertFalse(getRepo().existsById(bazEntity.getId()));
+        assertFalse(getRepo().exists(bazEntity.getId()));
     }
 
     @Test
@@ -212,7 +212,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
         getRepo().deleteById(bazEntity.getId());
 
         assertNotNull(bazEntity.getId());
-        assertFalse(getRepo().existsById(bazEntity.getId()));
+        assertFalse(getRepo().exists(bazEntity.getId()));
     }
 
     @Test
@@ -229,10 +229,10 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
 
         getRepo().deleteAll(List.of(entity2, entity3));
 
-        assertTrue(getRepo().existsById(entity1.getId()));
-        assertFalse(getRepo().existsById(entity2.getId()));
-        assertFalse(getRepo().existsById(entity3.getId()));
-        assertTrue(getRepo().existsById(entity4.getId()));
+        assertTrue(getRepo().exists(entity1.getId()));
+        assertFalse(getRepo().exists(entity2.getId()));
+        assertFalse(getRepo().exists(entity3.getId()));
+        assertTrue(getRepo().exists(entity4.getId()));
     }
 
     @Test
@@ -244,7 +244,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
 
     @Test
     void findOneNonExistingReturnsEmpty() {
-        Optional<Entity> maybeT = getRepo().findOneById(4711);
+        Optional<Entity> maybeT = getRepo().findOne(4711);
         assertEquals(Optional.empty(), maybeT);
     }
 
@@ -293,7 +293,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
         transactionUtil.inTransaction(() -> {
             Entity entity = newEntity("Bar");
             getRepo().save(entity);
-            getRepo().lockById(entity.getId());
+            getRepo().lock(entity.getId());
 
             setName(entity, "Foo");
             getRepo().save(entity); // Ok since we have the lock in the transaction
@@ -325,7 +325,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     private Future<String> changeInTransaction(Entity entity, String name, int sleepBeforeLock, int sleepAfterLockBeforeUpdate, int sleepAfter) {
         return CompletableFuture.supplyAsync(() -> transactionUtil.inTransaction(() -> {
             sleep2(sleepBeforeLock);
-            getRepo().lockById(entity.getId());
+            getRepo().lock(entity.getId());
             sleep2(sleepAfterLockBeforeUpdate);
             // Reload after lock has been acquired to avoid NoRowsUpdatedException from concurrent modification
             Entity reloaded = getRepo().getOne(entity.getId());

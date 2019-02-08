@@ -36,7 +36,7 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public boolean existsById(ID id) {
+    public boolean exists(ID id) {
         String sql = getExistsByIdSql();
         Map<String, Object> params = new HashMap<>();
         params.put(getPrimaryKeyColumnName(), id);
@@ -50,7 +50,7 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         return jdbcTemplate.queryForObject(sql, params, getRowMapper());
     }
 
-    public Optional<T> findOneById(ID id) {
+    public Optional<T> findOne(ID id) {
         try {
             T res = getOne(id);
             return Optional.of(res);
@@ -122,7 +122,7 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
             create(object);
         } else if (idIsGenerated) {
             update(object);
-        } else if (existsById(object.getId())) {
+        } else if (exists(object.getId())) {
             update(object);
         } else {
             create(object);
@@ -214,7 +214,7 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
      * READ_COMMITTED which is also most often the
      * default isolation level.
      */
-    public void lockById(ID id) {
+    public void lock(ID id) {
         String sql = getLockSql();
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
