@@ -30,7 +30,10 @@ data class Config(
     val testResourceFolder: String? = null,
     val createdAtColumnNames: List<String> = emptyList(),
     val changedAtColumnNames: List<String> = emptyList(),
-    val versionColumnNames: List<String> = emptyList()
+    val versionColumnNames: List<String> = emptyList(),
+    val enumTables: List<String> = emptyList(),
+    val enumTablesRegexp: Regex = Regex("^$"),
+    val enumNameColumnRegexp: Regex = Regex("^$")
 ) {
 
     companion object {
@@ -83,7 +86,13 @@ private class ConfigReader {
             testResourceFolder = getTestResourceFolder(),
             createdAtColumnNames = getListProperty("entity.created_at_name").map { it.toUpperCase() },
             changedAtColumnNames = getListProperty("entity.changed_at_name").map { it.toUpperCase() },
-            versionColumnNames = getListProperty("entity.version_name").map { it.toUpperCase() }
+            versionColumnNames = getListProperty("entity.version_name").map { it.toUpperCase() },
+            enumTables = getListProperty("enum.tables"),
+            enumTablesRegexp = Regex(properties.getProperty("enum.table_regex", "^$"), RegexOption.IGNORE_CASE),
+            enumNameColumnRegexp = Regex(
+                properties.getProperty("enum.name_column_regex", "^$"),
+                RegexOption.IGNORE_CASE
+            )
         )
     }
 

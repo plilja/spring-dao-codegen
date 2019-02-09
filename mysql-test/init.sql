@@ -1,13 +1,5 @@
 -- Intentionally written a little quirky to provoke code generator
 
-CREATE TABLE BazMysql (
-    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(30) NOT NULL,
-    created_at DATETIME NOT NULL,
-    changed_at DATETIME,
-    version tinyint not null
-);
-
 CREATE TABLE ONE_COLUMN_GENERATED_ID_MYSQL (
     id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY
 );
@@ -45,3 +37,25 @@ CREATE TABLE DATA_TYPES_MYSQL (
     `text` TEXT,
     `json` JSON
 );
+
+CREATE TABLE COLOR_ENUM_MYSQL (
+    id INT(6) AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(30) NOT NULL
+);
+
+INSERT INTO COLOR_ENUM_MYSQL(name) VALUES ('RED');
+INSERT INTO COLOR_ENUM_MYSQL(name) VALUES ('GREEN');
+INSERT INTO COLOR_ENUM_MYSQL(name) VALUES ('BLUE');
+
+CREATE TABLE BazMysql (
+    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(30) NOT NULL,
+    color_enum_mysql_id int(6),
+    created_at DATETIME NOT NULL,
+    changed_at DATETIME,
+    version tinyint not null,
+    INDEX enum_ind (color_enum_mysql_id),
+    foreign key (color_enum_mysql_id) 
+        references COLOR_ENUM_MYSQL(id)
+);
+

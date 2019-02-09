@@ -1,5 +1,6 @@
 package se.plilja.springdaogen.bootstrap
 
+import org.springframework.boot.jdbc.DataSourceBuilder
 import se.plilja.springdaogen.codegeneration.toH2Ddl
 import se.plilja.springdaogen.daogeneration.generateCode
 import se.plilja.springdaogen.generatedframework.baseEntity
@@ -9,17 +10,20 @@ import se.plilja.springdaogen.generatedframework.frameworkExceptions
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Schema
 import java.io.File
+import javax.sql.DataSource
 
 fun main(args: Array<String>) {
     val config = readConfig(args)
-    val schema = readSchema(config)
-    writeDaos(config, schema)
+    val dataSource = getDataSource(config)
+    val schema = readSchema(config, dataSource)
+    writeDaos(config, schema, dataSource)
     copyFrameworkClasses(config)
-    writeTestDdl(config, schema)
+    writeTestDdl(config, schema, dataSource)
+    close(dataSource)
 }
 
-private fun writeDaos(config: Config, schema: Schema) {
-    val classes = generateCode(config, schema)
+private fun writeDaos(config: Config, schema: Schema, dataSource: DataSource) {
+    val classes = generateCode(config, schema, dataSource)
     for (classGenerator in classes) {
         val dir = File(classGenerator.getOutputFolder())
         dir.mkdirs()
@@ -29,12 +33,11 @@ private fun writeDaos(config: Config, schema: Schema) {
 }
 
 private fun readConfig(args: Array<String>): Config {
-    val config = if (args.isNotEmpty()) {
+    return if (args.isNotEmpty()) {
         Config.readConfig(File(args[0]))
     } else {
         Config.readConfig()
     }
-    return config
 }
 
 /**
@@ -62,10 +65,26 @@ fun copyFrameworkClasses(config: Config) {
  * Writes test sql-files if configured that creates an
  * H2-database to be used for testing.
  */
-fun writeTestDdl(config: Config, schema: Schema) {
+fun writeTestDdl(config: Config, schema: Schema, dataSource: DataSource) {
     if (config.generateTestDdl) {
-        val ddl = toH2Ddl(schema)
+        val ddl = toH2Ddl(config, schema, dataSource)
         File(config.testResourceFolder).mkdirs()
         File(config.testResourceFolder + "/init.sql").writeText(ddl)
+    }
+}
+
+fun getDataSource(config: Config): DataSource {
+    return DataSourceBuilder.create()
+        .url(config.databaseUrl)
+        .driverClassName(config.databaseDriver)
+        .username(config.databaseUser)
+        .password(config.databasePassword)
+        .build()
+}
+
+fun close(dataSource: DataSource) {
+    val conn = dataSource.connection
+    if (conn != null) {
+        conn.close()
     }
 }

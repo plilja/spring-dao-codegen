@@ -1,6 +1,5 @@
 package se.plilja.springdaogen.bootstrap
 
-import org.springframework.boot.jdbc.DataSourceBuilder
 import schemacrawler.schema.Catalog
 import schemacrawler.schemacrawler.ExcludeAll
 import schemacrawler.schemacrawler.IncludeAll
@@ -15,36 +14,31 @@ import se.plilja.springdaogen.model.Schema
 import se.plilja.springdaogen.model.Table
 import java.math.BigDecimal
 import java.math.BigInteger
-import java.sql.Connection
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.util.*
 import java.util.regex.Pattern
+import javax.sql.DataSource
 import kotlin.collections.HashMap
 
 
-fun readSchema(config: Config): Schema {
-    val conn = getConnection(config)
-    try {
-        val schemaFilter = if (config.schemas.isEmpty()) {
-            IncludeAll()
-        } else {
-            RegularExpressionInclusionRule(Pattern.compile("(?i)" + config.schemas.joinToString("|")))
-        }
-        val options = SchemaCrawlerOptionsBuilder.builder()
-            .withSchemaInfoLevel(SchemaInfoLevelBuilder.standard())
-            .includeColumns(IncludeAll())
-            .includeTables(IncludeAll())
-            .includeSchemas(schemaFilter)
-            .includeSynonyms(ExcludeAll())
-            .includeRoutines(ExcludeAll())
-            .toOptions()
-        val catalog = SchemaCrawlerUtility.getCatalog(conn, options)
-        return catalogToSchema(catalog, config)
-    } finally {
-        conn.close()
+fun readSchema(config: Config, dataSource: DataSource): Schema {
+    val schemaFilter = if (config.schemas.isEmpty()) {
+        IncludeAll()
+    } else {
+        RegularExpressionInclusionRule(Pattern.compile("(?i)" + config.schemas.joinToString("|")))
     }
+    val options = SchemaCrawlerOptionsBuilder.builder()
+        .withSchemaInfoLevel(SchemaInfoLevelBuilder.standard())
+        .includeColumns(IncludeAll())
+        .includeTables(IncludeAll())
+        .includeSchemas(schemaFilter)
+        .includeSynonyms(ExcludeAll())
+        .includeRoutines(ExcludeAll())
+        .toOptions()
+    val catalog = SchemaCrawlerUtility.getCatalog(dataSource.connection, options)
+    return catalogToSchema(catalog, config)
 }
 
 fun catalogToSchema(catalog: Catalog, config: Config): Schema {
@@ -154,12 +148,3 @@ fun isGenerated(table: schemacrawler.schema.Table, column: schemacrawler.schema.
             (column.isPartOfPrimaryKey && config.hasGeneratedPrimaryKeysOverride.contains(table.name))
 }
 
-fun getConnection(config: Config): Connection {
-    return DataSourceBuilder.create()
-        .url(config.databaseUrl)
-        .driverClassName(config.databaseDriver)
-        .username(config.databaseUser)
-        .password(config.databasePassword)
-        .build()
-        .connection
-}

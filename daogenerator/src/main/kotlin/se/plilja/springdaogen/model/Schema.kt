@@ -3,6 +3,7 @@ package se.plilja.springdaogen.model
 import se.plilja.springdaogen.util.camelCase
 import se.plilja.springdaogen.util.capitalizeFirst
 import se.plilja.springdaogen.util.capitalizeLast
+import se.plilja.springdaogen.util.snakeCase
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.sql.Blob
@@ -27,8 +28,16 @@ data class Table(
     val config: Config
 ) {
 
+    fun isEnum(): Boolean {
+        return name in config.enumTables || config.enumTablesRegexp.matches(name)
+    }
+
     fun entityName(): String {
-        return config.entityPrefix + capitalizeFirst(camelCase(name)) + config.entitySuffix
+        return if (isEnum()) {
+            capitalizeFirst(camelCase(name))
+        } else {
+            config.entityPrefix + capitalizeFirst(camelCase(name)) + config.entitySuffix
+        }
     }
 
     fun daoName(): String {
@@ -90,7 +99,23 @@ data class Column(
         return "set${capitalizeFirst(fieldName())}"
     }
 
-    fun type(): Class<out Any> {
+    fun typeName(): String {
+        val t = type()
+        return when (t) {
+            is Left -> t.value.simpleName
+            is Right -> t.value
+        }
+    }
+
+    fun type(): Either<Class<out Any>, String> {
+        return if (referencesEnum()) {
+            Right(references!!.first.entityName())
+        } else {
+            Left(rawType())
+        }
+    }
+
+    fun rawType(): Class<out Any> {
         if (isVersionColumn()) {
             return java.lang.Integer::class.java
         }
@@ -126,7 +151,16 @@ data class Column(
     }
 
     fun fieldName(): String {
-        val s = camelCase(name)
+        val adjustedName = if (referencesEnum()) {
+            if (snakeCase(name).endsWith("_id")) {
+                name.substring(0, name.length - 3)
+            } else {
+                name
+            }
+        } else {
+            name
+        }
+        val s = camelCase(adjustedName)
         if (isReservedJavaKeyword(s)) {
             return capitalizeLast(s)
         } else {
@@ -135,40 +169,47 @@ data class Column(
     }
 
     fun recordSetMethod(rs: String): String {
-        if (javaType == BigDecimal::class.java) {
-            return "$rs.getBigDecimal(\"$name\")"
+        val method = if (javaType == BigDecimal::class.java) {
+            "$rs.getBigDecimal(\"$name\")"
         } else if (javaType == String::class.java || javaType == SQLXML::class.java) {
-            return "$rs.getString(\"$name\")"
+            "$rs.getString(\"$name\")"
         } else if (javaType == java.lang.Boolean::class.java) {
-            return "$rs.getObject(\"$name\") != null ? $rs.getBoolean(\"$name\") : null"
+            "$rs.getObject(\"$name\") != null ? $rs.getBoolean(\"$name\") : null"
         } else if (isVersionColumn() || javaType == Integer::class.java) {
-            return "$rs.getObject(\"$name\") != null ? $rs.getInt(\"$name\") : null"
+            "$rs.getObject(\"$name\") != null ? $rs.getInt(\"$name\") : null"
         } else if (javaType == java.lang.Long::class.java) {
-            return "$rs.getObject(\"$name\") != null ? $rs.getLong(\"$name\") : null"
+            "$rs.getObject(\"$name\") != null ? $rs.getLong(\"$name\") : null"
         } else if (javaType == java.lang.Float::class.java) {
-            return "$rs.getObject(\"$name\") != null ? $rs.getFloat(\"$name\") : null"
+            "$rs.getObject(\"$name\") != null ? $rs.getFloat(\"$name\") : null"
         } else if (javaType == java.lang.Double::class.java) {
-            return "$rs.getObject(\"$name\") != null ? $rs.getDouble(\"$name\") : null"
+            "$rs.getObject(\"$name\") != null ? $rs.getDouble(\"$name\") : null"
         } else if (javaType == UUID::class.java) {
-            return "UUID.fromString($rs.getString(\"$name\"))"
+            "UUID.fromString($rs.getString(\"$name\"))"
         } else if (javaType == LocalDate::class.java) {
-            return "$rs.getObject(\"$name\") != null ? $rs.getDate(\"$name\").toLocalDate() : null"
+            "$rs.getObject(\"$name\") != null ? $rs.getDate(\"$name\").toLocalDate() : null"
         } else if (javaType == LocalTime::class.java) {
-            return "$rs.getObject(\"$name\") != null ? $rs.getTime(\"$name\").toLocalTime() : null"
+            "$rs.getObject(\"$name\") != null ? $rs.getTime(\"$name\").toLocalTime() : null"
         } else if (javaType == LocalDateTime::class.java) {
-            return "$rs.getObject(\"$name\") != null ? $rs.getTimestamp(\"$name\").toLocalDateTime() : null"
+            "$rs.getObject(\"$name\") != null ? $rs.getTimestamp(\"$name\").toLocalDateTime() : null"
         } else if (javaType == Clob::class.java) {
-            return "$rs.getObject(\"$name\") != null ? $rs.getClob(\"$name\").getSubString(1, (int) $rs.getClob(\"$name\").length()) : null"
+            "$rs.getObject(\"$name\") != null ? $rs.getClob(\"$name\").getSubString(1, (int) $rs.getClob(\"$name\").length()) : null"
         } else if (javaType == Blob::class.java) {
-            return "$rs.getObject(\"$name\") != null ? $rs.getBlob(\"$name\").getBinaryStream().readAllBytes() : null"
+            "$rs.getObject(\"$name\") != null ? $rs.getBlob(\"$name\").getBinaryStream().readAllBytes() : null"
         } else if (javaType == NClob::class.java) {
-            return "$rs.getObject(\"$name\") != null ? $rs.getNClob(\"$name\").getSubString(1, (int) $rs.getClob(\"$name\").length()) : null"
+            "$rs.getObject(\"$name\") != null ? $rs.getNClob(\"$name\").getSubString(1, (int) $rs.getClob(\"$name\").length()) : null"
         } else if (javaType == BigInteger::class.java) {
-            return "$rs.getObject(\"$name\") != null ? $rs.getBigDecimal(\"$name\").toBigInteger() : null"
+            "$rs.getObject(\"$name\") != null ? $rs.getBigDecimal(\"$name\").toBigInteger() : null"
         } else {
-            return "(${javaType.simpleName}) $rs.getObject(\"$name\")"
+            "(${javaType.simpleName}) $rs.getObject(\"$name\")"
+        }
+        return if (referencesEnum()) {
+            "${references!!.first.entityName()}.fromId($method)"
+        } else {
+            method
         }
     }
+
+    private fun referencesEnum() = references != null && references!!.first.isEnum()
 }
 
 fun isReservedJavaKeyword(s: String): Boolean {
@@ -183,3 +224,7 @@ fun isReservedJavaKeyword(s: String): Boolean {
         "transient", "true", "try", "void", "volatile", "while"
     )
 }
+
+sealed class Either<out A, out B>
+data class Left<A>(val value: A) : Either<A, Nothing>()
+data class Right<B>(val value: B) : Either<Nothing, B>()

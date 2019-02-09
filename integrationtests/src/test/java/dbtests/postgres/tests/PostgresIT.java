@@ -3,6 +3,8 @@ package dbtests.postgres.tests;
 import dbtests.BaseIntegrationTest;
 import dbtests.postgres.model.BazPostgresDao;
 import dbtests.postgres.model.BazPostgresEntity;
+import dbtests.postgres.model.ColorEnumPostgres;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -11,6 +13,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ContextConfiguration(classes = {PostgresITConfig.class})
 @ExtendWith(SpringExtension.class)
@@ -64,4 +69,27 @@ public class PostgresIT extends BaseIntegrationTest<BazPostgresEntity, BazPostgr
         return entity.getVersion().intValue();
     }
 
+    @Test
+    void testEnum() {
+        BazPostgresEntity entity = newEntity("Foo");
+        repo.save(entity);
+
+        BazPostgresEntity retrieved = repo.getOne(entity.getId());
+        assertNull(retrieved.getColor());
+
+        retrieved.setColor(ColorEnumPostgres.BLUE);
+        repo.save(retrieved);
+
+        BazPostgresEntity retrieved2 = repo.getOne(retrieved.getId());
+        assertEquals(ColorEnumPostgres.BLUE, retrieved2.getColor());
+    }
+
+    @Test
+    void testEnumGeneration() {
+        // Doesn't test the runtime interaction with the database,
+        // only that the generated enum getters have been correctly generated
+        assertEquals("#FF0000", ColorEnumPostgres.RED.getHex());
+        assertEquals("#00FF00", ColorEnumPostgres.GREEN.getHex());
+        assertEquals("#0000FF", ColorEnumPostgres.BLUE.getHex());
+    }
 }

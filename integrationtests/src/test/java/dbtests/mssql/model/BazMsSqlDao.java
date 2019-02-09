@@ -1,6 +1,7 @@
 package dbtests.mssql.model;
 
 import dbtests.framework.Dao;
+import dbtests.framework.DatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -14,13 +15,15 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
     private static final RowMapper<BazMsSqlEntity> ROW_MAPPER = (rs, i) -> {
         BazMsSqlEntity r = new BazMsSqlEntity();
         r.setId(rs.getObject("id") != null ? rs.getInt("id") : null);
+        r.setColor(ColorEnumMsSql.fromId(rs.getString("color")));
         r.setInsertedAt(rs.getObject("inserted_at") != null ? rs.getTimestamp("inserted_at").toLocalDateTime() : null);
         r.setModifiedAt(rs.getObject("modified_at") != null ? rs.getTimestamp("modified_at").toLocalDateTime() : null);
         r.setName(rs.getString("name"));
         r.setVersion(rs.getObject("version") != null ? rs.getInt("version") : null);
         return r;
     };
-    private static final String ALL_COLUMNS = " id, inserted_at, modified_at, name, version ";
+    private static final String ALL_COLUMNS = " id, color, inserted_at, modified_at, name, " +
+            " version ";
 
     @Autowired
     public BazMsSqlDao(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -31,6 +34,7 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
     public SqlParameterSource getParams(BazMsSqlEntity o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
+        m.addValue("color", o.getColor() != null ? o.getColor().getId() : null);
         m.addValue("inserted_at", o.getInsertedAt());
         m.addValue("modified_at", o.getModifiedAt());
         m.addValue("name", o.getName());
@@ -78,12 +82,14 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
     @Override
     protected String getInsertSql() {
         return "INSERT INTO dbo.baz_ms_sql (" +
+                "color, " +
                 "inserted_at, " +
                 "modified_at, " +
                 "name, " +
                 "version" +
                 ") " +
                 "VALUES (" +
+                ":color, " +
                 ":inserted_at, " +
                 ":modified_at, " +
                 ":name, " +
@@ -94,6 +100,7 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
     @Override
     protected String getUpdateSql() {
         return "UPDATE dbo.baz_ms_sql SET " +
+                "color = :color, " +
                 "modified_at = :modified_at, " +
                 "name = :name, " +
                 "version = (version + 1) % 128 " +

@@ -1,6 +1,7 @@
 package dbtests.mysql.model;
 
 import dbtests.framework.Dao;
+import dbtests.framework.DatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -15,12 +16,14 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
         MBazMysql r = new MBazMysql();
         r.setId(rs.getObject("id") != null ? rs.getInt("id") : null);
         r.setChangedAt(rs.getObject("changed_at") != null ? rs.getTimestamp("changed_at").toLocalDateTime() : null);
+        r.setColorEnumMysql(ColorEnumMysql.fromId(rs.getObject("color_enum_mysql_id") != null ? rs.getInt("color_enum_mysql_id") : null));
         r.setCreatedAt(rs.getObject("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null);
         r.setName(rs.getString("name"));
         r.setVersion(rs.getObject("version") != null ? rs.getInt("version") : null);
         return r;
     };
-    private static final String ALL_COLUMNS = " id, changed_at, created_at, `name`, version ";
+    private static final String ALL_COLUMNS = " id, changed_at, color_enum_mysql_id, created_at, name, " +
+            " version ";
 
     @Autowired
     public MBazMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -32,6 +35,7 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
         m.addValue("changed_at", o.getChangedAt());
+        m.addValue("color_enum_mysql_id", o.getColorEnumMysql() != null ? o.getColorEnumMysql().getId() : null);
         m.addValue("created_at", o.getCreatedAt());
         m.addValue("name", o.getName());
         m.addValue("version", o.getVersion());
@@ -79,12 +83,14 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
     protected String getInsertSql() {
         return "INSERT INTO BazMysql (" +
                 "changed_at, " +
+                "color_enum_mysql_id, " +
                 "created_at, " +
-                "`name`, " +
+                "name, " +
                 "version" +
                 ") " +
                 "VALUES (" +
                 ":changed_at, " +
+                ":color_enum_mysql_id, " +
                 ":created_at, " +
                 ":name, " +
                 ":version" +
@@ -95,6 +101,7 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
     protected String getUpdateSql() {
         return "UPDATE BazMysql SET " +
                 "changed_at = :changed_at, " +
+                "color_enum_mysql_id = :color_enum_mysql_id, " +
                 "name = :name, " +
                 "version = (version + 1) % 128 " +
                 "WHERE id = :id AND version = :version";

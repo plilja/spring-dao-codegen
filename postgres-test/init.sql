@@ -3,18 +3,6 @@
 CREATE SCHEMA test_schema
     AUTHORIZATION "docker";
 
-CREATE SEQUENCE test_schema."BAZ_BAZ_ID_seq";
-
-CREATE TABLE test_schema."baz_postgres"
-(
-    "baz_id" integer NOT NULL DEFAULT nextval('test_schema."BAZ_BAZ_ID_seq"'::regclass),
-    "baz_name" character varying(100) COLLATE pg_catalog."default",
-    "created_at" timestamp with time zone not null,
-    "changed_at" timestamp with time zone,
-    "counter" bigint not null,
-    CONSTRAINT "baz_pkey" PRIMARY KEY ("baz_id")
-);
-
 CREATE SEQUENCE test_schema."ONE_COL_seq";
 
 CREATE TABLE test_schema."one_column_generated_id_postgres"
@@ -54,5 +42,29 @@ CREATE TABLE public.DATA_TYPES_POSTGRES
     "text" text COLLATE pg_catalog."default",
     "bytea" bytea,
     CONSTRAINT "Foo_pkey" PRIMARY KEY (id)
+);
+
+CREATE TABLE test_schema.color_enum_postgres
+(
+    id character varying(10) NOT NULL,
+    hex character varying(10) NOT NULL,
+    CONSTRAINT color_enum_id_pkey PRIMARY KEY (id)
+);
+
+insert into test_schema.color_enum_postgres (id, hex) values ('red', '#FF0000');
+insert into test_schema.color_enum_postgres (id, hex) values ('green', '#00FF00');
+insert into test_schema.color_enum_postgres (id, hex) values ('blue', '#0000FF');
+
+CREATE SEQUENCE test_schema."BAZ_BAZ_ID_seq";
+
+CREATE TABLE test_schema."baz_postgres"
+(
+    "baz_id" integer NOT NULL DEFAULT nextval('test_schema."BAZ_BAZ_ID_seq"'::regclass),
+    "baz_name" character varying(100) COLLATE pg_catalog."default",
+    "color" character varying(10) REFERENCES test_schema.color_enum_postgres(id),
+    "created_at" timestamp with time zone not null,
+    "changed_at" timestamp with time zone,
+    "counter" bigint not null,
+    CONSTRAINT "baz_pkey" PRIMARY KEY ("baz_id")
 );
 

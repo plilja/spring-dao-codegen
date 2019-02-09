@@ -289,7 +289,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     }
 
     @Test
-    void lockWithoutConcurrentModification() {
+    public void lockWithoutConcurrentModification() {
         transactionUtil.inTransaction(() -> {
             Entity entity = newEntity("Bar");
             getRepo().save(entity);
@@ -306,7 +306,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     }
 
     @Test
-    void lockWithConcurrentModification() throws Exception {
+    public void lockWithConcurrentModification() throws Exception {
         Entity entity = newEntity("A");
         getRepo().save(entity);
 

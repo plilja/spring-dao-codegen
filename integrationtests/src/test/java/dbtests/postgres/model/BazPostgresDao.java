@@ -1,6 +1,7 @@
 package dbtests.postgres.model;
 
 import dbtests.framework.Dao;
+import dbtests.framework.DatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -16,11 +17,13 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
         r.setBazId(rs.getObject("baz_id") != null ? rs.getInt("baz_id") : null);
         r.setBazName(rs.getString("baz_name"));
         r.setChangedAt(rs.getObject("changed_at") != null ? rs.getTimestamp("changed_at").toLocalDateTime() : null);
+        r.setColor(ColorEnumPostgres.fromId(rs.getString("color")));
         r.setCounter(rs.getObject("counter") != null ? rs.getInt("counter") : null);
         r.setCreatedAt(rs.getObject("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null);
         return r;
     };
-    private static final String ALL_COLUMNS = " baz_id, baz_name, changed_at, counter, created_at ";
+    private static final String ALL_COLUMNS = " baz_id, baz_name, changed_at, color, counter, " +
+            " created_at ";
 
     @Autowired
     public BazPostgresDao(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -33,6 +36,7 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
         m.addValue("baz_id", o.getId());
         m.addValue("baz_name", o.getBazName());
         m.addValue("changed_at", o.getChangedAt());
+        m.addValue("color", o.getColor() != null ? o.getColor().getId() : null);
         m.addValue("counter", o.getCounter());
         m.addValue("created_at", o.getCreatedAt());
         return m;
@@ -80,12 +84,14 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
         return "INSERT INTO test_schema.baz_postgres (" +
                 "baz_name, " +
                 "changed_at, " +
+                "color, " +
                 "counter, " +
                 "created_at" +
                 ") " +
                 "VALUES (" +
                 ":baz_name, " +
                 ":changed_at, " +
+                ":color, " +
                 ":counter, " +
                 ":created_at" +
                 ")";
@@ -96,6 +102,7 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
         return "UPDATE test_schema.baz_postgres SET " +
                 "baz_name = :baz_name, " +
                 "changed_at = :changed_at, " +
+                "color = :color, " +
                 "counter = (counter + 1) % 128 " +
                 "WHERE baz_id = :baz_id AND counter = :counter";
     }

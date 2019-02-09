@@ -3,6 +3,8 @@ package dbtests.mssql.tests;
 import dbtests.BaseIntegrationTest;
 import dbtests.mssql.model.BazMsSqlDao;
 import dbtests.mssql.model.BazMsSqlEntity;
+import dbtests.mssql.model.ColorEnumMsSql;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -11,6 +13,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @ContextConfiguration(classes = {MsSqlITConfig.class})
 @ExtendWith(SpringExtension.class)
@@ -64,4 +69,18 @@ public class MsSqlIT extends BaseIntegrationTest<BazMsSqlEntity, BazMsSqlDao> {
         return entity.getVersion();
     }
 
+    @Test
+    void testEnum() {
+        BazMsSqlEntity entity = newEntity("Foo");
+        repo.save(entity);
+
+        BazMsSqlEntity retrieved = repo.getOne(entity.getId());
+        assertNull(retrieved.getColor());
+
+        retrieved.setColor(ColorEnumMsSql.BLUE);
+        repo.save(retrieved);
+
+        BazMsSqlEntity retrieved2 = repo.getOne(retrieved.getId());
+        assertEquals(ColorEnumMsSql.BLUE, retrieved2.getColor());
+    }
 }

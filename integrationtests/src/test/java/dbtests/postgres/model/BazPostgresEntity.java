@@ -11,16 +11,18 @@ public class BazPostgresEntity implements BaseEntity<Integer>, CreatedAtTracked<
     private Integer bazId;
     private String bazName;
     private LocalDateTime changedAt;
+    private ColorEnumPostgres color;
     private Integer counter;
     private LocalDateTime createdAt;
 
     public BazPostgresEntity() {
     }
 
-    public BazPostgresEntity(Integer bazId, String bazName, LocalDateTime changedAt, Integer counter, LocalDateTime createdAt) {
+    public BazPostgresEntity(Integer bazId, String bazName, LocalDateTime changedAt, ColorEnumPostgres color, Integer counter, LocalDateTime createdAt) {
         this.bazId = bazId;
         this.bazName = bazName;
         this.changedAt = changedAt;
+        this.color = color;
         this.counter = counter;
         this.createdAt = createdAt;
     }
@@ -39,6 +41,14 @@ public class BazPostgresEntity implements BaseEntity<Integer>, CreatedAtTracked<
 
     public void setBazName(String bazName) {
         this.bazName = bazName;
+    }
+
+    public ColorEnumPostgres getColor() {
+        return color;
+    }
+
+    public void setColor(ColorEnumPostgres color) {
+        this.color = color;
     }
 
     public Integer getCounter() {

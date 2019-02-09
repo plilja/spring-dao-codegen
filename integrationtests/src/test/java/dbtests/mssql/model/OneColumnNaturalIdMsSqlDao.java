@@ -1,6 +1,7 @@
 package dbtests.mssql.model;
 
 import dbtests.framework.Dao;
+import dbtests.framework.DatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;

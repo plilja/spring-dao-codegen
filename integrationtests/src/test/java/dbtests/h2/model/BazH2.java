@@ -11,16 +11,18 @@ public class BazH2 implements BaseEntity<Integer>, CreatedAtTracked<LocalDateTim
     private Integer bazId;
     private String bazName;
     private LocalDateTime changedAt;
+    private ColorEnumH2 color;
     private LocalDateTime createdAt;
     private Integer version;
 
     public BazH2() {
     }
 
-    public BazH2(Integer bazId, String bazName, LocalDateTime changedAt, LocalDateTime createdAt, Integer version) {
+    public BazH2(Integer bazId, String bazName, LocalDateTime changedAt, ColorEnumH2 color, LocalDateTime createdAt, Integer version) {
         this.bazId = bazId;
         this.bazName = bazName;
         this.changedAt = changedAt;
+        this.color = color;
         this.createdAt = createdAt;
         this.version = version;
     }
@@ -39,6 +41,14 @@ public class BazH2 implements BaseEntity<Integer>, CreatedAtTracked<LocalDateTim
 
     public void setBazName(String bazName) {
         this.bazName = bazName;
+    }
+
+    public ColorEnumH2 getColor() {
+        return color;
+    }
+
+    public void setColor(ColorEnumH2 color) {
+        this.color = color;
     }
 
     @Override

@@ -10,6 +10,7 @@ public class MBazMysql implements BaseEntity<Integer>, CreatedAtTracked<LocalDat
 
     private Integer id;
     private LocalDateTime changedAt;
+    private ColorEnumMysql colorEnumMysql;
     private LocalDateTime createdAt;
     private String name;
     private Integer version;
@@ -17,12 +18,21 @@ public class MBazMysql implements BaseEntity<Integer>, CreatedAtTracked<LocalDat
     public MBazMysql() {
     }
 
-    public MBazMysql(Integer id, LocalDateTime changedAt, LocalDateTime createdAt, String name, Integer version) {
+    public MBazMysql(Integer id, LocalDateTime changedAt, ColorEnumMysql colorEnumMysql, LocalDateTime createdAt, String name, Integer version) {
         this.id = id;
         this.changedAt = changedAt;
+        this.colorEnumMysql = colorEnumMysql;
         this.createdAt = createdAt;
         this.name = name;
         this.version = version;
+    }
+
+    public ColorEnumMysql getColorEnumMysql() {
+        return colorEnumMysql;
+    }
+
+    public void setColorEnumMysql(ColorEnumMysql colorEnumMysql) {
+        this.colorEnumMysql = colorEnumMysql;
     }
 
     public String getName() {

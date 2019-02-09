@@ -1,6 +1,7 @@
 package dbtests.mysql.model;
 
 import dbtests.framework.Dao;
+import dbtests.framework.DatabaseException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Types;
@@ -46,8 +47,7 @@ public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
             r.setYear(rs.getObject("year") != null ? rs.getInt("year") : null);
             return r;
         } catch (IOException ex) {
-            // TODO custom exception
-            throw new RuntimeException(ex);
+            throw new DatabaseException("Caught exception while reading row", ex);
         }
     };
     private static final String ALL_COLUMNS = " id, `bigint`, `bit`, `blob`, `bool`, " +

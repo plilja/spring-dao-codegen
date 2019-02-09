@@ -1,6 +1,7 @@
 package dbtests.oracle.model;
 
 import dbtests.framework.Dao;
+import dbtests.framework.DatabaseException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.Types;
@@ -36,8 +37,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
             r.setVarchar2(rs.getString("VARCHAR2"));
             return r;
         } catch (IOException ex) {
-            // TODO custom exception
-            throw new RuntimeException(ex);
+            throw new DatabaseException("Caught exception while reading row", ex);
         }
     };
     private static final String ALL_COLUMNS = " ID, BINARY_DOUBLE, BINARY_FLOAT, BLOB, CHAR1, " +

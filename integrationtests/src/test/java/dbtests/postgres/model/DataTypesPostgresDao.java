@@ -1,6 +1,7 @@
 package dbtests.postgres.model;
 
 import dbtests.framework.Dao;
+import dbtests.framework.DatabaseException;
 import java.math.BigDecimal;
 import java.sql.Types;
 import java.util.UUID;

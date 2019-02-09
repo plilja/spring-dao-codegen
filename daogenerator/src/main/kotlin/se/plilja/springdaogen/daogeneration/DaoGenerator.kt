@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource
 import org.springframework.stereotype.Repository
 import se.plilja.springdaogen.codegeneration.ClassGenerator
 import se.plilja.springdaogen.generatedframework.dao
+import se.plilja.springdaogen.generatedframework.databaseException
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Table
 import se.plilja.springdaogen.sqlgeneration.*
@@ -27,7 +28,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         g.addClassAnnotation("@Repository")
         g.addImport(Repository::class.java)
     }
-    g.extends = "Dao<${table.entityName()}, ${table.primaryKey.type().simpleName}>"
+    g.extends = "Dao<${table.entityName()}, ${table.primaryKey.typeName()}>"
     g.addPrivateConstant(
         "ROW_MAPPER", "RowMapper<${table.entityName()}>",
         rowMapper(table, g)
@@ -42,7 +43,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         g.addCustomConstructor(
             """
             public ${g.name}(NamedParameterJdbcTemplate jdbcTemplate) {
-                super(${table.primaryKey.type().simpleName}.class, ${table.primaryKey.generated}, jdbcTemplate);
+                super(${table.primaryKey.typeName()}.class, ${table.primaryKey.generated}, jdbcTemplate);
             }
         """
         )
@@ -52,7 +53,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
             """
             @Autowired
             public ${g.name}(NamedParameterJdbcTemplate jdbcTemplate) {
-                super(${table.primaryKey.type().simpleName}.class, ${table.primaryKey.generated}, jdbcTemplate);
+                super(${table.primaryKey.typeName()}.class, ${table.primaryKey.generated}, jdbcTemplate);
             }
         """
         )
@@ -160,8 +161,8 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
     val mayNeedImport =
         listOf(UUID::class.java, Clob::class.java, NClob::class.java, Blob::class.java, BigDecimal::class.java)
     for (column in table.columns) {
-        if (column.type() in mayNeedImport) {
-            g.addImport(column.type())
+        if (column.rawType() in mayNeedImport) {
+            g.addImport(column.rawType())
         }
     }
     if (config.entityOutputPackage != config.daoOutputPackage) {
@@ -169,6 +170,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
     }
     if (config.frameworkOutputPackage != config.daoOutputPackage) {
         g.addImport("${config.frameworkOutputPackage}.${dao(config.frameworkOutputPackage).first}")
+        g.addImport("${config.frameworkOutputPackage}.${databaseException(config.frameworkOutputPackage).first}")
     }
     return g
 }
@@ -184,8 +186,7 @@ private fun rowMapper(table: Table, classGenerator: ClassGenerator): String {
                 $setters
                 return r;
             } catch (IOException ex) {
-                // TODO custom exception
-                throw new RuntimeException(ex);
+                throw new DatabaseException("Caught exception while reading row", ex);
             }
         }"""
     } else {
@@ -208,6 +209,8 @@ private fun rowUnmapper(table: Table, classGenerator: ClassGenerator): String {
 
         if (table.primaryKey == it) {
             "m.addValue(\"${it.name}\", o.getId()$typeDeclaration);"
+        } else if (it.references != null && it.references!!.first.isEnum()) {
+            "m.addValue(\"${it.name}\", o.${it.getter()}() != null ? o.${it.getter()}().getId() : null$typeDeclaration);"
         } else {
             "m.addValue(\"${it.name}\", o.${it.getter()}()$typeDeclaration);"
         }

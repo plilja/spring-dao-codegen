@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 public class BazMsSqlEntity implements BaseEntity<Integer>, CreatedAtTracked<LocalDateTime>, ChangedAtTracked<LocalDateTime>, VersionTracked {
 
     private Integer id;
+    private ColorEnumMsSql color;
     private LocalDateTime insertedAt;
     private LocalDateTime modifiedAt;
     private String name;
