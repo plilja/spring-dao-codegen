@@ -38,20 +38,19 @@ data class Config(
 
     companion object {
 
-        fun readConfig(): Config {
+        fun readDefaultConfig(): Config {
             val f = File(Config::class.java.getResource("/settings.properties").file)
-            return readConfig(f)
+            return readDefaultConfig(f)
         }
 
-        fun readConfig(file: File) = ConfigReader(file).readConfig()
-
+        fun readDefaultConfig(file: File) = ConfigReader(file).readConfig()
     }
 }
 
-private class ConfigReader {
+private class ConfigReader(file: File) {
     private val properties: Properties;
 
-    constructor(file: File) {
+    init {
         val r = Properties()
         file.inputStream().use {
             r.load(it)
@@ -61,29 +60,29 @@ private class ConfigReader {
 
     fun readConfig(): Config {
         return Config(
-            databaseName = getDatabaseName(),
-            databaseDialect = databaseDialect(),
-            databaseUrl = databaseUrl(),
-            databaseUser = databaseUser(),
-            databasePassword = databasePassword(),
-            databaseDriver = databaseDriver(),
-            entityOutputFolder = entityOutputFolder(),
-            entityOutputPackage = entityOutputPackage(),
-            daoOutputFolder = daoOutputFolder(),
-            daoOutputPackage = daoOutputPackage(),
-            frameworkOutputFolder = frameworkOutputFolder(),
-            frameworkOutputPackage = frameworkOutputPackage(),
-            maxSelectAllCount = maxSelectAllCount(),
-            schemas = getSchemas(),
-            useLombok = useLombok(),
-            daosAreAbstract = daoAreAbstract(),
-            hasGeneratedPrimaryKeysOverride = getGeneratedPrimaryKeysOverride(),
-            entityPrefix = getEntityPrefix(),
-            entitySuffix = getEntitySuffix(),
-            daoPrefix = getDaoPrefix(),
-            daoSuffix = getDaoSuffix(),
-            generateTestDdl = generateTestDdl(),
-            testResourceFolder = getTestResourceFolder(),
+            databaseName = properties.getProperty("database.name"),
+            databaseDialect = DatabaseDialect.valueOf(properties.getProperty("database.dialect")),
+            databaseUrl = properties.getProperty("database.url"),
+            databaseUser = properties.getProperty("database.user"),
+            databasePassword = properties.getProperty("database.password"),
+            databaseDriver = properties.getProperty("database.driver"),
+            entityOutputFolder = getFolderProperty("entity.output.folder"),
+            entityOutputPackage = properties.getProperty("entity.output.package"),
+            daoOutputFolder = getFolderProperty("dao.output.folder"),
+            daoOutputPackage = properties.getProperty("dao.output.package"),
+            frameworkOutputFolder = getFolderProperty("framework.output.folder"),
+            frameworkOutputPackage = properties.getProperty("framework.output.package"),
+            maxSelectAllCount = properties.getProperty("max.select.all.count").toInt(),
+            schemas = getListProperty("database.schemas"),
+            useLombok = properties.getProperty("use_lombok", "false") == "true",
+            daosAreAbstract = properties.getProperty("dao.output.abstract", "false") == "true",
+            hasGeneratedPrimaryKeysOverride = getListProperty("generated_primary_keys_override"),
+            entityPrefix = properties.getProperty("entity.output.prefix", ""),
+            entitySuffix = properties.getProperty("entity.output.suffix", ""),
+            daoPrefix = properties.getProperty("dao.output.prefix", ""),
+            daoSuffix = properties.getProperty("dao.output.suffix", "Dao"),
+            generateTestDdl = properties.getProperty("test.generate_ddl", "false") == "true",
+            testResourceFolder = properties.getProperty("test.resource_folder", null),
             createdAtColumnNames = getListProperty("entity.created_at_name").map { it.toUpperCase() },
             changedAtColumnNames = getListProperty("entity.changed_at_name").map { it.toUpperCase() },
             versionColumnNames = getListProperty("entity.version_name").map { it.toUpperCase() },
@@ -96,8 +95,6 @@ private class ConfigReader {
         )
     }
 
-    private fun databaseDialect() = DatabaseDialect.valueOf(properties.getProperty("database.dialect"))
-
     private fun getFolderProperty(property: String): String {
         val f = properties.getProperty(property)
         if (f.last() != '/') {
@@ -106,50 +103,6 @@ private class ConfigReader {
             return f
         }
     }
-
-    private fun entityOutputFolder() = getFolderProperty("entity.output.folder")
-
-    private fun entityOutputPackage() = properties.getProperty("entity.output.package")
-
-    private fun daoOutputFolder() = getFolderProperty("dao.output.folder")
-
-    private fun daoOutputPackage() = properties.getProperty("dao.output.package")
-
-    private fun getEntityPrefix() = properties.getProperty("entity.output.prefix", "")
-
-    private fun getEntitySuffix() = properties.getProperty("entity.output.suffix", "")
-
-    private fun getDaoPrefix() = properties.getProperty("dao.output.prefix", "")
-
-    private fun getDaoSuffix() = properties.getProperty("dao.output.suffix", "Dao")
-
-    private fun getTestResourceFolder() = properties.getProperty("test.resource_folder", null)
-
-    private fun generateTestDdl() = properties.getProperty("test.generate_ddl", "false") == "true"
-
-    private fun frameworkOutputFolder() = getFolderProperty("framework.output.folder")
-
-    private fun frameworkOutputPackage() = properties.getProperty("framework.output.package")
-
-    private fun databaseUrl() = properties.getProperty("database.url")
-
-    private fun databaseDriver() = properties.getProperty("database.driver")
-
-    private fun databaseUser() = properties.getProperty("database.user")
-
-    private fun databasePassword() = properties.getProperty("database.password")
-
-    private fun maxSelectAllCount() = properties.getProperty("max.select.all.count").toInt()
-
-    private fun getSchemas() = getListProperty("database.schemas")
-
-    private fun getGeneratedPrimaryKeysOverride() = getListProperty("generated_primary_keys_override")
-
-    private fun getDatabaseName() = properties.getProperty("database.name")
-
-    private fun daoAreAbstract() = properties.getProperty("dao.output.abstract", "false") == "true"
-
-    private fun useLombok() = properties.getProperty("use_lombok", "false") == "true"
 
     private fun getListProperty(propertyName: String): List<String> {
         val property = properties.getProperty(propertyName, "").trim()

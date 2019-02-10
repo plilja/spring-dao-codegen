@@ -34,9 +34,9 @@ private fun writeDaos(config: Config, schema: Schema, dataSource: DataSource) {
 
 private fun readConfig(args: Array<String>): Config {
     return if (args.isNotEmpty()) {
-        Config.readConfig(File(args[0]))
+        Config.readDefaultConfig(File(args[0]))
     } else {
-        Config.readConfig()
+        Config.readDefaultConfig()
     }
 }
 
