@@ -25,7 +25,8 @@ fun toH2Ddl(config: Config, schema: Schema, dataSource: DataSource): String {
     for (table in schema.tables) {
         res += "CREATE TABLE ${formatIdentifier(table.schemaName, table.name)} (\n"
         for (column in table.columns) {
-            res += "${column.name} ${dataType(column)},\n"
+            val maybeNotNull = if (!column.nullable) " NOT NULL" else ""
+            res += "${column.name} ${dataType(column)}$maybeNotNull,\n"
         }
         res += "PRIMARY KEY(${table.primaryKey.name})"
         res += ");\n"
