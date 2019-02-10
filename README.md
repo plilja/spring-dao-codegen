@@ -15,6 +15,6 @@
 * Smart way to build and run all IT-tests
 * Possibility to choose some formatting (for example lower case SQL vs upper case)
 * More database patterns? (createdBy, changedBy, soft delete etc...)
-* Enum types
 * Test time stamps with time zones
 * No unused imports should be generated
+* Queries? Or should the user write these?
