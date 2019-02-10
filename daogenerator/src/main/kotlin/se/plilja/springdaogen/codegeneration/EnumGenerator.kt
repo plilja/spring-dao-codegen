@@ -16,7 +16,8 @@ class EnumGenerator(
     override fun generate(): String {
         val packageDeclaration = "package $packageName;"
         val importsDeclaration = imports.map { "import $it;" }.joinToString("\n")
-        val classHeader = "public enum $name {"
+        val implementsDecl = if (implements.isEmpty()) "" else " implements " + implements.joinToString(", ")
+        val classHeader = "public enum $name$implementsDecl {"
 
         val enumValuesDecl = enumValues.joinToString(",\n") + ";"
 

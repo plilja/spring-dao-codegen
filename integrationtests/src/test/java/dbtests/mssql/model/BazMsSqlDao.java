@@ -1,7 +1,9 @@
 package dbtests.mssql.model;
 
+import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -11,6 +13,21 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
+
+    public static final Column<BazMsSqlEntity, Integer> COLUMN_ID = new Column<>("id");
+
+    public static final Column<BazMsSqlEntity, ColorEnumMsSql> COLUMN_COLOR = new Column<>("color");
+
+    public static final Column<BazMsSqlEntity, LocalDateTime> COLUMN_INSERTED_AT = new Column<>("inserted_at");
+
+    public static final Column<BazMsSqlEntity, LocalDateTime> COLUMN_MODIFIED_AT = new Column<>("modified_at");
+
+    public static final Column<BazMsSqlEntity, String> COLUMN_NAME = new Column<>("name");
+
+    public static final Column<BazMsSqlEntity, Integer> COLUMN_VERSION = new Column<>("version");
+
+    private static final String ALL_COLUMNS = " id, color, inserted_at, modified_at, name, " +
+            " version ";
 
     private static final RowMapper<BazMsSqlEntity> ROW_MAPPER = (rs, i) -> {
         BazMsSqlEntity r = new BazMsSqlEntity();
@@ -22,8 +39,6 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
         r.setVersion(rs.getInt("version"));
         return r;
     };
-    private static final String ALL_COLUMNS = " id, color, inserted_at, modified_at, name, " +
-            " version ";
 
     @Autowired
     public BazMsSqlDao(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -116,6 +131,14 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
     @Override
     protected String getCountSql() {
         return "SELECT COUNT(*) FROM dbo.baz_ms_sql";
+    }
+
+    @Override
+    protected String getQuerySql() {
+        return "SELECT TOP %d " +
+                ALL_COLUMNS +
+                "FROM dbo.baz_ms_sql " +
+                "WHERE %s ";
     }
 
     @Override

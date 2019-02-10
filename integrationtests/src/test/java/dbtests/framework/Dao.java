@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 
 /**
  * Base class providing basic CRUD access to a database
@@ -101,13 +102,17 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
      */
     public List<T> findAll(int maxAllowedCount) throws TooManyRowsAvailableException {
         List<T> result = jdbcTemplate.query(getSelectManySql(maxAllowedCount + 1), Collections.emptyMap(), getRowMapper());
+        ensureMaxCountNotExceeded(maxAllowedCount, result);
+        return result;
+    }
+
+    private void ensureMaxCountNotExceeded(int maxAllowedCount, List<T> result) {
         // If queries have been correctly generated it should never be possible to select
         // more than maxAllowedCount + 1 even if the table is larger than that
         assert result.size() <= maxAllowedCount + 1;
         if (result.size() > maxAllowedCount) {
             throw new TooManyRowsAvailableException(String.format("Max allowed count of %d rows exceeded", maxAllowedCount));
         }
-        return result;
     }
 
     @Transactional
@@ -214,7 +219,57 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         params.put("id", id);
         jdbcTemplate.query(sql, params, (rs, i) -> new Object()); // Discard result
     }
+    
+    public List<T> query(QueryItem<T, ?> queryItem) {
+        return query(Collections.singletonList(queryItem));
+    }
 
+    /**
+     * Perform a query.
+     * <p/>
+     * Query items are joined by AND
+     * when sent to the database.
+     */
+    public List<T> query(List<QueryItem<T, ?>> queryItems) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        StringBuilder sb = new StringBuilder(" ");
+        for (int i = 0; i < queryItems.size(); i++) {
+            if (i > 0) {
+                sb.append(" AND ");
+            }
+            QueryItem<T, ?> queryItem = queryItems.get(i);
+            if (queryItem.getValue() == null) {
+                if (queryItem.getOperator() == QueryItem.Operator.EQ) {
+                    sb.append(String.format("%s IS NULL", queryItem.getColumn().getName()));
+                } else if (queryItem.getOperator() == QueryItem.Operator.NEQ) {
+                    sb.append(String.format("%s IS NOT NULL", queryItem.getColumn().getName()));
+                } else {
+                    throw new IllegalArgumentException(String.format("Unsupported operator %s for comparison with NULL", queryItem.getOperator().name()));
+                }
+            } else {
+                if (queryItem.getOperator() == QueryItem.Operator.NEQ && queryItem.isIncludeNulls()) {
+                    sb.append(String.format("(%s %s :q%d OR %s IS NULL)", queryItem.getColumn().getName(), queryItem.getOperator().getSymbol(), i, queryItem.getColumn().getName()));
+                } else {
+                    sb.append(String.format("%s %s :q%d", queryItem.getColumn().getName(), queryItem.getOperator().getSymbol(), i));
+                }
+            }
+            if (queryItem.getValue() != null) {
+                if (queryItem.getValue() instanceof BaseDatabaseEnum<?>) {
+                    params.addValue(String.format("q%d", i), ((BaseDatabaseEnum<?>) queryItem.getValue()).getId());
+                } else {
+                    params.addValue(String.format("q%d", i), queryItem.getValue());
+                }
+            }
+        }
+        sb.append(" ");
+        String sql = String.format(getQuerySql(), sb, getSelectAllDefaultMaxCount() + 1);
+        List<T> result = jdbcTemplate.query(sql, params, getRowMapper());
+        ensureMaxCountNotExceeded(getSelectAllDefaultMaxCount(), result);
+        return result;
+    }
+
+    protected abstract String getQuerySql();
+    
     protected abstract RowMapper<T> getRowMapper();
 
     protected abstract SqlParameterSource getParams(T object);

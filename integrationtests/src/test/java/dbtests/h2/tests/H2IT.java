@@ -2,6 +2,7 @@ package dbtests.h2.tests;
 
 
 import dbtests.BaseIntegrationTest;
+import dbtests.framework.QueryItem;
 import dbtests.h2.model.BazH2;
 import dbtests.h2.model.BazH2Repo;
 import dbtests.h2.model.ColorEnumH2;
@@ -15,6 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -90,5 +92,7 @@ public class H2IT extends BaseIntegrationTest<BazH2, BazH2Repo> {
         BazH2 retrieved2 = repo.getOne(retrieved.getId());
         assertEquals(ColorEnumH2.BLUE, retrieved2.getColor());
     }
+
 }
+
 

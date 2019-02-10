@@ -1,10 +1,14 @@
 package dbtests.oracle.model;
 
+import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Types;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -14,6 +18,45 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
+
+    public static final Column<DataTypesOracle, String> COLUMN_ID = new Column<>("ID");
+
+    public static final Column<DataTypesOracle, Double> COLUMN_BINARY_DOUBLE = new Column<>("BINARY_DOUBLE");
+
+    public static final Column<DataTypesOracle, Float> COLUMN_BINARY_FLOAT = new Column<>("BINARY_FLOAT");
+
+    public static final Column<DataTypesOracle, byte[]> COLUMN_BLOB = new Column<>("BLOB");
+
+    public static final Column<DataTypesOracle, String> COLUMN_CHAR1 = new Column<>("CHAR1");
+
+    public static final Column<DataTypesOracle, String> COLUMN_CHAR10 = new Column<>("CHAR10");
+
+    public static final Column<DataTypesOracle, String> COLUMN_CLOB = new Column<>("CLOB");
+
+    public static final Column<DataTypesOracle, LocalDate> COLUMN_DATE = new Column<>("\"DATE\"");
+
+    public static final Column<DataTypesOracle, String> COLUMN_NLOB = new Column<>("NLOB");
+
+    public static final Column<DataTypesOracle, Long> COLUMN_NUMBER_EIGHTEEN_ZERO = new Column<>("NUMBER_EIGHTEEN_ZERO");
+
+    public static final Column<DataTypesOracle, Integer> COLUMN_NUMBER_NINE_ZERO = new Column<>("NUMBER_NINE_ZERO");
+
+    public static final Column<DataTypesOracle, BigInteger> COLUMN_NUMBER_NINETEEN_ZERO = new Column<>("NUMBER_NINETEEN_ZERO");
+
+    public static final Column<DataTypesOracle, BigDecimal> COLUMN_NUMBER_TEN_TWO = new Column<>("NUMBER_TEN_TWO");
+
+    public static final Column<DataTypesOracle, Long> COLUMN_NUMBER_TEN_ZERO = new Column<>("NUMBER_TEN_ZERO");
+
+    public static final Column<DataTypesOracle, LocalDateTime> COLUMN_TIMESTAMP = new Column<>("TIMESTAMP");
+
+    public static final Column<DataTypesOracle, String> COLUMN_VARCHAR = new Column<>("\"VARCHAR\"");
+
+    public static final Column<DataTypesOracle, String> COLUMN_VARCHAR2 = new Column<>("\"VARCHAR2\"");
+
+    private static final String ALL_COLUMNS = " ID, BINARY_DOUBLE, BINARY_FLOAT, BLOB, CHAR1, " +
+            " CHAR10, CLOB, \"DATE\", NLOB, NUMBER_EIGHTEEN_ZERO, " +
+            " NUMBER_NINE_ZERO, NUMBER_NINETEEN_ZERO, NUMBER_TEN_TWO, NUMBER_TEN_ZERO, TIMESTAMP, " +
+            " \"VARCHAR\", \"VARCHAR2\" ";
 
     private static final RowMapper<DataTypesOracle> ROW_MAPPER = (rs, i) -> {
         try {
@@ -40,10 +83,6 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
             throw new DatabaseException("Caught exception while reading row", ex);
         }
     };
-    private static final String ALL_COLUMNS = " ID, BINARY_DOUBLE, BINARY_FLOAT, BLOB, CHAR1, " +
-            " CHAR10, CLOB, \"DATE\", NLOB, NUMBER_EIGHTEEN_ZERO, " +
-            " NUMBER_NINE_ZERO, NUMBER_NINETEEN_ZERO, NUMBER_TEN_TWO, NUMBER_TEN_ZERO, TIMESTAMP, " +
-            " \"VARCHAR\", \"VARCHAR2\" ";
 
     @Autowired
     public DataTypesOracleRepository(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -189,6 +228,15 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
     @Override
     protected String getCountSql() {
         return "SELECT COUNT(*) FROM DOCKER.DATA_TYPES_ORACLE";
+    }
+
+    @Override
+    protected String getQuerySql() {
+        return "SELECT " +
+                ALL_COLUMNS +
+                "FROM DOCKER.DATA_TYPES_ORACLE " +
+                "WHERE %s " +
+                "AND ROWNUM <= %d";
     }
 
     @Override

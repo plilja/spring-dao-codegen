@@ -1,6 +1,7 @@
 package se.plilja.springdaogen.daogeneration
 
 import se.plilja.springdaogen.codegeneration.EnumGenerator
+import se.plilja.springdaogen.generatedframework.baseDatabaseEnum
 import se.plilja.springdaogen.model.Column
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Left
@@ -17,6 +18,8 @@ fun generateEnums(config: Config, table: Table, tableContents: List<Map<String, 
         .first { config.enumNameColumnRegexp.matches(it.name) }
 
     val g = EnumGenerator(table.entityName(), config.entityOutputPackage, config.entityOutputFolder)
+    g.addImplements("BaseDatabaseEnum<${table.primaryKey.typeName()}>")
+
     for (column in table.columns) {
         val type = column.type()
         when (type) {
@@ -27,7 +30,7 @@ fun generateEnums(config: Config, table: Table, tableContents: List<Map<String, 
             // Let's hope another column that is also named id but isn't
             // the primary key exists. If the schema is that bad the
             // user is probably in trouble.
-            g.addReadOnlyField("id", column.typeName())
+            g.addPrivateField("id", column.typeName())
         } else if (column != nameColumn) {
             g.addReadOnlyField(column.fieldName(), column.typeName())
         }
@@ -53,6 +56,14 @@ fun generateEnums(config: Config, table: Table, tableContents: List<Map<String, 
 
     g.addCustomMethod(
         """
+        @Override
+        public ${table.primaryKey.typeName()} getId() {
+           return id;
+        }
+    """.trimIndent()
+    )
+    g.addCustomMethod(
+        """
         public static ${table.entityName()} fromId(${table.primaryKey.typeName()} id) {
            if (id != null) {
                for (${table.entityName()} value : values()) {
@@ -65,6 +76,7 @@ fun generateEnums(config: Config, table: Table, tableContents: List<Map<String, 
         }
     """.trimIndent()
     )
+    ensureImported(g, config) { baseDatabaseEnum(config.frameworkOutputPackage) }
     return g
 }
 

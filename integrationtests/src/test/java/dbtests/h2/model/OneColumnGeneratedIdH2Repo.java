@@ -1,5 +1,6 @@
 package dbtests.h2.model;
 
+import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +13,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class OneColumnGeneratedIdH2Repo extends Dao<OneColumnGeneratedIdH2, Integer> {
 
+    public static final Column<OneColumnGeneratedIdH2, Integer> COLUMN_ID = new Column<>("id");
+
+    private static final String ALL_COLUMNS = " id ";
+
     private static final RowMapper<OneColumnGeneratedIdH2> ROW_MAPPER = (rs, i) -> {
         OneColumnGeneratedIdH2 r = new OneColumnGeneratedIdH2();
         r.setId(rs.getInt("id"));
         return r;
     };
-    private static final String ALL_COLUMNS = " id ";
 
     @Autowired
     public OneColumnGeneratedIdH2Repo(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -87,6 +91,15 @@ public class OneColumnGeneratedIdH2Repo extends Dao<OneColumnGeneratedIdH2, Inte
     @Override
     protected String getCountSql() {
         return "SELECT COUNT(*) FROM test_schema.one_column_generated_id_h2";
+    }
+
+    @Override
+    protected String getQuerySql() {
+        return "SELECT " +
+                ALL_COLUMNS +
+                "FROM test_schema.one_column_generated_id_h2 " +
+                "WHERE %s " +
+                "LIMIT %d";
     }
 
     @Override

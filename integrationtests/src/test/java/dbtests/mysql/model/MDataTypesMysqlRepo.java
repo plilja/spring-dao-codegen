@@ -1,10 +1,15 @@
 package dbtests.mysql.model;
 
+import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Types;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -14,6 +19,67 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
+
+    public static final Column<MDataTypesMysql, Long> COLUMN_ID = new Column<>("id");
+
+    public static final Column<MDataTypesMysql, Long> COLUMN_BIGINT = new Column<>("`bigint`");
+
+    public static final Column<MDataTypesMysql, Boolean> COLUMN_BIT = new Column<>("`bit`");
+
+    public static final Column<MDataTypesMysql, byte[]> COLUMN_BLOB = new Column<>("`blob`");
+
+    public static final Column<MDataTypesMysql, Boolean> COLUMN_BOOL = new Column<>("`bool`");
+
+    public static final Column<MDataTypesMysql, LocalDate> COLUMN_DATE = new Column<>("`date`");
+
+    public static final Column<MDataTypesMysql, LocalDateTime> COLUMN_DATETIME = new Column<>("`datetime`");
+
+    public static final Column<MDataTypesMysql, Long> COLUMN_DECIMAL_EIGHTEEN_ZERO = new Column<>("decimal_eighteen_zero");
+
+    public static final Column<MDataTypesMysql, Integer> COLUMN_DECIMAL_NINE_ZERO = new Column<>("decimal_nine_zero");
+
+    public static final Column<MDataTypesMysql, BigInteger> COLUMN_DECIMAL_NINETEEN_ZERO = new Column<>("decimal_nineteen_zero");
+
+    public static final Column<MDataTypesMysql, BigDecimal> COLUMN_DECIMAL_TEN_TWO = new Column<>("decimal_ten_two");
+
+    public static final Column<MDataTypesMysql, Long> COLUMN_DECIMAL_TEN_ZERO = new Column<>("decimal_ten_zero");
+
+    public static final Column<MDataTypesMysql, Double> COLUMN_DOUBLE = new Column<>("`double`");
+
+    public static final Column<MDataTypesMysql, Float> COLUMN_FLOAT = new Column<>("`float`");
+
+    public static final Column<MDataTypesMysql, Integer> COLUMN_INT = new Column<>("`int`");
+
+    public static final Column<MDataTypesMysql, Integer> COLUMN_INTEGER = new Column<>("`integer`");
+
+    public static final Column<MDataTypesMysql, String> COLUMN_JSON = new Column<>("`json`");
+
+    public static final Column<MDataTypesMysql, Integer> COLUMN_MEDIUMINT = new Column<>("`mediumint`");
+
+    public static final Column<MDataTypesMysql, Integer> COLUMN_SMALLINT = new Column<>("`smallint`");
+
+    public static final Column<MDataTypesMysql, String> COLUMN_TEXT = new Column<>("`text`");
+
+    public static final Column<MDataTypesMysql, LocalTime> COLUMN_TIME = new Column<>("`time`");
+
+    public static final Column<MDataTypesMysql, LocalDateTime> COLUMN_TIMESTAMP = new Column<>("`timestamp`");
+
+    public static final Column<MDataTypesMysql, byte[]> COLUMN_TINYBLOB = new Column<>("`tinyblob`");
+
+    public static final Column<MDataTypesMysql, Integer> COLUMN_TINYINT = new Column<>("`tinyint`");
+
+    public static final Column<MDataTypesMysql, String> COLUMN_VARCHAR_10 = new Column<>("varchar_10");
+
+    public static final Column<MDataTypesMysql, byte[]> COLUMN_VARCHAR_BINARY_10 = new Column<>("varchar_binary_10");
+
+    public static final Column<MDataTypesMysql, Integer> COLUMN_YEAR = new Column<>("`year`");
+
+    private static final String ALL_COLUMNS = " id, `bigint`, `bit`, `blob`, `bool`, " +
+            " `date`, `datetime`, decimal_eighteen_zero, decimal_nine_zero, decimal_nineteen_zero, " +
+            " decimal_ten_two, decimal_ten_zero, `double`, `float`, `int`, " +
+            " `integer`, `json`, `mediumint`, `smallint`, `text`, " +
+            " `time`, `timestamp`, `tinyblob`, `tinyint`, varchar_10, " +
+            " varchar_binary_10, `year` ";
 
     private static final RowMapper<MDataTypesMysql> ROW_MAPPER = (rs, i) -> {
         try {
@@ -50,12 +116,6 @@ public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
             throw new DatabaseException("Caught exception while reading row", ex);
         }
     };
-    private static final String ALL_COLUMNS = " id, `bigint`, `bit`, `blob`, `bool`, " +
-            " `date`, `datetime`, decimal_eighteen_zero, decimal_nine_zero, decimal_nineteen_zero, " +
-            " decimal_ten_two, decimal_ten_zero, `double`, `float`, `int`, " +
-            " `integer`, `json`, `mediumint`, `smallint`, `text`, " +
-            " `time`, `timestamp`, `tinyblob`, `tinyint`, varchar_10, " +
-            " varchar_binary_10, `year` ";
 
     @Autowired
     public MDataTypesMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -233,6 +293,15 @@ public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
     @Override
     protected String getCountSql() {
         return "SELECT COUNT(*) FROM DATA_TYPES_MYSQL";
+    }
+
+    @Override
+    protected String getQuerySql() {
+        return "SELECT " +
+                ALL_COLUMNS +
+                "FROM DATA_TYPES_MYSQL " +
+                "WHERE %s " +
+                "LIMIT %d";
     }
 
     @Override

@@ -206,8 +206,3 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
     return g
 }
 
-fun ensureImported(g: ClassGenerator, config: Config, f: () -> Pair<String, String>) {
-    if (config.frameworkOutputPackage != config.entityOutputPackage) {
-        g.addImport("${config.frameworkOutputPackage}.${f().first}")
-    }
-}

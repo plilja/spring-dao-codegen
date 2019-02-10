@@ -1,7 +1,9 @@
 package dbtests.oracle.model;
 
+import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -12,6 +14,18 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class BazOracleRepository extends Dao<BazOracle, Integer> {
 
+    public static final Column<BazOracle, Integer> COLUMN_ID = new Column<>("ID");
+
+    public static final Column<BazOracle, LocalDateTime> COLUMN_CHANGED_AT = new Column<>("CHANGED_AT");
+
+    public static final Column<BazOracle, LocalDateTime> COLUMN_CREATED_AT = new Column<>("CREATED_AT");
+
+    public static final Column<BazOracle, String> COLUMN_NAME = new Column<>("NAME");
+
+    public static final Column<BazOracle, Integer> COLUMN_VERSION = new Column<>("VERSION");
+
+    private static final String ALL_COLUMNS = " ID, CHANGED_AT, CREATED_AT, NAME, VERSION ";
+
     private static final RowMapper<BazOracle> ROW_MAPPER = (rs, i) -> {
         BazOracle r = new BazOracle();
         r.setId(rs.getInt("ID"));
@@ -21,7 +35,6 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
         r.setVersion(rs.getInt("VERSION"));
         return r;
     };
-    private static final String ALL_COLUMNS = " ID, CHANGED_AT, CREATED_AT, NAME, VERSION ";
 
     @Autowired
     public BazOracleRepository(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -116,6 +129,15 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
     @Override
     protected String getCountSql() {
         return "SELECT COUNT(*) FROM DOCKER.BAZ_ORACLE";
+    }
+
+    @Override
+    protected String getQuerySql() {
+        return "SELECT " +
+                ALL_COLUMNS +
+                "FROM DOCKER.BAZ_ORACLE " +
+                "WHERE %s " +
+                "AND ROWNUM <= %d";
     }
 
     @Override

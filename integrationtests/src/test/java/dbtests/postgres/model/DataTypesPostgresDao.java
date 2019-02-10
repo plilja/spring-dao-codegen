@@ -1,9 +1,13 @@
 package dbtests.postgres.model;
 
+import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Types;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -14,6 +18,56 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
+
+    public static final Column<DataTypesPostgresEntity, Long> COLUMN_ID = new Column<>("id");
+
+    public static final Column<DataTypesPostgresEntity, Long> COLUMN_BIGINT = new Column<>("bigint");
+
+    public static final Column<DataTypesPostgresEntity, Boolean> COLUMN_BOOLEAN_B = new Column<>("boolean_b");
+
+    public static final Column<DataTypesPostgresEntity, byte[]> COLUMN_BYTEA = new Column<>("bytea");
+
+    public static final Column<DataTypesPostgresEntity, String> COLUMN_CHAR = new Column<>("char");
+
+    public static final Column<DataTypesPostgresEntity, String> COLUMN_CHAR10 = new Column<>("char10");
+
+    public static final Column<DataTypesPostgresEntity, LocalDate> COLUMN_DATE = new Column<>("date");
+
+    public static final Column<DataTypesPostgresEntity, Long> COLUMN_DECIMAL_EIGHTEEN_ZERO = new Column<>("decimal_eighteen_zero");
+
+    public static final Column<DataTypesPostgresEntity, Integer> COLUMN_DECIMAL_NINE_ZERO = new Column<>("decimal_nine_zero");
+
+    public static final Column<DataTypesPostgresEntity, BigInteger> COLUMN_DECIMAL_NINETEEN_ZERO = new Column<>("decimal_nineteen_zero");
+
+    public static final Column<DataTypesPostgresEntity, BigDecimal> COLUMN_DECIMAL_TEN_TWO = new Column<>("decimal_ten_two");
+
+    public static final Column<DataTypesPostgresEntity, Long> COLUMN_DECIMAL_TEN_ZERO = new Column<>("decimal_ten_zero");
+
+    public static final Column<DataTypesPostgresEntity, Double> COLUMN_DOUBLE = new Column<>("double");
+
+    public static final Column<DataTypesPostgresEntity, Float> COLUMN_FLOAT = new Column<>("float");
+
+    public static final Column<DataTypesPostgresEntity, UUID> COLUMN_GUID = new Column<>("guid");
+
+    public static final Column<DataTypesPostgresEntity, Integer> COLUMN_INTEGER = new Column<>("integer");
+
+    public static final Column<DataTypesPostgresEntity, BigDecimal> COLUMN_NUMERIC_TEN_TWO = new Column<>("numeric_ten_two");
+
+    public static final Column<DataTypesPostgresEntity, Integer> COLUMN_SMALLINT = new Column<>("smallint");
+
+    public static final Column<DataTypesPostgresEntity, String> COLUMN_TEXT = new Column<>("text");
+
+    public static final Column<DataTypesPostgresEntity, LocalDateTime> COLUMN_TIMESTAMP = new Column<>("timestamp");
+
+    public static final Column<DataTypesPostgresEntity, String> COLUMN_VARCHAR10 = new Column<>("varchar10");
+
+    public static final Column<DataTypesPostgresEntity, String> COLUMN_XML = new Column<>("xml");
+
+    private static final String ALL_COLUMNS = " id, bigint, boolean_b, bytea, char, " +
+            " char10, date, decimal_eighteen_zero, decimal_nine_zero, decimal_nineteen_zero, " +
+            " decimal_ten_two, decimal_ten_zero, double, float, guid, " +
+            " integer, numeric_ten_two, smallint, text, timestamp, " +
+            " varchar10, xml ";
 
     private static final RowMapper<DataTypesPostgresEntity> ROW_MAPPER = (rs, i) -> {
         DataTypesPostgresEntity r = new DataTypesPostgresEntity();
@@ -41,11 +95,6 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
         r.setXml(rs.getString("xml"));
         return r;
     };
-    private static final String ALL_COLUMNS = " id, bigint, boolean_b, bytea, char, " +
-            " char10, date, decimal_eighteen_zero, decimal_nine_zero, decimal_nineteen_zero, " +
-            " decimal_ten_two, decimal_ten_zero, double, float, guid, " +
-            " integer, numeric_ten_two, smallint, text, timestamp, " +
-            " varchar10, xml ";
 
     @Autowired
     public DataTypesPostgresDao(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -203,6 +252,15 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
     @Override
     protected String getCountSql() {
         return "SELECT COUNT(*) FROM public.data_types_postgres";
+    }
+
+    @Override
+    protected String getQuerySql() {
+        return "SELECT " +
+                ALL_COLUMNS +
+                "FROM public.data_types_postgres " +
+                "WHERE %s " +
+                "LIMIT %d";
     }
 
     @Override

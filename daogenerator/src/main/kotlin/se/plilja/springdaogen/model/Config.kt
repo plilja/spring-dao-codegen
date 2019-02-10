@@ -35,7 +35,8 @@ data class Config(
     val enumTablesRegexp: Regex = Regex("^$"),
     val enumNameColumnRegexp: Regex = Regex("^$"),
     val featureGenerateJavaxValidation: Boolean = false,
-    val featureGenerateJacksonAnnotations: Boolean = false
+    val featureGenerateJacksonAnnotations: Boolean = false,
+    val featureGenerateQueryApi: Boolean = true
 ) {
 
     companion object {
@@ -101,6 +102,10 @@ private class ConfigReader(file: File) {
             featureGenerateJacksonAnnotations = properties.getProperty(
                 "features.generate_jackson_annotations",
                 "false"
+            ) == "true",
+            featureGenerateQueryApi = properties.getProperty(
+                "features.generate_jackson_annotations",
+                "true"
             ) == "true"
         )
     }

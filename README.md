@@ -17,4 +17,3 @@
 * More database patterns? (createdBy, changedBy, soft delete etc...)
 * Test time stamps with time zones
 * No unused imports should be generated
-* Queries? Or should the user write these?

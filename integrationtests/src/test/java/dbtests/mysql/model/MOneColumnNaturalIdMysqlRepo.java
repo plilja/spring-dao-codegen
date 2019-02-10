@@ -1,5 +1,6 @@
 package dbtests.mysql.model;
 
+import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +13,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class MOneColumnNaturalIdMysqlRepo extends Dao<MOneColumnNaturalIdMysql, String> {
 
+    public static final Column<MOneColumnNaturalIdMysql, String> COLUMN_ID = new Column<>("id");
+
+    private static final String ALL_COLUMNS = " id ";
+
     private static final RowMapper<MOneColumnNaturalIdMysql> ROW_MAPPER = (rs, i) -> {
         MOneColumnNaturalIdMysql r = new MOneColumnNaturalIdMysql();
         r.setId(rs.getString("id"));
         return r;
     };
-    private static final String ALL_COLUMNS = " id ";
 
     @Autowired
     public MOneColumnNaturalIdMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -92,6 +96,15 @@ public class MOneColumnNaturalIdMysqlRepo extends Dao<MOneColumnNaturalIdMysql, 
     @Override
     protected String getCountSql() {
         return "SELECT COUNT(*) FROM ONE_COLUMN_NATURAL_ID_MYSQL";
+    }
+
+    @Override
+    protected String getQuerySql() {
+        return "SELECT " +
+                ALL_COLUMNS +
+                "FROM ONE_COLUMN_NATURAL_ID_MYSQL " +
+                "WHERE %s " +
+                "LIMIT %d";
     }
 
     @Override

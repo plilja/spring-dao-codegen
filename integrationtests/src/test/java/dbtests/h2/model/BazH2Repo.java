@@ -1,7 +1,9 @@
 package dbtests.h2.model;
 
+import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -11,6 +13,21 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class BazH2Repo extends Dao<BazH2, Integer> {
+
+    public static final Column<BazH2, Integer> COLUMN_BAZ_ID = new Column<>("baz_id");
+
+    public static final Column<BazH2, String> COLUMN_BAZ_NAME = new Column<>("baz_name");
+
+    public static final Column<BazH2, LocalDateTime> COLUMN_CHANGED_AT = new Column<>("changed_at");
+
+    public static final Column<BazH2, ColorEnumH2> COLUMN_COLOR = new Column<>("color");
+
+    public static final Column<BazH2, LocalDateTime> COLUMN_CREATED_AT = new Column<>("created_at");
+
+    public static final Column<BazH2, Integer> COLUMN_VERSION = new Column<>("version");
+
+    private static final String ALL_COLUMNS = " baz_id, baz_name, changed_at, color, created_at, " +
+            " version ";
 
     private static final RowMapper<BazH2> ROW_MAPPER = (rs, i) -> {
         BazH2 r = new BazH2();
@@ -22,8 +39,6 @@ public class BazH2Repo extends Dao<BazH2, Integer> {
         r.setVersion(rs.getInt("version"));
         return r;
     };
-    private static final String ALL_COLUMNS = " baz_id, baz_name, changed_at, color, created_at, " +
-            " version ";
 
     @Autowired
     public BazH2Repo(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -116,6 +131,15 @@ public class BazH2Repo extends Dao<BazH2, Integer> {
     @Override
     protected String getCountSql() {
         return "SELECT COUNT(*) FROM test_schema.baz_h2";
+    }
+
+    @Override
+    protected String getQuerySql() {
+        return "SELECT " +
+                ALL_COLUMNS +
+                "FROM test_schema.baz_h2 " +
+                "WHERE %s " +
+                "LIMIT %d";
     }
 
     @Override

@@ -1,9 +1,14 @@
 package dbtests.mssql.model;
 
+import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.sql.Types;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -13,6 +18,69 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class DataTypesMsSqlDao extends Dao<DataTypesMsSqlEntity, Long> {
+
+    public static final Column<DataTypesMsSqlEntity, Long> COLUMN_ID = new Column<>("id");
+
+    public static final Column<DataTypesMsSqlEntity, byte[]> COLUMN_BINARY10 = new Column<>("binary10");
+
+    public static final Column<DataTypesMsSqlEntity, Boolean> COLUMN_BIT = new Column<>("bit");
+
+    public static final Column<DataTypesMsSqlEntity, String> COLUMN_CHAR = new Column<>("char");
+
+    public static final Column<DataTypesMsSqlEntity, String> COLUMN_CHAR10 = new Column<>("char10");
+
+    public static final Column<DataTypesMsSqlEntity, LocalDate> COLUMN_DATE = new Column<>("date");
+
+    public static final Column<DataTypesMsSqlEntity, LocalDateTime> COLUMN_DATETIME = new Column<>("datetime");
+
+    public static final Column<DataTypesMsSqlEntity, LocalDateTime> COLUMN_DATETIME2 = new Column<>("datetime2");
+
+    public static final Column<DataTypesMsSqlEntity, Long> COLUMN_DECIMAL_EIGHTEEN_ZERO = new Column<>("decimal_eighteen_zero");
+
+    public static final Column<DataTypesMsSqlEntity, Integer> COLUMN_DECIMAL_NINE_ZERO = new Column<>("decimal_nine_zero");
+
+    public static final Column<DataTypesMsSqlEntity, BigInteger> COLUMN_DECIMAL_NINETEEN_ZERO = new Column<>("decimal_nineteen_zero");
+
+    public static final Column<DataTypesMsSqlEntity, BigDecimal> COLUMN_DECIMAL_TEN_TWO = new Column<>("decimal_ten_two");
+
+    public static final Column<DataTypesMsSqlEntity, Long> COLUMN_DECIMAL_TEN_ZERO = new Column<>("decimal_ten_zero");
+
+    public static final Column<DataTypesMsSqlEntity, Float> COLUMN_FLOAT = new Column<>("float");
+
+    public static final Column<DataTypesMsSqlEntity, Integer> COLUMN_INT = new Column<>("int");
+
+    public static final Column<DataTypesMsSqlEntity, BigDecimal> COLUMN_MONEY = new Column<>("money");
+
+    public static final Column<DataTypesMsSqlEntity, String> COLUMN_NCHAR10 = new Column<>("nchar10");
+
+    public static final Column<DataTypesMsSqlEntity, String> COLUMN_NTEXT = new Column<>("ntext");
+
+    public static final Column<DataTypesMsSqlEntity, String> COLUMN_NVARCHAR10 = new Column<>("nvarchar10");
+
+    public static final Column<DataTypesMsSqlEntity, Float> COLUMN_REAL = new Column<>("real");
+
+    public static final Column<DataTypesMsSqlEntity, Integer> COLUMN_SMALLINT = new Column<>("smallint");
+
+    public static final Column<DataTypesMsSqlEntity, BigDecimal> COLUMN_SMALLMONEY = new Column<>("smallmoney");
+
+    public static final Column<DataTypesMsSqlEntity, String> COLUMN_TEXT = new Column<>("text");
+
+    public static final Column<DataTypesMsSqlEntity, LocalTime> COLUMN_TIME = new Column<>("time");
+
+    public static final Column<DataTypesMsSqlEntity, Integer> COLUMN_TINYINT = new Column<>("tinyint");
+
+    public static final Column<DataTypesMsSqlEntity, byte[]> COLUMN_VARBINARY10 = new Column<>("varbinary10");
+
+    public static final Column<DataTypesMsSqlEntity, String> COLUMN_VARCHAR10 = new Column<>("varchar10");
+
+    public static final Column<DataTypesMsSqlEntity, String> COLUMN_XML = new Column<>("xml");
+
+    private static final String ALL_COLUMNS = " id, binary10, bit, char, char10, " +
+            " date, datetime, datetime2, decimal_eighteen_zero, decimal_nine_zero, " +
+            " decimal_nineteen_zero, decimal_ten_two, decimal_ten_zero, float, int, " +
+            " money, nchar10, ntext, nvarchar10, real, " +
+            " smallint, smallmoney, text, time, tinyint, " +
+            " varbinary10, varchar10, xml ";
 
     private static final RowMapper<DataTypesMsSqlEntity> ROW_MAPPER = (rs, i) -> {
         DataTypesMsSqlEntity r = new DataTypesMsSqlEntity();
@@ -46,12 +114,6 @@ public class DataTypesMsSqlDao extends Dao<DataTypesMsSqlEntity, Long> {
         r.setXml(rs.getString("xml"));
         return r;
     };
-    private static final String ALL_COLUMNS = " id, binary10, bit, char, char10, " +
-            " date, datetime, datetime2, decimal_eighteen_zero, decimal_nine_zero, " +
-            " decimal_nineteen_zero, decimal_ten_two, decimal_ten_zero, float, int, " +
-            " money, nchar10, ntext, nvarchar10, real, " +
-            " smallint, smallmoney, text, time, tinyint, " +
-            " varbinary10, varchar10, xml ";
 
     @Autowired
     public DataTypesMsSqlDao(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -233,6 +295,14 @@ public class DataTypesMsSqlDao extends Dao<DataTypesMsSqlEntity, Long> {
     @Override
     protected String getCountSql() {
         return "SELECT COUNT(*) FROM dbo.DATA_TYPES_MS_SQL";
+    }
+
+    @Override
+    protected String getQuerySql() {
+        return "SELECT TOP %d " +
+                ALL_COLUMNS +
+                "FROM dbo.DATA_TYPES_MS_SQL " +
+                "WHERE %s ";
     }
 
     @Override

@@ -1,5 +1,6 @@
 package dbtests.postgres.model;
 
+import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +13,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class OneColumnNaturalIdPostgresDao extends Dao<OneColumnNaturalIdPostgresEntity, String> {
 
+    public static final Column<OneColumnNaturalIdPostgresEntity, String> COLUMN_ID = new Column<>("id");
+
+    private static final String ALL_COLUMNS = " id ";
+
     private static final RowMapper<OneColumnNaturalIdPostgresEntity> ROW_MAPPER = (rs, i) -> {
         OneColumnNaturalIdPostgresEntity r = new OneColumnNaturalIdPostgresEntity();
         r.setId(rs.getString("id"));
         return r;
     };
-    private static final String ALL_COLUMNS = " id ";
 
     @Autowired
     public OneColumnNaturalIdPostgresDao(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -92,6 +96,15 @@ public class OneColumnNaturalIdPostgresDao extends Dao<OneColumnNaturalIdPostgre
     @Override
     protected String getCountSql() {
         return "SELECT COUNT(*) FROM test_schema.one_column_natural_id_postgres";
+    }
+
+    @Override
+    protected String getQuerySql() {
+        return "SELECT " +
+                ALL_COLUMNS +
+                "FROM test_schema.one_column_natural_id_postgres " +
+                "WHERE %s " +
+                "LIMIT %d";
     }
 
     @Override

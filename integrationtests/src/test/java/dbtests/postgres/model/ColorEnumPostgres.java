@@ -1,6 +1,8 @@
 package dbtests.postgres.model;
 
-public enum ColorEnumPostgres {
+import dbtests.framework.BaseDatabaseEnum;
+
+public enum ColorEnumPostgres implements BaseDatabaseEnum<String> {
 
     BLUE("blue", "#0000FF"),
     GREEN("green", "#00FF00"),
@@ -14,12 +16,13 @@ public enum ColorEnumPostgres {
         this.hex = hex;
     }
 
-    public String getId() {
-        return id;
-    }
-
     public String getHex() {
         return hex;
+    }
+
+    @Override
+    public String getId() {
+        return id;
     }
 
     public static ColorEnumPostgres fromId(String id) {

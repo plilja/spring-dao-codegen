@@ -1,5 +1,6 @@
 package dbtests.mssql.model;
 
+import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +13,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class OneColumnNaturalIdMsSqlDao extends Dao<OneColumnNaturalIdMsSqlEntity, String> {
 
+    public static final Column<OneColumnNaturalIdMsSqlEntity, String> COLUMN_ID = new Column<>("id");
+
+    private static final String ALL_COLUMNS = " id ";
+
     private static final RowMapper<OneColumnNaturalIdMsSqlEntity> ROW_MAPPER = (rs, i) -> {
         OneColumnNaturalIdMsSqlEntity r = new OneColumnNaturalIdMsSqlEntity();
         r.setId(rs.getString("id"));
         return r;
     };
-    private static final String ALL_COLUMNS = " id ";
 
     @Autowired
     public OneColumnNaturalIdMsSqlDao(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -92,6 +96,14 @@ public class OneColumnNaturalIdMsSqlDao extends Dao<OneColumnNaturalIdMsSqlEntit
     @Override
     protected String getCountSql() {
         return "SELECT COUNT(*) FROM dbo.ONE_COLUMN_NATURAL_ID_MS_SQL";
+    }
+
+    @Override
+    protected String getQuerySql() {
+        return "SELECT TOP %d " +
+                ALL_COLUMNS +
+                "FROM dbo.ONE_COLUMN_NATURAL_ID_MS_SQL " +
+                "WHERE %s ";
     }
 
     @Override

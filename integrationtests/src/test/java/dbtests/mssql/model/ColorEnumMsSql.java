@@ -1,6 +1,8 @@
 package dbtests.mssql.model;
 
-public enum ColorEnumMsSql {
+import dbtests.framework.BaseDatabaseEnum;
+
+public enum ColorEnumMsSql implements BaseDatabaseEnum<String> {
 
     BLUE("blue"),
     GREEN("green"),
@@ -12,6 +14,7 @@ public enum ColorEnumMsSql {
         this.id = id;
     }
 
+    @Override
     public String getId() {
         return id;
     }

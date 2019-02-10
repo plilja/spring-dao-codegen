@@ -1,7 +1,9 @@
 package dbtests.mysql.model;
 
+import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -11,6 +13,21 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
+
+    public static final Column<MBazMysql, Integer> COLUMN_ID = new Column<>("id");
+
+    public static final Column<MBazMysql, LocalDateTime> COLUMN_CHANGED_AT = new Column<>("changed_at");
+
+    public static final Column<MBazMysql, ColorEnumMysql> COLUMN_COLOR_ENUM_MYSQL_ID = new Column<>("color_enum_mysql_id");
+
+    public static final Column<MBazMysql, LocalDateTime> COLUMN_CREATED_AT = new Column<>("created_at");
+
+    public static final Column<MBazMysql, String> COLUMN_NAME = new Column<>("name");
+
+    public static final Column<MBazMysql, Integer> COLUMN_VERSION = new Column<>("version");
+
+    private static final String ALL_COLUMNS = " id, changed_at, color_enum_mysql_id, created_at, name, " +
+            " version ";
 
     private static final RowMapper<MBazMysql> ROW_MAPPER = (rs, i) -> {
         MBazMysql r = new MBazMysql();
@@ -22,8 +39,6 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
         r.setVersion(rs.getInt("version"));
         return r;
     };
-    private static final String ALL_COLUMNS = " id, changed_at, color_enum_mysql_id, created_at, name, " +
-            " version ";
 
     @Autowired
     public MBazMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -116,6 +131,15 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
     @Override
     protected String getCountSql() {
         return "SELECT COUNT(*) FROM BazMysql";
+    }
+
+    @Override
+    protected String getQuerySql() {
+        return "SELECT " +
+                ALL_COLUMNS +
+                "FROM BazMysql " +
+                "WHERE %s " +
+                "LIMIT %d";
     }
 
     @Override

@@ -1,5 +1,6 @@
 package dbtests.oracle.model;
 
+import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +13,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class OneColumnNaturalIdOracleRepository extends Dao<OneColumnNaturalIdOracle, String> {
 
+    public static final Column<OneColumnNaturalIdOracle, String> COLUMN_ID = new Column<>("ID");
+
+    private static final String ALL_COLUMNS = " ID ";
+
     private static final RowMapper<OneColumnNaturalIdOracle> ROW_MAPPER = (rs, i) -> {
         OneColumnNaturalIdOracle r = new OneColumnNaturalIdOracle();
         r.setId(rs.getString("ID"));
         return r;
     };
-    private static final String ALL_COLUMNS = " ID ";
 
     @Autowired
     public OneColumnNaturalIdOracleRepository(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -98,6 +102,15 @@ public class OneColumnNaturalIdOracleRepository extends Dao<OneColumnNaturalIdOr
     @Override
     protected String getCountSql() {
         return "SELECT COUNT(*) FROM DOCKER.ONE_COLUMN_NATURAL_ID_ORACLE";
+    }
+
+    @Override
+    protected String getQuerySql() {
+        return "SELECT " +
+                ALL_COLUMNS +
+                "FROM DOCKER.ONE_COLUMN_NATURAL_ID_ORACLE " +
+                "WHERE %s " +
+                "AND ROWNUM <= %d";
     }
 
     @Override

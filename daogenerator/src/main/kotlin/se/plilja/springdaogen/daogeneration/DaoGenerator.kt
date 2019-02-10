@@ -8,11 +8,14 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.jdbc.core.namedparam.SqlParameterSource
 import org.springframework.stereotype.Repository
 import se.plilja.springdaogen.codegeneration.ClassGenerator
+import se.plilja.springdaogen.generatedframework.columnClass
 import se.plilja.springdaogen.generatedframework.dao
 import se.plilja.springdaogen.generatedframework.databaseException
 import se.plilja.springdaogen.model.Config
+import se.plilja.springdaogen.model.Left
 import se.plilja.springdaogen.model.Table
 import se.plilja.springdaogen.sqlgeneration.*
+import se.plilja.springdaogen.util.snakeCase
 import java.io.IOException
 import java.math.BigDecimal
 import java.sql.Blob
@@ -29,11 +32,25 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         g.addImport(Repository::class.java)
     }
     g.extends = "Dao<${table.entityName()}, ${table.primaryKey.typeName()}>"
+    if (config.featureGenerateQueryApi) {
+        ensureImported(g, config) { columnClass(config.frameworkOutputPackage)}
+        for (column in table.columns) {
+            val type = column.type()
+            when (type) {
+                is Left -> {
+                    if (!type.value.packageName.contains("java.lang")) {
+                        g.addImport(type.value)
+                    }
+                }
+            }
+            g.addConstant( "COLUMN_${snakeCase(column.name).toUpperCase()}", "Column<${table.entityName()}, ${column.typeName()}>", "new Column<>(\"${formatIdentifier(column.name, config.databaseDialect)}\")")
+        }
+    }
+    g.addPrivateConstant("ALL_COLUMNS", "String", columnsList(table, config.databaseDialect))
     g.addPrivateConstant(
         "ROW_MAPPER", "RowMapper<${table.entityName()}>",
         rowMapper(table, g)
     )
-    g.addPrivateConstant("ALL_COLUMNS", "String", columnsList(table, config.databaseDialect))
     g.addCustomMethod(rowUnmapper(table, g))
     g.addImport(RowMapper::class.java)
     g.addImport(MapSqlParameterSource::class.java)
@@ -133,6 +150,16 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
             }
         """
     )
+    if (config.featureGenerateQueryApi) {
+        g.addCustomMethod(
+            """
+            @Override
+            protected String getQuerySql() {
+                return ${selectManyQuery(table, config.databaseDialect)};
+            }
+        """
+        )
+    }
     g.addCustomMethod(
         """
             @Override
@@ -169,7 +196,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         g.addImport("${config.entityOutputPackage}.${table.entityName()}")
     }
     if (config.frameworkOutputPackage != config.daoOutputPackage) {
-        g.addImport("${config.frameworkOutputPackage}.${dao(config.frameworkOutputPackage).first}")
+        g.addImport("${config.frameworkOutputPackage}.${dao(config.frameworkOutputPackage, config).first}")
         g.addImport("${config.frameworkOutputPackage}.${databaseException(config.frameworkOutputPackage).first}")
     }
     return g

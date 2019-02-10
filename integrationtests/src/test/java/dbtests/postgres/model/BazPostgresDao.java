@@ -1,7 +1,9 @@
 package dbtests.postgres.model;
 
+import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -11,6 +13,21 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
+
+    public static final Column<BazPostgresEntity, Integer> COLUMN_BAZ_ID = new Column<>("baz_id");
+
+    public static final Column<BazPostgresEntity, String> COLUMN_BAZ_NAME = new Column<>("baz_name");
+
+    public static final Column<BazPostgresEntity, LocalDateTime> COLUMN_CHANGED_AT = new Column<>("changed_at");
+
+    public static final Column<BazPostgresEntity, ColorEnumPostgres> COLUMN_COLOR = new Column<>("color");
+
+    public static final Column<BazPostgresEntity, Integer> COLUMN_COUNTER = new Column<>("counter");
+
+    public static final Column<BazPostgresEntity, LocalDateTime> COLUMN_CREATED_AT = new Column<>("created_at");
+
+    private static final String ALL_COLUMNS = " baz_id, baz_name, changed_at, color, counter, " +
+            " created_at ";
 
     private static final RowMapper<BazPostgresEntity> ROW_MAPPER = (rs, i) -> {
         BazPostgresEntity r = new BazPostgresEntity();
@@ -22,8 +39,6 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
         r.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
         return r;
     };
-    private static final String ALL_COLUMNS = " baz_id, baz_name, changed_at, color, counter, " +
-            " created_at ";
 
     @Autowired
     public BazPostgresDao(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -116,6 +131,15 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
     @Override
     protected String getCountSql() {
         return "SELECT COUNT(*) FROM test_schema.baz_postgres";
+    }
+
+    @Override
+    protected String getQuerySql() {
+        return "SELECT " +
+                ALL_COLUMNS +
+                "FROM test_schema.baz_postgres " +
+                "WHERE %s " +
+                "LIMIT %d";
     }
 
     @Override

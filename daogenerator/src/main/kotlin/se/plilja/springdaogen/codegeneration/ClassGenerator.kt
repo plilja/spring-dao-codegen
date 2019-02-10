@@ -52,7 +52,7 @@ class ClassGenerator(
             }
         val constantsDeclaration =
             constants.map { "    ${it.first.getVisibility()} static final ${it.first.type} ${it.first.name} = ${it.second};" }
-                .joinToString("\n")
+                .joinToString("\n\n")
         val fieldsDeclaration =
             fields.map { "${it.annotations.map { "$it\n" }.joinToString("")}private ${it.type} ${it.name};" }
                 .joinToString("\n")

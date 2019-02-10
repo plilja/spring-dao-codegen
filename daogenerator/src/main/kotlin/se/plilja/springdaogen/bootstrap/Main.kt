@@ -3,10 +3,13 @@ package se.plilja.springdaogen.bootstrap
 import org.springframework.boot.jdbc.DataSourceBuilder
 import se.plilja.springdaogen.codegeneration.toH2Ddl
 import se.plilja.springdaogen.daogeneration.generateCode
+import se.plilja.springdaogen.generatedframework.baseDatabaseEnum
 import se.plilja.springdaogen.generatedframework.baseEntity
+import se.plilja.springdaogen.generatedframework.columnClass
 import se.plilja.springdaogen.generatedframework.dao
 import se.plilja.springdaogen.generatedframework.entityInterfaces
 import se.plilja.springdaogen.generatedframework.frameworkExceptions
+import se.plilja.springdaogen.generatedframework.queryItem
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Schema
 import java.io.File
@@ -52,7 +55,12 @@ fun copyFrameworkClasses(config: Config) {
     }
 
     writeFrameworkClass(baseEntity(config.frameworkOutputPackage))
-    writeFrameworkClass(dao(config.frameworkOutputPackage))
+    if (config.featureGenerateQueryApi) {
+        writeFrameworkClass(queryItem(config.frameworkOutputPackage))
+        writeFrameworkClass(columnClass(config.frameworkOutputPackage))
+    }
+    writeFrameworkClass(baseDatabaseEnum(config.frameworkOutputPackage))
+    writeFrameworkClass(dao(config.frameworkOutputPackage, config))
     for (exceptionClass in frameworkExceptions(config.frameworkOutputPackage)) {
         writeFrameworkClass(exceptionClass)
     }

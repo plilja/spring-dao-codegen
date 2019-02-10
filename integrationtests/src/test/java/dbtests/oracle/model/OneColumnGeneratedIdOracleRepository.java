@@ -1,5 +1,6 @@
 package dbtests.oracle.model;
 
+import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,12 +13,15 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class OneColumnGeneratedIdOracleRepository extends Dao<OneColumnGeneratedIdOracle, Integer> {
 
+    public static final Column<OneColumnGeneratedIdOracle, Integer> COLUMN_ID = new Column<>("ID");
+
+    private static final String ALL_COLUMNS = " ID ";
+
     private static final RowMapper<OneColumnGeneratedIdOracle> ROW_MAPPER = (rs, i) -> {
         OneColumnGeneratedIdOracle r = new OneColumnGeneratedIdOracle();
         r.setId(rs.getInt("ID"));
         return r;
     };
-    private static final String ALL_COLUMNS = " ID ";
 
     @Autowired
     public OneColumnGeneratedIdOracleRepository(NamedParameterJdbcTemplate jdbcTemplate) {
@@ -93,6 +97,15 @@ public class OneColumnGeneratedIdOracleRepository extends Dao<OneColumnGenerated
     @Override
     protected String getCountSql() {
         return "SELECT COUNT(*) FROM DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE";
+    }
+
+    @Override
+    protected String getQuerySql() {
+        return "SELECT " +
+                ALL_COLUMNS +
+                "FROM DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE " +
+                "WHERE %s " +
+                "AND ROWNUM <= %d";
     }
 
     @Override

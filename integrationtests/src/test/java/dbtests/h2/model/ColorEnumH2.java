@@ -1,6 +1,8 @@
 package dbtests.h2.model;
 
-public enum ColorEnumH2 {
+import dbtests.framework.BaseDatabaseEnum;
+
+public enum ColorEnumH2 implements BaseDatabaseEnum<String> {
 
     BLUE("blue", "#0000FF"),
     GREEN("green", "#00FF00"),
@@ -14,12 +16,13 @@ public enum ColorEnumH2 {
         this.hex = hex;
     }
 
-    public String getId() {
-        return id;
-    }
-
     public String getHex() {
         return hex;
+    }
+
+    @Override
+    public String getId() {
+        return id;
     }
 
     public static ColorEnumH2 fromId(String id) {

@@ -1,6 +1,8 @@
 package dbtests.mysql.model;
 
-public enum ColorEnumMysql {
+import dbtests.framework.BaseDatabaseEnum;
+
+public enum ColorEnumMysql implements BaseDatabaseEnum<Integer> {
 
     RED(1),
     GREEN(2),
@@ -12,6 +14,7 @@ public enum ColorEnumMysql {
         this.id = id;
     }
 
+    @Override
     public Integer getId() {
         return id;
     }

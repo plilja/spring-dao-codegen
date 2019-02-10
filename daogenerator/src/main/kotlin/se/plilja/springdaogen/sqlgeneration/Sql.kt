@@ -166,6 +166,27 @@ fun selectMany(table: Table, databaseDialect: DatabaseDialect): String {
     return result
 }
 
+fun selectManyQuery(table: Table, databaseDialect: DatabaseDialect): String {
+    var result = """
+            |"SELECT${if (databaseDialect == DatabaseDialect.MSSQL_SERVER) " TOP %d" else ""} " +
+            |ALL_COLUMNS +
+            |"FROM ${formatTable(table, databaseDialect)} " +
+            |"WHERE %s "
+            """.trimMargin()
+    if (databaseDialect == DatabaseDialect.ORACLE) {
+        result += """ +
+            |"AND ROWNUM <= %d"
+        """.trimMargin()
+    } else if (databaseDialect in listOf(DatabaseDialect.MYSQL, DatabaseDialect.POSTGRES)) {
+        result += """ +
+            |"LIMIT %d"
+        """.trimMargin()
+    } else if (databaseDialect != DatabaseDialect.MSSQL_SERVER) {
+        throw IllegalArgumentException("Unknown database dialect ${databaseDialect}")
+    }
+    return result
+}
+
 fun count(table: Table, databaseDialect: DatabaseDialect): String {
     return "\"SELECT COUNT(*) FROM ${formatTable(table, databaseDialect)}\""
 }
