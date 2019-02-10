@@ -1,5 +1,7 @@
 package dbtests.mssql.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dbtests.framework.BaseEntity;
 import dbtests.framework.ChangedAtTracked;
 import dbtests.framework.CreatedAtTracked;
@@ -14,6 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BazMsSqlEntity implements BaseEntity<Integer>, CreatedAtTracked<LocalDateTime>, ChangedAtTracked<LocalDateTime>, VersionTracked {
 
     private Integer id;
@@ -23,8 +26,10 @@ public class BazMsSqlEntity implements BaseEntity<Integer>, CreatedAtTracked<Loc
     @NotNull
     @Size(max = 30)
     private String name;
+    @JsonIgnore
     private Integer version;
 
+    @JsonIgnore
     @Override
     public LocalDateTime getCreatedAt() {
         return insertedAt;
@@ -35,6 +40,7 @@ public class BazMsSqlEntity implements BaseEntity<Integer>, CreatedAtTracked<Loc
         insertedAt = LocalDateTime.now();
     }
 
+    @JsonIgnore
     @Override
     public LocalDateTime getChangedAt() {
         return modifiedAt;

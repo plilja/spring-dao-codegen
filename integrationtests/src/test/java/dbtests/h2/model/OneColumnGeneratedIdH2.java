@@ -1,7 +1,9 @@
 package dbtests.h2.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dbtests.framework.BaseEntity;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class OneColumnGeneratedIdH2 implements BaseEntity<Integer> {
 
     private Integer id;

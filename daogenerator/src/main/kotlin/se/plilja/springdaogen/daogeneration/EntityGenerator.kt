@@ -1,5 +1,7 @@
 package se.plilja.springdaogen.daogeneration
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import lombok.AllArgsConstructor
 import lombok.Data
 import lombok.NoArgsConstructor
@@ -28,6 +30,10 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
         g.addImport(NoArgsConstructor::class.java)
         g.hideConstructors = true
     }
+    if (config.featureGenerateJacksonAnnotations) {
+        g.addImport(JsonIgnoreProperties::class.java)
+        g.addClassAnnotation("@JsonIgnoreProperties(ignoreUnknown = true)")
+    }
     for (column in table.columns) {
         val type = column.type()
         when (type) {
@@ -48,6 +54,12 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
                 annotations.add("@Size(max = ${column.size})")
             }
         }
+        if (config.featureGenerateJacksonAnnotations) {
+            if (column.isVersionColumn()) {
+                g.addImport(JsonIgnore::class.java)
+                annotations.add("@JsonIgnore")
+            }
+        }
 
         if (config.useLombok) {
             g.addPrivateField(column.fieldName(), column.typeName(), annotations)
@@ -66,8 +78,10 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
     }
     val idMethodGeneratedByLombok = config.useLombok && table.primaryKey.name == "id"
     if (!idMethodGeneratedByLombok) {
+        val maybeJsonIgnore = if (config.featureGenerateJacksonAnnotations && table.primaryKey.name != "id") "@JsonIgnore" else ""
         g.addCustomMethod(
             """
+        |   $maybeJsonIgnore
         |   @Override
         |   public ${table.primaryKey.typeName()} getId() {
         |       return ${table.primaryKey.fieldName()};
@@ -76,6 +90,7 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
         )
         g.addCustomMethod(
             """
+        |   $maybeJsonIgnore
         |   @Override
         |   public void setId(${table.primaryKey.typeName()} id) {
         |       this.${table.primaryKey.fieldName()} = id;
@@ -89,8 +104,10 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
         ensureImported(g, config) { createdAtTracked(config.frameworkOutputPackage) }
         g.addImplements("CreatedAtTracked<${createdAtColumn.typeName()}>")
         if (!config.useLombok || createdAtColumn.getter() != "getCreatedAt") {
+            val maybeJsonIgnore = if (config.featureGenerateJacksonAnnotations && createdAtColumn.getter() != "getCreatedAt") "@JsonIgnore" else ""
             g.addCustomMethod(
                 """
+            |   $maybeJsonIgnore
             |   @Override
             |   public ${createdAtColumn.typeName()} getCreatedAt() {
             |       return ${createdAtColumn.fieldName()};
@@ -99,8 +116,10 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
             )
         }
         if (!config.useLombok) {
+            val maybeJsonIgnore = if (config.featureGenerateJacksonAnnotations && createdAtColumn.setter() != "setCreatedAt") "@JsonIgnore" else ""
             g.addCustomMethod(
                 """
+            |   $maybeJsonIgnore
             |   public void ${createdAtColumn.setter()}(${createdAtColumn.typeName()} value) {
             |       this.${createdAtColumn.fieldName()} = value;
             |   }
@@ -123,8 +142,10 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
         ensureImported(g, config) { changedAtTracked(config.frameworkOutputPackage) }
         g.addImplements("ChangedAtTracked<${changedAtColumn.typeName()}>")
         if (!config.useLombok || changedAtColumn.getter() != "getChangedAt") {
+            val maybeJsonIgnore = if (config.featureGenerateJacksonAnnotations && changedAtColumn.getter() != "getChangedAt") "@JsonIgnore" else ""
             g.addCustomMethod(
                 """
+            |   $maybeJsonIgnore
             |   @Override
             |   public ${changedAtColumn.typeName()} getChangedAt() {
             |       return ${changedAtColumn.fieldName()};
@@ -133,8 +154,10 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
             )
         }
         if (!config.useLombok) {
+            val maybeJsonIgnore = if (config.featureGenerateJacksonAnnotations && changedAtColumn.setter() != "setChangedAt") "@JsonIgnore" else ""
             g.addCustomMethod(
                 """
+            |   $maybeJsonIgnore
             |   public void ${changedAtColumn.setter()}(${changedAtColumn.typeName()} value) {
             |       this.${changedAtColumn.fieldName()} = value;
             |   }

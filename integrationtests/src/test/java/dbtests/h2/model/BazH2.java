@@ -1,5 +1,7 @@
 package dbtests.h2.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dbtests.framework.BaseEntity;
 import dbtests.framework.ChangedAtTracked;
 import dbtests.framework.CreatedAtTracked;
@@ -7,6 +9,7 @@ import dbtests.framework.VersionTracked;
 import java.time.LocalDateTime;
 import javax.validation.constraints.Size;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BazH2 implements BaseEntity<Integer>, CreatedAtTracked<LocalDateTime>, ChangedAtTracked<LocalDateTime>, VersionTracked {
 
     private Integer bazId;
@@ -15,6 +18,7 @@ public class BazH2 implements BaseEntity<Integer>, CreatedAtTracked<LocalDateTim
     private LocalDateTime changedAt;
     private ColorEnumH2 color;
     private LocalDateTime createdAt;
+    @JsonIgnore
     private Integer version;
 
     public BazH2() {
@@ -53,11 +57,13 @@ public class BazH2 implements BaseEntity<Integer>, CreatedAtTracked<LocalDateTim
         this.color = color;
     }
 
+    @JsonIgnore
     @Override
     public Integer getId() {
         return bazId;
     }
 
+    @JsonIgnore
     @Override
     public void setId(Integer id) {
         this.bazId = id;

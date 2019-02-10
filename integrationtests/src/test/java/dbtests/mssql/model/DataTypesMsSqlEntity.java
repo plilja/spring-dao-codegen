@@ -1,5 +1,6 @@
 package dbtests.mssql.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dbtests.framework.BaseEntity;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -14,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DataTypesMsSqlEntity implements BaseEntity<Long> {
 
     private Long id;
