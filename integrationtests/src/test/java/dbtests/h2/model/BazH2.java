@@ -5,10 +5,12 @@ import dbtests.framework.ChangedAtTracked;
 import dbtests.framework.CreatedAtTracked;
 import dbtests.framework.VersionTracked;
 import java.time.LocalDateTime;
+import javax.validation.constraints.Size;
 
 public class BazH2 implements BaseEntity<Integer>, CreatedAtTracked<LocalDateTime>, ChangedAtTracked<LocalDateTime>, VersionTracked {
 
     private Integer bazId;
+    @Size(max = 100)
     private String bazName;
     private LocalDateTime changedAt;
     private ColorEnumH2 color;

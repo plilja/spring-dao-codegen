@@ -5,6 +5,8 @@ import dbtests.framework.ChangedAtTracked;
 import dbtests.framework.CreatedAtTracked;
 import dbtests.framework.VersionTracked;
 import java.time.LocalDateTime;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +20,8 @@ public class BazMsSqlEntity implements BaseEntity<Integer>, CreatedAtTracked<Loc
     private ColorEnumMsSql color;
     private LocalDateTime insertedAt;
     private LocalDateTime modifiedAt;
+    @NotNull
+    @Size(max = 30)
     private String name;
     private Integer version;
 

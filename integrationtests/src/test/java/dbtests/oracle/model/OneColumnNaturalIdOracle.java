@@ -1,9 +1,11 @@
 package dbtests.oracle.model;
 
 import dbtests.framework.BaseEntity;
+import javax.validation.constraints.Size;
 
 public class OneColumnNaturalIdOracle implements BaseEntity<String> {
 
+    @Size(max = 9)
     private String id;
 
     public OneColumnNaturalIdOracle() {

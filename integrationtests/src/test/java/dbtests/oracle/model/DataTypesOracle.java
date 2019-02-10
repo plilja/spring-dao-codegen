@@ -5,25 +5,48 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class DataTypesOracle implements BaseEntity<String> {
 
+    @Size(max = 100)
     private String id;
+    @NotNull
     private Double binaryDouble;
+    @NotNull
     private Float binaryFloat;
+    @NotNull
     private byte[] blob;
+    @NotNull
+    @Size(max = 1)
     private String char1;
+    @NotNull
+    @Size(max = 10)
     private String char10;
+    @NotNull
     private String clob;
+    @NotNull
     private LocalDate date;
+    @NotNull
     private String nlob;
+    @NotNull
     private Long numberEighteenZero;
+    @NotNull
     private Integer numberNineZero;
+    @NotNull
     private BigInteger numberNineteenZero;
+    @NotNull
     private BigDecimal numberTenTwo;
+    @NotNull
     private Long numberTenZero;
+    @NotNull
     private LocalDateTime timestamp;
+    @NotNull
+    @Size(max = 100)
     private String varchar;
+    @NotNull
+    @Size(max = 100)
     private String varchar2;
 
     public DataTypesOracle() {

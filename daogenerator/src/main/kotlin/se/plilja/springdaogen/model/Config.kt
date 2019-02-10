@@ -33,7 +33,8 @@ data class Config(
     val versionColumnNames: List<String> = emptyList(),
     val enumTables: List<String> = emptyList(),
     val enumTablesRegexp: Regex = Regex("^$"),
-    val enumNameColumnRegexp: Regex = Regex("^$")
+    val enumNameColumnRegexp: Regex = Regex("^$"),
+    val featureGenerateJavaxValidation: Boolean = false
 ) {
 
     companion object {
@@ -91,7 +92,11 @@ private class ConfigReader(file: File) {
             enumNameColumnRegexp = Regex(
                 properties.getProperty("enum.name_column_regex", "^$"),
                 RegexOption.IGNORE_CASE
-            )
+            ),
+            featureGenerateJavaxValidation = properties.getProperty(
+                "features.generate_javax_validation",
+                "false"
+            ) == "true"
         )
     }
 

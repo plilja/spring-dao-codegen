@@ -20,7 +20,9 @@ class EnumGenerator(
 
         val enumValuesDecl = enumValues.joinToString(",\n") + ";"
 
-        val fieldsDeclaration = fields.map { "private final ${it.type} ${it.name};" }.joinToString("\n")
+        val fieldsDeclaration =
+            fields.map { "${it.annotations.joinToString { "$it\n" }}private final ${it.type} ${it.name};" }
+                .joinToString("\n")
 
         val allArgsConstructor = """$name(${fields.map { "${it.type} ${it.name}" }.joinToString(", ")}) {
                 ${fields.map { "this.${it.name} = ${it.name};" }.joinToString("\n")}

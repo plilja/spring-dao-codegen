@@ -1,9 +1,11 @@
 package dbtests.h2.model;
 
 import dbtests.framework.BaseEntity;
+import javax.validation.constraints.Size;
 
 public class OneColumnNaturalIdH2 implements BaseEntity<String> {
 
+    @Size(max = 10)
     private String id;
 
     public OneColumnNaturalIdH2() {

@@ -5,12 +5,16 @@ import dbtests.framework.ChangedAtTracked;
 import dbtests.framework.CreatedAtTracked;
 import dbtests.framework.VersionTracked;
 import java.time.LocalDateTime;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 public class BazOracle implements BaseEntity<Integer>, CreatedAtTracked<LocalDateTime>, ChangedAtTracked<LocalDateTime>, VersionTracked {
 
     private Integer id;
     private LocalDateTime changedAt;
     private LocalDateTime createdAt;
+    @NotNull
+    @Size(max = 30)
     private String name;
     private Integer version;
 

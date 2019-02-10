@@ -12,6 +12,8 @@ import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Left
 import se.plilja.springdaogen.model.Table
 import java.time.LocalDate
+import javax.validation.constraints.NotNull
+import javax.validation.constraints.Size
 
 
 fun generateEntity(config: Config, table: Table): ClassGenerator {
@@ -31,19 +33,35 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
         when (type) {
             is Left -> g.addImport(type.value)
         }
+        val annotations = ArrayList<String>()
+        if (config.featureGenerateJavaxValidation) {
+            val isSpecialColumn = table.primaryKey == column || // Will be null for new objects before they are saved
+                    column.isVersionColumn() || // Should be set by framework and not by user
+                    column.isCreatedAtColumn() || // Should be set by framework and not by user
+                    column.isChangedAtColumn() // Should be set by framework and not by user
+            if (!column.nullable && !isSpecialColumn) {
+                g.addImport(NotNull::class.java)
+                annotations.add("@NotNull")
+            }
+            if (column.type() == Left(String::class.java) && !column.isClobLike()) {
+                g.addImport(Size::class.java)
+                annotations.add("@Size(max = ${column.size})")
+            }
+        }
+
         if (config.useLombok) {
-            g.addPrivateField(column.fieldName(), column.typeName())
+            g.addPrivateField(column.fieldName(), column.typeName(), annotations)
         } else if (column == table.primaryKey && column.name.toLowerCase() == "id") {
-            g.addPrivateField(column.fieldName(), column.typeName())
+            g.addPrivateField(column.fieldName(), column.typeName(), annotations)
         } else if (column == table.createdAtColumn() && column.getter() == "getCreatedAt") {
-            g.addPrivateField(column.fieldName(), column.typeName())
+            g.addPrivateField(column.fieldName(), column.typeName(), annotations)
         } else if (column == table.changedAtColumn() && column.getter() == "getChangedAt") {
-            g.addPrivateField(column.fieldName(), column.typeName())
+            g.addPrivateField(column.fieldName(), column.typeName(), annotations)
         } else if (column == table.versionColumn() && column.getter() == "getVersion") {
             // Always use Integer for version column no matter what the db says
-            g.addPrivateField(column.fieldName(), column.typeName())
+            g.addPrivateField(column.fieldName(), column.typeName(), annotations)
         } else {
-            g.addField(column.fieldName(), column.typeName())
+            g.addField(column.fieldName(), column.typeName(), annotations)
         }
     }
     val idMethodGeneratedByLombok = config.useLombok && table.primaryKey.name == "id"

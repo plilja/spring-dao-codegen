@@ -66,7 +66,8 @@ data class Column(
     private val javaType: Class<out Any>,
     private val config: Config,
     val generated: Boolean = false,
-    val nullable : Boolean = false
+    val nullable: Boolean = false,
+    val size: Int = 100
 ) {
     var references: Pair<Table, Column>? = null
 

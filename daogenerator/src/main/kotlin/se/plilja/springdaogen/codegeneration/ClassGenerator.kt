@@ -25,16 +25,16 @@ class ClassGenerator(
     }
 
     fun addConstant(name: String, type: Class<out Any>, initialization: String) {
-        constants.add(Pair(Field(name, type.simpleName, false, true), initialization))
+        constants.add(Pair(Field(name, type.simpleName, false, true, emptyList()), initialization))
         addImport(type)
     }
 
     fun addPrivateConstant(name: String, type: String, initialization: String) {
-        constants.add(Pair(Field(name, type, true, true), initialization))
+        constants.add(Pair(Field(name, type, true, true, emptyList()), initialization))
     }
 
     fun addConstant(name: String, type: String, initialization: String) {
-        constants.add(Pair(Field(name, type, false, true), initialization))
+        constants.add(Pair(Field(name, type, false, true, emptyList()), initialization))
     }
 
     override fun generate(): String {
@@ -53,7 +53,9 @@ class ClassGenerator(
         val constantsDeclaration =
             constants.map { "    ${it.first.getVisibility()} static final ${it.first.type} ${it.first.name} = ${it.second};" }
                 .joinToString("\n")
-        val fieldsDeclaration = fields.map { "private ${it.type} ${it.name};" }.joinToString("\n")
+        val fieldsDeclaration =
+            fields.map { "${it.annotations.map { "$it\n" }.joinToString("")}private ${it.type} ${it.name};" }
+                .joinToString("\n")
 
         val noArgsConstructor =
             if (!hideConstructors and customConstructors.isEmpty())

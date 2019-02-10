@@ -93,11 +93,12 @@ fun setForeignKeys(
 
 fun convertColumn(table: schemacrawler.schema.Table, column: schemacrawler.schema.Column, config: Config): Column {
     return Column(
-        column.name,
-        resolveType(column, config),
-        config,
-        isGenerated(table, column, config),
-        column.isNullable
+        name = column.name,
+        javaType = resolveType(column, config),
+        config = config,
+        generated = isGenerated(table, column, config),
+        nullable = column.isNullable,
+        size = column.size
     )
 }
 
