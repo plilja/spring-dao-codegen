@@ -10,6 +10,7 @@ fun insert(table: Table, databaseDialect: DatabaseDialect): String {
     return if (insertColumns.isEmpty()) {
         when (databaseDialect) {
             DatabaseDialect.MYSQL -> "\"INSERT INTO ${formatTable(table, databaseDialect)}() VALUES()\""
+            DatabaseDialect.ORACLE12 -> "\"INSERT INTO ${formatTable(table, databaseDialect)}() VALUES()\""
             DatabaseDialect.ORACLE -> {
                 // TODO will this work with Oracle12c identity style columns?
                 "\"INSERT INTO ${formatTable(table, databaseDialect)}(${formatIdentifier(
@@ -33,7 +34,7 @@ fun insert(table: Table, databaseDialect: DatabaseDialect): String {
 
 fun update(table: Table, databaseDialect: DatabaseDialect): String? {
     fun assignment(column: Column): String {
-        return if (table.versionColumn() == column && DatabaseDialect.ORACLE == databaseDialect) {
+        return if (table.versionColumn() == column && databaseDialect in listOf(DatabaseDialect.ORACLE, DatabaseDialect.ORACLE12)) {
             "${column.name} = MOD(${column.name} + 1, 128)"
         } else if (table.versionColumn() == column) {
             "${column.name} = (${column.name} + 1) % 128"
@@ -105,7 +106,7 @@ fun selectPage(table: Table, databaseDialect: DatabaseDialect): String {
             |"LIMIT %d OFFSET %d", pageSize, start);
         """.trimMargin()
 
-        databaseDialect == DatabaseDialect.MSSQL_SERVER -> """
+        databaseDialect in listOf(DatabaseDialect.MSSQL_SERVER, DatabaseDialect.ORACLE12) -> """
             |String.format("SELECT %n" +
             |ALL_COLUMNS +
             |"FROM ${formatTable(table, databaseDialect)} %n" +
@@ -152,7 +153,7 @@ fun selectMany(table: Table, databaseDialect: DatabaseDialect): String {
             |ALL_COLUMNS +
             |"FROM ${formatTable(table, databaseDialect)} "
             """.trimMargin()
-    if (databaseDialect == DatabaseDialect.ORACLE) {
+    if (databaseDialect in listOf(DatabaseDialect.ORACLE, DatabaseDialect.ORACLE12)) {
         result += """ +
             |"WHERE ROWNUM <= %d"
         """.trimMargin()
@@ -173,7 +174,7 @@ fun selectManyQuery(table: Table, databaseDialect: DatabaseDialect): String {
             |"FROM ${formatTable(table, databaseDialect)} " +
             |"WHERE %s "
             """.trimMargin()
-    if (databaseDialect == DatabaseDialect.ORACLE) {
+    if (databaseDialect in listOf(DatabaseDialect.ORACLE, DatabaseDialect.ORACLE12)) {
         result += """ +
             |"AND ROWNUM <= %d"
         """.trimMargin()

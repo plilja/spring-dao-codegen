@@ -103,7 +103,7 @@ fun convertColumn(table: schemacrawler.schema.Table, column: schemacrawler.schem
 }
 
 fun resolveType(column: schemacrawler.schema.Column, config: Config): Class<out Any> {
-    if (config.databaseDialect == DatabaseDialect.ORACLE) {
+    if (config.databaseDialect in listOf(DatabaseDialect.ORACLE, DatabaseDialect.ORACLE12)) {
         if (column.type.name == "BINARY_DOUBLE") {
             return java.lang.Double::class.java
         } else if (column.type.name == "BINARY_FLOAT") {

@@ -10,6 +10,7 @@ class SqlKeywords {
         fun get(databaseDialect: DatabaseDialect): List<String> {
             return when (databaseDialect) {
                 DatabaseDialect.ORACLE -> cache.getOrPut(DatabaseDialect.ORACLE) { readKeyWords("/oracle_keywords.txt") }
+                DatabaseDialect.ORACLE12 -> cache.getOrPut(DatabaseDialect.ORACLE12) { readKeyWords("/oracle_keywords.txt") }
                 DatabaseDialect.MYSQL -> cache.getOrPut(DatabaseDialect.MYSQL) { readKeyWords("/mysql_keywords.txt") }
                 else -> emptyList() // TODO
             }
