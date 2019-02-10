@@ -96,7 +96,8 @@ fun convertColumn(table: schemacrawler.schema.Table, column: schemacrawler.schem
         column.name,
         resolveType(column, config),
         config,
-        isGenerated(table, column, config)
+        isGenerated(table, column, config),
+        column.isNullable
     )
 }
 

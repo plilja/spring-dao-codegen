@@ -17,7 +17,7 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
 
     private static final RowMapper<DataTypesPostgresEntity> ROW_MAPPER = (rs, i) -> {
         DataTypesPostgresEntity r = new DataTypesPostgresEntity();
-        r.setId(rs.getObject("id") != null ? rs.getLong("id") : null);
+        r.setId(rs.getLong("id"));
         r.setBigint(rs.getObject("bigint") != null ? rs.getLong("bigint") : null);
         r.setBooleanB(rs.getObject("boolean_b") != null ? rs.getBoolean("boolean_b") : null);
         r.setBytea((byte[]) rs.getObject("bytea"));
@@ -31,7 +31,7 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
         r.setDecimalTenZero(rs.getObject("decimal_ten_zero") != null ? rs.getLong("decimal_ten_zero") : null);
         r.setDoublE(rs.getObject("double") != null ? rs.getDouble("double") : null);
         r.setFloaT(rs.getObject("float") != null ? rs.getFloat("float") : null);
-        r.setGuid(UUID.fromString(rs.getString("guid")));
+        r.setGuid(rs.getObject("guid") != null ? UUID.fromString(rs.getString("guid")) : null);
         r.setInteger(rs.getObject("integer") != null ? rs.getInt("integer") : null);
         r.setNumericTenTwo(rs.getBigDecimal("numeric_ten_two"));
         r.setSmallint(rs.getObject("smallint") != null ? rs.getInt("smallint") : null);

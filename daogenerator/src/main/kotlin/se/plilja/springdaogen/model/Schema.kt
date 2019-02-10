@@ -65,7 +65,8 @@ data class Column(
     val name: String,
     private val javaType: Class<out Any>,
     private val config: Config,
-    val generated: Boolean = false
+    val generated: Boolean = false,
+    val nullable : Boolean = false
 ) {
     var references: Pair<Table, Column>? = null
 
@@ -169,38 +170,74 @@ data class Column(
     }
 
     fun recordSetMethod(rs: String): String {
-        val method = if (javaType == BigDecimal::class.java) {
-            "$rs.getBigDecimal(\"$name\")"
+        var method : String? = null
+
+        // These method are the same no matter if the column is nullable or not
+        if (javaType == BigDecimal::class.java) {
+            method = "$rs.getBigDecimal(\"$name\")"
         } else if (javaType == String::class.java || javaType == SQLXML::class.java) {
-            "$rs.getString(\"$name\")"
-        } else if (javaType == java.lang.Boolean::class.java) {
-            "$rs.getObject(\"$name\") != null ? $rs.getBoolean(\"$name\") : null"
-        } else if (isVersionColumn() || javaType == Integer::class.java) {
-            "$rs.getObject(\"$name\") != null ? $rs.getInt(\"$name\") : null"
-        } else if (javaType == java.lang.Long::class.java) {
-            "$rs.getObject(\"$name\") != null ? $rs.getLong(\"$name\") : null"
-        } else if (javaType == java.lang.Float::class.java) {
-            "$rs.getObject(\"$name\") != null ? $rs.getFloat(\"$name\") : null"
-        } else if (javaType == java.lang.Double::class.java) {
-            "$rs.getObject(\"$name\") != null ? $rs.getDouble(\"$name\") : null"
-        } else if (javaType == UUID::class.java) {
-            "UUID.fromString($rs.getString(\"$name\"))"
-        } else if (javaType == LocalDate::class.java) {
-            "$rs.getObject(\"$name\") != null ? $rs.getDate(\"$name\").toLocalDate() : null"
-        } else if (javaType == LocalTime::class.java) {
-            "$rs.getObject(\"$name\") != null ? $rs.getTime(\"$name\").toLocalTime() : null"
-        } else if (javaType == LocalDateTime::class.java) {
-            "$rs.getObject(\"$name\") != null ? $rs.getTimestamp(\"$name\").toLocalDateTime() : null"
-        } else if (javaType == Clob::class.java) {
-            "$rs.getObject(\"$name\") != null ? $rs.getClob(\"$name\").getSubString(1, (int) $rs.getClob(\"$name\").length()) : null"
-        } else if (javaType == Blob::class.java) {
-            "$rs.getObject(\"$name\") != null ? $rs.getBlob(\"$name\").getBinaryStream().readAllBytes() : null"
-        } else if (javaType == NClob::class.java) {
-            "$rs.getObject(\"$name\") != null ? $rs.getNClob(\"$name\").getSubString(1, (int) $rs.getClob(\"$name\").length()) : null"
-        } else if (javaType == BigInteger::class.java) {
-            "$rs.getObject(\"$name\") != null ? $rs.getBigDecimal(\"$name\").toBigInteger() : null"
+            method = "$rs.getString(\"$name\")"
+        }
+
+        if (nullable) {
+            if (javaType == java.lang.Boolean::class.java) {
+                method = "$rs.getObject(\"$name\") != null ? $rs.getBoolean(\"$name\") : null"
+            } else if (isVersionColumn() || javaType == Integer::class.java) {
+                method = "$rs.getObject(\"$name\") != null ? $rs.getInt(\"$name\") : null"
+            } else if (javaType == java.lang.Long::class.java) {
+                method = "$rs.getObject(\"$name\") != null ? $rs.getLong(\"$name\") : null"
+            } else if (javaType == java.lang.Float::class.java) {
+                method = "$rs.getObject(\"$name\") != null ? $rs.getFloat(\"$name\") : null"
+            } else if (javaType == java.lang.Double::class.java) {
+                method = "$rs.getObject(\"$name\") != null ? $rs.getDouble(\"$name\") : null"
+            } else if (javaType == UUID::class.java) {
+                method = "$rs.getObject(\"$name\") != null ? UUID.fromString($rs.getString(\"$name\")) : null"
+            } else if (javaType == LocalDate::class.java) {
+                method = "$rs.getObject(\"$name\") != null ? $rs.getDate(\"$name\").toLocalDate() : null"
+            } else if (javaType == LocalTime::class.java) {
+                method = "$rs.getObject(\"$name\") != null ? $rs.getTime(\"$name\").toLocalTime() : null"
+            } else if (javaType == LocalDateTime::class.java) {
+                method = "$rs.getObject(\"$name\") != null ? $rs.getTimestamp(\"$name\").toLocalDateTime() : null"
+            } else if (javaType == Clob::class.java) {
+                method = "$rs.getObject(\"$name\") != null ? $rs.getClob(\"$name\").getSubString(1, (int) $rs.getClob(\"$name\").length()) : null"
+            } else if (javaType == Blob::class.java) {
+                method = "$rs.getObject(\"$name\") != null ? $rs.getBlob(\"$name\").getBinaryStream().readAllBytes() : null"
+            } else if (javaType == NClob::class.java) {
+                method = "$rs.getObject(\"$name\") != null ? $rs.getNClob(\"$name\").getSubString(1, (int) $rs.getClob(\"$name\").length()) : null"
+            } else if (javaType == BigInteger::class.java) {
+                method = "$rs.getObject(\"$name\") != null ? $rs.getBigDecimal(\"$name\").toBigInteger() : null"
+            }
         } else {
-            "(${javaType.simpleName}) $rs.getObject(\"$name\")"
+            if (javaType == java.lang.Boolean::class.java) {
+                method = "$rs.getBoolean(\"$name\")"
+            } else if (isVersionColumn() || javaType == Integer::class.java) {
+                method = "$rs.getInt(\"$name\")"
+            } else if (javaType == java.lang.Long::class.java) {
+                method = "$rs.getLong(\"$name\")"
+            } else if (javaType == java.lang.Float::class.java) {
+                method = "$rs.getFloat(\"$name\")"
+            } else if (javaType == java.lang.Double::class.java) {
+                method = "$rs.getDouble(\"$name\")"
+            } else if (javaType == UUID::class.java) {
+                method = "UUID.fromString($rs.getString(\"$name\"))"
+            } else if (javaType == LocalDate::class.java) {
+                method = "$rs.getDate(\"$name\").toLocalDate()"
+            } else if (javaType == LocalTime::class.java) {
+                method = "$rs.getTime(\"$name\").toLocalTime()"
+            } else if (javaType == LocalDateTime::class.java) {
+                method = "$rs.getTimestamp(\"$name\").toLocalDateTime()"
+            } else if (javaType == Clob::class.java) {
+                method = "$rs.getClob(\"$name\").getSubString(1, (int) $rs.getClob(\"$name\").length())"
+            } else if (javaType == Blob::class.java) {
+                method = "$rs.getBlob(\"$name\").getBinaryStream().readAllBytes()"
+            } else if (javaType == NClob::class.java) {
+                method = "$rs.getNClob(\"$name\").getSubString(1, (int) $rs.getClob(\"$name\").length())"
+            } else if (javaType == BigInteger::class.java) {
+                method = "$rs.getBigDecimal(\"$name\").toBigInteger()"
+            }
+        }
+        if (method == null) {
+            method = "(${javaType.simpleName}) $rs.getObject(\"$name\")"
         }
         return if (referencesEnum()) {
             "${references!!.first.entityName()}.fromId($method)"

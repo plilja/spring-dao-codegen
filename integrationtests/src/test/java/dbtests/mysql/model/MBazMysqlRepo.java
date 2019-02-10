@@ -14,12 +14,12 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
 
     private static final RowMapper<MBazMysql> ROW_MAPPER = (rs, i) -> {
         MBazMysql r = new MBazMysql();
-        r.setId(rs.getObject("id") != null ? rs.getInt("id") : null);
+        r.setId(rs.getInt("id"));
         r.setChangedAt(rs.getObject("changed_at") != null ? rs.getTimestamp("changed_at").toLocalDateTime() : null);
         r.setColorEnumMysql(ColorEnumMysql.fromId(rs.getObject("color_enum_mysql_id") != null ? rs.getInt("color_enum_mysql_id") : null));
-        r.setCreatedAt(rs.getObject("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null);
+        r.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
         r.setName(rs.getString("name"));
-        r.setVersion(rs.getObject("version") != null ? rs.getInt("version") : null);
+        r.setVersion(rs.getInt("version"));
         return r;
     };
     private static final String ALL_COLUMNS = " id, changed_at, color_enum_mysql_id, created_at, name, " +

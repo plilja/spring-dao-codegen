@@ -18,7 +18,7 @@ public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
     private static final RowMapper<MDataTypesMysql> ROW_MAPPER = (rs, i) -> {
         try {
             MDataTypesMysql r = new MDataTypesMysql();
-            r.setId(rs.getObject("id") != null ? rs.getLong("id") : null);
+            r.setId(rs.getLong("id"));
             r.setBigint(rs.getObject("bigint") != null ? rs.getLong("bigint") : null);
             r.setBit(rs.getObject("bit") != null ? rs.getBoolean("bit") : null);
             r.setBlob(rs.getObject("blob") != null ? rs.getBlob("blob").getBinaryStream().readAllBytes() : null);

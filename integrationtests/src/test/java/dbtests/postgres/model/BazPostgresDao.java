@@ -14,12 +14,12 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
 
     private static final RowMapper<BazPostgresEntity> ROW_MAPPER = (rs, i) -> {
         BazPostgresEntity r = new BazPostgresEntity();
-        r.setBazId(rs.getObject("baz_id") != null ? rs.getInt("baz_id") : null);
+        r.setBazId(rs.getInt("baz_id"));
         r.setBazName(rs.getString("baz_name"));
         r.setChangedAt(rs.getObject("changed_at") != null ? rs.getTimestamp("changed_at").toLocalDateTime() : null);
         r.setColor(ColorEnumPostgres.fromId(rs.getString("color")));
-        r.setCounter(rs.getObject("counter") != null ? rs.getInt("counter") : null);
-        r.setCreatedAt(rs.getObject("created_at") != null ? rs.getTimestamp("created_at").toLocalDateTime() : null);
+        r.setCounter(rs.getInt("counter"));
+        r.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
         return r;
     };
     private static final String ALL_COLUMNS = " baz_id, baz_name, changed_at, color, counter, " +

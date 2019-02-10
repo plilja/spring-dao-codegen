@@ -14,12 +14,12 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
 
     private static final RowMapper<BazMsSqlEntity> ROW_MAPPER = (rs, i) -> {
         BazMsSqlEntity r = new BazMsSqlEntity();
-        r.setId(rs.getObject("id") != null ? rs.getInt("id") : null);
+        r.setId(rs.getInt("id"));
         r.setColor(ColorEnumMsSql.fromId(rs.getString("color")));
-        r.setInsertedAt(rs.getObject("inserted_at") != null ? rs.getTimestamp("inserted_at").toLocalDateTime() : null);
+        r.setInsertedAt(rs.getTimestamp("inserted_at").toLocalDateTime());
         r.setModifiedAt(rs.getObject("modified_at") != null ? rs.getTimestamp("modified_at").toLocalDateTime() : null);
         r.setName(rs.getString("name"));
-        r.setVersion(rs.getObject("version") != null ? rs.getInt("version") : null);
+        r.setVersion(rs.getInt("version"));
         return r;
     };
     private static final String ALL_COLUMNS = " id, color, inserted_at, modified_at, name, " +

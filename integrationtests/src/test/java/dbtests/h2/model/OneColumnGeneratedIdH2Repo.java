@@ -14,7 +14,7 @@ public class OneColumnGeneratedIdH2Repo extends Dao<OneColumnGeneratedIdH2, Inte
 
     private static final RowMapper<OneColumnGeneratedIdH2> ROW_MAPPER = (rs, i) -> {
         OneColumnGeneratedIdH2 r = new OneColumnGeneratedIdH2();
-        r.setId(rs.getObject("id") != null ? rs.getInt("id") : null);
+        r.setId(rs.getInt("id"));
         return r;
     };
     private static final String ALL_COLUMNS = " id ";

@@ -14,7 +14,7 @@ public class OneColumnGeneratedIdMsSqlDao extends Dao<OneColumnGeneratedIdMsSqlE
 
     private static final RowMapper<OneColumnGeneratedIdMsSqlEntity> ROW_MAPPER = (rs, i) -> {
         OneColumnGeneratedIdMsSqlEntity r = new OneColumnGeneratedIdMsSqlEntity();
-        r.setId(rs.getObject("id") != null ? rs.getInt("id") : null);
+        r.setId(rs.getInt("id"));
         return r;
     };
     private static final String ALL_COLUMNS = " id ";

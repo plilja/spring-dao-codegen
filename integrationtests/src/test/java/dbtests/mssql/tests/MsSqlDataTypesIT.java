@@ -18,6 +18,7 @@ import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ContextConfiguration(classes = {MsSqlITConfig.class})
 @ExtendWith(SpringExtension.class)
@@ -35,7 +36,7 @@ public class MsSqlDataTypesIT {
     }
 
     @Test
-    void test() {
+    void testDataTypes() {
         LocalDateTime now = trimNanons(LocalDateTime.now());
 
         DataTypesMsSqlEntity r = new DataTypesMsSqlEntity();
@@ -100,6 +101,45 @@ public class MsSqlDataTypesIT {
         assertArrayEquals(r.getVarbinary10(), r2.getVarbinary10());
         assertEquals(r.getVarchar10(), r2.getVarchar10());
         assertEquals(r.getXml(), r2.getXml());
+    }
+
+    @Test
+    void testNullableDataTypes() {
+        DataTypesMsSqlEntity r = new DataTypesMsSqlEntity();
+
+        // when
+        repo.save(r);
+
+        // then
+        DataTypesMsSqlEntity r2 = repo.getOne(r.getId());
+        assertEquals(r.getId(), r2.getId());
+        assertNull(r2.getBinary10());
+        assertNull(r2.getBit());
+        assertNull(r2.getChaR());
+        assertNull(r2.getChar10());
+        assertNull(r2.getDate());
+        assertNull(r2.getDatetime());
+        assertNull(r2.getDatetime2());
+        assertNull(r2.getDecimalEighteenZero());
+        assertNull(r2.getDecimalNineZero());
+        assertNull(r2.getDecimalNineteenZero());
+        assertNull(r2.getDecimalTenTwo());
+        assertNull(r2.getDecimalTenZero());
+        assertNull(r2.getFloaT());
+        assertNull(r2.getInT());
+        assertNull(r2.getMoney());
+        assertNull(r2.getNchar10());
+        assertNull(r2.getNtext());
+        assertNull(r2.getNvarchar10());
+        assertNull(r2.getReal());
+        assertNull(r2.getSmallint());
+        assertNull(r2.getSmallmoney());
+        assertNull(r2.getText());
+        assertNull(r2.getTime());
+        assertNull(r2.getTinyint());
+        assertNull(r2.getVarbinary10());
+        assertNull(r2.getVarchar10());
+        assertNull(r2.getXml());
     }
 
     private LocalDateTime trimNanons(LocalDateTime localDateTime) {

@@ -14,7 +14,7 @@ public class OneColumnGeneratedIdOracleRepository extends Dao<OneColumnGenerated
 
     private static final RowMapper<OneColumnGeneratedIdOracle> ROW_MAPPER = (rs, i) -> {
         OneColumnGeneratedIdOracle r = new OneColumnGeneratedIdOracle();
-        r.setId(rs.getObject("ID") != null ? rs.getInt("ID") : null);
+        r.setId(rs.getInt("ID"));
         return r;
     };
     private static final String ALL_COLUMNS = " ID ";

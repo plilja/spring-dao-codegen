@@ -14,7 +14,7 @@ public class MOneColumnGeneratedIdMysqlRepo extends Dao<MOneColumnGeneratedIdMys
 
     private static final RowMapper<MOneColumnGeneratedIdMysql> ROW_MAPPER = (rs, i) -> {
         MOneColumnGeneratedIdMysql r = new MOneColumnGeneratedIdMysql();
-        r.setId(rs.getObject("id") != null ? rs.getInt("id") : null);
+        r.setId(rs.getInt("id"));
         return r;
     };
     private static final String ALL_COLUMNS = " id ";

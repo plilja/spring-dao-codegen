@@ -14,7 +14,7 @@ public class OneColumnGeneratedIdPostgresDao extends Dao<OneColumnGeneratedIdPos
 
     private static final RowMapper<OneColumnGeneratedIdPostgresEntity> ROW_MAPPER = (rs, i) -> {
         OneColumnGeneratedIdPostgresEntity r = new OneColumnGeneratedIdPostgresEntity();
-        r.setId(rs.getObject("id") != null ? rs.getInt("id") : null);
+        r.setId(rs.getInt("id"));
         return r;
     };
     private static final String ALL_COLUMNS = " id ";

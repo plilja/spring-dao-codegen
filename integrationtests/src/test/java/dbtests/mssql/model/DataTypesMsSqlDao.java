@@ -16,7 +16,7 @@ public class DataTypesMsSqlDao extends Dao<DataTypesMsSqlEntity, Long> {
 
     private static final RowMapper<DataTypesMsSqlEntity> ROW_MAPPER = (rs, i) -> {
         DataTypesMsSqlEntity r = new DataTypesMsSqlEntity();
-        r.setId(rs.getObject("id") != null ? rs.getLong("id") : null);
+        r.setId(rs.getLong("id"));
         r.setBinary10((byte[]) rs.getObject("binary10"));
         r.setBit(rs.getObject("bit") != null ? rs.getBoolean("bit") : null);
         r.setChaR(rs.getString("char"));

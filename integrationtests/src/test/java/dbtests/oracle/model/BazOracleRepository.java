@@ -14,11 +14,11 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
 
     private static final RowMapper<BazOracle> ROW_MAPPER = (rs, i) -> {
         BazOracle r = new BazOracle();
-        r.setId(rs.getObject("ID") != null ? rs.getInt("ID") : null);
+        r.setId(rs.getInt("ID"));
         r.setChangedAt(rs.getObject("CHANGED_AT") != null ? rs.getTimestamp("CHANGED_AT").toLocalDateTime() : null);
-        r.setCreatedAt(rs.getObject("CREATED_AT") != null ? rs.getTimestamp("CREATED_AT").toLocalDateTime() : null);
+        r.setCreatedAt(rs.getTimestamp("CREATED_AT").toLocalDateTime());
         r.setName(rs.getString("NAME"));
-        r.setVersion(rs.getObject("VERSION") != null ? rs.getInt("VERSION") : null);
+        r.setVersion(rs.getInt("VERSION"));
         return r;
     };
     private static final String ALL_COLUMNS = " ID, CHANGED_AT, CREATED_AT, NAME, VERSION ";
