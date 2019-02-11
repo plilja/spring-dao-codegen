@@ -36,7 +36,7 @@ public class OracleIT extends BaseIntegrationTest<BazOracle, BazOracleRepository
 
     @Override
     protected BazOracle newEntity(String name) {
-        BazOracle r =  new BazOracle();
+        BazOracle r = new BazOracle();
         r.setName(name);
         return r;
     }
@@ -62,8 +62,22 @@ public class OracleIT extends BaseIntegrationTest<BazOracle, BazOracleRepository
     }
 
     @Override
-    protected int getVersion(BazOracle entity) {
+    protected Integer getVersion(BazOracle entity) {
         return entity.getVersion();
+    }
+
+    @Override
+    protected void setVersion(BazOracle entity, Integer version) {
+        entity.setVersion(version);
+    }
+
+    @Override
+    protected void insertObjectWithoutVersionColumn(String name) {
+        var params = new MapSqlParameterSource()
+                .addValue("name", "Glenn")
+                .addValue("created_at", LocalDateTime.now())
+                .addValue("changed_at", LocalDateTime.now());
+        jdbcTemplate.update("INSERT INTO DOCKER.BAZ_ORACLE (name, created_at, changed_at) values (:name, :created_at, :changed_at)", params);
     }
 
 }

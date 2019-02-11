@@ -36,7 +36,7 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
         r.setInsertedAt(rs.getTimestamp("inserted_at").toLocalDateTime());
         r.setModifiedAt(rs.getObject("modified_at") != null ? rs.getTimestamp("modified_at").toLocalDateTime() : null);
         r.setName(rs.getString("name"));
-        r.setVersion(rs.getInt("version"));
+        r.setVersion(rs.getObject("version") != null ? rs.getInt("version") : null);
         return r;
     };
 
@@ -46,7 +46,7 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
     }
 
     @Override
-    public SqlParameterSource getParams(BazMsSqlEntity o) {
+    protected SqlParameterSource getParams(BazMsSqlEntity o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
         m.addValue("color", o.getColor() != null ? o.getColor().getId() : null);
@@ -118,8 +118,8 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
                 "color = :color, " +
                 "modified_at = :modified_at, " +
                 "name = :name, " +
-                "version = (version + 1) % 128 " +
-                "WHERE id = :id AND version = :version";
+                "version = (COALESCE(:version, -1) + 1) % 128 " +
+                "WHERE id = :id AND (version = :version OR version IS NULL OR :version IS NULL)";
     }
 
     @Override

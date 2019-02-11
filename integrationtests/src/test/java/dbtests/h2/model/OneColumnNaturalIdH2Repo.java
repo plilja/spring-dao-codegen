@@ -29,7 +29,7 @@ public class OneColumnNaturalIdH2Repo extends Dao<OneColumnNaturalIdH2, String> 
     }
 
     @Override
-    public SqlParameterSource getParams(OneColumnNaturalIdH2 o) {
+    protected SqlParameterSource getParams(OneColumnNaturalIdH2 o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
         return m;

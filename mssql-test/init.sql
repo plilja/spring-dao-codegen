@@ -81,7 +81,7 @@ CREATE TABLE baz_ms_sql (
     color VARCHAR(30),
     inserted_at datetime NOT NULL,
     modified_at datetime,
-    version tinyint NOT NULL
+    version tinyint
 )
 
 GO

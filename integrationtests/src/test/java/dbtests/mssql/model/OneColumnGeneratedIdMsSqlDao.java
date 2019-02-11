@@ -29,7 +29,7 @@ public class OneColumnGeneratedIdMsSqlDao extends Dao<OneColumnGeneratedIdMsSqlE
     }
 
     @Override
-    public SqlParameterSource getParams(OneColumnGeneratedIdMsSqlEntity o) {
+    protected SqlParameterSource getParams(OneColumnGeneratedIdMsSqlEntity o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
         return m;

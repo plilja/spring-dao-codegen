@@ -29,7 +29,7 @@ public class OneColumnNaturalIdPostgresDao extends Dao<OneColumnNaturalIdPostgre
     }
 
     @Override
-    public SqlParameterSource getParams(OneColumnNaturalIdPostgresEntity o) {
+    protected SqlParameterSource getParams(OneColumnNaturalIdPostgresEntity o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
         return m;

@@ -102,7 +102,7 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
     }
 
     @Override
-    public SqlParameterSource getParams(DataTypesPostgresEntity o) {
+    protected SqlParameterSource getParams(DataTypesPostgresEntity o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
         m.addValue("bigint", o.getBigint());

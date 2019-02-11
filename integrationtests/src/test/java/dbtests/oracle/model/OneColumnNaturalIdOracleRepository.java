@@ -29,7 +29,7 @@ public class OneColumnNaturalIdOracleRepository extends Dao<OneColumnNaturalIdOr
     }
 
     @Override
-    public SqlParameterSource getParams(OneColumnNaturalIdOracle o) {
+    protected SqlParameterSource getParams(OneColumnNaturalIdOracle o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("ID", o.getId());
         return m;

@@ -123,7 +123,7 @@ public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
     }
 
     @Override
-    public SqlParameterSource getParams(MDataTypesMysql o) {
+    protected SqlParameterSource getParams(MDataTypesMysql o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
         m.addValue("bigint", o.getBigint());

@@ -12,6 +12,7 @@ import se.plilja.springdaogen.generatedframework.columnClass
 import se.plilja.springdaogen.generatedframework.dao
 import se.plilja.springdaogen.generatedframework.databaseException
 import se.plilja.springdaogen.model.Config
+import se.plilja.springdaogen.model.DatabaseDialect
 import se.plilja.springdaogen.model.Left
 import se.plilja.springdaogen.model.Table
 import se.plilja.springdaogen.sqlgeneration.*
@@ -51,7 +52,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         "ROW_MAPPER", "RowMapper<${table.entityName()}>",
         rowMapper(table, g)
     )
-    g.addCustomMethod(rowUnmapper(table, g))
+    g.addCustomMethod(rowUnmapper(table, config, g))
     g.addImport(RowMapper::class.java)
     g.addImport(MapSqlParameterSource::class.java)
     g.addImport(SqlParameterSource::class.java)
@@ -225,7 +226,7 @@ private fun rowMapper(table: Table, classGenerator: ClassGenerator): String {
     }
 }
 
-private fun rowUnmapper(table: Table, classGenerator: ClassGenerator): String {
+private fun rowUnmapper(table: Table, config: Config, classGenerator: ClassGenerator): String {
     val attributes = table.columns.map {
         val jdbcSqlType = it.jdbcSqlType()
         var typeDeclaration = ""
@@ -244,7 +245,7 @@ private fun rowUnmapper(table: Table, classGenerator: ClassGenerator): String {
     }.joinToString("\n")
     return """
             @Override
-            public SqlParameterSource getParams(${table.entityName()} o) {
+            protected SqlParameterSource getParams(${table.entityName()} o) {
                 MapSqlParameterSource m = new MapSqlParameterSource();
                 $attributes
                 return m;

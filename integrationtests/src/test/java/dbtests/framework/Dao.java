@@ -130,6 +130,7 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
 
     private void create(T object) {
         setCreatedAt(object);
+        setChangedAt(object);
         initializeVersion(object);
         if (idIsGenerated) {
             if (object.getId() != null) {
@@ -327,8 +328,14 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
     private void bumpVersion(T object) {
         if (object instanceof VersionTracked) {
             VersionTracked versionTracked = (VersionTracked) object;
-            int v = versionTracked.getVersion();
-            versionTracked.setVersion((v + 1) % 128);
+            Integer v = versionTracked.getVersion();
+            if (v == null) {
+                // The user hasn't supplied a version value.
+                // Might be a migrated existing object where version was never set.
+                versionTracked.setVersion(0);
+            } else {
+                versionTracked.setVersion((v + 1) % 128);
+            }
         }
     }
 

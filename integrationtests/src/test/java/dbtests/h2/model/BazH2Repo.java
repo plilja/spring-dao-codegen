@@ -36,7 +36,7 @@ public class BazH2Repo extends Dao<BazH2, Integer> {
         r.setChangedAt(rs.getObject("changed_at") != null ? rs.getTimestamp("changed_at").toLocalDateTime() : null);
         r.setColor(ColorEnumH2.fromId(rs.getString("color")));
         r.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
-        r.setVersion(rs.getInt("version"));
+        r.setVersion(rs.getObject("version") != null ? rs.getInt("version") : null);
         return r;
     };
 
@@ -46,7 +46,7 @@ public class BazH2Repo extends Dao<BazH2, Integer> {
     }
 
     @Override
-    public SqlParameterSource getParams(BazH2 o) {
+    protected SqlParameterSource getParams(BazH2 o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("baz_id", o.getId());
         m.addValue("baz_name", o.getBazName());
@@ -118,8 +118,8 @@ public class BazH2Repo extends Dao<BazH2, Integer> {
                 "baz_name = :baz_name, " +
                 "changed_at = :changed_at, " +
                 "color = :color, " +
-                "version = (version + 1) % 128 " +
-                "WHERE baz_id = :baz_id AND version = :version";
+                "version = (COALESCE(:version, -1) + 1) % 128 " +
+                "WHERE baz_id = :baz_id AND (version = :version OR version IS NULL OR COALESCE(:version, -1) = -1)";
     }
 
     @Override

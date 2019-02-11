@@ -90,7 +90,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
     }
 
     @Override
-    public SqlParameterSource getParams(DataTypesOracle o) {
+    protected SqlParameterSource getParams(DataTypesOracle o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("ID", o.getId());
         m.addValue("BINARY_DOUBLE", o.getBinaryDouble(), Types.DOUBLE);

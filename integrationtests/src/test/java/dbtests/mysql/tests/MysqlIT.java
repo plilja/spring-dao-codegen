@@ -66,8 +66,23 @@ public class MysqlIT extends BaseIntegrationTest<MBazMysql, MBazMysqlRepo> {
     }
 
     @Override
-    protected int getVersion(MBazMysql entity) {
+    protected Integer getVersion(MBazMysql entity) {
         return entity.getVersion();
+    }
+
+    @Override
+    protected void setVersion(MBazMysql entity, Integer version) {
+        entity.setVersion(version);
+    }
+
+    @Override
+    protected void insertObjectWithoutVersionColumn(String name) {
+        var params = new MapSqlParameterSource()
+                .addValue("name", "Glenn")
+                .addValue("color", ColorEnumMysql.GREEN.getId())
+                .addValue("created_at", LocalDateTime.now())
+                .addValue("changed_at", LocalDateTime.now());
+        jdbcTemplate.update("INSERT INTO BazMysql (name, color_enum_mysql_id, created_at, changed_at) values (:name, :color, :created_at, :changed_at)", params);
     }
 
     @Test
@@ -84,6 +99,5 @@ public class MysqlIT extends BaseIntegrationTest<MBazMysql, MBazMysqlRepo> {
         MBazMysql retrieved2 = repo.getOne(retrieved.getId());
         assertEquals(ColorEnumMysql.BLUE, retrieved2.getColorEnumMysql());
     }
-
 }
 

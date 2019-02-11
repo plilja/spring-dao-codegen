@@ -65,8 +65,23 @@ public class MsSqlIT extends BaseIntegrationTest<BazMsSqlEntity, BazMsSqlDao> {
     }
 
     @Override
-    protected int getVersion(BazMsSqlEntity entity) {
+    protected Integer getVersion(BazMsSqlEntity entity) {
         return entity.getVersion();
+    }
+
+    @Override
+    protected void setVersion(BazMsSqlEntity entity, Integer version) {
+        entity.setVersion(version);
+    }
+
+    @Override
+    protected void insertObjectWithoutVersionColumn(String name) {
+        var params = new MapSqlParameterSource()
+                .addValue("name", "Glenn")
+                .addValue("color", ColorEnumMsSql.GREEN.getId())
+                .addValue("insertedAt", LocalDateTime.now())
+                .addValue("modifiedAt", LocalDateTime.now());
+        jdbcTemplate.update("INSERT INTO dbo.baz_ms_sql (name, color, inserted_at, modified_at) values (:name, :color, :insertedAt, :modifiedAt)", params);
     }
 
     @Test

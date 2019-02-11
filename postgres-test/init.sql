@@ -64,7 +64,7 @@ CREATE TABLE test_schema."baz_postgres"
     "color" character varying(10) REFERENCES test_schema.color_enum_postgres(id),
     "created_at" timestamp with time zone not null,
     "changed_at" timestamp with time zone,
-    "counter" bigint not null,
+    "counter" bigint,
     CONSTRAINT "baz_pkey" PRIMARY KEY ("baz_id")
 );
 

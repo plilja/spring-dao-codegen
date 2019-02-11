@@ -34,10 +34,18 @@ fun insert(table: Table, databaseDialect: DatabaseDialect): String {
 
 fun update(table: Table, databaseDialect: DatabaseDialect): String? {
     fun assignment(column: Column): String {
-        return if (table.versionColumn() == column && databaseDialect in listOf(DatabaseDialect.ORACLE, DatabaseDialect.ORACLE12)) {
-            "${column.name} = MOD(${column.name} + 1, 128)"
-        } else if (table.versionColumn() == column) {
-            "${column.name} = (${column.name} + 1) % 128"
+        return if (table.versionColumn() == column) {
+            return if (table.versionColumn() == column && databaseDialect in listOf(
+                    DatabaseDialect.ORACLE,
+                    DatabaseDialect.ORACLE12
+                )
+            ) {
+                "${column.name} = MOD(NVL(:${column.name}, -1) + 1, 128)"
+            } else if (databaseDialect == DatabaseDialect.MYSQL) {
+                "${column.name} = (IFNULL(:${column.name}, -1) + 1) % 128"
+            } else {
+                "${column.name} = (COALESCE(:${column.name}, -1) + 1) % 128"
+            }
         } else {
             "${column.name} = :${column.name}"
         }
@@ -52,8 +60,10 @@ fun update(table: Table, databaseDialect: DatabaseDialect): String? {
     } else {
         val versionColumn = table.versionColumn()
         val extraVersionClause = if (versionColumn != null) {
-            " AND ${versionColumn.name} = :${versionColumn.name}"
-
+            if (databaseDialect == DatabaseDialect.POSTGRES)
+                " AND (${versionColumn.name} = :${versionColumn.name} OR ${versionColumn.name} IS NULL OR COALESCE(:${versionColumn.name}, -1) = -1)"
+            else
+                " AND (${versionColumn.name} = :${versionColumn.name} OR ${versionColumn.name} IS NULL OR :${versionColumn.name} IS NULL)"
         } else {
             ""
         }

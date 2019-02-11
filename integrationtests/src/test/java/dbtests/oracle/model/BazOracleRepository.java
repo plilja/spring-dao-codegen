@@ -32,7 +32,7 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
         r.setChangedAt(rs.getObject("CHANGED_AT") != null ? rs.getTimestamp("CHANGED_AT").toLocalDateTime() : null);
         r.setCreatedAt(rs.getTimestamp("CREATED_AT").toLocalDateTime());
         r.setName(rs.getString("NAME"));
-        r.setVersion(rs.getInt("VERSION"));
+        r.setVersion(rs.getObject("VERSION") != null ? rs.getInt("VERSION") : null);
         return r;
     };
 
@@ -42,7 +42,7 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
     }
 
     @Override
-    public SqlParameterSource getParams(BazOracle o) {
+    protected SqlParameterSource getParams(BazOracle o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("ID", o.getId());
         m.addValue("CHANGED_AT", o.getChangedAt());
@@ -116,8 +116,8 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
         return "UPDATE DOCKER.BAZ_ORACLE SET " +
                 "CHANGED_AT = :CHANGED_AT, " +
                 "NAME = :NAME, " +
-                "VERSION = MOD(VERSION + 1, 128) " +
-                "WHERE ID = :ID AND VERSION = :VERSION";
+                "VERSION = MOD(NVL(:VERSION, -1) + 1, 128) " +
+                "WHERE ID = :ID AND (VERSION = :VERSION OR VERSION IS NULL OR :VERSION IS NULL)";
     }
 
     @Override

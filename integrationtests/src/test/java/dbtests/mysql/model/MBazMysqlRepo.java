@@ -32,11 +32,11 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
     private static final RowMapper<MBazMysql> ROW_MAPPER = (rs, i) -> {
         MBazMysql r = new MBazMysql();
         r.setId(rs.getInt("id"));
-        r.setChangedAt(rs.getObject("changed_at") != null ? rs.getTimestamp("changed_at").toLocalDateTime() : null);
+        r.setChangedAt(rs.getTimestamp("changed_at").toLocalDateTime());
         r.setColorEnumMysql(ColorEnumMysql.fromId(rs.getObject("color_enum_mysql_id") != null ? rs.getInt("color_enum_mysql_id") : null));
         r.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
         r.setName(rs.getString("name"));
-        r.setVersion(rs.getInt("version"));
+        r.setVersion(rs.getObject("version") != null ? rs.getInt("version") : null);
         return r;
     };
 
@@ -46,7 +46,7 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
     }
 
     @Override
-    public SqlParameterSource getParams(MBazMysql o) {
+    protected SqlParameterSource getParams(MBazMysql o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
         m.addValue("changed_at", o.getChangedAt());
@@ -118,8 +118,8 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
                 "changed_at = :changed_at, " +
                 "color_enum_mysql_id = :color_enum_mysql_id, " +
                 "name = :name, " +
-                "version = (version + 1) % 128 " +
-                "WHERE id = :id AND version = :version";
+                "version = (IFNULL(:version, -1) + 1) % 128 " +
+                "WHERE id = :id AND (version = :version OR version IS NULL OR :version IS NULL)";
     }
 
     @Override

@@ -65,8 +65,23 @@ public class PostgresIT extends BaseIntegrationTest<BazPostgresEntity, BazPostgr
     }
 
     @Override
-    protected int getVersion(BazPostgresEntity entity) {
-        return entity.getVersion().intValue();
+    protected Integer getVersion(BazPostgresEntity entity) {
+        return entity.getVersion();
+    }
+
+    @Override
+    protected void setVersion(BazPostgresEntity entity, Integer version) {
+        entity.setVersion(version);
+    }
+
+    @Override
+    protected void insertObjectWithoutVersionColumn(String name) {
+        var params = new MapSqlParameterSource()
+                .addValue("name", "Glenn")
+                .addValue("color", ColorEnumPostgres.GREEN.getId())
+                .addValue("created_at", LocalDateTime.now())
+                .addValue("changed_at", LocalDateTime.now());
+        jdbcTemplate.update("INSERT INTO test_schema.baz_postgres (baz_name, color, created_at, changed_at) values (:name, :color, :created_at, :changed_at)", params);
     }
 
     @Test

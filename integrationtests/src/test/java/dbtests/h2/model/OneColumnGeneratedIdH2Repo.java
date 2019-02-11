@@ -29,7 +29,7 @@ public class OneColumnGeneratedIdH2Repo extends Dao<OneColumnGeneratedIdH2, Inte
     }
 
     @Override
-    public SqlParameterSource getParams(OneColumnGeneratedIdH2 o) {
+    protected SqlParameterSource getParams(OneColumnGeneratedIdH2 o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
         return m;

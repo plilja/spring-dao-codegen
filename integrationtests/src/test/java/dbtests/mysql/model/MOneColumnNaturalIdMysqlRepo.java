@@ -29,7 +29,7 @@ public class MOneColumnNaturalIdMysqlRepo extends Dao<MOneColumnNaturalIdMysql, 
     }
 
     @Override
-    public SqlParameterSource getParams(MOneColumnNaturalIdMysql o) {
+    protected SqlParameterSource getParams(MOneColumnNaturalIdMysql o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
         return m;

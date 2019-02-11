@@ -20,7 +20,7 @@ baz_name VARCHAR(100),
 changed_at TIMESTAMP,
 color VARCHAR(100),
 created_at TIMESTAMP NOT NULL,
-version INTEGER NOT NULL,
+version INTEGER,
 PRIMARY KEY(baz_id));
 
 ALTER TABLE test_schema.baz_h2

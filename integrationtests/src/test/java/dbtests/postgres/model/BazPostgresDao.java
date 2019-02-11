@@ -35,7 +35,7 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
         r.setBazName(rs.getString("baz_name"));
         r.setChangedAt(rs.getObject("changed_at") != null ? rs.getTimestamp("changed_at").toLocalDateTime() : null);
         r.setColor(ColorEnumPostgres.fromId(rs.getString("color")));
-        r.setCounter(rs.getInt("counter"));
+        r.setCounter(rs.getObject("counter") != null ? rs.getInt("counter") : null);
         r.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
         return r;
     };
@@ -46,7 +46,7 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
     }
 
     @Override
-    public SqlParameterSource getParams(BazPostgresEntity o) {
+    protected SqlParameterSource getParams(BazPostgresEntity o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("baz_id", o.getId());
         m.addValue("baz_name", o.getBazName());
@@ -118,8 +118,8 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
                 "baz_name = :baz_name, " +
                 "changed_at = :changed_at, " +
                 "color = :color, " +
-                "counter = (counter + 1) % 128 " +
-                "WHERE baz_id = :baz_id AND counter = :counter";
+                "counter = (COALESCE(:counter, -1) + 1) % 128 " +
+                "WHERE baz_id = :baz_id AND (counter = :counter OR counter IS NULL OR COALESCE(:counter, -1) = -1)";
     }
 
     @Override

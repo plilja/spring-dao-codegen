@@ -29,7 +29,7 @@ public class OneColumnNaturalIdMsSqlDao extends Dao<OneColumnNaturalIdMsSqlEntit
     }
 
     @Override
-    public SqlParameterSource getParams(OneColumnNaturalIdMsSqlEntity o) {
+    protected SqlParameterSource getParams(OneColumnNaturalIdMsSqlEntity o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
         return m;

@@ -121,7 +121,7 @@ public class DataTypesMsSqlDao extends Dao<DataTypesMsSqlEntity, Long> {
     }
 
     @Override
-    public SqlParameterSource getParams(DataTypesMsSqlEntity o) {
+    protected SqlParameterSource getParams(DataTypesMsSqlEntity o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId());
         m.addValue("binary10", o.getBinary10());

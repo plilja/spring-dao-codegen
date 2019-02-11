@@ -52,7 +52,11 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
 
     protected abstract LocalDateTime getChangedAt(Entity entity);
 
-    protected abstract int getVersion(Entity entity);
+    protected abstract Integer getVersion(Entity entity);
+
+    protected abstract void setVersion(Entity entity, Integer version);
+
+    protected abstract void insertObjectWithoutVersionColumn(String name);
 
     @Test
     void findAll() {
@@ -83,15 +87,16 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
         getRepo().save(bazEntity);
         assertNotNull(bazEntity.getId());
         assertNotNull(getCreatedAt(bazEntity));
+        assertNotNull(getChangedAt(bazEntity));
         assertEquals(LocalDateTime.now().truncatedTo(ChronoUnit.HOURS), getCreatedAt(bazEntity).truncatedTo(ChronoUnit.HOURS));
-        assertNull(getChangedAt(bazEntity));
+        assertEquals(LocalDateTime.now().truncatedTo(ChronoUnit.HOURS), getChangedAt(bazEntity).truncatedTo(ChronoUnit.HOURS));
 
         Entity retrievedEntity = getRepo().getOne(bazEntity.getId());
         assertNotNull(retrievedEntity);
         assertEquals("Bar", getName(retrievedEntity));
         // Truncate to avoid false error due to precision loss from db
         assertEquals(getCreatedAt(bazEntity).truncatedTo(ChronoUnit.HOURS), getCreatedAt(retrievedEntity).truncatedTo(ChronoUnit.HOURS));
-        assertNull(getChangedAt(retrievedEntity));
+        assertEquals(LocalDateTime.now().truncatedTo(ChronoUnit.HOURS), getChangedAt(retrievedEntity).truncatedTo(ChronoUnit.HOURS));
     }
 
     @Test
@@ -149,7 +154,11 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
         Entity bazEntity = newEntity("Bar");
         getRepo().save(bazEntity);
 
-        assertNull(getChangedAt(bazEntity));
+        // This is sort of semantics. But we call the object changed from when it is created.
+        // It could be argued that this is wrong. But it does provide more flexibility
+        // if people have declared their schema fields as NOT NULL.
+        assertNotNull(getChangedAt(bazEntity));
+        assertEquals(LocalDateTime.now().truncatedTo(ChronoUnit.HOURS), getChangedAt(bazEntity).truncatedTo(ChronoUnit.HOURS));
         Entity bazEntity2 = getRepo().getOne(bazEntity.getId());
         setName(bazEntity2, "Bar updated");
         bazEntity2.setId(bazEntity.getId());
@@ -168,7 +177,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
         Entity entity = newEntity("Bar");
         for (int i = 0; i < 130; i++) {
             getRepo().save(entity);
-            assertEquals(i % 128, getVersion(entity));
+            assertEquals(i % 128, (int) getVersion(entity));
         }
     }
 
@@ -289,7 +298,69 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     }
 
     @Test
-    public void lockWithoutConcurrentModification() {
+    void updateOnObjectWithNullVersion() {
+        // A not entirely unlikely scenario is that someone has
+        // added a version column on a really large existing table
+        // and left the existing rows with null because migrating
+        // with an initial value would take to long.
+        // Therefore we want to support null version-column values.
+
+        insertObjectWithoutVersionColumn("Glenn");
+
+        var retrieved = getRepo().findAll().get(0);
+
+        assertNull(getVersion(retrieved));
+
+        setName(retrieved, "Sven");
+        getRepo().save(retrieved);
+
+        var retrieved2 = getRepo().getOne(retrieved.getId());
+        assertEquals(Integer.valueOf(0), getVersion(retrieved));
+        assertEquals("Sven", getName(retrieved2));
+        assertEquals(Integer.valueOf(0), getVersion(retrieved2));
+
+        // If the user continues to use the object is should behave as normal again
+        setName(retrieved, "David");
+        getRepo().save(retrieved);
+
+        var retrieved3 = getRepo().getOne(retrieved.getId());
+        assertEquals(Integer.valueOf(1), getVersion(retrieved3));
+        assertEquals("David", getName(retrieved3));
+    }
+
+    @Test
+    void updateOnObjectWithoutProvidingVersion() {
+        // We probably don't wan't to expose the version
+        // columns in external API's. But we might wan't
+        // people using external API's to be allowed to perform
+        // updating operations. Hence we allow updates without the version
+        // column provided. A developer who wants the extra version
+        // check can refetch the object to get the version value.
+
+        var entity = newEntity("Sven");
+
+        getRepo().save(entity);
+
+        setVersion(entity, null);
+
+        setName(entity, "Bart");
+        getRepo().save(entity);
+
+        var retrieved = getRepo().getOne(entity.getId());
+        assertEquals(Integer.valueOf(0), getVersion(retrieved));
+        assertEquals("Bart", getName(retrieved));
+
+        // If the user continues to use the object is should behave as normal again
+        setName(entity, "Glenn");
+        getRepo().save(entity);
+
+        var retrieved2 = getRepo().getOne(entity.getId());
+        assertEquals(Integer.valueOf(1), getVersion(retrieved2));
+        assertEquals("Glenn", getName(retrieved2));
+    }
+
+    @Test
+    void lockWithoutConcurrentModification() {
         transactionUtil.inTransaction(() -> {
             Entity entity = newEntity("Bar");
             getRepo().save(entity);
