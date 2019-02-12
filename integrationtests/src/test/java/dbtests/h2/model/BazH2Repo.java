@@ -3,6 +3,7 @@ package dbtests.h2.model;
 import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
+import java.sql.Types;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -48,12 +49,12 @@ public class BazH2Repo extends Dao<BazH2, Integer> {
     @Override
     protected SqlParameterSource getParams(BazH2 o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
-        m.addValue("baz_id", o.getId());
-        m.addValue("baz_name", o.getBazName());
-        m.addValue("changed_at", o.getChangedAt());
-        m.addValue("color", o.getColor() != null ? o.getColor().getId() : null);
-        m.addValue("created_at", o.getCreatedAt());
-        m.addValue("version", o.getVersion());
+        m.addValue("baz_id", o.getId(), Types.INTEGER);
+        m.addValue("baz_name", o.getBazName(), Types.VARCHAR);
+        m.addValue("changed_at", o.getChangedAt(), Types.TIMESTAMP);
+        m.addValue("color", o.getColor() != null ? o.getColor().getId() : null, Types.VARCHAR);
+        m.addValue("created_at", o.getCreatedAt(), Types.TIMESTAMP);
+        m.addValue("version", o.getVersion(), Types.SMALLINT);
         return m;
     }
 

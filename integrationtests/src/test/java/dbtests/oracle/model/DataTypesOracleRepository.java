@@ -92,23 +92,23 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
     @Override
     protected SqlParameterSource getParams(DataTypesOracle o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
-        m.addValue("ID", o.getId());
+        m.addValue("ID", o.getId(), Types.VARCHAR);
         m.addValue("BINARY_DOUBLE", o.getBinaryDouble(), Types.DOUBLE);
-        m.addValue("BINARY_FLOAT", o.getBinaryFloat(), Types.FLOAT);
+        m.addValue("BINARY_FLOAT", o.getBinaryFloat(), Types.REAL);
         m.addValue("BLOB", o.getBlob());
-        m.addValue("CHAR1", o.getChar1());
-        m.addValue("CHAR10", o.getChar10());
-        m.addValue("CLOB", o.getClob());
+        m.addValue("CHAR1", o.getChar1(), Types.CHAR);
+        m.addValue("CHAR10", o.getChar10(), Types.CHAR);
+        m.addValue("CLOB", o.getClob(), Types.CLOB);
         m.addValue("DATE", o.getDate(), Types.DATE);
-        m.addValue("NLOB", o.getNlob());
-        m.addValue("NUMBER_EIGHTEEN_ZERO", o.getNumberEighteenZero());
-        m.addValue("NUMBER_NINE_ZERO", o.getNumberNineZero());
-        m.addValue("NUMBER_NINETEEN_ZERO", o.getNumberNineteenZero());
+        m.addValue("NLOB", o.getNlob(), Types.NCLOB);
+        m.addValue("NUMBER_EIGHTEEN_ZERO", o.getNumberEighteenZero(), Types.BIGINT);
+        m.addValue("NUMBER_NINE_ZERO", o.getNumberNineZero(), Types.INTEGER);
+        m.addValue("NUMBER_NINETEEN_ZERO", o.getNumberNineteenZero(), Types.NUMERIC);
         m.addValue("NUMBER_TEN_TWO", o.getNumberTenTwo(), Types.NUMERIC);
-        m.addValue("NUMBER_TEN_ZERO", o.getNumberTenZero());
-        m.addValue("TIMESTAMP", o.getTimestamp());
-        m.addValue("VARCHAR", o.getVarchar());
-        m.addValue("VARCHAR2", o.getVarchar2());
+        m.addValue("NUMBER_TEN_ZERO", o.getNumberTenZero(), Types.BIGINT);
+        m.addValue("TIMESTAMP", o.getTimestamp(), Types.TIMESTAMP);
+        m.addValue("VARCHAR", o.getVarchar(), Types.VARCHAR);
+        m.addValue("VARCHAR2", o.getVarchar2(), Types.VARCHAR);
         return m;
     }
 

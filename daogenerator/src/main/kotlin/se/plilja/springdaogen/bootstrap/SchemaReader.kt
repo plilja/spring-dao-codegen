@@ -14,6 +14,7 @@ import se.plilja.springdaogen.model.Schema
 import se.plilja.springdaogen.model.Table
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.sql.JDBCType
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -92,57 +93,80 @@ fun setForeignKeys(
 }
 
 fun convertColumn(table: schemacrawler.schema.Table, column: schemacrawler.schema.Column, config: Config): Column {
+    val (type, jdbcType) = resolveType(column, config)
     return Column(
         name = column.name,
-        javaType = resolveType(column, config),
+        javaType = type,
         config = config,
+        jdbcType = jdbcType,
         generated = isGenerated(table, column, config),
         nullable = column.isNullable,
         size = column.size
     )
 }
 
-fun resolveType(column: schemacrawler.schema.Column, config: Config): Class<out Any> {
+
+fun resolveType(column: schemacrawler.schema.Column, config: Config): Pair<Class<out Any>, JDBCType?> {
     if (config.databaseDialect in listOf(DatabaseDialect.ORACLE, DatabaseDialect.ORACLE12)) {
         if (column.type.name == "BINARY_DOUBLE") {
-            return java.lang.Double::class.java
+            return Pair(java.lang.Double::class.java, JDBCType.DOUBLE)
         } else if (column.type.name == "BINARY_FLOAT") {
-            return java.lang.Float::class.java
+            return Pair(java.lang.Float::class.java, JDBCType.REAL)
         } else if (column.type.name == "NUMBER") {
             // These doesn't get cleanly mapped by Schemacrawler for some reason
             return when {
-                column.decimalDigits > 0 -> BigDecimal::class.java
-                column.size < 10 -> java.lang.Integer::class.java
-                column.size < 19 -> java.lang.Long::class.java
-                else -> BigInteger::class.java
+                column.decimalDigits > 0 -> Pair(BigDecimal::class.java, JDBCType.NUMERIC)
+                column.size < 10 -> Pair(java.lang.Integer::class.java, JDBCType.INTEGER)
+                column.size < 19 -> Pair(java.lang.Long::class.java, JDBCType.BIGINT)
+                else -> Pair(BigInteger::class.java, JDBCType.NUMERIC)
             }
         }
     }
     if (column.type.typeMappedClass == BigDecimal::class.java && column.decimalDigits == 0) {
         return when {
-            column.size < 10 -> java.lang.Integer::class.java
-            column.size < 19 -> java.lang.Long::class.java
-            else -> BigInteger::class.java
+            column.size < 10 -> Pair(java.lang.Integer::class.java, JDBCType.INTEGER)
+            column.size < 19 -> Pair(java.lang.Long::class.java, JDBCType.BIGINT)
+            else -> Pair(BigInteger::class.java, JDBCType.NUMERIC)
         }
     }
-    return if (config.databaseDialect == DatabaseDialect.MYSQL && column.type.name == "YEAR") {
-        Integer::class.java
-    } else if (column.type.name.toLowerCase().contains("char") && column.type.typeMappedClass.simpleName == "Array") {
-        // Varchar
-        String::class.java
-    } else if (column.type.name.toUpperCase() == "FLOAT") {
-        java.lang.Float::class.java
+
+    if (config.databaseDialect == DatabaseDialect.MYSQL && column.type.name == "YEAR") {
+        return Pair(Integer::class.java, JDBCType.INTEGER)
     } else if (column.type.typeMappedClass == java.sql.Date::class.java) {
-        LocalDate::class.java
-    } else if (column.type.typeMappedClass == java.sql.Timestamp::class.java) {
-        LocalDateTime::class.java
-    } else if (column.type.typeMappedClass == java.sql.Time::class.java) {
-        LocalTime::class.java
-    } else if (column.type.name == "uuid") {
-        UUID::class.java
-    } else {
-        column.type.typeMappedClass
+        return Pair(LocalDate::class.java, JDBCType.DATE)
+    } else if (column.type.name.toUpperCase() == "FLOAT") {
+        return Pair(java.lang.Float::class.java, JDBCType.REAL)
     }
+
+    var jdbcType = try {
+        JDBCType.valueOf(column.type.javaSqlType.name)
+    } catch (ex: IllegalArgumentException) {
+        null
+    }
+    if (jdbcType == JDBCType.BLOB) {
+        // Doesn't work, let spring deduct type from param instead
+        jdbcType = null
+    }
+
+    val javaType =
+        if (column.type.name.toLowerCase().contains("char") && column.type.typeMappedClass.simpleName == "Array") {
+            // Varchar
+            String::class.java
+        } else if (column.type.typeMappedClass == java.sql.Timestamp::class.java) {
+            LocalDateTime::class.java
+        } else if (column.type.typeMappedClass == java.sql.Time::class.java) {
+            LocalTime::class.java
+        } else if (column.type.name == "uuid") {
+            UUID::class.java
+        } else if (column.type.typeMappedClass == java.math.BigDecimal::class.java) {
+            // Numeric and decimal seem to behave the same in almost all cases
+            // but numeric behave a little nicer for Oracle. According to the spec
+            // numeric is supposed to be slightly more precise.
+            return Pair(BigDecimal::class.java, JDBCType.NUMERIC)
+        } else {
+            column.type.typeMappedClass
+        }
+    return Pair(javaType, jdbcType)
 }
 
 fun isGenerated(table: schemacrawler.schema.Table, column: schemacrawler.schema.Column, config: Config): Boolean {

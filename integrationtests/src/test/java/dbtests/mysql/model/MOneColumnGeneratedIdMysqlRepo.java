@@ -3,6 +3,7 @@ package dbtests.mysql.model;
 import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
+import java.sql.Types;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -31,7 +32,7 @@ public class MOneColumnGeneratedIdMysqlRepo extends Dao<MOneColumnGeneratedIdMys
     @Override
     protected SqlParameterSource getParams(MOneColumnGeneratedIdMysql o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
-        m.addValue("id", o.getId());
+        m.addValue("id", o.getId(), Types.INTEGER);
         return m;
     }
 

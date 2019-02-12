@@ -3,6 +3,7 @@ package dbtests.h2.model;
 import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
+import java.sql.Types;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -31,7 +32,7 @@ public class OneColumnGeneratedIdH2Repo extends Dao<OneColumnGeneratedIdH2, Inte
     @Override
     protected SqlParameterSource getParams(OneColumnGeneratedIdH2 o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
-        m.addValue("id", o.getId());
+        m.addValue("id", o.getId(), Types.INTEGER);
         return m;
     }
 

@@ -3,6 +3,7 @@ package dbtests.mysql.model;
 import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
+import java.sql.Types;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -48,12 +49,12 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
     @Override
     protected SqlParameterSource getParams(MBazMysql o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
-        m.addValue("id", o.getId());
-        m.addValue("changed_at", o.getChangedAt());
-        m.addValue("color_enum_mysql_id", o.getColorEnumMysql() != null ? o.getColorEnumMysql().getId() : null);
-        m.addValue("created_at", o.getCreatedAt());
-        m.addValue("name", o.getName());
-        m.addValue("version", o.getVersion());
+        m.addValue("id", o.getId(), Types.INTEGER);
+        m.addValue("changed_at", o.getChangedAt(), Types.TIMESTAMP);
+        m.addValue("color_enum_mysql_id", o.getColorEnumMysql() != null ? o.getColorEnumMysql().getId() : null, Types.INTEGER);
+        m.addValue("created_at", o.getCreatedAt(), Types.TIMESTAMP);
+        m.addValue("name", o.getName(), Types.VARCHAR);
+        m.addValue("version", o.getVersion(), Types.TINYINT);
         return m;
     }
 

@@ -3,6 +3,7 @@ package dbtests.oracle.model;
 import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
+import java.sql.Types;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -44,11 +45,11 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
     @Override
     protected SqlParameterSource getParams(BazOracle o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
-        m.addValue("ID", o.getId());
-        m.addValue("CHANGED_AT", o.getChangedAt());
-        m.addValue("CREATED_AT", o.getCreatedAt());
-        m.addValue("NAME", o.getName());
-        m.addValue("VERSION", o.getVersion());
+        m.addValue("ID", o.getId(), Types.INTEGER);
+        m.addValue("CHANGED_AT", o.getChangedAt(), Types.TIMESTAMP);
+        m.addValue("CREATED_AT", o.getCreatedAt(), Types.TIMESTAMP);
+        m.addValue("NAME", o.getName(), Types.VARCHAR);
+        m.addValue("VERSION", o.getVersion(), Types.INTEGER);
         return m;
     }
 

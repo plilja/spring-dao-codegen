@@ -125,33 +125,33 @@ public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
     @Override
     protected SqlParameterSource getParams(MDataTypesMysql o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
-        m.addValue("id", o.getId());
-        m.addValue("bigint", o.getBigint());
-        m.addValue("bit", o.getBit(), Types.BOOLEAN);
-        m.addValue("blob", o.getBlob());
-        m.addValue("bool", o.getBool(), Types.BOOLEAN);
+        m.addValue("id", o.getId(), Types.BIGINT);
+        m.addValue("bigint", o.getBigint(), Types.BIGINT);
+        m.addValue("bit", o.getBit(), Types.BIT);
+        m.addValue("blob", o.getBlob(), Types.LONGVARBINARY);
+        m.addValue("bool", o.getBool(), Types.BIT);
         m.addValue("date", o.getDate(), Types.DATE);
-        m.addValue("datetime", o.getDatetime());
-        m.addValue("decimal_eighteen_zero", o.getDecimalEighteenZero());
-        m.addValue("decimal_nine_zero", o.getDecimalNineZero());
-        m.addValue("decimal_nineteen_zero", o.getDecimalNineteenZero());
+        m.addValue("datetime", o.getDatetime(), Types.TIMESTAMP);
+        m.addValue("decimal_eighteen_zero", o.getDecimalEighteenZero(), Types.BIGINT);
+        m.addValue("decimal_nine_zero", o.getDecimalNineZero(), Types.INTEGER);
+        m.addValue("decimal_nineteen_zero", o.getDecimalNineteenZero(), Types.NUMERIC);
         m.addValue("decimal_ten_two", o.getDecimalTenTwo(), Types.NUMERIC);
-        m.addValue("decimal_ten_zero", o.getDecimalTenZero());
+        m.addValue("decimal_ten_zero", o.getDecimalTenZero(), Types.BIGINT);
         m.addValue("double", o.getDoublE(), Types.DOUBLE);
-        m.addValue("float", o.getFloaT(), Types.FLOAT);
-        m.addValue("int", o.getInT());
-        m.addValue("integer", o.getInteger());
-        m.addValue("json", o.getJson());
-        m.addValue("mediumint", o.getMediumint());
-        m.addValue("smallint", o.getSmallint());
-        m.addValue("text", o.getText());
-        m.addValue("time", o.getTime());
-        m.addValue("timestamp", o.getTimestamp());
-        m.addValue("tinyblob", o.getTinyblob());
-        m.addValue("tinyint", o.getTinyint());
-        m.addValue("varchar_10", o.getVarchar10());
-        m.addValue("varchar_binary_10", o.getVarcharBinary10());
-        m.addValue("year", o.getYear());
+        m.addValue("float", o.getFloaT(), Types.REAL);
+        m.addValue("int", o.getInT(), Types.INTEGER);
+        m.addValue("integer", o.getInteger(), Types.INTEGER);
+        m.addValue("json", o.getJson(), Types.CHAR);
+        m.addValue("mediumint", o.getMediumint(), Types.INTEGER);
+        m.addValue("smallint", o.getSmallint(), Types.SMALLINT);
+        m.addValue("text", o.getText(), Types.LONGVARCHAR);
+        m.addValue("time", o.getTime(), Types.TIME);
+        m.addValue("timestamp", o.getTimestamp(), Types.TIMESTAMP);
+        m.addValue("tinyblob", o.getTinyblob(), Types.LONGVARBINARY);
+        m.addValue("tinyint", o.getTinyint(), Types.TINYINT);
+        m.addValue("varchar_10", o.getVarchar10(), Types.VARCHAR);
+        m.addValue("varchar_binary_10", o.getVarcharBinary10(), Types.VARBINARY);
+        m.addValue("year", o.getYear(), Types.INTEGER);
         return m;
     }
 

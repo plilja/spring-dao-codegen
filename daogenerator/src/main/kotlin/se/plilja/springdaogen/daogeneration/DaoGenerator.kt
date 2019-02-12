@@ -12,7 +12,6 @@ import se.plilja.springdaogen.generatedframework.columnClass
 import se.plilja.springdaogen.generatedframework.dao
 import se.plilja.springdaogen.generatedframework.databaseException
 import se.plilja.springdaogen.model.Config
-import se.plilja.springdaogen.model.DatabaseDialect
 import se.plilja.springdaogen.model.Left
 import se.plilja.springdaogen.model.Table
 import se.plilja.springdaogen.sqlgeneration.*
@@ -24,6 +23,7 @@ import java.sql.Clob
 import java.sql.NClob
 import java.sql.Types
 import java.util.*
+import kotlin.reflect.full.staticProperties
 
 
 fun generateDao(config: Config, table: Table): ClassGenerator {
@@ -34,7 +34,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
     }
     g.extends = "Dao<${table.entityName()}, ${table.primaryKey.typeName()}>"
     if (config.featureGenerateQueryApi) {
-        ensureImported(g, config) { columnClass(config.frameworkOutputPackage)}
+        ensureImported(g, config) { columnClass(config.frameworkOutputPackage) }
         for (column in table.columns) {
             val type = column.type()
             when (type) {
@@ -44,7 +44,11 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
                     }
                 }
             }
-            g.addConstant( "COLUMN_${snakeCase(column.name).toUpperCase()}", "Column<${table.entityName()}, ${column.typeName()}>", "new Column<>(\"${formatIdentifier(column.name, config.databaseDialect)}\")")
+            g.addConstant(
+                "COLUMN_${snakeCase(column.name).toUpperCase()}",
+                "Column<${table.entityName()}, ${column.typeName()}>",
+                "new Column<>(\"${formatIdentifier(column.name, config.databaseDialect)}\")"
+            )
         }
     }
     g.addPrivateConstant("ALL_COLUMNS", "String", columnsList(table, config.databaseDialect))
@@ -52,7 +56,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         "ROW_MAPPER", "RowMapper<${table.entityName()}>",
         rowMapper(table, g)
     )
-    g.addCustomMethod(rowUnmapper(table, config, g))
+    g.addCustomMethod(rowUnmapper(table, g))
     g.addImport(RowMapper::class.java)
     g.addImport(MapSqlParameterSource::class.java)
     g.addImport(SqlParameterSource::class.java)
@@ -226,21 +230,26 @@ private fun rowMapper(table: Table, classGenerator: ClassGenerator): String {
     }
 }
 
-private fun rowUnmapper(table: Table, config: Config, classGenerator: ClassGenerator): String {
-    val attributes = table.columns.map {
-        val jdbcSqlType = it.jdbcSqlType()
+private fun rowUnmapper(table: Table, classGenerator: ClassGenerator): String {
+    val attributes = table.columns.map { column ->
+        val jdbcType = column.jdbcType
         var typeDeclaration = ""
-        if (jdbcSqlType != null) {
-            typeDeclaration = ", $jdbcSqlType"
+        if (jdbcType != null) {
+            typeDeclaration = ""
+            for (member in Types::class.staticProperties) {
+                if (jdbcType.vendorTypeNumber == member.get()) {
+                    typeDeclaration = ", Types.${member.name}"
+                }
+            }
             classGenerator.addImport(Types::class.java)
         }
 
-        if (table.primaryKey == it) {
-            "m.addValue(\"${it.name}\", o.getId()$typeDeclaration);"
-        } else if (it.references != null && it.references!!.first.isEnum()) {
-            "m.addValue(\"${it.name}\", o.${it.getter()}() != null ? o.${it.getter()}().getId() : null$typeDeclaration);"
+        if (table.primaryKey == column) {
+            "m.addValue(\"${column.name}\", o.getId()$typeDeclaration);"
+        } else if (column.references != null && column.references!!.first.isEnum()) {
+            "m.addValue(\"${column.name}\", o.${column.getter()}() != null ? o.${column.getter()}().getId() : null$typeDeclaration);"
         } else {
-            "m.addValue(\"${it.name}\", o.${it.getter()}()$typeDeclaration);"
+            "m.addValue(\"${column.name}\", o.${column.getter()}()$typeDeclaration);"
         }
     }.joinToString("\n")
     return """

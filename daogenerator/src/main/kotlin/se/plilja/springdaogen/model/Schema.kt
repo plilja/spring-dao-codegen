@@ -8,6 +8,7 @@ import java.math.BigDecimal
 import java.math.BigInteger
 import java.sql.Blob
 import java.sql.Clob
+import java.sql.JDBCType
 import java.sql.NClob
 import java.sql.SQLXML
 import java.time.LocalDate
@@ -66,6 +67,7 @@ data class Column(
     private val javaType: Class<out Any>,
     private val config: Config,
     val generated: Boolean = false,
+    val jdbcType: JDBCType? = null,
     val nullable: Boolean = false,
     val size: Int = 100
 ) {
@@ -134,20 +136,6 @@ data class Column(
         return listOf(Clob::class.java, Blob::class.java, NClob::class.java).contains(javaType)
     }
 
-    fun jdbcSqlType(): String? {
-        return when (javaType) {
-            // This is not a complete list. It seems like sometimes
-            // the type hint helps and sometimes it causes trouble.
-            java.lang.Double::class.java -> "Types.DOUBLE"
-            java.lang.Float::class.java -> "Types.FLOAT"
-            java.lang.Boolean::class.java -> "Types.BOOLEAN"
-            BigDecimal::class.java -> "Types.NUMERIC"
-            LocalDate::class.java -> "Types.DATE"
-            SQLXML::class.java -> "Types.SQLXML"
-            else -> null
-        }
-    }
-
     fun getter(): String {
         return "get${capitalizeFirst(fieldName())}"
     }
@@ -171,7 +159,7 @@ data class Column(
     }
 
     fun recordSetMethod(rs: String): String {
-        var method : String? = null
+        var method: String? = null
 
         // These method are the same no matter if the column is nullable or not
         if (javaType == BigDecimal::class.java) {
@@ -200,11 +188,14 @@ data class Column(
             } else if (javaType == LocalDateTime::class.java) {
                 method = "$rs.getObject(\"$name\") != null ? $rs.getTimestamp(\"$name\").toLocalDateTime() : null"
             } else if (javaType == Clob::class.java) {
-                method = "$rs.getObject(\"$name\") != null ? $rs.getClob(\"$name\").getSubString(1, (int) $rs.getClob(\"$name\").length()) : null"
+                method =
+                        "$rs.getObject(\"$name\") != null ? $rs.getClob(\"$name\").getSubString(1, (int) $rs.getClob(\"$name\").length()) : null"
             } else if (javaType == Blob::class.java) {
-                method = "$rs.getObject(\"$name\") != null ? $rs.getBlob(\"$name\").getBinaryStream().readAllBytes() : null"
+                method =
+                        "$rs.getObject(\"$name\") != null ? $rs.getBlob(\"$name\").getBinaryStream().readAllBytes() : null"
             } else if (javaType == NClob::class.java) {
-                method = "$rs.getObject(\"$name\") != null ? $rs.getNClob(\"$name\").getSubString(1, (int) $rs.getClob(\"$name\").length()) : null"
+                method =
+                        "$rs.getObject(\"$name\") != null ? $rs.getNClob(\"$name\").getSubString(1, (int) $rs.getClob(\"$name\").length()) : null"
             } else if (javaType == BigInteger::class.java) {
                 method = "$rs.getObject(\"$name\") != null ? $rs.getBigDecimal(\"$name\").toBigInteger() : null"
             }

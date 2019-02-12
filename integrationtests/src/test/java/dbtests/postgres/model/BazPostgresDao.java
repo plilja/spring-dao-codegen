@@ -3,6 +3,7 @@ package dbtests.postgres.model;
 import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
+import java.sql.Types;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -48,12 +49,12 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
     @Override
     protected SqlParameterSource getParams(BazPostgresEntity o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
-        m.addValue("baz_id", o.getId());
-        m.addValue("baz_name", o.getBazName());
-        m.addValue("changed_at", o.getChangedAt());
-        m.addValue("color", o.getColor() != null ? o.getColor().getId() : null);
-        m.addValue("counter", o.getCounter());
-        m.addValue("created_at", o.getCreatedAt());
+        m.addValue("baz_id", o.getId(), Types.INTEGER);
+        m.addValue("baz_name", o.getBazName(), Types.VARCHAR);
+        m.addValue("changed_at", o.getChangedAt(), Types.TIMESTAMP);
+        m.addValue("color", o.getColor() != null ? o.getColor().getId() : null, Types.VARCHAR);
+        m.addValue("counter", o.getCounter(), Types.BIGINT);
+        m.addValue("created_at", o.getCreatedAt(), Types.TIMESTAMP);
         return m;
     }
 

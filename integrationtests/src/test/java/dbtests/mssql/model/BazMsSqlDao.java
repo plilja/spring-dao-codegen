@@ -3,6 +3,7 @@ package dbtests.mssql.model;
 import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
+import java.sql.Types;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -48,12 +49,12 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
     @Override
     protected SqlParameterSource getParams(BazMsSqlEntity o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
-        m.addValue("id", o.getId());
-        m.addValue("color", o.getColor() != null ? o.getColor().getId() : null);
-        m.addValue("inserted_at", o.getInsertedAt());
-        m.addValue("modified_at", o.getModifiedAt());
-        m.addValue("name", o.getName());
-        m.addValue("version", o.getVersion());
+        m.addValue("id", o.getId(), Types.INTEGER);
+        m.addValue("color", o.getColor() != null ? o.getColor().getId() : null, Types.VARCHAR);
+        m.addValue("inserted_at", o.getInsertedAt(), Types.TIMESTAMP);
+        m.addValue("modified_at", o.getModifiedAt(), Types.TIMESTAMP);
+        m.addValue("name", o.getName(), Types.VARCHAR);
+        m.addValue("version", o.getVersion(), Types.TINYINT);
         return m;
     }
 

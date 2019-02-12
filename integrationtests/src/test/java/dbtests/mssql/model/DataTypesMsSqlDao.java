@@ -123,34 +123,34 @@ public class DataTypesMsSqlDao extends Dao<DataTypesMsSqlEntity, Long> {
     @Override
     protected SqlParameterSource getParams(DataTypesMsSqlEntity o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
-        m.addValue("id", o.getId());
-        m.addValue("binary10", o.getBinary10());
-        m.addValue("bit", o.getBit(), Types.BOOLEAN);
-        m.addValue("char", o.getChaR());
-        m.addValue("char10", o.getChar10());
+        m.addValue("id", o.getId(), Types.BIGINT);
+        m.addValue("binary10", o.getBinary10(), Types.BINARY);
+        m.addValue("bit", o.getBit(), Types.BIT);
+        m.addValue("char", o.getChaR(), Types.CHAR);
+        m.addValue("char10", o.getChar10(), Types.CHAR);
         m.addValue("date", o.getDate(), Types.DATE);
-        m.addValue("datetime", o.getDatetime());
-        m.addValue("datetime2", o.getDatetime2());
-        m.addValue("decimal_eighteen_zero", o.getDecimalEighteenZero());
-        m.addValue("decimal_nine_zero", o.getDecimalNineZero());
-        m.addValue("decimal_nineteen_zero", o.getDecimalNineteenZero());
+        m.addValue("datetime", o.getDatetime(), Types.TIMESTAMP);
+        m.addValue("datetime2", o.getDatetime2(), Types.TIMESTAMP);
+        m.addValue("decimal_eighteen_zero", o.getDecimalEighteenZero(), Types.BIGINT);
+        m.addValue("decimal_nine_zero", o.getDecimalNineZero(), Types.INTEGER);
+        m.addValue("decimal_nineteen_zero", o.getDecimalNineteenZero(), Types.NUMERIC);
         m.addValue("decimal_ten_two", o.getDecimalTenTwo(), Types.NUMERIC);
-        m.addValue("decimal_ten_zero", o.getDecimalTenZero());
-        m.addValue("float", o.getFloaT(), Types.FLOAT);
-        m.addValue("int", o.getInT());
+        m.addValue("decimal_ten_zero", o.getDecimalTenZero(), Types.BIGINT);
+        m.addValue("float", o.getFloaT(), Types.REAL);
+        m.addValue("int", o.getInT(), Types.INTEGER);
         m.addValue("money", o.getMoney(), Types.NUMERIC);
-        m.addValue("nchar10", o.getNchar10());
-        m.addValue("ntext", o.getNtext());
-        m.addValue("nvarchar10", o.getNvarchar10());
-        m.addValue("real", o.getReal(), Types.FLOAT);
-        m.addValue("smallint", o.getSmallint());
+        m.addValue("nchar10", o.getNchar10(), Types.NCHAR);
+        m.addValue("ntext", o.getNtext(), Types.LONGNVARCHAR);
+        m.addValue("nvarchar10", o.getNvarchar10(), Types.NVARCHAR);
+        m.addValue("real", o.getReal(), Types.REAL);
+        m.addValue("smallint", o.getSmallint(), Types.SMALLINT);
         m.addValue("smallmoney", o.getSmallmoney(), Types.NUMERIC);
-        m.addValue("text", o.getText());
-        m.addValue("time", o.getTime());
-        m.addValue("tinyint", o.getTinyint());
-        m.addValue("varbinary10", o.getVarbinary10());
-        m.addValue("varchar10", o.getVarchar10());
-        m.addValue("xml", o.getXml());
+        m.addValue("text", o.getText(), Types.LONGVARCHAR);
+        m.addValue("time", o.getTime(), Types.TIME);
+        m.addValue("tinyint", o.getTinyint(), Types.TINYINT);
+        m.addValue("varbinary10", o.getVarbinary10(), Types.VARBINARY);
+        m.addValue("varchar10", o.getVarchar10(), Types.VARCHAR);
+        m.addValue("xml", o.getXml(), Types.LONGNVARCHAR);
         return m;
     }
 

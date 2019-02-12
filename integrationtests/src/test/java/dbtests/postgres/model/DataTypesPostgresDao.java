@@ -104,27 +104,27 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
     @Override
     protected SqlParameterSource getParams(DataTypesPostgresEntity o) {
         MapSqlParameterSource m = new MapSqlParameterSource();
-        m.addValue("id", o.getId());
-        m.addValue("bigint", o.getBigint());
-        m.addValue("boolean_b", o.getBooleanB(), Types.BOOLEAN);
-        m.addValue("bytea", o.getBytea());
-        m.addValue("char", o.getChaR());
-        m.addValue("char10", o.getChar10());
+        m.addValue("id", o.getId(), Types.BIGINT);
+        m.addValue("bigint", o.getBigint(), Types.BIGINT);
+        m.addValue("boolean_b", o.getBooleanB(), Types.BIT);
+        m.addValue("bytea", o.getBytea(), Types.BINARY);
+        m.addValue("char", o.getChaR(), Types.CHAR);
+        m.addValue("char10", o.getChar10(), Types.CHAR);
         m.addValue("date", o.getDate(), Types.DATE);
-        m.addValue("decimal_eighteen_zero", o.getDecimalEighteenZero());
-        m.addValue("decimal_nine_zero", o.getDecimalNineZero());
-        m.addValue("decimal_nineteen_zero", o.getDecimalNineteenZero());
+        m.addValue("decimal_eighteen_zero", o.getDecimalEighteenZero(), Types.BIGINT);
+        m.addValue("decimal_nine_zero", o.getDecimalNineZero(), Types.INTEGER);
+        m.addValue("decimal_nineteen_zero", o.getDecimalNineteenZero(), Types.NUMERIC);
         m.addValue("decimal_ten_two", o.getDecimalTenTwo(), Types.NUMERIC);
-        m.addValue("decimal_ten_zero", o.getDecimalTenZero());
+        m.addValue("decimal_ten_zero", o.getDecimalTenZero(), Types.BIGINT);
         m.addValue("double", o.getDoublE(), Types.DOUBLE);
-        m.addValue("float", o.getFloaT(), Types.FLOAT);
-        m.addValue("guid", o.getGuid());
-        m.addValue("integer", o.getInteger());
+        m.addValue("float", o.getFloaT(), Types.REAL);
+        m.addValue("guid", o.getGuid(), Types.OTHER);
+        m.addValue("integer", o.getInteger(), Types.INTEGER);
         m.addValue("numeric_ten_two", o.getNumericTenTwo(), Types.NUMERIC);
-        m.addValue("smallint", o.getSmallint());
-        m.addValue("text", o.getText());
-        m.addValue("timestamp", o.getTimestamp());
-        m.addValue("varchar10", o.getVarchar10());
+        m.addValue("smallint", o.getSmallint(), Types.SMALLINT);
+        m.addValue("text", o.getText(), Types.VARCHAR);
+        m.addValue("timestamp", o.getTimestamp(), Types.TIMESTAMP);
+        m.addValue("varchar10", o.getVarchar10(), Types.VARCHAR);
         m.addValue("xml", o.getXml(), Types.SQLXML);
         return m;
     }
