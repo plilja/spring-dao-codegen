@@ -109,8 +109,10 @@ public class MOneColumnNaturalIdMysqlRepo extends Dao<MOneColumnNaturalIdMysql, 
     }
 
     @Override
-    protected String getLockSql() {
-        return "SELECT id FROM ONE_COLUMN_NATURAL_ID_MYSQL " +
+    protected String getSelectAndLockSql() {
+        return "SELECT " +
+                ALL_COLUMNS +
+                "FROM ONE_COLUMN_NATURAL_ID_MYSQL " +
                 "WHERE id = :id " +
                 "FOR UPDATE";
     }

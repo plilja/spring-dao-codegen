@@ -306,8 +306,10 @@ public class DataTypesMsSqlDao extends Dao<DataTypesMsSqlEntity, Long> {
     }
 
     @Override
-    protected String getLockSql() {
-        return "SELECT id FROM dbo.DATA_TYPES_MS_SQL WITH (UPDLOCK) " +
+    protected String getSelectAndLockSql() {
+        return "SELECT " +
+                ALL_COLUMNS +
+                "FROM dbo.DATA_TYPES_MS_SQL WITH (UPDLOCK) " +
                 "WHERE id = :id";
     }
 

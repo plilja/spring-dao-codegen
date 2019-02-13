@@ -109,8 +109,10 @@ public class OneColumnNaturalIdH2Repo extends Dao<OneColumnNaturalIdH2, String> 
     }
 
     @Override
-    protected String getLockSql() {
-        return "SELECT id FROM test_schema.one_column_natural_id_h2 " +
+    protected String getSelectAndLockSql() {
+        return "SELECT " +
+                ALL_COLUMNS +
+                "FROM test_schema.one_column_natural_id_h2 " +
                 "WHERE id = :id " +
                 "FOR UPDATE";
     }

@@ -96,14 +96,18 @@ fun lock(table: Table, databaseDialect: DatabaseDialect): String {
     val tb = formatTable(table, databaseDialect)
     return when (databaseDialect) {
         DatabaseDialect.MSSQL_SERVER -> """
-            "SELECT $pk FROM $tb WITH (UPDLOCK) " +
-            "WHERE $pk = :id"
-        """.trimIndent()
+            |"SELECT " +
+            |ALL_COLUMNS +
+            |"FROM $tb WITH (UPDLOCK) " +
+            |"WHERE $pk = :id"
+        """.trimMargin()
         else -> """
-            "SELECT $pk FROM $tb " +
-            "WHERE $pk = :id " +
-            "FOR UPDATE"
-        """.trimIndent()
+            |"SELECT " +
+            |ALL_COLUMNS +
+            |"FROM $tb " +
+            |"WHERE $pk = :id " +
+            |"FOR UPDATE"
+        """.trimMargin()
     }
 }
 

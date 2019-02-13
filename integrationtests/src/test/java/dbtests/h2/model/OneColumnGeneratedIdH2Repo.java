@@ -104,8 +104,10 @@ public class OneColumnGeneratedIdH2Repo extends Dao<OneColumnGeneratedIdH2, Inte
     }
 
     @Override
-    protected String getLockSql() {
-        return "SELECT id FROM test_schema.one_column_generated_id_h2 " +
+    protected String getSelectAndLockSql() {
+        return "SELECT " +
+                ALL_COLUMNS +
+                "FROM test_schema.one_column_generated_id_h2 " +
                 "WHERE id = :id " +
                 "FOR UPDATE";
     }

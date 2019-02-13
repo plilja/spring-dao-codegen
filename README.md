@@ -19,4 +19,3 @@
 * No unused imports should be generated
 * Sort order, queries and findAll
 * Test more datatypes H2
-* Ensure as many type hints gets added in getParams as possible

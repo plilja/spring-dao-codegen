@@ -54,6 +54,31 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         }
     }
 
+    /**
+     * Select and also lock a row in the database.
+     * Only use it if you know that you actually
+     * want to lock the row. If doubtful, use the
+     * {@link #getOne(ID)} or {@link #findOne(ID)} instead.
+     * <p/>
+     * Note that this method must be called in a @Transaction
+     * scope at a higher application layer for this
+     * to be useful. The lock is held while the transaction
+     * is committed/rolled back and hence it doesn't need
+     * to be explicitly released by the caller.
+     * <p/>
+     * The usability of this method depends on what
+     * transaction isolation level is used. Typically
+     * this is mostly useful if the isolation level is
+     * READ_COMMITTED which is also most often the
+     * default isolation level.
+     */
+    public T getOneAndLock(ID id) {
+        String sql = getSelectAndLockSql();
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", id);
+        return jdbcTemplate.queryForObject(sql, params, getRowMapper());
+    }
+
     public List<T> findAllById(Iterable<ID> ids) {
         String sql = getSelectIdsSql();
         List<ID> idsList = new ArrayList<>();
@@ -199,27 +224,6 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         HashMap<String, Object> noParams = new HashMap<>();
         return jdbcTemplate.queryForObject(sql, noParams, Long.class);
     }
-
-    /**
-     * Lock a row in the database. Note that this
-     * method must be called in a @Transaction
-     * scope at a higher application layer for this
-     * to be useful. The lock is held while the transaction
-     * is committed/rolled back and hence it doesn't need
-     * to be explicitly released by the caller.
-     * <p/>
-     * The usability of this method depends on what
-     * transaction isolation level is used. Typically
-     * this is mostly useful if the isolation level is
-     * READ_COMMITTED which is also most often the
-     * default isolation level.
-     */
-    public void lock(ID id) {
-        String sql = getLockSql();
-        Map<String, Object> params = new HashMap<>();
-        params.put("id", id);
-        jdbcTemplate.query(sql, params, (rs, i) -> new Object()); // Discard result
-    }
     
     public List<T> query(QueryItem<T, ?> queryItem) {
         return query(Collections.singletonList(queryItem));
@@ -293,7 +297,7 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
 
     protected abstract String getCountSql();
 
-    protected abstract String getLockSql();
+    protected abstract String getSelectAndLockSql();
 
     @SuppressWarnings("unchecked")
     private void setId(T object, Number newKey) {

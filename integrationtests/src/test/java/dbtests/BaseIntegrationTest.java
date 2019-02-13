@@ -364,10 +364,14 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
         transactionUtil.inTransaction(() -> {
             Entity entity = newEntity("Bar");
             getRepo().save(entity);
-            getRepo().lock(entity.getId());
 
-            setName(entity, "Foo");
-            getRepo().save(entity); // Ok since we have the lock in the transaction
+            getRepo().getOneAndLock(entity.getId());
+            Entity retrievedAndLocked = getRepo().getOneAndLock(entity.getId()); // Retrieving and locking multiple times should be if in the same transaction
+
+            assertEquals(entity.getId(), retrievedAndLocked.getId());
+            assertEquals("Bar", getName(retrievedAndLocked));
+            setName(retrievedAndLocked, "Foo");
+            getRepo().save(retrievedAndLocked); // Ok since we have the lock in the transaction
 
             Entity retrieved = getRepo().getOne(entity.getId());
             assertEquals(entity.getId(), retrieved.getId());
@@ -396,7 +400,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     private Future<String> changeInTransaction(Entity entity, String name, int sleepBeforeLock, int sleepAfterLockBeforeUpdate, int sleepAfter) {
         return CompletableFuture.supplyAsync(() -> transactionUtil.inTransaction(() -> {
             sleep2(sleepBeforeLock);
-            getRepo().lock(entity.getId());
+            getRepo().getOneAndLock(entity.getId());
             sleep2(sleepAfterLockBeforeUpdate);
             // Reload after lock has been acquired to avoid NoRowsUpdatedException from concurrent modification
             Entity reloaded = getRepo().getOne(entity.getId());

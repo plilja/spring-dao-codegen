@@ -144,8 +144,10 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
     }
 
     @Override
-    protected String getLockSql() {
-        return "SELECT baz_id FROM test_schema.baz_postgres " +
+    protected String getSelectAndLockSql() {
+        return "SELECT " +
+                ALL_COLUMNS +
+                "FROM test_schema.baz_postgres " +
                 "WHERE baz_id = :id " +
                 "FOR UPDATE";
     }

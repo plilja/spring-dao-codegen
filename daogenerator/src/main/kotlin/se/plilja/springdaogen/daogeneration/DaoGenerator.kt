@@ -168,7 +168,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
     g.addCustomMethod(
         """
             @Override
-            protected String getLockSql() {
+            protected String getSelectAndLockSql() {
                 return ${lock(table, config.databaseDialect)};
             }
         """

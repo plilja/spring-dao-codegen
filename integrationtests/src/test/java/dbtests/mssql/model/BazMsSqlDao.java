@@ -143,8 +143,10 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
     }
 
     @Override
-    protected String getLockSql() {
-        return "SELECT id FROM dbo.baz_ms_sql WITH (UPDLOCK) " +
+    protected String getSelectAndLockSql() {
+        return "SELECT " +
+                ALL_COLUMNS +
+                "FROM dbo.baz_ms_sql WITH (UPDLOCK) " +
                 "WHERE id = :id";
     }
 

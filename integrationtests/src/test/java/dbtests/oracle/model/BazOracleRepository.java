@@ -142,8 +142,10 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
     }
 
     @Override
-    protected String getLockSql() {
-        return "SELECT ID FROM DOCKER.BAZ_ORACLE " +
+    protected String getSelectAndLockSql() {
+        return "SELECT " +
+                ALL_COLUMNS +
+                "FROM DOCKER.BAZ_ORACLE " +
                 "WHERE ID = :id " +
                 "FOR UPDATE";
     }
