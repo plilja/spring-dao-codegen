@@ -5,6 +5,8 @@ import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.sql.Types;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -26,6 +28,13 @@ public class BazH2Repo extends Dao<BazH2, Integer> {
     public static final Column<BazH2, LocalDateTime> COLUMN_CREATED_AT = new Column<>("created_at");
 
     public static final Column<BazH2, Integer> COLUMN_VERSION = new Column<>("version");
+
+    public static final List<Column<BazH2, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_BAZ_ID,
+    COLUMN_BAZ_NAME,
+    COLUMN_CHANGED_AT,
+    COLUMN_COLOR,
+    COLUMN_CREATED_AT,
+    COLUMN_VERSION);
 
     private static final String ALL_COLUMNS = " baz_id, baz_name, changed_at, color, created_at, " +
             " version ";
@@ -135,12 +144,33 @@ public class BazH2Repo extends Dao<BazH2, Integer> {
     }
 
     @Override
-    protected String getQuerySql() {
-        return "SELECT " +
+    public Column<BazH2, ?> getColumnByName(String name) {
+        for (Column<BazH2, ?> column : ALL_COLUMNS_LIST) {
+            if (column.getName().equals(name)) {
+                return column;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected String getQueryOrderBySql(int maxAllowedCount, String whereClause, String orderBy) {
+        return String.format("SELECT %n" +
                 ALL_COLUMNS +
-                "FROM test_schema.baz_h2 " +
-                "WHERE %s " +
-                "LIMIT %d";
+                "FROM test_schema.baz_h2 %n" +
+                "WHERE 1=1 %s %n" +
+                "%s " +
+                "LIMIT %d", whereClause, orderBy, maxAllowedCount);
+    }
+
+    @Override
+    protected String getQueryPageOrderBySql(long start, int pageSize, String whereClause, String orderBy) {
+        return String.format("SELECT %n" +
+                ALL_COLUMNS +
+                "FROM test_schema.baz_h2 %n" +
+                "WHERE 1=1 %s %n" +
+                "%s %n" +
+                "LIMIT %d OFFSET %d", whereClause, orderBy, pageSize, start);
     }
 
     @Override

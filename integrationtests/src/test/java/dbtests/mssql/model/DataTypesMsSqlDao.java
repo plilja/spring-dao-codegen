@@ -9,6 +9,8 @@ import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -74,6 +76,35 @@ public class DataTypesMsSqlDao extends Dao<DataTypesMsSqlEntity, Long> {
     public static final Column<DataTypesMsSqlEntity, String> COLUMN_VARCHAR10 = new Column<>("varchar10");
 
     public static final Column<DataTypesMsSqlEntity, String> COLUMN_XML = new Column<>("xml");
+
+    public static final List<Column<DataTypesMsSqlEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_ID,
+    COLUMN_BINARY10,
+    COLUMN_BIT,
+    COLUMN_CHAR,
+    COLUMN_CHAR10,
+    COLUMN_DATE,
+    COLUMN_DATETIME,
+    COLUMN_DATETIME2,
+    COLUMN_DECIMAL_EIGHTEEN_ZERO,
+    COLUMN_DECIMAL_NINE_ZERO,
+    COLUMN_DECIMAL_NINETEEN_ZERO,
+    COLUMN_DECIMAL_TEN_TWO,
+    COLUMN_DECIMAL_TEN_ZERO,
+    COLUMN_FLOAT,
+    COLUMN_INT,
+    COLUMN_MONEY,
+    COLUMN_NCHAR10,
+    COLUMN_NTEXT,
+    COLUMN_NVARCHAR10,
+    COLUMN_REAL,
+    COLUMN_SMALLINT,
+    COLUMN_SMALLMONEY,
+    COLUMN_TEXT,
+    COLUMN_TIME,
+    COLUMN_TINYINT,
+    COLUMN_VARBINARY10,
+    COLUMN_VARCHAR10,
+    COLUMN_XML);
 
     private static final String ALL_COLUMNS = " id, binary10, bit, char, char10, " +
             " date, datetime, datetime2, decimal_eighteen_zero, decimal_nine_zero, " +
@@ -298,11 +329,32 @@ public class DataTypesMsSqlDao extends Dao<DataTypesMsSqlEntity, Long> {
     }
 
     @Override
-    protected String getQuerySql() {
-        return "SELECT TOP %d " +
+    public Column<DataTypesMsSqlEntity, ?> getColumnByName(String name) {
+        for (Column<DataTypesMsSqlEntity, ?> column : ALL_COLUMNS_LIST) {
+            if (column.getName().equals(name)) {
+                return column;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected String getQueryOrderBySql(int maxAllowedCount, String whereClause, String orderBy) {
+        return String.format("SELECT TOP %d %n" +
                 ALL_COLUMNS +
-                "FROM dbo.DATA_TYPES_MS_SQL " +
-                "WHERE %s ";
+                "FROM dbo.DATA_TYPES_MS_SQL %n" +
+                "WHERE 1=1 %s %n" +
+                "%s", maxAllowedCount, whereClause, orderBy);
+    }
+
+    @Override
+    protected String getQueryPageOrderBySql(long start, int pageSize, String whereClause, String orderBy) {
+        return String.format("SELECT %n" +
+                ALL_COLUMNS +
+                "FROM dbo.DATA_TYPES_MS_SQL %n" +
+                "WHERE 1=1 %s" +
+                "%s %n" +
+                "OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", whereClause, orderBy, start, pageSize);
     }
 
     @Override

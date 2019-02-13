@@ -5,6 +5,8 @@ import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.sql.Types;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -26,6 +28,13 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
     public static final Column<BazPostgresEntity, Integer> COLUMN_COUNTER = new Column<>("counter");
 
     public static final Column<BazPostgresEntity, LocalDateTime> COLUMN_CREATED_AT = new Column<>("created_at");
+
+    public static final List<Column<BazPostgresEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_BAZ_ID,
+    COLUMN_BAZ_NAME,
+    COLUMN_CHANGED_AT,
+    COLUMN_COLOR,
+    COLUMN_COUNTER,
+    COLUMN_CREATED_AT);
 
     private static final String ALL_COLUMNS = " baz_id, baz_name, changed_at, color, counter, " +
             " created_at ";
@@ -135,12 +144,33 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
     }
 
     @Override
-    protected String getQuerySql() {
-        return "SELECT " +
+    public Column<BazPostgresEntity, ?> getColumnByName(String name) {
+        for (Column<BazPostgresEntity, ?> column : ALL_COLUMNS_LIST) {
+            if (column.getName().equals(name)) {
+                return column;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected String getQueryOrderBySql(int maxAllowedCount, String whereClause, String orderBy) {
+        return String.format("SELECT %n" +
                 ALL_COLUMNS +
-                "FROM test_schema.baz_postgres " +
-                "WHERE %s " +
-                "LIMIT %d";
+                "FROM test_schema.baz_postgres %n" +
+                "WHERE 1=1 %s %n" +
+                "%s " +
+                "LIMIT %d", whereClause, orderBy, maxAllowedCount);
+    }
+
+    @Override
+    protected String getQueryPageOrderBySql(long start, int pageSize, String whereClause, String orderBy) {
+        return String.format("SELECT %n" +
+                ALL_COLUMNS +
+                "FROM test_schema.baz_postgres %n" +
+                "WHERE 1=1 %s %n" +
+                "%s %n" +
+                "LIMIT %d OFFSET %d", whereClause, orderBy, pageSize, start);
     }
 
     @Override

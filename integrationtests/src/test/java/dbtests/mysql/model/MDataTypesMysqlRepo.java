@@ -10,6 +10,8 @@ import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -73,6 +75,34 @@ public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
     public static final Column<MDataTypesMysql, byte[]> COLUMN_VARCHAR_BINARY_10 = new Column<>("varchar_binary_10");
 
     public static final Column<MDataTypesMysql, Integer> COLUMN_YEAR = new Column<>("`year`");
+
+    public static final List<Column<MDataTypesMysql, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_ID,
+    COLUMN_BIGINT,
+    COLUMN_BIT,
+    COLUMN_BLOB,
+    COLUMN_BOOL,
+    COLUMN_DATE,
+    COLUMN_DATETIME,
+    COLUMN_DECIMAL_EIGHTEEN_ZERO,
+    COLUMN_DECIMAL_NINE_ZERO,
+    COLUMN_DECIMAL_NINETEEN_ZERO,
+    COLUMN_DECIMAL_TEN_TWO,
+    COLUMN_DECIMAL_TEN_ZERO,
+    COLUMN_DOUBLE,
+    COLUMN_FLOAT,
+    COLUMN_INT,
+    COLUMN_INTEGER,
+    COLUMN_JSON,
+    COLUMN_MEDIUMINT,
+    COLUMN_SMALLINT,
+    COLUMN_TEXT,
+    COLUMN_TIME,
+    COLUMN_TIMESTAMP,
+    COLUMN_TINYBLOB,
+    COLUMN_TINYINT,
+    COLUMN_VARCHAR_10,
+    COLUMN_VARCHAR_BINARY_10,
+    COLUMN_YEAR);
 
     private static final String ALL_COLUMNS = " id, `bigint`, `bit`, `blob`, `bool`, " +
             " `date`, `datetime`, decimal_eighteen_zero, decimal_nine_zero, decimal_nineteen_zero, " +
@@ -296,12 +326,33 @@ public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
     }
 
     @Override
-    protected String getQuerySql() {
-        return "SELECT " +
+    public Column<MDataTypesMysql, ?> getColumnByName(String name) {
+        for (Column<MDataTypesMysql, ?> column : ALL_COLUMNS_LIST) {
+            if (column.getName().equals(name)) {
+                return column;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected String getQueryOrderBySql(int maxAllowedCount, String whereClause, String orderBy) {
+        return String.format("SELECT %n" +
                 ALL_COLUMNS +
-                "FROM DATA_TYPES_MYSQL " +
-                "WHERE %s " +
-                "LIMIT %d";
+                "FROM DATA_TYPES_MYSQL %n" +
+                "WHERE 1=1 %s %n" +
+                "%s " +
+                "LIMIT %d", whereClause, orderBy, maxAllowedCount);
+    }
+
+    @Override
+    protected String getQueryPageOrderBySql(long start, int pageSize, String whereClause, String orderBy) {
+        return String.format("SELECT %n" +
+                ALL_COLUMNS +
+                "FROM DATA_TYPES_MYSQL %n" +
+                "WHERE 1=1 %s %n" +
+                "%s %n" +
+                "LIMIT %d OFFSET %d", whereClause, orderBy, pageSize, start);
     }
 
     @Override

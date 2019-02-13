@@ -5,6 +5,8 @@ import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.sql.Types;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -26,6 +28,13 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
     public static final Column<BazMsSqlEntity, String> COLUMN_NAME = new Column<>("name");
 
     public static final Column<BazMsSqlEntity, Integer> COLUMN_VERSION = new Column<>("version");
+
+    public static final List<Column<BazMsSqlEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_ID,
+    COLUMN_COLOR,
+    COLUMN_INSERTED_AT,
+    COLUMN_MODIFIED_AT,
+    COLUMN_NAME,
+    COLUMN_VERSION);
 
     private static final String ALL_COLUMNS = " id, color, inserted_at, modified_at, name, " +
             " version ";
@@ -135,11 +144,32 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
     }
 
     @Override
-    protected String getQuerySql() {
-        return "SELECT TOP %d " +
+    public Column<BazMsSqlEntity, ?> getColumnByName(String name) {
+        for (Column<BazMsSqlEntity, ?> column : ALL_COLUMNS_LIST) {
+            if (column.getName().equals(name)) {
+                return column;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected String getQueryOrderBySql(int maxAllowedCount, String whereClause, String orderBy) {
+        return String.format("SELECT TOP %d %n" +
                 ALL_COLUMNS +
-                "FROM dbo.baz_ms_sql " +
-                "WHERE %s ";
+                "FROM dbo.baz_ms_sql %n" +
+                "WHERE 1=1 %s %n" +
+                "%s", maxAllowedCount, whereClause, orderBy);
+    }
+
+    @Override
+    protected String getQueryPageOrderBySql(long start, int pageSize, String whereClause, String orderBy) {
+        return String.format("SELECT %n" +
+                ALL_COLUMNS +
+                "FROM dbo.baz_ms_sql %n" +
+                "WHERE 1=1 %s" +
+                "%s %n" +
+                "OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", whereClause, orderBy, start, pageSize);
     }
 
     @Override

@@ -6,37 +6,110 @@ import se.plilja.springdaogen.model.Config
 fun dao(_package: String, config: Config): Pair<String, String> {
     val queryApi = if (config.featureGenerateQueryApi) {
         """
+    public List<T> findAll(SortOrder<T> orderBy) {
+        return query(Collections.emptyList(), Collections.singletonList(orderBy));
+    }
+
+    public List<T> findAll(List<SortOrder<T>> orderBy) {
+        return query(Collections.emptyList(), orderBy);
+    }
+
     public List<T> query(QueryItem<T, ?> queryItem) {
         return query(Collections.singletonList(queryItem));
     }
 
-    /**
-     * Perform a query.
-     * <p/>
-     * Query items are joined by AND
-     * when sent to the database.
-     */
     public List<T> query(List<QueryItem<T, ?>> queryItems) {
+        return query(queryItems, Collections.emptyList());
+    }
+
+    public List<T> query(QueryItem<T, ?> queryItem, SortOrder<T> orderBy) {
+        return query(Collections.singletonList(queryItem), Collections.singletonList(orderBy));
+    }
+
+    public List<T> query(List<QueryItem<T, ?>> queryItems, SortOrder<T> orderBy) {
+        return query(queryItems, Collections.singletonList(orderBy));
+    }
+
+    public List<T> query(List<QueryItem<T, ?>> queryItems, List<SortOrder<T>> orderBy) {
         MapSqlParameterSource params = new MapSqlParameterSource();
-        StringBuilder sb = new StringBuilder(" ");
+        StringBuilder whereClause = getWhereClause(queryItems, params);
+        StringBuilder orderByClause = getOrderByClause(orderBy);
+        String sql = getQueryOrderBySql(getSelectAllDefaultMaxCount() + 1, whereClause.toString(), orderByClause.toString());
+        List<T> result = jdbcTemplate.query(sql, params, getRowMapper());
+        ensureMaxCountNotExceeded(getSelectAllDefaultMaxCount(), result);
+        return result;
+    }
+
+    public List<T> findPage(long start, int pageSize, SortOrder<T> orderBy) {
+        return queryForPage(start, pageSize, Collections.emptyList(), Collections.singletonList(orderBy));
+    }
+
+    public List<T> findPage(long start, int pageSize, List<SortOrder<T>> orderBy) {
+        return queryForPage(start, pageSize, Collections.emptyList(), orderBy);
+    }
+
+    public List<T> queryForPage(long start, int pageSize, QueryItem<T, ?> queryItem) {
+        return queryForPage(start, pageSize, Collections.singletonList(queryItem));
+    }
+
+    public List<T> queryForPage(long start, int pageSize, List<QueryItem<T, ?>> queryItems) {
+        return queryForPage(start, pageSize, queryItems, Collections.emptyList());
+    }
+
+    public List<T> queryForPage(long start, int pageSize, QueryItem<T, ?> queryItem, SortOrder<T> orderBy) {
+        return queryForPage(start, pageSize, Collections.singletonList(queryItem), Collections.singletonList(orderBy));
+    }
+
+    public List<T> queryForPage(long start, int pageSize, List<QueryItem<T, ?>> queryItems, SortOrder<T> orderBy) {
+        return queryForPage(start, pageSize, queryItems, Collections.singletonList(orderBy));
+    }
+
+    public List<T> queryForPage(long start, int pageSize, List<QueryItem<T, ?>> queryItems, List<SortOrder<T>> orderBy) {
+        List<SortOrder<T>> adjustedSortOrder;
+        if (orderBy.isEmpty()) {
+            adjustedSortOrder = Collections.singletonList(SortOrder.asc(getColumnByName(getPrimaryKeyColumnName())));
+        } else {
+            adjustedSortOrder = orderBy;
+        }
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        StringBuilder whereClause = getWhereClause(queryItems, params);
+        StringBuilder orderByClause = getOrderByClause(adjustedSortOrder);
+        String sql = getQueryPageOrderBySql(start, pageSize, whereClause.toString(), orderByClause.toString());
+        List<T> result = jdbcTemplate.query(sql, params, getRowMapper());
+        ensureMaxCountNotExceeded(pageSize, result);
+        return result;
+    }
+
+    private StringBuilder getOrderByClause(List<SortOrder<T>> orderBy) {
+        StringBuilder orderByClause = new StringBuilder();
+        if (!orderBy.isEmpty()) {
+            orderByClause.append("ORDER BY ");
+            List<String> columnNames = orderBy.stream()
+                    .map(s -> s.getColumn().getName() + " " + s.getOrder())
+                    .collect(Collectors.toList());
+            orderByClause.append(String.join(", ", columnNames));
+        }
+        return orderByClause;
+    }
+
+    private StringBuilder getWhereClause(List<QueryItem<T, ?>> queryItems, MapSqlParameterSource params) {
+        StringBuilder whereClause = new StringBuilder(" ");
         for (int i = 0; i < queryItems.size(); i++) {
-            if (i > 0) {
-                sb.append(" AND ");
-            }
+            whereClause.append(" AND ");
             QueryItem<T, ?> queryItem = queryItems.get(i);
             if (queryItem.getValue() == null) {
                 if (queryItem.getOperator() == QueryItem.Operator.EQ) {
-                    sb.append(String.format("%s IS NULL", queryItem.getColumn().getName()));
+                    whereClause.append(String.format("%s IS NULL", queryItem.getColumn().getName()));
                 } else if (queryItem.getOperator() == QueryItem.Operator.NEQ) {
-                    sb.append(String.format("%s IS NOT NULL", queryItem.getColumn().getName()));
+                    whereClause.append(String.format("%s IS NOT NULL", queryItem.getColumn().getName()));
                 } else {
                     throw new IllegalArgumentException(String.format("Unsupported operator %s for comparison with NULL", queryItem.getOperator().name()));
                 }
             } else {
                 if (queryItem.getOperator() == QueryItem.Operator.NEQ && queryItem.isIncludeNulls()) {
-                    sb.append(String.format("(%s %s :q%d OR %s IS NULL)", queryItem.getColumn().getName(), queryItem.getOperator().getSymbol(), i, queryItem.getColumn().getName()));
+                    whereClause.append(String.format("(%s %s :q%d OR %s IS NULL)", queryItem.getColumn().getName(), queryItem.getOperator().getSymbol(), i, queryItem.getColumn().getName()));
                 } else {
-                    sb.append(String.format("%s %s :q%d", queryItem.getColumn().getName(), queryItem.getOperator().getSymbol(), i));
+                    whereClause.append(String.format("%s %s :q%d", queryItem.getColumn().getName(), queryItem.getOperator().getSymbol(), i));
                 }
             }
             if (queryItem.getValue() != null) {
@@ -47,34 +120,23 @@ fun dao(_package: String, config: Config): Pair<String, String> {
                 }
             }
         }
-        sb.append(" ");
-        String sql = String.format(getQuerySql(), sb, getSelectAllDefaultMaxCount() + 1);
-        List<T> result = jdbcTemplate.query(sql, params, getRowMapper());
-        ensureMaxCountNotExceeded(getSelectAllDefaultMaxCount(), result);
-        return result;
+        whereClause.append(" ");
+        return whereClause;
     }
 
-    protected abstract String getQuerySql();
+    public abstract Column<T, ?> getColumnByName(String name);
 
-    protected String getQueryOrderBySql(int maxAllowedCount, List<Column<T, ?>> orderBy) {
-        return null;
-    }
+    protected abstract String getQueryOrderBySql(int maxAllowedCount, String whereClause, String orderBy);
 
-    protected String getSelectManyOrderBySql(int maxAllowedCount, List<Column<T, ?>> orderBy) {
-       return null;
-    }
-
-    protected String getSelectPageOrderBySql(long start, int pageSize, List<Column<T, ?>> orderBy) {
-        return null;
-    }
-    """
+    protected abstract String getQueryPageOrderBySql(long start, int pageSize, String whereClause, String orderBy);
+""".trimMargin()
     } else {
         ""
     }
     val maybeExtraImports = if (config.featureGenerateQueryApi) {
         """
+import java.util.stream.Collectors;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-
         """.trimIndent()
     } else {
         ""
@@ -307,7 +369,9 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         HashMap<String, Object> noParams = new HashMap<>();
         return jdbcTemplate.queryForObject(sql, noParams, Long.class);
     }
-    $queryApi
+
+$queryApi
+
     protected abstract RowMapper<T> getRowMapper();
 
     protected abstract SqlParameterSource getParams(T object);

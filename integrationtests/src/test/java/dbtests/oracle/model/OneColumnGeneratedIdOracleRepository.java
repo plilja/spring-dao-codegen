@@ -4,6 +4,8 @@ import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.sql.Types;
+import java.util.Arrays;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -15,6 +17,8 @@ import org.springframework.stereotype.Repository;
 public class OneColumnGeneratedIdOracleRepository extends Dao<OneColumnGeneratedIdOracle, Integer> {
 
     public static final Column<OneColumnGeneratedIdOracle, Integer> COLUMN_ID = new Column<>("ID");
+
+    public static final List<Column<OneColumnGeneratedIdOracle, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_ID);
 
     private static final String ALL_COLUMNS = " ID ";
 
@@ -101,12 +105,37 @@ public class OneColumnGeneratedIdOracleRepository extends Dao<OneColumnGenerated
     }
 
     @Override
-    protected String getQuerySql() {
-        return "SELECT " +
+    public Column<OneColumnGeneratedIdOracle, ?> getColumnByName(String name) {
+        for (Column<OneColumnGeneratedIdOracle, ?> column : ALL_COLUMNS_LIST) {
+            if (column.getName().equals(name)) {
+                return column;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected String getQueryOrderBySql(int maxAllowedCount, String whereClause, String orderBy) {
+        return String.format("SELECT %n" +
                 ALL_COLUMNS +
-                "FROM DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE " +
-                "WHERE %s " +
-                "AND ROWNUM <= %d";
+                "FROM DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE %n" +
+                "WHERE ROWNUM <= %d %s %n" +
+                "%s", maxAllowedCount, whereClause, orderBy);
+    }
+
+    @Override
+    protected String getQueryPageOrderBySql(long start, int pageSize, String whereClause, String orderBy) {
+        return String.format("SELECT * FROM (%n" +
+                "SELECT rownum tmp_rownum_, a.* %n" +
+                "FROM (SELECT %n" +
+                ALL_COLUMNS +
+                "FROM DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE %n" +
+                "WHERE 1=1 %s %n" +
+                "%s %n" +
+                ") a %n" +
+                "WHERE rownum < %d + %d %n" +
+                ")%n" +
+                "WHERE tmp_rownum_ >= %d", whereClause, orderBy, start + 1, pageSize, start + 1);
     }
 
     @Override

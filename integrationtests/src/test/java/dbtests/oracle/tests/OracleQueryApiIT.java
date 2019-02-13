@@ -1,8 +1,10 @@
 package dbtests.oracle.tests;
 
-import dbtests.BaseIntegrationTest;
+import dbtests.QueryApiBaseTest;
+import dbtests.framework.Column;
 import dbtests.oracle.model.BazOracle;
 import dbtests.oracle.model.BazOracleRepository;
+import dbtests.oracle.model.ColorEnumOracle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -10,12 +12,9 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.LocalDateTime;
-
 @ContextConfiguration(classes = {OracleITConfig.class})
 @ExtendWith(SpringExtension.class)
-public class OracleIT extends BaseIntegrationTest<BazOracle, BazOracleRepository> {
-
+class OracleQueryApiIT extends QueryApiBaseTest<BazOracle, BazOracleRepository> {
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -30,6 +29,14 @@ public class OracleIT extends BaseIntegrationTest<BazOracle, BazOracleRepository
     @Override
     public void clearTable() {
         jdbcTemplate.update("DELETE FROM DOCKER.BAZ_ORACLE", new MapSqlParameterSource());
+    }
+
+    @Override
+    protected BazOracle newEntity(String name, String color) {
+        BazOracle r = new BazOracle();
+        r.setName(name);
+        // TODO
+        return r;
     }
 
     @Override
@@ -50,32 +57,32 @@ public class OracleIT extends BaseIntegrationTest<BazOracle, BazOracleRepository
     }
 
     @Override
-    protected LocalDateTime getCreatedAt(BazOracle entity) {
-        return entity.getCreatedAt();
+    protected void setColor(BazOracle entity, String color) {
+        entity.setColor(getColorByName(color));
     }
 
     @Override
-    protected LocalDateTime getChangedAt(BazOracle entity) {
-        return entity.getChangedAt();
+    protected ColorEnumOracle getColor(BazOracle entity) {
+        return entity.getColor();
     }
 
     @Override
-    protected Integer getVersion(BazOracle entity) {
-        return entity.getVersion();
+    protected ColorEnumOracle getColorByName(String color) {
+        return ColorEnumOracle.fromId(color);
     }
 
     @Override
-    protected void setVersion(BazOracle entity, Integer version) {
-        entity.setVersion(version);
+    protected Column<BazOracle, ?> getColorColumn() {
+        return BazOracleRepository.COLUMN_COLOR;
     }
 
     @Override
-    protected void insertObjectWithoutVersionColumn(String name) {
-        var params = new MapSqlParameterSource()
-                .addValue("name", "Glenn")
-                .addValue("created_at", LocalDateTime.now())
-                .addValue("changed_at", LocalDateTime.now());
-        jdbcTemplate.update("INSERT INTO DOCKER.BAZ_ORACLE (name, created_at, changed_at) values (:name, :created_at, :changed_at)", params);
+    protected Column<BazOracle, Integer> getIdColumn() {
+        return BazOracleRepository.COLUMN_ID;
     }
 
+    @Override
+    protected Column<BazOracle, String> getNameColumn() {
+        return BazOracleRepository.COLUMN_NAME;
+    }
 }

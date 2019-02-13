@@ -8,6 +8,8 @@ import java.math.BigInteger;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
@@ -62,6 +64,29 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
     public static final Column<DataTypesPostgresEntity, String> COLUMN_VARCHAR10 = new Column<>("varchar10");
 
     public static final Column<DataTypesPostgresEntity, String> COLUMN_XML = new Column<>("xml");
+
+    public static final List<Column<DataTypesPostgresEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_ID,
+    COLUMN_BIGINT,
+    COLUMN_BOOLEAN_B,
+    COLUMN_BYTEA,
+    COLUMN_CHAR,
+    COLUMN_CHAR10,
+    COLUMN_DATE,
+    COLUMN_DECIMAL_EIGHTEEN_ZERO,
+    COLUMN_DECIMAL_NINE_ZERO,
+    COLUMN_DECIMAL_NINETEEN_ZERO,
+    COLUMN_DECIMAL_TEN_TWO,
+    COLUMN_DECIMAL_TEN_ZERO,
+    COLUMN_DOUBLE,
+    COLUMN_FLOAT,
+    COLUMN_GUID,
+    COLUMN_INTEGER,
+    COLUMN_NUMERIC_TEN_TWO,
+    COLUMN_SMALLINT,
+    COLUMN_TEXT,
+    COLUMN_TIMESTAMP,
+    COLUMN_VARCHAR10,
+    COLUMN_XML);
 
     private static final String ALL_COLUMNS = " id, bigint, boolean_b, bytea, char, " +
             " char10, date, decimal_eighteen_zero, decimal_nine_zero, decimal_nineteen_zero, " +
@@ -255,12 +280,33 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
     }
 
     @Override
-    protected String getQuerySql() {
-        return "SELECT " +
+    public Column<DataTypesPostgresEntity, ?> getColumnByName(String name) {
+        for (Column<DataTypesPostgresEntity, ?> column : ALL_COLUMNS_LIST) {
+            if (column.getName().equals(name)) {
+                return column;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected String getQueryOrderBySql(int maxAllowedCount, String whereClause, String orderBy) {
+        return String.format("SELECT %n" +
                 ALL_COLUMNS +
-                "FROM public.data_types_postgres " +
-                "WHERE %s " +
-                "LIMIT %d";
+                "FROM public.data_types_postgres %n" +
+                "WHERE 1=1 %s %n" +
+                "%s " +
+                "LIMIT %d", whereClause, orderBy, maxAllowedCount);
+    }
+
+    @Override
+    protected String getQueryPageOrderBySql(long start, int pageSize, String whereClause, String orderBy) {
+        return String.format("SELECT %n" +
+                ALL_COLUMNS +
+                "FROM public.data_types_postgres %n" +
+                "WHERE 1=1 %s %n" +
+                "%s %n" +
+                "LIMIT %d OFFSET %d", whereClause, orderBy, pageSize, start);
     }
 
     @Override

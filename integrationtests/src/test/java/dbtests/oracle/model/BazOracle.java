@@ -12,6 +12,7 @@ public class BazOracle implements BaseEntity<Integer>, CreatedAtTracked<LocalDat
 
     private Integer id;
     private LocalDateTime changedAt;
+    private ColorEnumOracle color;
     private LocalDateTime createdAt;
     @NotNull
     @Size(max = 30)
@@ -21,12 +22,21 @@ public class BazOracle implements BaseEntity<Integer>, CreatedAtTracked<LocalDat
     public BazOracle() {
     }
 
-    public BazOracle(Integer id, LocalDateTime changedAt, LocalDateTime createdAt, String name, Integer version) {
+    public BazOracle(Integer id, LocalDateTime changedAt, ColorEnumOracle color, LocalDateTime createdAt, String name, Integer version) {
         this.id = id;
         this.changedAt = changedAt;
+        this.color = color;
         this.createdAt = createdAt;
         this.name = name;
         this.version = version;
+    }
+
+    public ColorEnumOracle getColor() {
+        return color;
+    }
+
+    public void setColor(ColorEnumOracle color) {
+        this.color = color;
     }
 
     public String getName() {

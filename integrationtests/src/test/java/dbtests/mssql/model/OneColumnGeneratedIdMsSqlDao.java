@@ -4,6 +4,8 @@ import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.sql.Types;
+import java.util.Arrays;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -15,6 +17,8 @@ import org.springframework.stereotype.Repository;
 public class OneColumnGeneratedIdMsSqlDao extends Dao<OneColumnGeneratedIdMsSqlEntity, Integer> {
 
     public static final Column<OneColumnGeneratedIdMsSqlEntity, Integer> COLUMN_ID = new Column<>("id");
+
+    public static final List<Column<OneColumnGeneratedIdMsSqlEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_ID);
 
     private static final String ALL_COLUMNS = " id ";
 
@@ -95,11 +99,32 @@ public class OneColumnGeneratedIdMsSqlDao extends Dao<OneColumnGeneratedIdMsSqlE
     }
 
     @Override
-    protected String getQuerySql() {
-        return "SELECT TOP %d " +
+    public Column<OneColumnGeneratedIdMsSqlEntity, ?> getColumnByName(String name) {
+        for (Column<OneColumnGeneratedIdMsSqlEntity, ?> column : ALL_COLUMNS_LIST) {
+            if (column.getName().equals(name)) {
+                return column;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected String getQueryOrderBySql(int maxAllowedCount, String whereClause, String orderBy) {
+        return String.format("SELECT TOP %d %n" +
                 ALL_COLUMNS +
-                "FROM dbo.one_column_generated_id_ms_sql " +
-                "WHERE %s ";
+                "FROM dbo.one_column_generated_id_ms_sql %n" +
+                "WHERE 1=1 %s %n" +
+                "%s", maxAllowedCount, whereClause, orderBy);
+    }
+
+    @Override
+    protected String getQueryPageOrderBySql(long start, int pageSize, String whereClause, String orderBy) {
+        return String.format("SELECT %n" +
+                ALL_COLUMNS +
+                "FROM dbo.one_column_generated_id_ms_sql %n" +
+                "WHERE 1=1 %s" +
+                "%s %n" +
+                "OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", whereClause, orderBy, start, pageSize);
     }
 
     @Override

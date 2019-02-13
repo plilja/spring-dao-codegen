@@ -10,6 +10,7 @@ import se.plilja.springdaogen.generatedframework.dao
 import se.plilja.springdaogen.generatedframework.entityInterfaces
 import se.plilja.springdaogen.generatedframework.frameworkExceptions
 import se.plilja.springdaogen.generatedframework.queryItem
+import se.plilja.springdaogen.generatedframework.sortOrder
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Schema
 import java.io.File
@@ -58,6 +59,7 @@ fun copyFrameworkClasses(config: Config) {
     if (config.featureGenerateQueryApi) {
         writeFrameworkClass(queryItem(config.frameworkOutputPackage))
         writeFrameworkClass(columnClass(config.frameworkOutputPackage))
+        writeFrameworkClass(sortOrder(config.frameworkOutputPackage))
     }
     writeFrameworkClass(baseDatabaseEnum(config.frameworkOutputPackage))
     writeFrameworkClass(dao(config.frameworkOutputPackage, config))

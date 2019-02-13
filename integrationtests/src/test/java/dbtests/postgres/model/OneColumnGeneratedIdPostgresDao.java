@@ -4,6 +4,8 @@ import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.sql.Types;
+import java.util.Arrays;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -15,6 +17,8 @@ import org.springframework.stereotype.Repository;
 public class OneColumnGeneratedIdPostgresDao extends Dao<OneColumnGeneratedIdPostgresEntity, Integer> {
 
     public static final Column<OneColumnGeneratedIdPostgresEntity, Integer> COLUMN_ID = new Column<>("id");
+
+    public static final List<Column<OneColumnGeneratedIdPostgresEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_ID);
 
     private static final String ALL_COLUMNS = " id ";
 
@@ -95,12 +99,33 @@ public class OneColumnGeneratedIdPostgresDao extends Dao<OneColumnGeneratedIdPos
     }
 
     @Override
-    protected String getQuerySql() {
-        return "SELECT " +
+    public Column<OneColumnGeneratedIdPostgresEntity, ?> getColumnByName(String name) {
+        for (Column<OneColumnGeneratedIdPostgresEntity, ?> column : ALL_COLUMNS_LIST) {
+            if (column.getName().equals(name)) {
+                return column;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected String getQueryOrderBySql(int maxAllowedCount, String whereClause, String orderBy) {
+        return String.format("SELECT %n" +
                 ALL_COLUMNS +
-                "FROM test_schema.one_column_generated_id_postgres " +
-                "WHERE %s " +
-                "LIMIT %d";
+                "FROM test_schema.one_column_generated_id_postgres %n" +
+                "WHERE 1=1 %s %n" +
+                "%s " +
+                "LIMIT %d", whereClause, orderBy, maxAllowedCount);
+    }
+
+    @Override
+    protected String getQueryPageOrderBySql(long start, int pageSize, String whereClause, String orderBy) {
+        return String.format("SELECT %n" +
+                ALL_COLUMNS +
+                "FROM test_schema.one_column_generated_id_postgres %n" +
+                "WHERE 1=1 %s %n" +
+                "%s %n" +
+                "LIMIT %d OFFSET %d", whereClause, orderBy, pageSize, start);
     }
 
     @Override

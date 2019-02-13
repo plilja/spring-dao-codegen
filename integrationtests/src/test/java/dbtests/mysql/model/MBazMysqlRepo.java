@@ -5,6 +5,8 @@ import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.sql.Types;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -26,6 +28,13 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
     public static final Column<MBazMysql, String> COLUMN_NAME = new Column<>("name");
 
     public static final Column<MBazMysql, Integer> COLUMN_VERSION = new Column<>("version");
+
+    public static final List<Column<MBazMysql, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_ID,
+    COLUMN_CHANGED_AT,
+    COLUMN_COLOR_ENUM_MYSQL_ID,
+    COLUMN_CREATED_AT,
+    COLUMN_NAME,
+    COLUMN_VERSION);
 
     private static final String ALL_COLUMNS = " id, changed_at, color_enum_mysql_id, created_at, name, " +
             " version ";
@@ -135,12 +144,33 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
     }
 
     @Override
-    protected String getQuerySql() {
-        return "SELECT " +
+    public Column<MBazMysql, ?> getColumnByName(String name) {
+        for (Column<MBazMysql, ?> column : ALL_COLUMNS_LIST) {
+            if (column.getName().equals(name)) {
+                return column;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected String getQueryOrderBySql(int maxAllowedCount, String whereClause, String orderBy) {
+        return String.format("SELECT %n" +
                 ALL_COLUMNS +
-                "FROM BazMysql " +
-                "WHERE %s " +
-                "LIMIT %d";
+                "FROM BazMysql %n" +
+                "WHERE 1=1 %s %n" +
+                "%s " +
+                "LIMIT %d", whereClause, orderBy, maxAllowedCount);
+    }
+
+    @Override
+    protected String getQueryPageOrderBySql(long start, int pageSize, String whereClause, String orderBy) {
+        return String.format("SELECT %n" +
+                ALL_COLUMNS +
+                "FROM BazMysql %n" +
+                "WHERE 1=1 %s %n" +
+                "%s %n" +
+                "LIMIT %d OFFSET %d", whereClause, orderBy, pageSize, start);
     }
 
     @Override

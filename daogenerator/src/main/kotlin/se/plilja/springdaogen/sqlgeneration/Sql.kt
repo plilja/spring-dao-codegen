@@ -182,24 +182,68 @@ fun selectMany(table: Table, databaseDialect: DatabaseDialect): String {
 }
 
 fun selectManyQuery(table: Table, databaseDialect: DatabaseDialect): String {
-    var result = """
-            |"SELECT${if (databaseDialect == DatabaseDialect.MSSQL_SERVER) " TOP %d" else ""} " +
+    return when {
+        databaseDialect == DatabaseDialect.MSSQL_SERVER -> """
+            |String.format("SELECT TOP %d %n" +
             |ALL_COLUMNS +
-            |"FROM ${formatTable(table, databaseDialect)} " +
-            |"WHERE %s "
+            |"FROM ${formatTable(table, databaseDialect)} %n" +
+            |"WHERE 1=1 %s %n" +
+            |"%s", maxAllowedCount, whereClause, orderBy)
             """.trimMargin()
-    if (databaseDialect in listOf(DatabaseDialect.ORACLE, DatabaseDialect.ORACLE12)) {
-        result += """ +
-            |"AND ROWNUM <= %d"
-        """.trimMargin()
-    } else if (databaseDialect in listOf(DatabaseDialect.MYSQL, DatabaseDialect.POSTGRES)) {
-        result += """ +
-            |"LIMIT %d"
-        """.trimMargin()
-    } else if (databaseDialect != DatabaseDialect.MSSQL_SERVER) {
-        throw IllegalArgumentException("Unknown database dialect ${databaseDialect}")
+        databaseDialect in listOf(DatabaseDialect.ORACLE, DatabaseDialect.ORACLE12) -> """
+            |String.format("SELECT %n" +
+            |ALL_COLUMNS +
+            |"FROM ${formatTable(table, databaseDialect)} %n" +
+            |"WHERE ROWNUM <= %d %s %n" +
+            |"%s", maxAllowedCount, whereClause, orderBy)
+            """.trimMargin()
+        else -> """
+            |String.format("SELECT %n" +
+            |ALL_COLUMNS +
+            |"FROM ${formatTable(table, databaseDialect)} %n" +
+            |"WHERE 1=1 %s %n" +
+            |"%s " +
+            |"LIMIT %d", whereClause, orderBy, maxAllowedCount)
+            """.trimMargin()
     }
-    return result
+}
+
+fun selectPageQuery(table: Table, databaseDialect: DatabaseDialect): String {
+    return when {
+        databaseDialect in listOf(DatabaseDialect.MYSQL, DatabaseDialect.POSTGRES) -> """
+            |String.format("SELECT %n" +
+            |ALL_COLUMNS +
+            |"FROM ${formatTable(table, databaseDialect)} %n" +
+            |"WHERE 1=1 %s %n" +
+            |"%s %n" +
+            |"LIMIT %d OFFSET %d", whereClause, orderBy, pageSize, start);
+        """.trimMargin()
+
+        databaseDialect in listOf(DatabaseDialect.MSSQL_SERVER, DatabaseDialect.ORACLE12) -> """
+            |String.format("SELECT %n" +
+            |ALL_COLUMNS +
+            |"FROM ${formatTable(table, databaseDialect)} %n" +
+            |"WHERE 1=1 %s" +
+            |"%s %n" +
+            |"OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", whereClause, orderBy, start, pageSize);
+            """.trimMargin()
+
+        databaseDialect == DatabaseDialect.ORACLE -> """
+            |String.format("SELECT * FROM (%n" +
+            |"SELECT rownum tmp_rownum_, a.* %n" +
+            |"FROM (SELECT %n" +
+            |ALL_COLUMNS +
+            |"FROM ${formatTable(table, databaseDialect)} %n" +
+            |"WHERE 1=1 %s %n" +
+            |"%s %n" +
+            |") a %n" +
+            |"WHERE rownum < %d + %d %n" +
+            |")%n" +
+            |"WHERE tmp_rownum_ >= %d", whereClause, orderBy, start + 1, pageSize, start + 1);
+        """.trimMargin()
+
+        else -> throw RuntimeException("Unsupported database dialect $databaseDialect")
+    }
 }
 
 fun count(table: Table, databaseDialect: DatabaseDialect): String {

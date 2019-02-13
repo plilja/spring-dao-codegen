@@ -9,6 +9,8 @@ import java.math.BigInteger;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -52,6 +54,24 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
     public static final Column<DataTypesOracle, String> COLUMN_VARCHAR = new Column<>("\"VARCHAR\"");
 
     public static final Column<DataTypesOracle, String> COLUMN_VARCHAR2 = new Column<>("\"VARCHAR2\"");
+
+    public static final List<Column<DataTypesOracle, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_ID,
+    COLUMN_BINARY_DOUBLE,
+    COLUMN_BINARY_FLOAT,
+    COLUMN_BLOB,
+    COLUMN_CHAR1,
+    COLUMN_CHAR10,
+    COLUMN_CLOB,
+    COLUMN_DATE,
+    COLUMN_NLOB,
+    COLUMN_NUMBER_EIGHTEEN_ZERO,
+    COLUMN_NUMBER_NINE_ZERO,
+    COLUMN_NUMBER_NINETEEN_ZERO,
+    COLUMN_NUMBER_TEN_TWO,
+    COLUMN_NUMBER_TEN_ZERO,
+    COLUMN_TIMESTAMP,
+    COLUMN_VARCHAR,
+    COLUMN_VARCHAR2);
 
     private static final String ALL_COLUMNS = " ID, BINARY_DOUBLE, BINARY_FLOAT, BLOB, CHAR1, " +
             " CHAR10, CLOB, \"DATE\", NLOB, NUMBER_EIGHTEEN_ZERO, " +
@@ -231,12 +251,37 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
     }
 
     @Override
-    protected String getQuerySql() {
-        return "SELECT " +
+    public Column<DataTypesOracle, ?> getColumnByName(String name) {
+        for (Column<DataTypesOracle, ?> column : ALL_COLUMNS_LIST) {
+            if (column.getName().equals(name)) {
+                return column;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected String getQueryOrderBySql(int maxAllowedCount, String whereClause, String orderBy) {
+        return String.format("SELECT %n" +
                 ALL_COLUMNS +
-                "FROM DOCKER.DATA_TYPES_ORACLE " +
-                "WHERE %s " +
-                "AND ROWNUM <= %d";
+                "FROM DOCKER.DATA_TYPES_ORACLE %n" +
+                "WHERE ROWNUM <= %d %s %n" +
+                "%s", maxAllowedCount, whereClause, orderBy);
+    }
+
+    @Override
+    protected String getQueryPageOrderBySql(long start, int pageSize, String whereClause, String orderBy) {
+        return String.format("SELECT * FROM (%n" +
+                "SELECT rownum tmp_rownum_, a.* %n" +
+                "FROM (SELECT %n" +
+                ALL_COLUMNS +
+                "FROM DOCKER.DATA_TYPES_ORACLE %n" +
+                "WHERE 1=1 %s %n" +
+                "%s %n" +
+                ") a %n" +
+                "WHERE rownum < %d + %d %n" +
+                ")%n" +
+                "WHERE tmp_rownum_ >= %d", whereClause, orderBy, start + 1, pageSize, start + 1);
     }
 
     @Override

@@ -4,6 +4,8 @@ import dbtests.framework.Column;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.sql.Types;
+import java.util.Arrays;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -15,6 +17,8 @@ import org.springframework.stereotype.Repository;
 public class MOneColumnNaturalIdMysqlRepo extends Dao<MOneColumnNaturalIdMysql, String> {
 
     public static final Column<MOneColumnNaturalIdMysql, String> COLUMN_ID = new Column<>("id");
+
+    public static final List<Column<MOneColumnNaturalIdMysql, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_ID);
 
     private static final String ALL_COLUMNS = " id ";
 
@@ -100,12 +104,33 @@ public class MOneColumnNaturalIdMysqlRepo extends Dao<MOneColumnNaturalIdMysql, 
     }
 
     @Override
-    protected String getQuerySql() {
-        return "SELECT " +
+    public Column<MOneColumnNaturalIdMysql, ?> getColumnByName(String name) {
+        for (Column<MOneColumnNaturalIdMysql, ?> column : ALL_COLUMNS_LIST) {
+            if (column.getName().equals(name)) {
+                return column;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected String getQueryOrderBySql(int maxAllowedCount, String whereClause, String orderBy) {
+        return String.format("SELECT %n" +
                 ALL_COLUMNS +
-                "FROM ONE_COLUMN_NATURAL_ID_MYSQL " +
-                "WHERE %s " +
-                "LIMIT %d";
+                "FROM ONE_COLUMN_NATURAL_ID_MYSQL %n" +
+                "WHERE 1=1 %s %n" +
+                "%s " +
+                "LIMIT %d", whereClause, orderBy, maxAllowedCount);
+    }
+
+    @Override
+    protected String getQueryPageOrderBySql(long start, int pageSize, String whereClause, String orderBy) {
+        return String.format("SELECT %n" +
+                ALL_COLUMNS +
+                "FROM ONE_COLUMN_NATURAL_ID_MYSQL %n" +
+                "WHERE 1=1 %s %n" +
+                "%s %n" +
+                "LIMIT %d OFFSET %d", whereClause, orderBy, pageSize, start);
     }
 
     @Override

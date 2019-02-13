@@ -23,6 +23,7 @@ import java.sql.Clob
 import java.sql.NClob
 import java.sql.Types
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.reflect.full.staticProperties
 
 
@@ -35,6 +36,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
     g.extends = "Dao<${table.entityName()}, ${table.primaryKey.typeName()}>"
     if (config.featureGenerateQueryApi) {
         ensureImported(g, config) { columnClass(config.frameworkOutputPackage) }
+        var columnsConstantNames = ArrayList<String>()
         for (column in table.columns) {
             val type = column.type()
             when (type) {
@@ -44,12 +46,17 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
                     }
                 }
             }
+            val name = "COLUMN_${snakeCase(column.name).toUpperCase()}"
             g.addConstant(
-                "COLUMN_${snakeCase(column.name).toUpperCase()}",
+                name,
                 "Column<${table.entityName()}, ${column.typeName()}>",
                 "new Column<>(\"${formatIdentifier(column.name, config.databaseDialect)}\")"
             )
+            columnsConstantNames.add(name)
         }
+        g.addImport(Arrays::class.java)
+        g.addImport(java.util.List::class.java)
+        g.addConstant("ALL_COLUMNS_LIST", "List<Column<${table.entityName()}, ?>>", "Arrays.asList(${columnsConstantNames.joinToString(",\n")})")
     }
     g.addPrivateConstant("ALL_COLUMNS", "String", columnsList(table, config.databaseDialect))
     g.addPrivateConstant(
@@ -159,8 +166,29 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         g.addCustomMethod(
             """
             @Override
-            protected String getQuerySql() {
+            public Column<${table.entityName()}, ?> getColumnByName(String name) {
+                for (Column<${table.entityName()}, ?> column : ALL_COLUMNS_LIST) {
+                    if (column.getName().equals(name)) {
+                        return column;
+                    }
+                }
+                return null;
+            }
+        """
+        )
+        g.addCustomMethod(
+            """
+            @Override
+            protected String getQueryOrderBySql(int maxAllowedCount, String whereClause, String orderBy) {
                 return ${selectManyQuery(table, config.databaseDialect)};
+            }
+        """
+        )
+        g.addCustomMethod(
+            """
+            @Override
+            protected String getQueryPageOrderBySql(long start, int pageSize, String whereClause, String orderBy) {
+                return ${selectPageQuery(table, config.databaseDialect)}
             }
         """
         )

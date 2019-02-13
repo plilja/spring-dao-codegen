@@ -27,7 +27,6 @@ public class MysqlOneColumnNaturalIdIT extends OneColumnNaturalIdBaseTest<MOneCo
     @Override
     protected void clearTable() {
         jdbcTemplate.update("DELETE FROM ONE_COLUMN_NATURAL_ID_MYSQL", new MapSqlParameterSource());
-
     }
 
     @Override
