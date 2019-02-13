@@ -274,6 +274,18 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
     }
 
     protected abstract String getQuerySql();
+
+    protected String getQueryOrderBySql(int maxAllowedCount, List<Column<T, ?>> orderBy) {
+        return null;
+    }
+
+    protected String getSelectManyOrderBySql(int maxAllowedCount, List<Column<T, ?>> orderBy) {
+       return null;
+    }
+
+    protected String getSelectPageOrderBySql(long start, int pageSize, List<Column<T, ?>> orderBy) {
+        return null;
+    }
     
     protected abstract RowMapper<T> getRowMapper();
 
