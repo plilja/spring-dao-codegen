@@ -14,9 +14,11 @@ import java.util.List;
 import static dbtests.framework.QueryItem.eq;
 import static dbtests.framework.QueryItem.gt;
 import static dbtests.framework.QueryItem.gte;
+import static dbtests.framework.QueryItem.in;
 import static dbtests.framework.QueryItem.lt;
 import static dbtests.framework.QueryItem.lte;
 import static dbtests.framework.QueryItem.neq;
+import static dbtests.framework.QueryItem.notIn;
 import static dbtests.framework.QueryItem.or;
 import static dbtests.framework.SortOrder.asc;
 import static dbtests.framework.SortOrder.desc;
@@ -326,6 +328,62 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         assertEquals(1, result.size());
         assertEquals(entity3.getId(), result.get(0).getId());
         assertEquals("David", getName(result.get(0)));
+    }
+
+    @Test
+    void queryWithIn() {
+        var entity1 = newEntity("Phil");
+        setColor(entity1, "GREEN");
+        getRepo().save(entity1);
+
+        var entity2 = newEntity("David");
+        getRepo().save(entity2);
+
+        var entity3 = newEntity("David");
+        setColor(entity3, "BLUE");
+        getRepo().save(entity3);
+
+        var entity4 = newEntity("Chris");
+        getRepo().save(entity4);
+
+        // when
+        List<Entity> result = getRepo().query(
+                in(getNameColumn(), List.of("Chris", "Phil")),
+                asc(getNameColumn())
+        );
+
+        // then
+        assertEquals(2, result.size());
+        assertEquals(entity4.getId(), result.get(0).getId());
+        assertEquals(entity1.getId(), result.get(1).getId());
+    }
+
+    @Test
+    void queryWithNotIn() {
+        var entity1 = newEntity("Phil");
+        setColor(entity1, "GREEN");
+        getRepo().save(entity1);
+
+        var entity2 = newEntity("David");
+        getRepo().save(entity2);
+
+        var entity3 = newEntity("David");
+        setColor(entity3, "BLUE");
+        getRepo().save(entity3);
+
+        var entity4 = newEntity("Chris");
+        getRepo().save(entity4);
+
+        // when
+        List<Entity> result = getRepo().query(
+                notIn(getIdColumn(), List.of(entity2.getId(), entity4.getId())),
+                asc(getIdColumn())
+        );
+
+        // then
+        assertEquals(2, result.size());
+        assertEquals(entity1.getId(), result.get(0).getId());
+        assertEquals(entity3.getId(), result.get(1).getId());
     }
 
     @Test

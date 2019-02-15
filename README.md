@@ -22,4 +22,3 @@
 * Indentation generated column list
 * Example projects (java8, java11)
 * Always have order by in page-queries
-* In queries

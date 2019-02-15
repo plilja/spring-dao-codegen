@@ -2,6 +2,7 @@ package dbtests.framework;
 
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 public abstract class QueryItem<Entity extends BaseEntity<?>> {
@@ -25,8 +26,42 @@ public abstract class QueryItem<Entity extends BaseEntity<?>> {
         }
     }
 
+    private static class In<Entity extends BaseEntity<?>, ValueType> extends QueryItem<Entity> {
+        private final Column<Entity, ValueType> column;
+        private final List<ValueType> values;
+
+        private In(Column<Entity, ValueType> column, List<ValueType> values) {
+            this.column = column;
+            this.values = values;
+        }
+
+        @Override
+        protected String getClause(MapSqlParameterSource params, Supplier<String> paramNameGenerator) {
+            String param = paramNameGenerator.get();
+            params.addValue(param, values);
+            return String.format("%s IN (:%s)", column.getName(), param);
+        }
+    }
+
+    private static class NotIn<Entity extends BaseEntity<?>, ValueType> extends QueryItem<Entity> {
+        private final Column<Entity, ValueType> column;
+        private final List<ValueType> values;
+
+        private NotIn(Column<Entity, ValueType> column, List<ValueType> values) {
+            this.column = column;
+            this.values = values;
+        }
+
+        @Override
+        protected String getClause(MapSqlParameterSource params, Supplier<String> paramNameGenerator) {
+            String param = paramNameGenerator.get();
+            params.addValue(param, values);
+            return String.format("%s NOT IN (:%s)", column.getName(), param);
+        }
+    }
+
     private static class ComparisonQueryItem<Entity extends BaseEntity<?>, ValueType> extends QueryItem<Entity> {
-        private Column<Entity, ValueType> column;
+        private final Column<Entity, ValueType> column;
         private final ValueType value;
         private final Operator operator;
         private final boolean includeNulls;
@@ -91,7 +126,15 @@ public abstract class QueryItem<Entity extends BaseEntity<?>> {
         return new ComparisonQueryItem<>(column, value, Operator.GTE, false);
     }
 
-    public static <Entity extends BaseEntity<?>, ValueType> QueryItem<Entity> or(QueryItem<Entity> clause1, QueryItem<Entity> clause2) {
+    public static <Entity extends BaseEntity<?>, ValueType> QueryItem<Entity> in(Column<Entity, ValueType> column, List<ValueType> values) {
+        return new In<>(column, values);
+    }
+
+    public static <Entity extends BaseEntity<?>, ValueType> QueryItem<Entity> notIn(Column<Entity, ValueType> column, List<ValueType> values) {
+        return new NotIn<>(column, values);
+    }
+
+    public static <Entity extends BaseEntity<?>> QueryItem<Entity> or(QueryItem<Entity> clause1, QueryItem<Entity> clause2) {
         return new Or<>(clause1, clause2);
     }
 
