@@ -56,21 +56,6 @@ public class MysqlIT extends BaseIntegrationTest<MBazMysql, MBazMysqlRepo> {
     }
 
     @Override
-    protected LocalDateTime getCreatedAt(MBazMysql entity) {
-        return entity.getCreatedAt();
-    }
-
-    @Override
-    protected LocalDateTime getChangedAt(MBazMysql entity) {
-        return entity.getChangedAt();
-    }
-
-    @Override
-    protected Integer getVersion(MBazMysql entity) {
-        return entity.getVersion();
-    }
-
-    @Override
     protected void setVersion(MBazMysql entity, Integer version) {
         entity.setVersion(version);
     }
@@ -80,9 +65,11 @@ public class MysqlIT extends BaseIntegrationTest<MBazMysql, MBazMysqlRepo> {
         var params = new MapSqlParameterSource()
                 .addValue("name", "Glenn")
                 .addValue("color", ColorEnumMysql.GREEN.getId())
+                .addValue("created_by", "foo")
+                .addValue("changed_by", "foo")
                 .addValue("created_at", LocalDateTime.now())
                 .addValue("changed_at", LocalDateTime.now());
-        jdbcTemplate.update("INSERT INTO BazMysql (name, color_enum_mysql_id, created_at, changed_at) values (:name, :color, :created_at, :changed_at)", params);
+        jdbcTemplate.update("INSERT INTO BazMysql (name, color_enum_mysql_id, created_at, changed_at, created_by, changed_by) values (:name, :color, :created_at, :changed_at, :created_by, :changed_by)", params);
     }
 
     @Test

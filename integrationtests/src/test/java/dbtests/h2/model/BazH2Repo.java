@@ -1,6 +1,7 @@
 package dbtests.h2.model;
 
 import dbtests.framework.Column;
+import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.sql.Types;
@@ -23,36 +24,44 @@ public class BazH2Repo extends Dao<BazH2, Integer> {
 
     public static final Column<BazH2, LocalDateTime> COLUMN_CHANGED_AT = new Column<>("changed_at");
 
+    public static final Column<BazH2, String> COLUMN_CHANGED_BY = new Column<>("changed_by");
+
     public static final Column<BazH2, ColorEnumH2> COLUMN_COLOR = new Column<>("color");
 
     public static final Column<BazH2, LocalDateTime> COLUMN_CREATED_AT = new Column<>("created_at");
+
+    public static final Column<BazH2, String> COLUMN_CREATED_BY = new Column<>("created_by");
 
     public static final Column<BazH2, Integer> COLUMN_VERSION = new Column<>("version");
 
     public static final List<Column<BazH2, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_BAZ_ID,
     COLUMN_BAZ_NAME,
     COLUMN_CHANGED_AT,
+    COLUMN_CHANGED_BY,
     COLUMN_COLOR,
     COLUMN_CREATED_AT,
+    COLUMN_CREATED_BY,
     COLUMN_VERSION);
 
-    private static final String ALL_COLUMNS = " baz_id, baz_name, changed_at, color, created_at, " +
-            " version ";
+    private static final String ALL_COLUMNS = " baz_id, baz_name, changed_at, changed_by, color, " +
+            " created_at, created_by, version ";
 
     private static final RowMapper<BazH2> ROW_MAPPER = (rs, i) -> {
         BazH2 r = new BazH2();
         r.setBazId(rs.getInt("baz_id"));
         r.setBazName(rs.getString("baz_name"));
         r.setChangedAt(rs.getObject("changed_at") != null ? rs.getTimestamp("changed_at").toLocalDateTime() : null);
+        r.setChangedBy(rs.getString("changed_by"));
         r.setColor(ColorEnumH2.fromId(rs.getString("color")));
         r.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+        r.setCreatedBy(rs.getString("created_by"));
         r.setVersion(rs.getObject("version") != null ? rs.getInt("version") : null);
         return r;
     };
 
     @Autowired
-    public BazH2Repo(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, true, jdbcTemplate);
+    public BazH2Repo(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
+        super(Integer.class, true, jdbcTemplate, currentUserProvider);
     }
 
     @Override
@@ -61,8 +70,10 @@ public class BazH2Repo extends Dao<BazH2, Integer> {
         m.addValue("baz_id", o.getId(), Types.INTEGER);
         m.addValue("baz_name", o.getBazName(), Types.VARCHAR);
         m.addValue("changed_at", o.getChangedAt(), Types.TIMESTAMP);
+        m.addValue("changed_by", o.getChangedBy(), Types.VARCHAR);
         m.addValue("color", o.getColor() != null ? o.getColor().getId() : null, Types.VARCHAR);
         m.addValue("created_at", o.getCreatedAt(), Types.TIMESTAMP);
+        m.addValue("created_by", o.getCreatedBy(), Types.VARCHAR);
         m.addValue("version", o.getVersion(), Types.SMALLINT);
         return m;
     }
@@ -110,15 +121,19 @@ public class BazH2Repo extends Dao<BazH2, Integer> {
         return "INSERT INTO test_schema.baz_h2 (" +
                 "baz_name, " +
                 "changed_at, " +
+                "changed_by, " +
                 "color, " +
                 "created_at, " +
+                "created_by, " +
                 "version" +
                 ") " +
                 "VALUES (" +
                 ":baz_name, " +
                 ":changed_at, " +
+                ":changed_by, " +
                 ":color, " +
                 ":created_at, " +
+                ":created_by, " +
                 ":version" +
                 ")";
     }
@@ -128,6 +143,7 @@ public class BazH2Repo extends Dao<BazH2, Integer> {
         return "UPDATE test_schema.baz_h2 SET " +
                 "baz_name = :baz_name, " +
                 "changed_at = :changed_at, " +
+                "changed_by = :changed_by, " +
                 "color = :color, " +
                 "version = (COALESCE(:version, -1) + 1) % 128 " +
                 "WHERE baz_id = :baz_id AND (version = :version OR version IS NULL OR COALESCE(:version, -1) = -1)";

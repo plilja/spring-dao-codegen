@@ -53,6 +53,8 @@ CREATE TABLE BazMysql (
     color_enum_mysql_id int(6),
     created_at DATETIME NOT NULL,
     changed_at DATETIME NOT NULL,
+    created_by VARCHAR(50) NOT NULL,
+    changed_by VARCHAR(50) NOT NULL,
     version tinyint,
     INDEX enum_ind (color_enum_mysql_id),
     foreign key (color_enum_mysql_id) 

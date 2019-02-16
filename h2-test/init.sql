@@ -35,6 +35,8 @@ create table test_schema.baz_h2
     color character varying(10) references test_schema.color_enum_h2(name),
     created_at timestamp not null,
     changed_at timestamp,
+    created_by varchar(50) not null,
+    changed_by varchar(50),
     version smallint,
     constraint baz_pkey primary key (baz_id)
 );

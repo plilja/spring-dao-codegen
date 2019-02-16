@@ -1,6 +1,7 @@
 package dbtests.mssql.model;
 
 import dbtests.framework.Column;
+import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.sql.Types;
@@ -23,7 +24,11 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
 
     public static final Column<BazMsSqlEntity, LocalDateTime> COLUMN_INSERTED_AT = new Column<>("inserted_at");
 
+    public static final Column<BazMsSqlEntity, String> COLUMN_INSERTED_BY = new Column<>("inserted_by");
+
     public static final Column<BazMsSqlEntity, LocalDateTime> COLUMN_MODIFIED_AT = new Column<>("modified_at");
+
+    public static final Column<BazMsSqlEntity, String> COLUMN_MODIFIED_BY = new Column<>("modified_by");
 
     public static final Column<BazMsSqlEntity, String> COLUMN_NAME = new Column<>("name");
 
@@ -32,27 +37,31 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
     public static final List<Column<BazMsSqlEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_ID,
     COLUMN_COLOR,
     COLUMN_INSERTED_AT,
+    COLUMN_INSERTED_BY,
     COLUMN_MODIFIED_AT,
+    COLUMN_MODIFIED_BY,
     COLUMN_NAME,
     COLUMN_VERSION);
 
-    private static final String ALL_COLUMNS = " id, color, inserted_at, modified_at, name, " +
-            " version ";
+    private static final String ALL_COLUMNS = " id, color, inserted_at, inserted_by, modified_at, " +
+            " modified_by, name, version ";
 
     private static final RowMapper<BazMsSqlEntity> ROW_MAPPER = (rs, i) -> {
         BazMsSqlEntity r = new BazMsSqlEntity();
         r.setId(rs.getInt("id"));
         r.setColor(ColorEnumMsSql.fromId(rs.getString("color")));
         r.setInsertedAt(rs.getTimestamp("inserted_at").toLocalDateTime());
+        r.setInsertedBy(rs.getString("inserted_by"));
         r.setModifiedAt(rs.getObject("modified_at") != null ? rs.getTimestamp("modified_at").toLocalDateTime() : null);
+        r.setModifiedBy(rs.getString("modified_by"));
         r.setName(rs.getString("name"));
         r.setVersion(rs.getObject("version") != null ? rs.getInt("version") : null);
         return r;
     };
 
     @Autowired
-    public BazMsSqlDao(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, true, jdbcTemplate);
+    public BazMsSqlDao(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
+        super(Integer.class, true, jdbcTemplate, currentUserProvider);
     }
 
     @Override
@@ -61,7 +70,9 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
         m.addValue("id", o.getId(), Types.INTEGER);
         m.addValue("color", o.getColor() != null ? o.getColor().getId() : null, Types.VARCHAR);
         m.addValue("inserted_at", o.getInsertedAt(), Types.TIMESTAMP);
+        m.addValue("inserted_by", o.getInsertedBy(), Types.VARCHAR);
         m.addValue("modified_at", o.getModifiedAt(), Types.TIMESTAMP);
+        m.addValue("modified_by", o.getModifiedBy(), Types.VARCHAR);
         m.addValue("name", o.getName(), Types.VARCHAR);
         m.addValue("version", o.getVersion(), Types.TINYINT);
         return m;
@@ -109,14 +120,18 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
         return "INSERT INTO dbo.baz_ms_sql (" +
                 "color, " +
                 "inserted_at, " +
+                "inserted_by, " +
                 "modified_at, " +
+                "modified_by, " +
                 "name, " +
                 "version" +
                 ") " +
                 "VALUES (" +
                 ":color, " +
                 ":inserted_at, " +
+                ":inserted_by, " +
                 ":modified_at, " +
+                ":modified_by, " +
                 ":name, " +
                 ":version" +
                 ")";
@@ -127,6 +142,7 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
         return "UPDATE dbo.baz_ms_sql SET " +
                 "color = :color, " +
                 "modified_at = :modified_at, " +
+                "modified_by = :modified_by, " +
                 "name = :name, " +
                 "version = (COALESCE(:version, -1) + 1) % 128 " +
                 "WHERE id = :id AND (version = :version OR version IS NULL OR :version IS NULL)";

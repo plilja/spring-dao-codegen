@@ -1,6 +1,7 @@
 package dbtests.mysql.model;
 
 import dbtests.framework.Column;
+import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.sql.Types;
@@ -29,8 +30,8 @@ public class MOneColumnGeneratedIdMysqlRepo extends Dao<MOneColumnGeneratedIdMys
     };
 
     @Autowired
-    public MOneColumnGeneratedIdMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, true, jdbcTemplate);
+    public MOneColumnGeneratedIdMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
+        super(Integer.class, true, jdbcTemplate, currentUserProvider);
     }
 
     @Override

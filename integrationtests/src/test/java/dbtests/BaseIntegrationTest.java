@@ -1,10 +1,14 @@
 package dbtests;
 
 import dbtests.framework.BaseEntity;
+import dbtests.framework.ChangedAtTracked;
+import dbtests.framework.ChangedByTracked;
 import dbtests.framework.CreatedAtTracked;
+import dbtests.framework.CreatedByTracked;
 import dbtests.framework.Dao;
 import dbtests.framework.NoRowsUpdatedException;
 import dbtests.framework.TooManyRowsAvailableException;
+import dbtests.framework.VersionTracked;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +32,17 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Repo extends Dao<Entity, Integer>> {
+public abstract class BaseIntegrationTest<
+        Entity extends BaseEntity<Integer> & ChangedByTracked & CreatedByTracked & CreatedAtTracked<LocalDateTime> & ChangedAtTracked<LocalDateTime> & VersionTracked,
+        Repo extends Dao<Entity, Integer>> {
 
     @BeforeEach
     void before() {
         clearTable();
     }
+
+    @Autowired
+    private FakeSpringSecurity fakeSpringSecurity;
 
     @Autowired
     private TransactionUtil transactionUtil;
@@ -47,12 +56,6 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     protected abstract String getName(Entity entity);
 
     protected abstract void setName(Entity entity, String name);
-
-    protected abstract LocalDateTime getCreatedAt(Entity entity);
-
-    protected abstract LocalDateTime getChangedAt(Entity entity);
-
-    protected abstract Integer getVersion(Entity entity);
 
     protected abstract void setVersion(Entity entity, Integer version);
 
@@ -84,19 +87,24 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     @Test
     void create() {
         Entity bazEntity = newEntity("Bar");
+        fakeSpringSecurity.setCurrentUser("user1");
         getRepo().save(bazEntity);
         assertNotNull(bazEntity.getId());
-        assertNotNull(getCreatedAt(bazEntity));
-        assertNotNull(getChangedAt(bazEntity));
-        assertEquals(LocalDateTime.now().truncatedTo(ChronoUnit.HOURS), getCreatedAt(bazEntity).truncatedTo(ChronoUnit.HOURS));
-        assertEquals(LocalDateTime.now().truncatedTo(ChronoUnit.HOURS), getChangedAt(bazEntity).truncatedTo(ChronoUnit.HOURS));
+        assertNotNull(bazEntity.getCreatedAt());
+        assertNotNull(bazEntity.getChangedAt());
+        assertEquals(LocalDateTime.now().truncatedTo(ChronoUnit.HOURS), bazEntity.getCreatedAt().truncatedTo(ChronoUnit.HOURS));
+        assertEquals(LocalDateTime.now().truncatedTo(ChronoUnit.HOURS), bazEntity.getChangedAt().truncatedTo(ChronoUnit.HOURS));
+        assertEquals("user1", bazEntity.getCreatedBy());
+        assertEquals("user1", bazEntity.getChangedBy());
 
         Entity retrievedEntity = getRepo().getOne(bazEntity.getId());
         assertNotNull(retrievedEntity);
         assertEquals("Bar", getName(retrievedEntity));
         // Truncate to avoid false error due to precision loss from db
-        assertEquals(getCreatedAt(bazEntity).truncatedTo(ChronoUnit.HOURS), getCreatedAt(retrievedEntity).truncatedTo(ChronoUnit.HOURS));
-        assertEquals(LocalDateTime.now().truncatedTo(ChronoUnit.HOURS), getChangedAt(retrievedEntity).truncatedTo(ChronoUnit.HOURS));
+        assertEquals(bazEntity.getCreatedAt().truncatedTo(ChronoUnit.HOURS), retrievedEntity.getCreatedAt().truncatedTo(ChronoUnit.HOURS));
+        assertEquals(LocalDateTime.now().truncatedTo(ChronoUnit.HOURS), retrievedEntity.getChangedAt().truncatedTo(ChronoUnit.HOURS));
+        assertEquals("user1", retrievedEntity.getCreatedBy());
+        assertEquals("user1", retrievedEntity.getChangedBy());
     }
 
     @Test
@@ -106,7 +114,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
 
         Entity retrievedEntity1 = getRepo().getOne(entity.getId());
         Optional<Entity> retrievedEntity2 = getRepo().findOne(entity.getId());
-        assertTrue(((Optional) retrievedEntity2).isPresent());
+        assertTrue(retrievedEntity2.isPresent());
         assertEquals(retrievedEntity1.getId(), retrievedEntity2.get().getId());
     }
 
@@ -152,24 +160,29 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     @Test
     void updateExistingObject() {
         Entity bazEntity = newEntity("Bar");
+        fakeSpringSecurity.setCurrentUser("user1");
         getRepo().save(bazEntity);
 
         // This is sort of semantics. But we call the object changed from when it is created.
         // It could be argued that this is wrong. But it does provide more flexibility
         // if people have declared their schema fields as NOT NULL.
-        assertNotNull(getChangedAt(bazEntity));
-        assertEquals(LocalDateTime.now().truncatedTo(ChronoUnit.HOURS), getChangedAt(bazEntity).truncatedTo(ChronoUnit.HOURS));
+        assertNotNull(bazEntity.getChangedAt());
+        assertEquals(LocalDateTime.now().truncatedTo(ChronoUnit.HOURS), bazEntity.getChangedAt().truncatedTo(ChronoUnit.HOURS));
         Entity bazEntity2 = getRepo().getOne(bazEntity.getId());
         setName(bazEntity2, "Bar updated");
         bazEntity2.setId(bazEntity.getId());
+        fakeSpringSecurity.setCurrentUser("user2");
 
         getRepo().save(bazEntity2);
 
         Entity retrievedEntity = getRepo().getOne(bazEntity.getId());
         assertEquals("Bar updated", getName(retrievedEntity));
-        assertNotNull(getChangedAt(bazEntity2));
-        assertNotNull(getChangedAt(retrievedEntity));
-        assertEquals(LocalDateTime.now().truncatedTo(ChronoUnit.HOURS), getChangedAt(retrievedEntity).truncatedTo(ChronoUnit.HOURS));
+        assertNotNull(bazEntity2.getChangedAt());
+        assertNotNull(retrievedEntity.getChangedAt());
+        assertEquals(LocalDateTime.now().truncatedTo(ChronoUnit.HOURS), retrievedEntity.getChangedAt().truncatedTo(ChronoUnit.HOURS));
+        assertEquals("user1", retrievedEntity.getCreatedBy());
+        assertEquals("user2", retrievedEntity.getChangedBy());
+        assertEquals("user2", bazEntity2.getChangedBy());
     }
 
     @Test
@@ -177,29 +190,29 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
         Entity entity = newEntity("Bar");
         for (int i = 0; i < 130; i++) {
             getRepo().save(entity);
-            assertEquals(i % 128, (int) getVersion(entity));
+            assertEquals(i % 128, (int) entity.getVersion());
         }
     }
 
     @Test
-    void createdAtCannotBeModified() {
+    void createdAtAndCreatedByCannotBeModified() {
         Entity entity = newEntity("Bar");
+        fakeSpringSecurity.setCurrentUser("user1");
         getRepo().save(entity);
 
         Entity retrieved = getRepo().getOne(entity.getId());
-        try {
-            Thread.sleep(5);
-        } catch (InterruptedException e) {
-        }
 
-        LocalDateTime createdAtBeforeSave = getCreatedAt(retrieved);
+        LocalDateTime createdAtBeforeSave = retrieved.getCreatedAt();
 
-        ((CreatedAtTracked<?>) retrieved).setCreatedNow();
+        fakeSpringSecurity.setCurrentUser("user2");
+        retrieved.setCreatedBy("user2");
+        retrieved.setCreatedNow();
         getRepo().save(retrieved);
 
         Entity retrievedAgain = getRepo().getOne(entity.getId());
 
-        assertEquals(createdAtBeforeSave, getCreatedAt(retrievedAgain));
+        assertEquals(createdAtBeforeSave, retrievedAgain.getCreatedAt());
+        assertEquals("user1", retrievedAgain.getCreatedBy());
     }
 
     @Test
@@ -273,28 +286,31 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
     }
 
     @Test
-    void concurrentUpdatesCausesOptimisticLockingFailure() {
+    void concurrentUpdatesCausesOptimisticLockingFailure() throws Exception {
         Entity entity = newEntity("Bar");
         getRepo().save(entity);
 
-        assertThrows(NoRowsUpdatedException.class, () -> {
-            List<CompletableFuture<Void>> futures = new ArrayList<>();
-            for (int i = 0; i < 50; i++) {
-                final int tmp = i;
-                futures.add(CompletableFuture.runAsync(() -> {
-                    Entity retrieved = getRepo().getOne(entity.getId());
-                    setName(retrieved, String.valueOf(tmp));
-                    getRepo().save(retrieved);
-                }));
-            }
-            for (CompletableFuture<Void> future : futures) {
-                try {
-                    future.get();
-                } catch (ExecutionException ex) {
-                    throw ex.getCause(); // Future wraps our exception in an ExecutionException
+        boolean exception = false;
+
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+            final int tmp = i;
+            futures.add(CompletableFuture.runAsync(() -> {
+                Entity retrieved = getRepo().getOne(entity.getId());
+                setName(retrieved, String.valueOf(tmp));
+                getRepo().save(retrieved);
+            }));
+        }
+        for (CompletableFuture<Void> future : futures) {
+            try {
+                future.get();
+            } catch (ExecutionException ex) {
+                if (ex.getCause() instanceof NoRowsUpdatedException) {
+                    exception = true;
                 }
             }
-        });
+        }
+        assertTrue(exception);
     }
 
     @Test
@@ -309,22 +325,22 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
 
         var retrieved = getRepo().findAll().get(0);
 
-        assertNull(getVersion(retrieved));
+        assertNull(retrieved.getVersion());
 
         setName(retrieved, "Sven");
         getRepo().save(retrieved);
 
         var retrieved2 = getRepo().getOne(retrieved.getId());
-        assertEquals(Integer.valueOf(0), getVersion(retrieved));
+        assertEquals(Integer.valueOf(0), retrieved.getVersion());
         assertEquals("Sven", getName(retrieved2));
-        assertEquals(Integer.valueOf(0), getVersion(retrieved2));
+        assertEquals(Integer.valueOf(0), retrieved2.getVersion());
 
         // If the user continues to use the object is should behave as normal again
         setName(retrieved, "David");
         getRepo().save(retrieved);
 
         var retrieved3 = getRepo().getOne(retrieved.getId());
-        assertEquals(Integer.valueOf(1), getVersion(retrieved3));
+        assertEquals(Integer.valueOf(1), retrieved3.getVersion());
         assertEquals("David", getName(retrieved3));
     }
 
@@ -347,7 +363,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
         getRepo().save(entity);
 
         var retrieved = getRepo().getOne(entity.getId());
-        assertEquals(Integer.valueOf(0), getVersion(retrieved));
+        assertEquals(Integer.valueOf(0), retrieved.getVersion());
         assertEquals("Bart", getName(retrieved));
 
         // If the user continues to use the object is should behave as normal again
@@ -355,7 +371,7 @@ public abstract class BaseIntegrationTest<Entity extends BaseEntity<Integer>, Re
         getRepo().save(entity);
 
         var retrieved2 = getRepo().getOne(entity.getId());
-        assertEquals(Integer.valueOf(1), getVersion(retrieved2));
+        assertEquals(Integer.valueOf(1), retrieved2.getVersion());
         assertEquals("Glenn", getName(retrieved2));
     }
 

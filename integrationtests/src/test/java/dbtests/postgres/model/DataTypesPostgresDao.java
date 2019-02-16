@@ -1,6 +1,7 @@
 package dbtests.postgres.model;
 
 import dbtests.framework.Column;
+import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.math.BigDecimal;
@@ -122,8 +123,8 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
     };
 
     @Autowired
-    public DataTypesPostgresDao(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Long.class, true, jdbcTemplate);
+    public DataTypesPostgresDao(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
+        super(Long.class, true, jdbcTemplate, currentUserProvider);
     }
 
     @Override

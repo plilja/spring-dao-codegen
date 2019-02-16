@@ -57,21 +57,6 @@ public class H2IT extends BaseIntegrationTest<BazH2, BazH2Repo> {
     }
 
     @Override
-    protected LocalDateTime getCreatedAt(BazH2 entity) {
-        return entity.getCreatedAt();
-    }
-
-    @Override
-    protected LocalDateTime getChangedAt(BazH2 entity) {
-        return entity.getChangedAt();
-    }
-
-    @Override
-    protected Integer getVersion(BazH2 entity) {
-        return entity.getVersion();
-    }
-
-    @Override
     protected void setVersion(BazH2 entity, Integer version) {
         entity.setVersion(version);
     }
@@ -81,9 +66,11 @@ public class H2IT extends BaseIntegrationTest<BazH2, BazH2Repo> {
         var params = new MapSqlParameterSource()
                 .addValue("name", "Glenn")
                 .addValue("color", ColorEnumH2.GREEN.getId())
+                .addValue("created_by", "foo")
+                .addValue("changed_by", "foo")
                 .addValue("created_at", LocalDateTime.now())
                 .addValue("changed_at", LocalDateTime.now());
-        jdbcTemplate.update("INSERT INTO test_schema.baz_h2 (baz_name, color, created_at, changed_at) values (:name, :color, :created_at, :changed_at)", params);
+        jdbcTemplate.update("INSERT INTO test_schema.baz_h2 (baz_name, color, created_at, changed_at, created_by, changed_by) values (:name, :color, :created_at, :changed_at, :created_by, :changed_by)", params);
     }
 
     @Disabled("Doesn't seem to work with H2, look into if this is an error in generated code or a limitation in H2")

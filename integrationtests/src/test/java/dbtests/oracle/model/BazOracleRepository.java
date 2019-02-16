@@ -1,6 +1,7 @@
 package dbtests.oracle.model;
 
 import dbtests.framework.Column;
+import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.sql.Types;
@@ -21,9 +22,13 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
 
     public static final Column<BazOracle, LocalDateTime> COLUMN_CHANGED_AT = new Column<>("CHANGED_AT");
 
+    public static final Column<BazOracle, String> COLUMN_CHANGED_BY = new Column<>("CHANGED_BY");
+
     public static final Column<BazOracle, ColorEnumOracle> COLUMN_COLOR = new Column<>("COLOR");
 
     public static final Column<BazOracle, LocalDateTime> COLUMN_CREATED_AT = new Column<>("CREATED_AT");
+
+    public static final Column<BazOracle, String> COLUMN_CREATED_BY = new Column<>("CREATED_BY");
 
     public static final Column<BazOracle, String> COLUMN_NAME = new Column<>("NAME");
 
@@ -31,28 +36,32 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
 
     public static final List<Column<BazOracle, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_ID,
     COLUMN_CHANGED_AT,
+    COLUMN_CHANGED_BY,
     COLUMN_COLOR,
     COLUMN_CREATED_AT,
+    COLUMN_CREATED_BY,
     COLUMN_NAME,
     COLUMN_VERSION);
 
-    private static final String ALL_COLUMNS = " ID, CHANGED_AT, COLOR, CREATED_AT, NAME, " +
-            " VERSION ";
+    private static final String ALL_COLUMNS = " ID, CHANGED_AT, CHANGED_BY, COLOR, CREATED_AT, " +
+            " CREATED_BY, NAME, VERSION ";
 
     private static final RowMapper<BazOracle> ROW_MAPPER = (rs, i) -> {
         BazOracle r = new BazOracle();
         r.setId(rs.getInt("ID"));
         r.setChangedAt(rs.getObject("CHANGED_AT") != null ? rs.getTimestamp("CHANGED_AT").toLocalDateTime() : null);
+        r.setChangedBy(rs.getString("CHANGED_BY"));
         r.setColor(ColorEnumOracle.fromId(rs.getString("COLOR")));
         r.setCreatedAt(rs.getTimestamp("CREATED_AT").toLocalDateTime());
+        r.setCreatedBy(rs.getString("CREATED_BY"));
         r.setName(rs.getString("NAME"));
         r.setVersion(rs.getObject("VERSION") != null ? rs.getInt("VERSION") : null);
         return r;
     };
 
     @Autowired
-    public BazOracleRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, true, jdbcTemplate);
+    public BazOracleRepository(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
+        super(Integer.class, true, jdbcTemplate, currentUserProvider);
     }
 
     @Override
@@ -60,8 +69,10 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("ID", o.getId(), Types.INTEGER);
         m.addValue("CHANGED_AT", o.getChangedAt(), Types.TIMESTAMP);
+        m.addValue("CHANGED_BY", o.getChangedBy(), Types.VARCHAR);
         m.addValue("COLOR", o.getColor() != null ? o.getColor().getId() : null, Types.VARCHAR);
         m.addValue("CREATED_AT", o.getCreatedAt(), Types.TIMESTAMP);
+        m.addValue("CREATED_BY", o.getCreatedBy(), Types.VARCHAR);
         m.addValue("NAME", o.getName(), Types.VARCHAR);
         m.addValue("VERSION", o.getVersion(), Types.INTEGER);
         return m;
@@ -114,15 +125,19 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
     protected String getInsertSql() {
         return "INSERT INTO DOCKER.BAZ_ORACLE (" +
                 "CHANGED_AT, " +
+                "CHANGED_BY, " +
                 "COLOR, " +
                 "CREATED_AT, " +
+                "CREATED_BY, " +
                 "NAME, " +
                 "VERSION" +
                 ") " +
                 "VALUES (" +
                 ":CHANGED_AT, " +
+                ":CHANGED_BY, " +
                 ":COLOR, " +
                 ":CREATED_AT, " +
+                ":CREATED_BY, " +
                 ":NAME, " +
                 ":VERSION" +
                 ")";
@@ -132,6 +147,7 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
     protected String getUpdateSql() {
         return "UPDATE DOCKER.BAZ_ORACLE SET " +
                 "CHANGED_AT = :CHANGED_AT, " +
+                "CHANGED_BY = :CHANGED_BY, " +
                 "COLOR = :COLOR, " +
                 "NAME = :NAME, " +
                 "VERSION = MOD(NVL(:VERSION, -1) + 1, 128) " +

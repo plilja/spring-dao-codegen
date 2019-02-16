@@ -1,5 +1,6 @@
 package dbtests.h2.tests;
 
+import dbtests.FakeSpringSecurity;
 import dbtests.TransactionUtil;
 import dbtests.h2.model.BazH2Repo;
 import dbtests.h2.model.OneColumnGeneratedIdH2Repo;
@@ -39,5 +40,10 @@ public class H2Config {
     @Bean
     public PlatformTransactionManager transactionManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
+    }
+
+    @Bean
+    public FakeSpringSecurity currentUserProvider() {
+        return new FakeSpringSecurity();
     }
 }

@@ -1,5 +1,6 @@
 package dbtests.postgres.tests;
 
+import dbtests.FakeSpringSecurity;
 import dbtests.TransactionUtil;
 import dbtests.postgres.model.BazPostgresDao;
 import dbtests.postgres.model.DataTypesPostgresDao;
@@ -40,4 +41,8 @@ public class PostgresITConfig {
         return new DataSourceTransactionManager(dataSource);
     }
 
+    @Bean
+    public FakeSpringSecurity currentUserProvider() {
+        return new FakeSpringSecurity();
+    }
 }

@@ -1,5 +1,6 @@
 package dbtests.mysql.tests;
 
+import dbtests.FakeSpringSecurity;
 import dbtests.TransactionUtil;
 import dbtests.mysql.model.MBazMysqlRepo;
 import dbtests.mysql.model.MDataTypesMysqlRepo;
@@ -40,4 +41,8 @@ public class MysqlITConfig {
         return new DataSourceTransactionManager(dataSource);
     }
 
+    @Bean
+    public FakeSpringSecurity currentUserProvider() {
+        return new FakeSpringSecurity();
+    }
 }

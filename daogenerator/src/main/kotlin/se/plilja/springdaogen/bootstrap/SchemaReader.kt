@@ -47,6 +47,7 @@ fun catalogToSchema(catalog: Catalog, config: Config): Schema {
     val columnsMap = HashMap<schemacrawler.schema.Column, Column>()
     catalog.tables
         .filter { it.hasPrimaryKey() }
+        .filter { it.primaryKey.columns.size == 1 } // Currently does not support tables with composite keys
         .forEach { convertTable(it, config, tablesMap, columnsMap) }
     setForeignKeys(catalog, tablesMap, columnsMap)
     return Schema(tablesMap.values.toList())

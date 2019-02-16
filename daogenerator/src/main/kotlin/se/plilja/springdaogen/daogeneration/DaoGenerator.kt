@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource
 import org.springframework.stereotype.Repository
 import se.plilja.springdaogen.codegeneration.ClassGenerator
 import se.plilja.springdaogen.generatedframework.columnClass
+import se.plilja.springdaogen.generatedframework.currentUserProvider
 import se.plilja.springdaogen.generatedframework.dao
 import se.plilja.springdaogen.generatedframework.databaseException
 import se.plilja.springdaogen.model.Config
@@ -69,15 +70,21 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
     g.addImport(SqlParameterSource::class.java)
     if (config.daosAreAbstract) {
         g.isAbstract = true
+    } else {
+        g.addImport(Autowired::class.java)
+    }
+    if (config.featureGenerateChangeTracking) {
+        ensureImported(g, config) { currentUserProvider(config.frameworkOutputPackage) }
         g.addCustomConstructor(
             """
-            public ${g.name}(NamedParameterJdbcTemplate jdbcTemplate) {
-                super(${table.primaryKey.typeName()}.class, ${table.primaryKey.generated}, jdbcTemplate);
+            @Autowired
+            public ${g.name}(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
+                super(${table.primaryKey.typeName()}.class, ${table.primaryKey.generated}, jdbcTemplate, currentUserProvider);
             }
         """
         )
+
     } else {
-        g.addImport(Autowired::class.java)
         g.addCustomConstructor(
             """
             @Autowired

@@ -1,6 +1,7 @@
 package dbtests.mysql.model;
 
 import dbtests.framework.Column;
+import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.sql.Types;
@@ -29,8 +30,8 @@ public class MOneColumnNaturalIdMysqlRepo extends Dao<MOneColumnNaturalIdMysql, 
     };
 
     @Autowired
-    public MOneColumnNaturalIdMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(String.class, false, jdbcTemplate);
+    public MOneColumnNaturalIdMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
+        super(String.class, false, jdbcTemplate, currentUserProvider);
     }
 
     @Override

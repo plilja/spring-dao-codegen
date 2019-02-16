@@ -18,8 +18,10 @@ CREATE TABLE test_schema.baz_h2 (
 baz_id IDENTITY NOT NULL,
 baz_name VARCHAR(100),
 changed_at TIMESTAMP,
+changed_by VARCHAR(100),
 color VARCHAR(100),
 created_at TIMESTAMP NOT NULL,
+created_by VARCHAR(100) NOT NULL,
 version INTEGER,
 PRIMARY KEY(baz_id));
 

@@ -49,12 +49,20 @@ data class Table(
         return columns.map { it.isClobLike() }.any { it }
     }
 
+    fun createdAtColumn(): Column? {
+        return columns.firstOrNull { it.isCreatedAtColumn() }
+    }
+
     fun changedAtColumn(): Column? {
         return columns.firstOrNull { it.isChangedAtColumn() }
     }
 
-    fun createdAtColumn(): Column? {
-        return columns.firstOrNull { it.isCreatedAtColumn() }
+    fun createdByColumn(): Column? {
+        return columns.firstOrNull { it.isCreatedByColumn() }
+    }
+
+    fun changedByColumn(): Column? {
+        return columns.firstOrNull { it.isChangedByColumn() }
     }
 
     fun versionColumn(): Column? {
@@ -87,6 +95,20 @@ data class Column(
             LocalDateTime::class.java
         )
         return config.createdAtColumnNames.contains(name.toUpperCase()) && javaType in types
+    }
+
+    fun isCreatedByColumn(): Boolean {
+        val types = listOf(
+            String::class.java
+        )
+        return config.createdByColumnNames.contains(name.toUpperCase()) && javaType in types
+    }
+
+    fun isChangedByColumn(): Boolean {
+        val types = listOf(
+            String::class.java
+        )
+        return config.changedByColumnNames.contains(name.toUpperCase()) && javaType in types
     }
 
     fun isVersionColumn(): Boolean {

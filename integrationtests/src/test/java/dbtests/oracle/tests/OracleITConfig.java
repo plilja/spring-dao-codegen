@@ -1,5 +1,6 @@
 package dbtests.oracle.tests;
 
+import dbtests.FakeSpringSecurity;
 import dbtests.TransactionUtil;
 import dbtests.oracle.model.BazOracleRepository;
 import dbtests.oracle.model.DataTypesOracleRepository;
@@ -38,6 +39,11 @@ public class OracleITConfig {
     @Bean
     public PlatformTransactionManager transactionManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
+    }
+
+    @Bean
+    public FakeSpringSecurity currentUserProvider() {
+        return new FakeSpringSecurity();
     }
 
 }

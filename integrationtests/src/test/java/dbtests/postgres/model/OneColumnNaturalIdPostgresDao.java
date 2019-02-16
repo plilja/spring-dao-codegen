@@ -1,6 +1,7 @@
 package dbtests.postgres.model;
 
 import dbtests.framework.Column;
+import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.sql.Types;
@@ -29,8 +30,8 @@ public class OneColumnNaturalIdPostgresDao extends Dao<OneColumnNaturalIdPostgre
     };
 
     @Autowired
-    public OneColumnNaturalIdPostgresDao(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(String.class, false, jdbcTemplate);
+    public OneColumnNaturalIdPostgresDao(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
+        super(String.class, false, jdbcTemplate, currentUserProvider);
     }
 
     @Override

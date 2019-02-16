@@ -30,13 +30,16 @@ data class Config(
     val testResourceFolder: String? = null,
     val createdAtColumnNames: List<String> = emptyList(),
     val changedAtColumnNames: List<String> = emptyList(),
+    val createdByColumnNames: List<String> = emptyList(),
+    val changedByColumnNames: List<String> = emptyList(),
     val versionColumnNames: List<String> = emptyList(),
     val enumTables: List<String> = emptyList(),
     val enumTablesRegexp: Regex = Regex("^$"),
     val enumNameColumnRegexp: Regex = Regex("^$"),
     val featureGenerateJavaxValidation: Boolean = false,
     val featureGenerateJacksonAnnotations: Boolean = false,
-    val featureGenerateQueryApi: Boolean = true
+    val featureGenerateQueryApi: Boolean = true,
+    val featureGenerateChangeTracking: Boolean = false
 ) {
 
     companion object {
@@ -88,6 +91,8 @@ private class ConfigReader(file: File) {
             testResourceFolder = properties.getProperty("test.resource_folder", null),
             createdAtColumnNames = getListProperty("entity.created_at_name").map { it.toUpperCase() },
             changedAtColumnNames = getListProperty("entity.changed_at_name").map { it.toUpperCase() },
+            createdByColumnNames = getListProperty("entity.created_by_name").map { it.toUpperCase() },
+            changedByColumnNames = getListProperty("entity.changed_by_name").map { it.toUpperCase() },
             versionColumnNames = getListProperty("entity.version_name").map { it.toUpperCase() },
             enumTables = getListProperty("enum.tables"),
             enumTablesRegexp = Regex(properties.getProperty("enum.table_regex", "^$"), RegexOption.IGNORE_CASE),
@@ -106,6 +111,10 @@ private class ConfigReader(file: File) {
             featureGenerateQueryApi = properties.getProperty(
                 "features.generate_jackson_annotations",
                 "true"
+            ) == "true",
+            featureGenerateChangeTracking = properties.getProperty(
+                "features.generate_change_tracking",
+                "false"
             ) == "true"
         )
     }

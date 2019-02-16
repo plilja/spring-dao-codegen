@@ -4,32 +4,42 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dbtests.framework.BaseEntity;
 import dbtests.framework.ChangedAtTracked;
+import dbtests.framework.ChangedByTracked;
 import dbtests.framework.CreatedAtTracked;
+import dbtests.framework.CreatedByTracked;
 import dbtests.framework.VersionTracked;
 import java.time.LocalDateTime;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BazH2 implements BaseEntity<Integer>, CreatedAtTracked<LocalDateTime>, ChangedAtTracked<LocalDateTime>, VersionTracked {
+public class BazH2 implements BaseEntity<Integer>, CreatedAtTracked<LocalDateTime>, ChangedAtTracked<LocalDateTime>, CreatedByTracked, ChangedByTracked, VersionTracked {
 
     private Integer bazId;
     @Size(max = 100)
     private String bazName;
     private LocalDateTime changedAt;
+    @Size(max = 50)
+    private String changedBy;
     private ColorEnumH2 color;
     private LocalDateTime createdAt;
+    @NotNull
+    @Size(max = 50)
+    private String createdBy;
     @JsonIgnore
     private Integer version;
 
     public BazH2() {
     }
 
-    public BazH2(Integer bazId, String bazName, LocalDateTime changedAt, ColorEnumH2 color, LocalDateTime createdAt, Integer version) {
+    public BazH2(Integer bazId, String bazName, LocalDateTime changedAt, String changedBy, ColorEnumH2 color, LocalDateTime createdAt, String createdBy, Integer version) {
         this.bazId = bazId;
         this.bazName = bazName;
         this.changedAt = changedAt;
+        this.changedBy = changedBy;
         this.color = color;
         this.createdAt = createdAt;
+        this.createdBy = createdBy;
         this.version = version;
     }
 
@@ -95,6 +105,26 @@ public class BazH2 implements BaseEntity<Integer>, CreatedAtTracked<LocalDateTim
     @Override
     public void setChangedNow() {
         changedAt = LocalDateTime.now();
+    }
+
+    @Override
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    @Override
+    public void setCreatedBy(String value) {
+        this.createdBy = value;
+    }
+
+    @Override
+    public String getChangedBy() {
+        return changedBy;
+    }
+
+    @Override
+    public void setChangedBy(String value) {
+        this.changedBy = value;
     }
 
     @Override

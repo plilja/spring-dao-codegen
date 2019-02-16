@@ -1,6 +1,7 @@
 package dbtests.h2.model;
 
 import dbtests.framework.Column;
+import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.sql.Types;
@@ -29,8 +30,8 @@ public class OneColumnNaturalIdH2Repo extends Dao<OneColumnNaturalIdH2, String> 
     };
 
     @Autowired
-    public OneColumnNaturalIdH2Repo(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(String.class, false, jdbcTemplate);
+    public OneColumnNaturalIdH2Repo(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
+        super(String.class, false, jdbcTemplate, currentUserProvider);
     }
 
     @Override

@@ -3,9 +3,47 @@ package se.plilja.springdaogen.generatedframework
 
 fun entityInterfaces(_package: String): List<Pair<String, String>> {
     return listOf(
+        createdByTracked(_package),
+        changedByTracked(_package),
         createdAtTracked(_package),
         changedAtTracked(_package),
         versionTracked(_package)
+    )
+}
+
+fun createdByTracked(_package: String): Pair<String, String> {
+    return Pair(
+        "CreatedByTracked", """
+package $_package;
+
+/**
+ * An entity with a column tracking who/what
+ * it was created by.
+ */
+public interface CreatedByTracked {
+    void setCreatedBy(String value);
+
+    String getCreatedBy();
+}
+    """.trimIndent()
+    )
+}
+
+fun changedByTracked(_package: String): Pair<String, String> {
+    return Pair(
+        "ChangedByTracked", """
+package $_package;
+
+/**
+ * An entity with a column tracking who/what
+ * it was last changed by.
+ */
+public interface ChangedByTracked {
+    void setChangedBy(String value);
+
+    String getChangedBy();
+}
+    """.trimIndent()
     )
 }
 

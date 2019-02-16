@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor
 import se.plilja.springdaogen.codegeneration.ClassGenerator
 import se.plilja.springdaogen.generatedframework.baseEntity
 import se.plilja.springdaogen.generatedframework.changedAtTracked
+import se.plilja.springdaogen.generatedframework.changedByTracked
 import se.plilja.springdaogen.generatedframework.createdAtTracked
+import se.plilja.springdaogen.generatedframework.createdByTracked
 import se.plilja.springdaogen.generatedframework.versionTracked
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Left
@@ -65,12 +67,16 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
             g.addPrivateField(column.fieldName(), column.typeName(), annotations)
         } else if (column == table.primaryKey && column.name.toLowerCase() == "id") {
             g.addPrivateField(column.fieldName(), column.typeName(), annotations)
-        } else if (column == table.createdAtColumn() && column.getter() == "getCreatedAt") {
+        } else if (config.featureGenerateChangeTracking && column == table.createdAtColumn() && column.getter() == "getCreatedAt") {
             g.addPrivateField(column.fieldName(), column.typeName(), annotations)
-        } else if (column == table.changedAtColumn() && column.getter() == "getChangedAt") {
+        } else if (config.featureGenerateChangeTracking && column == table.changedAtColumn() && column.getter() == "getChangedAt") {
             g.addPrivateField(column.fieldName(), column.typeName(), annotations)
-        } else if (column == table.versionColumn() && column.getter() == "getVersion") {
+        } else if (config.featureGenerateChangeTracking && column == table.versionColumn() && column.getter() == "getVersion") {
             // Always use Integer for version column no matter what the db says
+            g.addPrivateField(column.fieldName(), column.typeName(), annotations)
+        } else if (config.featureGenerateChangeTracking && column == table.changedByColumn() && column.getter() == "getChangedBy") {
+            g.addPrivateField(column.fieldName(), column.typeName(), annotations)
+        } else if (config.featureGenerateChangeTracking && column == table.createdByColumn() && column.getter() == "getCreatedBy") {
             g.addPrivateField(column.fieldName(), column.typeName(), annotations)
         } else {
             g.addField(column.fieldName(), column.typeName(), annotations)
@@ -104,6 +110,20 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
         )
     }
 
+    if (config.featureGenerateChangeTracking) {
+        generatedChangeTracking(table, g, config)
+    }
+
+    ensureImported(g, config) { baseEntity(config.frameworkOutputPackage) }
+
+    return g
+}
+
+private fun generatedChangeTracking(
+    table: Table,
+    g: ClassGenerator,
+    config: Config
+) {
     val createdAtColumn = table.createdAtColumn()
     if (createdAtColumn != null) {
         ensureImported(g, config) { createdAtTracked(config.frameworkOutputPackage) }
@@ -204,6 +224,72 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
         )
     }
 
+    val createdByColumn = table.createdByColumn()
+    if (createdByColumn != null) {
+        ensureImported(g, config) { createdByTracked(config.frameworkOutputPackage) }
+        g.addImplements("CreatedByTracked")
+        if (!config.useLombok || createdByColumn.getter() != "getCreatedBy") {
+            val maybeJsonIgnore =
+                if (config.featureGenerateJacksonAnnotations && createdByColumn.getter() != "getCreatedBy") {
+                    g.addImport(JsonIgnore::class.java)
+                    "@JsonIgnore"
+                } else {
+                    ""
+                }
+            g.addCustomMethod(
+                """
+            |   $maybeJsonIgnore
+            |   @Override
+            |   public String getCreatedBy() {
+            |       return ${createdByColumn.fieldName()};
+            |   }
+            """.trimMargin()
+            )
+            g.addCustomMethod(
+                """
+            |   $maybeJsonIgnore
+            |   @Override
+            |   public void setCreatedBy(String value) {
+            |       this.${createdByColumn.fieldName()} = value;
+            |   }
+            """.trimMargin()
+            )
+        }
+    }
+
+    val changedByColumn = table.changedByColumn()
+    if (changedByColumn != null) {
+        ensureImported(g, config) { changedByTracked(config.frameworkOutputPackage) }
+        g.addImplements("ChangedByTracked")
+        if (!config.useLombok || changedByColumn.getter() != "getChangedBy") {
+            val maybeJsonIgnore =
+                if (config.featureGenerateJacksonAnnotations && changedByColumn.getter() != "getChangedBy") {
+                    g.addImport(JsonIgnore::class.java)
+                    "@JsonIgnore"
+                } else {
+                    ""
+                }
+            g.addCustomMethod(
+                """
+            |   $maybeJsonIgnore
+            |   @Override
+            |   public String getChangedBy() {
+            |       return ${changedByColumn.fieldName()};
+            |   }
+            """.trimMargin()
+            )
+            g.addCustomMethod(
+                """
+            |   $maybeJsonIgnore
+            |   @Override
+            |   public void setChangedBy(String value) {
+            |       this.${changedByColumn.fieldName()} = value;
+            |   }
+            """.trimMargin()
+            )
+        }
+    }
+
     val versionColumn = table.versionColumn()
     if (versionColumn != null) {
         ensureImported(g, config) { versionTracked(config.frameworkOutputPackage) }
@@ -229,9 +315,6 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
             )
         }
     }
-
-    ensureImported(g, config) { baseEntity(config.frameworkOutputPackage) }
-
-    return g
 }
+
 

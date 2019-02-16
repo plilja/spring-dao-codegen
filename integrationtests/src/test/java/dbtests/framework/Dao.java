@@ -13,9 +13,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+
 
 /**
  * Base class providing basic CRUD access to a database
@@ -24,13 +26,15 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 public abstract class Dao<T extends BaseEntity<ID>, ID> {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
-    private Class<ID> idClass;
-    private boolean idIsGenerated;
+    private final Class<ID> idClass;
+    private final boolean idIsGenerated;
+    private final CurrentUserProvider currentUserProvider;
 
-    protected Dao(Class<ID> idClass, boolean idIsGenerated, NamedParameterJdbcTemplate jdbcTemplate) {
+    protected Dao(Class<ID> idClass, boolean idIsGenerated, NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
         this.idClass = idClass;
         this.idIsGenerated = idIsGenerated;
         this.jdbcTemplate = jdbcTemplate;
+        this.currentUserProvider = currentUserProvider;
     }
 
     public boolean exists(ID id) {
@@ -157,8 +161,11 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
 
     private void create(T object) {
         setCreatedAt(object);
+        setCreatedBy(object);
         setChangedAt(object);
+        setChangedBy(object);
         initializeVersion(object);
+
         if (idIsGenerated) {
             if (object.getId() != null) {
                 throw new IllegalArgumentException(String.format("Attempting to create a new object with an existing id %s", object.getId()));
@@ -176,7 +183,10 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
     }
 
     private void update(T object) {
+
         setChangedAt(object);
+        setChangedBy(object);
+
         String sql = getUpdateSql();
         SqlParameterSource params = getParams(object);
         int updated = jdbcTemplate.update(sql, params);
@@ -185,7 +195,9 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         } else if (updated > 1) {
             throw new TooManyRowsUpdatedException(String.format("More than one row (%d) affected by update of object with id %s", updated, object.getId()));
         }
+
         bumpVersion(object);
+
     }
 
     @Transactional
@@ -226,6 +238,7 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         HashMap<String, Object> noParams = new HashMap<>();
         return jdbcTemplate.queryForObject(sql, noParams, Long.class);
     }
+
 
     public List<T> findAll(SortOrder<T> orderBy) {
         return query(Collections.emptyList(), Collections.singletonList(orderBy));
@@ -342,6 +355,7 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
 
     protected abstract String getQueryPageOrderBySql(long start, int pageSize, String whereClause, String orderBy);
 
+
     protected abstract RowMapper<T> getRowMapper();
 
     protected abstract SqlParameterSource getParams(T object);
@@ -392,6 +406,18 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
     private void setChangedAt(T object) {
         if (object instanceof ChangedAtTracked<?>) {
             ((ChangedAtTracked<?>) object).setChangedNow();
+        }
+    }
+
+    private void setCreatedBy(T object) {
+        if (object instanceof CreatedByTracked) {
+            ((CreatedByTracked) object).setCreatedBy(currentUserProvider.getCurrentUser());
+        }
+    }
+
+    private void setChangedBy(T object) {
+        if (object instanceof ChangedByTracked) {
+            ((ChangedByTracked) object).setChangedBy(currentUserProvider.getCurrentUser());
         }
     }
 

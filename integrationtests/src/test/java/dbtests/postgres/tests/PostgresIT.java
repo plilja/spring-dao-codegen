@@ -55,21 +55,6 @@ public class PostgresIT extends BaseIntegrationTest<BazPostgresEntity, BazPostgr
     }
 
     @Override
-    protected LocalDateTime getCreatedAt(BazPostgresEntity entity) {
-        return entity.getCreatedAt();
-    }
-
-    @Override
-    protected LocalDateTime getChangedAt(BazPostgresEntity entity) {
-        return entity.getChangedAt();
-    }
-
-    @Override
-    protected Integer getVersion(BazPostgresEntity entity) {
-        return entity.getVersion();
-    }
-
-    @Override
     protected void setVersion(BazPostgresEntity entity, Integer version) {
         entity.setVersion(version);
     }
@@ -79,9 +64,11 @@ public class PostgresIT extends BaseIntegrationTest<BazPostgresEntity, BazPostgr
         var params = new MapSqlParameterSource()
                 .addValue("name", "Glenn")
                 .addValue("color", ColorEnumPostgres.GREEN.getId())
+                .addValue("created_by", "foo")
+                .addValue("changed_by", "foo")
                 .addValue("created_at", LocalDateTime.now())
                 .addValue("changed_at", LocalDateTime.now());
-        jdbcTemplate.update("INSERT INTO test_schema.baz_postgres (baz_name, color, created_at, changed_at) values (:name, :color, :created_at, :changed_at)", params);
+        jdbcTemplate.update("INSERT INTO test_schema.baz_postgres (baz_name, color, created_at, changed_at, created_by, changed_by) values (:name, :color, :created_at, :changed_at, :created_by, :changed_by)", params);
     }
 
     @Test

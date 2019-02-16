@@ -1,6 +1,7 @@
 package dbtests.oracle.model;
 
 import dbtests.framework.Column;
+import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.io.IOException;
@@ -105,8 +106,8 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
     };
 
     @Autowired
-    public DataTypesOracleRepository(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(String.class, false, jdbcTemplate);
+    public DataTypesOracleRepository(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
+        super(String.class, false, jdbcTemplate, currentUserProvider);
     }
 
     @Override

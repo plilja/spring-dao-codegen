@@ -1,5 +1,6 @@
 package dbtests.mssql.tests;
 
+import dbtests.FakeSpringSecurity;
 import dbtests.TransactionUtil;
 import dbtests.mssql.model.BazMsSqlDao;
 import dbtests.mssql.model.DataTypesMsSqlDao;
@@ -40,4 +41,10 @@ public class MsSqlITConfig {
     public PlatformTransactionManager transactionManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }
+
+    @Bean
+    public FakeSpringSecurity currentUserProvider() {
+        return new FakeSpringSecurity();
+    }
+
 }

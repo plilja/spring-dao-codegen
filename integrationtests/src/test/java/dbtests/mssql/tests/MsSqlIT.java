@@ -55,21 +55,6 @@ public class MsSqlIT extends BaseIntegrationTest<BazMsSqlEntity, BazMsSqlDao> {
     }
 
     @Override
-    protected LocalDateTime getCreatedAt(BazMsSqlEntity entity) {
-        return entity.getInsertedAt();
-    }
-
-    @Override
-    protected LocalDateTime getChangedAt(BazMsSqlEntity entity) {
-        return entity.getModifiedAt();
-    }
-
-    @Override
-    protected Integer getVersion(BazMsSqlEntity entity) {
-        return entity.getVersion();
-    }
-
-    @Override
     protected void setVersion(BazMsSqlEntity entity, Integer version) {
         entity.setVersion(version);
     }
@@ -79,9 +64,11 @@ public class MsSqlIT extends BaseIntegrationTest<BazMsSqlEntity, BazMsSqlDao> {
         var params = new MapSqlParameterSource()
                 .addValue("name", "Glenn")
                 .addValue("color", ColorEnumMsSql.GREEN.getId())
+                .addValue("insertedBy", "foo")
+                .addValue("modifiedBy", "foo")
                 .addValue("insertedAt", LocalDateTime.now())
                 .addValue("modifiedAt", LocalDateTime.now());
-        jdbcTemplate.update("INSERT INTO dbo.baz_ms_sql (name, color, inserted_at, modified_at) values (:name, :color, :insertedAt, :modifiedAt)", params);
+        jdbcTemplate.update("INSERT INTO dbo.baz_ms_sql (name, color, inserted_at, modified_at, inserted_by, modified_by) values (:name, :color, :insertedAt, :modifiedAt, :insertedBy, :modifiedBy)", params);
     }
 
     @Test

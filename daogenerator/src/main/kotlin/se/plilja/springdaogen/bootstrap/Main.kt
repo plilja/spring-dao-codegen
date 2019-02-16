@@ -6,6 +6,7 @@ import se.plilja.springdaogen.daogeneration.generateCode
 import se.plilja.springdaogen.generatedframework.baseDatabaseEnum
 import se.plilja.springdaogen.generatedframework.baseEntity
 import se.plilja.springdaogen.generatedframework.columnClass
+import se.plilja.springdaogen.generatedframework.currentUserProvider
 import se.plilja.springdaogen.generatedframework.dao
 import se.plilja.springdaogen.generatedframework.entityInterfaces
 import se.plilja.springdaogen.generatedframework.frameworkExceptions
@@ -66,8 +67,11 @@ fun copyFrameworkClasses(config: Config) {
     for (exceptionClass in frameworkExceptions(config.frameworkOutputPackage)) {
         writeFrameworkClass(exceptionClass)
     }
-    for (entityInterface in entityInterfaces(config.frameworkOutputPackage)) {
-        writeFrameworkClass(entityInterface)
+    if (config.featureGenerateChangeTracking) {
+        writeFrameworkClass(currentUserProvider(config.frameworkOutputPackage))
+        for (entityInterface in entityInterfaces(config.frameworkOutputPackage)) {
+            writeFrameworkClass(entityInterface)
+        }
     }
 }
 

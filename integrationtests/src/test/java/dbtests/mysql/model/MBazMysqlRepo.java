@@ -1,6 +1,7 @@
 package dbtests.mysql.model;
 
 import dbtests.framework.Column;
+import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.sql.Types;
@@ -21,9 +22,13 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
 
     public static final Column<MBazMysql, LocalDateTime> COLUMN_CHANGED_AT = new Column<>("changed_at");
 
+    public static final Column<MBazMysql, String> COLUMN_CHANGED_BY = new Column<>("changed_by");
+
     public static final Column<MBazMysql, ColorEnumMysql> COLUMN_COLOR_ENUM_MYSQL_ID = new Column<>("color_enum_mysql_id");
 
     public static final Column<MBazMysql, LocalDateTime> COLUMN_CREATED_AT = new Column<>("created_at");
+
+    public static final Column<MBazMysql, String> COLUMN_CREATED_BY = new Column<>("created_by");
 
     public static final Column<MBazMysql, String> COLUMN_NAME = new Column<>("name");
 
@@ -31,28 +36,32 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
 
     public static final List<Column<MBazMysql, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_ID,
     COLUMN_CHANGED_AT,
+    COLUMN_CHANGED_BY,
     COLUMN_COLOR_ENUM_MYSQL_ID,
     COLUMN_CREATED_AT,
+    COLUMN_CREATED_BY,
     COLUMN_NAME,
     COLUMN_VERSION);
 
-    private static final String ALL_COLUMNS = " id, changed_at, color_enum_mysql_id, created_at, name, " +
-            " version ";
+    private static final String ALL_COLUMNS = " id, changed_at, changed_by, color_enum_mysql_id, created_at, " +
+            " created_by, name, version ";
 
     private static final RowMapper<MBazMysql> ROW_MAPPER = (rs, i) -> {
         MBazMysql r = new MBazMysql();
         r.setId(rs.getInt("id"));
         r.setChangedAt(rs.getTimestamp("changed_at").toLocalDateTime());
+        r.setChangedBy(rs.getString("changed_by"));
         r.setColorEnumMysql(ColorEnumMysql.fromId(rs.getObject("color_enum_mysql_id") != null ? rs.getInt("color_enum_mysql_id") : null));
         r.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+        r.setCreatedBy(rs.getString("created_by"));
         r.setName(rs.getString("name"));
         r.setVersion(rs.getObject("version") != null ? rs.getInt("version") : null);
         return r;
     };
 
     @Autowired
-    public MBazMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, true, jdbcTemplate);
+    public MBazMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
+        super(Integer.class, true, jdbcTemplate, currentUserProvider);
     }
 
     @Override
@@ -60,8 +69,10 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
         MapSqlParameterSource m = new MapSqlParameterSource();
         m.addValue("id", o.getId(), Types.INTEGER);
         m.addValue("changed_at", o.getChangedAt(), Types.TIMESTAMP);
+        m.addValue("changed_by", o.getChangedBy(), Types.VARCHAR);
         m.addValue("color_enum_mysql_id", o.getColorEnumMysql() != null ? o.getColorEnumMysql().getId() : null, Types.INTEGER);
         m.addValue("created_at", o.getCreatedAt(), Types.TIMESTAMP);
+        m.addValue("created_by", o.getCreatedBy(), Types.VARCHAR);
         m.addValue("name", o.getName(), Types.VARCHAR);
         m.addValue("version", o.getVersion(), Types.TINYINT);
         return m;
@@ -109,15 +120,19 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
     protected String getInsertSql() {
         return "INSERT INTO BazMysql (" +
                 "changed_at, " +
+                "changed_by, " +
                 "color_enum_mysql_id, " +
                 "created_at, " +
+                "created_by, " +
                 "name, " +
                 "version" +
                 ") " +
                 "VALUES (" +
                 ":changed_at, " +
+                ":changed_by, " +
                 ":color_enum_mysql_id, " +
                 ":created_at, " +
+                ":created_by, " +
                 ":name, " +
                 ":version" +
                 ")";
@@ -127,6 +142,7 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
     protected String getUpdateSql() {
         return "UPDATE BazMysql SET " +
                 "changed_at = :changed_at, " +
+                "changed_by = :changed_by, " +
                 "color_enum_mysql_id = :color_enum_mysql_id, " +
                 "name = :name, " +
                 "version = (IFNULL(:version, -1) + 1) % 128 " +

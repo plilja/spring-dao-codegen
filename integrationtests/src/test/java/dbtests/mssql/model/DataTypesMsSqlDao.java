@@ -1,6 +1,7 @@
 package dbtests.mssql.model;
 
 import dbtests.framework.Column;
+import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.math.BigDecimal;
@@ -147,8 +148,8 @@ public class DataTypesMsSqlDao extends Dao<DataTypesMsSqlEntity, Long> {
     };
 
     @Autowired
-    public DataTypesMsSqlDao(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Long.class, true, jdbcTemplate);
+    public DataTypesMsSqlDao(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
+        super(Long.class, true, jdbcTemplate, currentUserProvider);
     }
 
     @Override

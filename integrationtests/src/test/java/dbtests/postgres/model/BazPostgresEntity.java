@@ -2,29 +2,35 @@ package dbtests.postgres.model;
 
 import dbtests.framework.BaseEntity;
 import dbtests.framework.ChangedAtTracked;
+import dbtests.framework.ChangedByTracked;
 import dbtests.framework.CreatedAtTracked;
+import dbtests.framework.CreatedByTracked;
 import dbtests.framework.VersionTracked;
 import java.time.LocalDateTime;
 
-public class BazPostgresEntity implements BaseEntity<Integer>, CreatedAtTracked<LocalDateTime>, ChangedAtTracked<LocalDateTime>, VersionTracked {
+public class BazPostgresEntity implements BaseEntity<Integer>, CreatedAtTracked<LocalDateTime>, ChangedAtTracked<LocalDateTime>, CreatedByTracked, ChangedByTracked, VersionTracked {
 
     private Integer bazId;
     private String bazName;
     private LocalDateTime changedAt;
+    private String changedBy;
     private ColorEnumPostgres color;
     private Integer counter;
     private LocalDateTime createdAt;
+    private String createdBy;
 
     public BazPostgresEntity() {
     }
 
-    public BazPostgresEntity(Integer bazId, String bazName, LocalDateTime changedAt, ColorEnumPostgres color, Integer counter, LocalDateTime createdAt) {
+    public BazPostgresEntity(Integer bazId, String bazName, LocalDateTime changedAt, String changedBy, ColorEnumPostgres color, Integer counter, LocalDateTime createdAt, String createdBy) {
         this.bazId = bazId;
         this.bazName = bazName;
         this.changedAt = changedAt;
+        this.changedBy = changedBy;
         this.color = color;
         this.counter = counter;
         this.createdAt = createdAt;
+        this.createdBy = createdBy;
     }
 
     public Integer getBazId() {
@@ -95,6 +101,26 @@ public class BazPostgresEntity implements BaseEntity<Integer>, CreatedAtTracked<
     @Override
     public void setChangedNow() {
         changedAt = LocalDateTime.now();
+    }
+
+    @Override
+    public String getCreatedBy() {
+        return createdBy;
+    }
+
+    @Override
+    public void setCreatedBy(String value) {
+        this.createdBy = value;
+    }
+
+    @Override
+    public String getChangedBy() {
+        return changedBy;
+    }
+
+    @Override
+    public void setChangedBy(String value) {
+        this.changedBy = value;
     }
 
     @Override

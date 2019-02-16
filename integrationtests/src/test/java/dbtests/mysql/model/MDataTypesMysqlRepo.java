@@ -1,6 +1,7 @@
 package dbtests.mysql.model;
 
 import dbtests.framework.Column;
+import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
 import java.io.IOException;
@@ -148,8 +149,8 @@ public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
     };
 
     @Autowired
-    public MDataTypesMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Long.class, true, jdbcTemplate);
+    public MDataTypesMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
+        super(Long.class, true, jdbcTemplate, currentUserProvider);
     }
 
     @Override
