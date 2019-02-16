@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+
 /**
  * Base class providing basic CRUD access to a database
  * table.
@@ -102,7 +103,7 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
      * @return a list of rows between index start (inclusive) and start + page_size (exclusive)
      */
     public List<T> findPage(long start, int pageSize) {
-        if (pageSize == 0) {
+        if (pageSize <= 0) {
             return Collections.emptyList();
         }
         String sql = getSelectPageSql(start, pageSize);
@@ -285,6 +286,9 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
     }
 
     public List<T> queryForPage(long start, int pageSize, List<QueryItem<T>> queryItems, List<SortOrder<T>> orderBy) {
+        if (pageSize <= 0) {
+            return Collections.emptyList();
+        }
         List<SortOrder<T>> adjustedSortOrder;
         if (orderBy.isEmpty()) {
             adjustedSortOrder = Collections.singletonList(SortOrder.asc(getColumnByName(getPrimaryKeyColumnName())));

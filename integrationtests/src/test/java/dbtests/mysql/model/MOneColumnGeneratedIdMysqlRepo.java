@@ -74,6 +74,7 @@ public class MOneColumnGeneratedIdMysqlRepo extends Dao<MOneColumnGeneratedIdMys
         return String.format("SELECT %n" +
                 ALL_COLUMNS +
                 "FROM ONE_COLUMN_GENERATED_ID_MYSQL %n" +
+                "ORDER BY id " +
                 "LIMIT %d OFFSET %d", pageSize, start);
     }
 

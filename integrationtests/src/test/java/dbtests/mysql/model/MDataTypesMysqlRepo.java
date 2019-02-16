@@ -219,6 +219,7 @@ public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
         return String.format("SELECT %n" +
                 ALL_COLUMNS +
                 "FROM DATA_TYPES_MYSQL %n" +
+                "ORDER BY id " +
                 "LIMIT %d OFFSET %d", pageSize, start);
     }
 

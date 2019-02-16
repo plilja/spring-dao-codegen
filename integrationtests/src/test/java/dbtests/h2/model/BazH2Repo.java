@@ -101,6 +101,7 @@ public class BazH2Repo extends Dao<BazH2, Integer> {
         return String.format("SELECT %n" +
                 ALL_COLUMNS +
                 "FROM test_schema.baz_h2 %n" +
+                "ORDER BY baz_id " +
                 "LIMIT %d OFFSET %d", pageSize, start);
     }
 

@@ -21,4 +21,3 @@
 * Can reduce size of generated code if query api is used
 * Indentation generated column list
 * Example projects (java8, java11)
-* Always have order by in page-queries

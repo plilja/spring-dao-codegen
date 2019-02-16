@@ -188,6 +188,7 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
         return String.format("SELECT %n" +
                 ALL_COLUMNS +
                 "FROM public.data_types_postgres %n" +
+                "ORDER BY id " +
                 "LIMIT %d OFFSET %d", pageSize, start);
     }
 

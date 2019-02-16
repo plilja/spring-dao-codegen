@@ -74,6 +74,7 @@ public class OneColumnNaturalIdH2Repo extends Dao<OneColumnNaturalIdH2, String> 
         return String.format("SELECT %n" +
                 ALL_COLUMNS +
                 "FROM test_schema.one_column_natural_id_h2 %n" +
+                "ORDER BY id " +
                 "LIMIT %d OFFSET %d", pageSize, start);
     }
 

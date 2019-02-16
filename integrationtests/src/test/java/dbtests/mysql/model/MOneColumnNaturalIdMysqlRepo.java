@@ -74,6 +74,7 @@ public class MOneColumnNaturalIdMysqlRepo extends Dao<MOneColumnNaturalIdMysql, 
         return String.format("SELECT %n" +
                 ALL_COLUMNS +
                 "FROM ONE_COLUMN_NATURAL_ID_MYSQL %n" +
+                "ORDER BY id " +
                 "LIMIT %d OFFSET %d", pageSize, start);
     }
 

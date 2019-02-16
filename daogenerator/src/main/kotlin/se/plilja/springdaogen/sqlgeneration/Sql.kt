@@ -112,23 +112,22 @@ fun lock(table: Table, databaseDialect: DatabaseDialect): String {
 }
 
 fun selectPage(table: Table, databaseDialect: DatabaseDialect): String {
-    return when {
-        databaseDialect in listOf(DatabaseDialect.MYSQL, DatabaseDialect.POSTGRES) -> """
+    return when (databaseDialect) {
+        in listOf(DatabaseDialect.MYSQL, DatabaseDialect.POSTGRES) -> """
             |String.format("SELECT %n" +
             |ALL_COLUMNS +
             |"FROM ${formatTable(table, databaseDialect)} %n" +
+            |"ORDER BY ${formatIdentifier(table.primaryKey.name, databaseDialect)} " +
             |"LIMIT %d OFFSET %d", pageSize, start);
         """.trimMargin()
-
-        databaseDialect in listOf(DatabaseDialect.MSSQL_SERVER, DatabaseDialect.ORACLE12) -> """
+        in listOf(DatabaseDialect.MSSQL_SERVER, DatabaseDialect.ORACLE12) -> """
             |String.format("SELECT %n" +
             |ALL_COLUMNS +
             |"FROM ${formatTable(table, databaseDialect)} %n" +
             |"ORDER BY ${formatIdentifier(table.primaryKey.name, databaseDialect)} %n" +
             |"OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", start, pageSize);
             """.trimMargin()
-
-        databaseDialect == DatabaseDialect.ORACLE -> """
+        DatabaseDialect.ORACLE -> """
             |String.format("SELECT * FROM (%n" +
             |"SELECT rownum tmp_rownum_, a.* %n" +
             |"FROM (SELECT %n" +
@@ -140,7 +139,6 @@ fun selectPage(table: Table, databaseDialect: DatabaseDialect): String {
             |")%n" +
             |"WHERE tmp_rownum_ >= %d", start + 1, pageSize, start + 1);
         """.trimMargin()
-
         else -> throw RuntimeException("Unsupported database dialect $databaseDialect")
     }
 }

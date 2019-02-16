@@ -74,6 +74,7 @@ public class OneColumnNaturalIdPostgresDao extends Dao<OneColumnNaturalIdPostgre
         return String.format("SELECT %n" +
                 ALL_COLUMNS +
                 "FROM test_schema.one_column_natural_id_postgres %n" +
+                "ORDER BY id " +
                 "LIMIT %d OFFSET %d", pageSize, start);
     }
 

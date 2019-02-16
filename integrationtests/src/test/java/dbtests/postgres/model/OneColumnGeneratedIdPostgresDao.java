@@ -74,6 +74,7 @@ public class OneColumnGeneratedIdPostgresDao extends Dao<OneColumnGeneratedIdPos
         return String.format("SELECT %n" +
                 ALL_COLUMNS +
                 "FROM test_schema.one_column_generated_id_postgres %n" +
+                "ORDER BY id " +
                 "LIMIT %d OFFSET %d", pageSize, start);
     }
 

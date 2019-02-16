@@ -101,6 +101,7 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
         return String.format("SELECT %n" +
                 ALL_COLUMNS +
                 "FROM BazMysql %n" +
+                "ORDER BY id " +
                 "LIMIT %d OFFSET %d", pageSize, start);
     }
 
