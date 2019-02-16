@@ -52,8 +52,10 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
                 annotations.add("@NotNull")
             }
             if (column.type() == Left(String::class.java) && !column.isClobLike()) {
-                g.addImport(Size::class.java)
-                annotations.add("@Size(max = ${column.size})")
+                if (column.size < Integer.MAX_VALUE) {
+                    g.addImport(Size::class.java)
+                    annotations.add("@Size(max = ${column.size})")
+                }
             }
         }
         if (config.featureGenerateJacksonAnnotations) {

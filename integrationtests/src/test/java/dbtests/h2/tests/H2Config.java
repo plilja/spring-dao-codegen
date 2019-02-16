@@ -3,6 +3,7 @@ package dbtests.h2.tests;
 import dbtests.FakeSpringSecurity;
 import dbtests.TransactionUtil;
 import dbtests.h2.model.BazH2Repo;
+import dbtests.h2.model.DataTypesH2Repo;
 import dbtests.h2.model.OneColumnGeneratedIdH2Repo;
 import dbtests.h2.model.OneColumnNaturalIdH2Repo;
 import org.springframework.boot.jdbc.DataSourceBuilder;
@@ -16,7 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
-@Import({BazH2Repo.class, OneColumnNaturalIdH2Repo.class, OneColumnGeneratedIdH2Repo.class, TransactionUtil.class})
+@Import({BazH2Repo.class, OneColumnNaturalIdH2Repo.class, OneColumnGeneratedIdH2Repo.class, DataTypesH2Repo.class, TransactionUtil.class})
 @EnableTransactionManagement
 @Configuration
 public class H2Config {

@@ -102,7 +102,8 @@ fun convertColumn(table: schemacrawler.schema.Table, column: schemacrawler.schem
         jdbcType = jdbcType,
         generated = isGenerated(table, column, config),
         nullable = column.isNullable,
-        size = column.size
+        size = column.size,
+        precision = column.decimalDigits
     )
 }
 

@@ -9,7 +9,6 @@
 * Evil Oracle dependency optional
 * Test time stamps with time zones
 * No unused imports should be generated
-* Test more datatypes H2
 * Can reduce size of generated code if query api is used
 * Indentation generated column list
 * Views

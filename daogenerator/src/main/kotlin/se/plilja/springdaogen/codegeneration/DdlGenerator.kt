@@ -1,11 +1,11 @@
 package se.plilja.springdaogen.codegeneration
 
-import org.springframework.jdbc.core.JdbcTemplate
 import se.plilja.springdaogen.daogeneration.selectRows
 import se.plilja.springdaogen.model.Column
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Schema
 import java.math.BigDecimal
+import java.math.BigInteger
 import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.sql.DataSource
@@ -18,7 +18,10 @@ fun toH2Ddl(config: Config, schema: Schema, dataSource: DataSource): String {
         .toSet()
     var res = ""
     for (schemaName in schemaNames) {
-        res += "CREATE SCHEMA $schemaName;\n"
+        if (schemaName != "public") {
+            // public exists by default
+            res += "CREATE SCHEMA $schemaName;\n"
+        }
     }
     res += "\n"
     res += "\n"
@@ -81,14 +84,33 @@ private fun dataType(column: Column): String {
     if (column.generated) {
         return "IDENTITY"
     }
+    when (column.typeName()) {
+        "byte[]" -> {
+            if (column.size > 4000) {
+                return "BLOB"
+            } else {
+                return "BINARY${column.size}"
+            }
+        }
+    }
     return when (column.rawType()) {
-        Integer::class.java -> "INTEGER"
+        java.lang.Integer::class.java -> "INTEGER"
         LocalDate::class.java -> "DATE"
         LocalDateTime::class.java -> "TIMESTAMP"
-        BigDecimal::class.java -> "DECIMAL(30, 10)"
-        Double::class.java -> "DOUBLE"
-        Float::class.java -> "REAL"
-        Boolean::class.java -> "BOOLEAN"
-        else -> return "VARCHAR(100)"
+        BigDecimal::class.java -> "DECIMAL(${column.size}, ${column.precision})"
+        BigInteger::class.java -> "DECIMAL(${column.size}, 0)"
+        java.lang.Double::class.java -> "DOUBLE"
+        java.lang.Float::class.java -> "REAL"
+        java.lang.Long::class.java -> "BIGINT"
+        java.lang.Boolean::class.java -> "BOOLEAN"
+        java.util.UUID::class.java -> "UUID"
+        java.lang.String::class.java -> {
+            if (column.size == Integer.MAX_VALUE) {
+                return "CLOB"
+            } else {
+                return "VARCHAR(${column.size})"
+            }
+        }
+        else -> return "VARCHAR(${column.size})"
     }
 }

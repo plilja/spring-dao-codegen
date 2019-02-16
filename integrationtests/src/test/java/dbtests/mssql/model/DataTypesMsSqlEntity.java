@@ -2,15 +2,16 @@ package dbtests.mssql.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dbtests.framework.BaseEntity;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import javax.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -45,14 +46,12 @@ public class DataTypesMsSqlEntity implements BaseEntity<Long> {
     private Float real;
     private Integer smallint;
     private BigDecimal smallmoney;
-    @Size(max = 2147483647)
     private String text;
     private LocalTime time;
     private Integer tinyint;
     private byte[] varbinary10;
     @Size(max = 10)
     private String varchar10;
-    @Size(max = 2147483647)
     private String xml;
 
 }

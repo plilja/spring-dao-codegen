@@ -77,7 +77,8 @@ data class Column(
     val generated: Boolean = false,
     val jdbcType: JDBCType? = null,
     val nullable: Boolean = false,
-    val size: Int = 100
+    val size: Int = 100,
+    val precision: Int = 0
 ) {
     var references: Pair<Table, Column>? = null
 

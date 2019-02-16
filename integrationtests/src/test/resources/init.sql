@@ -2,26 +2,49 @@ CREATE SCHEMA test_schema;
 
 
 CREATE TABLE test_schema.color_enum_h2 (
-name VARCHAR(100) NOT NULL,
-hex VARCHAR(100) NOT NULL,
+name VARCHAR(10) NOT NULL,
+hex VARCHAR(10) NOT NULL,
 PRIMARY KEY(name));
 
 CREATE TABLE test_schema.one_column_natural_id_h2 (
-id VARCHAR(100) NOT NULL,
+id VARCHAR(10) NOT NULL,
 PRIMARY KEY(id));
 
 CREATE TABLE test_schema.one_column_generated_id_h2 (
 id IDENTITY NOT NULL,
 PRIMARY KEY(id));
 
+CREATE TABLE public.data_types_h2 (
+id IDENTITY NOT NULL,
+bigint BIGINT,
+boolean_b BOOLEAN,
+char VARCHAR(1),
+char10 VARCHAR(10),
+date DATE,
+decimal_eighteen_zero BIGINT,
+decimal_nine_zero INTEGER,
+decimal_nineteen_zero DECIMAL(19, 0),
+decimal_ten_two DECIMAL(10, 2),
+decimal_ten_zero BIGINT,
+double DOUBLE,
+float REAL,
+guid UUID,
+integer INTEGER,
+numeric_ten_two DECIMAL(10, 2),
+smallint INTEGER,
+text CLOB,
+timestamp TIMESTAMP,
+varchar10 VARCHAR(10),
+PRIMARY KEY(id));
+
 CREATE TABLE test_schema.baz_h2 (
 baz_id IDENTITY NOT NULL,
 baz_name VARCHAR(100),
 changed_at TIMESTAMP,
-changed_by VARCHAR(100),
-color VARCHAR(100),
+changed_by VARCHAR(50),
+color VARCHAR(10),
 created_at TIMESTAMP NOT NULL,
-created_by VARCHAR(100) NOT NULL,
+created_by VARCHAR(50) NOT NULL,
 version INTEGER,
 PRIMARY KEY(baz_id));
 
