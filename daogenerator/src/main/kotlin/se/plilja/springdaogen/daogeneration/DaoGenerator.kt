@@ -131,14 +131,6 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
     g.addCustomMethod(
         """
             @Override
-            protected String getSelectPageSql(long start, int pageSize) {
-                return ${selectPage(table, config.databaseDialect)}
-            }
-        """
-    )
-    g.addCustomMethod(
-        """
-            @Override
             protected String getInsertSql() {
                 return ${insert(table, config.databaseDialect)};
             }
@@ -196,6 +188,15 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
             @Override
             protected String getQueryPageOrderBySql(long start, int pageSize, String whereClause, String orderBy) {
                 return ${selectPageQuery(table, config.databaseDialect)}
+            }
+        """
+        )
+    } else {
+        g.addCustomMethod(
+            """
+            @Override
+            protected String getSelectPageSql(long start, int pageSize) {
+                return ${selectPage(table, config.databaseDialect)}
             }
         """
         )

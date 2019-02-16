@@ -9,9 +9,9 @@
 * Evil Oracle dependency optional
 * Test time stamps with time zones
 * No unused imports should be generated
-* Can reduce size of generated code if query api is used
 * Indentation generated column list
 * Views
+* Bulk insert
 
 # Maybe later release
 * SqlLite
@@ -23,3 +23,4 @@
 * Customize lombok annotations?
 * Kotlin support?
 * More database patterns? (soft delete etc...)
+* Merge into, would increase performance for inserts with natural key

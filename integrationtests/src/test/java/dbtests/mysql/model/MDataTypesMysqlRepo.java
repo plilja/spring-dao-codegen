@@ -216,15 +216,6 @@ public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
     }
 
     @Override
-    protected String getSelectPageSql(long start, int pageSize) {
-        return String.format("SELECT %n" +
-                ALL_COLUMNS +
-                "FROM DATA_TYPES_MYSQL %n" +
-                "ORDER BY id " +
-                "LIMIT %d OFFSET %d", pageSize, start);
-    }
-
-    @Override
     protected String getInsertSql() {
         return "INSERT INTO DATA_TYPES_MYSQL (" +
                 "`bigint`, " +

@@ -127,11 +127,15 @@ ${if (config.featureGenerateChangeTracking) {
      * @return a list of rows between index start (inclusive) and start + page_size (exclusive)
      */
     public List<T> findPage(long start, int pageSize) {
-        if (pageSize <= 0) {
+${if (config.featureGenerateQueryApi) {
+            """        return queryForPage(start, pageSize, Collections.emptyList(), Collections.emptyList());"""
+        } else {
+            """        if (pageSize <= 0) {
             return Collections.emptyList();
         }
         String sql = getSelectPageSql(start, pageSize);
-        return jdbcTemplate.query(sql, Collections.emptyMap(), getRowMapper());
+        return jdbcTemplate.query(sql, Collections.emptyMap(), getRowMapper());"""
+        }}
     }
 
     /**
@@ -209,10 +213,8 @@ ${if (config.featureGenerateChangeTracking) {
 
     private void update(T object) {
 ${if (config.featureGenerateChangeTracking) {
-            """
-        setChangedAt(object);
-        setChangedBy(object);
-"""
+            """        setChangedAt(object);
+        setChangedBy(object);"""
         } else {
             ""
         }
@@ -392,7 +394,8 @@ ${if (config.featureGenerateQueryApi) {
     protected abstract String getQueryPageOrderBySql(long start, int pageSize, String whereClause, String orderBy);
 """
         } else {
-            ""
+            """    protected abstract String getSelectPageSql(long start, int pageSize);
+"""
         }}
 
     protected abstract RowMapper<T> getRowMapper();
@@ -404,8 +407,6 @@ ${if (config.featureGenerateQueryApi) {
     protected abstract String getSelectIdsSql();
 
     protected abstract String getSelectManySql(int maxAllowedCount);
-
-    protected abstract String getSelectPageSql(long start, int pageSize);
 
     protected abstract String getInsertSql();
 

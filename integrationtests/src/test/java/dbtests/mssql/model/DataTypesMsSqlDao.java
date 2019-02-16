@@ -215,15 +215,6 @@ public class DataTypesMsSqlDao extends Dao<DataTypesMsSqlEntity, Long> {
     }
 
     @Override
-    protected String getSelectPageSql(long start, int pageSize) {
-        return String.format("SELECT %n" +
-                ALL_COLUMNS +
-                "FROM dbo.DATA_TYPES_MS_SQL %n" +
-                "ORDER BY id %n" +
-                "OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", start, pageSize);
-    }
-
-    @Override
     protected String getInsertSql() {
         return "INSERT INTO dbo.DATA_TYPES_MS_SQL (" +
                 "binary10, " +

@@ -71,15 +71,6 @@ public class MOneColumnGeneratedIdMysqlRepo extends Dao<MOneColumnGeneratedIdMys
     }
 
     @Override
-    protected String getSelectPageSql(long start, int pageSize) {
-        return String.format("SELECT %n" +
-                ALL_COLUMNS +
-                "FROM ONE_COLUMN_GENERATED_ID_MYSQL %n" +
-                "ORDER BY id " +
-                "LIMIT %d OFFSET %d", pageSize, start);
-    }
-
-    @Override
     protected String getInsertSql() {
         return "INSERT INTO ONE_COLUMN_GENERATED_ID_MYSQL() VALUES()";
     }

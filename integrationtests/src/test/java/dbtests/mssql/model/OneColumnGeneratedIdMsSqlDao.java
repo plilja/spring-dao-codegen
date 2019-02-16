@@ -70,15 +70,6 @@ public class OneColumnGeneratedIdMsSqlDao extends Dao<OneColumnGeneratedIdMsSqlE
     }
 
     @Override
-    protected String getSelectPageSql(long start, int pageSize) {
-        return String.format("SELECT %n" +
-                ALL_COLUMNS +
-                "FROM dbo.one_column_generated_id_ms_sql %n" +
-                "ORDER BY id %n" +
-                "OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", start, pageSize);
-    }
-
-    @Override
     protected String getInsertSql() {
         return "INSERT INTO dbo.one_column_generated_id_ms_sql DEFAULT VALUES";
     }

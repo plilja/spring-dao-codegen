@@ -107,11 +107,7 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
      * @return a list of rows between index start (inclusive) and start + page_size (exclusive)
      */
     public List<T> findPage(long start, int pageSize) {
-        if (pageSize <= 0) {
-            return Collections.emptyList();
-        }
-        String sql = getSelectPageSql(start, pageSize);
-        return jdbcTemplate.query(sql, Collections.emptyMap(), getRowMapper());
+        return queryForPage(start, pageSize, Collections.emptyList(), Collections.emptyList());
     }
 
     /**
@@ -183,10 +179,8 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
     }
 
     private void update(T object) {
-
         setChangedAt(object);
         setChangedBy(object);
-
         String sql = getUpdateSql();
         SqlParameterSource params = getParams(object);
         int updated = jdbcTemplate.update(sql, params);
@@ -365,8 +359,6 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
     protected abstract String getSelectIdsSql();
 
     protected abstract String getSelectManySql(int maxAllowedCount);
-
-    protected abstract String getSelectPageSql(long start, int pageSize);
 
     protected abstract String getInsertSql();
 

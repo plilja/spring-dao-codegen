@@ -2,13 +2,12 @@ package dbtests.h2.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dbtests.framework.BaseEntity;
-
-import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import javax.validation.constraints.Size;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DataTypesH2 implements BaseEntity<Long> {

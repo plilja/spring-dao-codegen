@@ -185,15 +185,6 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
     }
 
     @Override
-    protected String getSelectPageSql(long start, int pageSize) {
-        return String.format("SELECT %n" +
-                ALL_COLUMNS +
-                "FROM public.data_types_postgres %n" +
-                "ORDER BY id " +
-                "LIMIT %d OFFSET %d", pageSize, start);
-    }
-
-    @Override
     protected String getInsertSql() {
         return "INSERT INTO public.data_types_postgres (" +
                 "bigint, " +

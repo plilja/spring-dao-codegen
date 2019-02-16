@@ -163,20 +163,6 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
     }
 
     @Override
-    protected String getSelectPageSql(long start, int pageSize) {
-        return String.format("SELECT * FROM (%n" +
-                "SELECT rownum tmp_rownum_, a.* %n" +
-                "FROM (SELECT %n" +
-                ALL_COLUMNS +
-                "FROM DOCKER.DATA_TYPES_ORACLE %n" +
-                "ORDER BY ID %n" +
-                ") a %n" +
-                "WHERE rownum < %d + %d %n" +
-                ")%n" +
-                "WHERE tmp_rownum_ >= %d", start + 1, pageSize, start + 1);
-    }
-
-    @Override
     protected String getInsertSql() {
         return "INSERT INTO DOCKER.DATA_TYPES_ORACLE (" +
                 "ID, " +

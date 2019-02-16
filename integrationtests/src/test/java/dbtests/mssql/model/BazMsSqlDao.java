@@ -107,15 +107,6 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
     }
 
     @Override
-    protected String getSelectPageSql(long start, int pageSize) {
-        return String.format("SELECT %n" +
-                ALL_COLUMNS +
-                "FROM dbo.baz_ms_sql %n" +
-                "ORDER BY id %n" +
-                "OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", start, pageSize);
-    }
-
-    @Override
     protected String getInsertSql() {
         return "INSERT INTO dbo.baz_ms_sql (" +
                 "color, " +

@@ -3,13 +3,7 @@ package dbtests.h2.model;
 import dbtests.framework.Column;
 import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.stereotype.Repository;
-
+import dbtests.framework.DatabaseException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Types;
@@ -18,6 +12,12 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class DataTypesH2Repo extends Dao<DataTypesH2, Long> {
@@ -63,25 +63,25 @@ public class DataTypesH2Repo extends Dao<DataTypesH2, Long> {
     public static final Column<DataTypesH2, String> COLUMN_VARCHAR10 = new Column<>("varchar10");
 
     public static final List<Column<DataTypesH2, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_ID,
-            COLUMN_BIGINT,
-            COLUMN_BOOLEAN_B,
-            COLUMN_CHAR,
-            COLUMN_CHAR10,
-            COLUMN_DATE,
-            COLUMN_DECIMAL_EIGHTEEN_ZERO,
-            COLUMN_DECIMAL_NINE_ZERO,
-            COLUMN_DECIMAL_NINETEEN_ZERO,
-            COLUMN_DECIMAL_TEN_TWO,
-            COLUMN_DECIMAL_TEN_ZERO,
-            COLUMN_DOUBLE,
-            COLUMN_FLOAT,
-            COLUMN_GUID,
-            COLUMN_INTEGER,
-            COLUMN_NUMERIC_TEN_TWO,
-            COLUMN_SMALLINT,
-            COLUMN_TEXT,
-            COLUMN_TIMESTAMP,
-            COLUMN_VARCHAR10);
+    COLUMN_BIGINT,
+    COLUMN_BOOLEAN_B,
+    COLUMN_CHAR,
+    COLUMN_CHAR10,
+    COLUMN_DATE,
+    COLUMN_DECIMAL_EIGHTEEN_ZERO,
+    COLUMN_DECIMAL_NINE_ZERO,
+    COLUMN_DECIMAL_NINETEEN_ZERO,
+    COLUMN_DECIMAL_TEN_TWO,
+    COLUMN_DECIMAL_TEN_ZERO,
+    COLUMN_DOUBLE,
+    COLUMN_FLOAT,
+    COLUMN_GUID,
+    COLUMN_INTEGER,
+    COLUMN_NUMERIC_TEN_TWO,
+    COLUMN_SMALLINT,
+    COLUMN_TEXT,
+    COLUMN_TIMESTAMP,
+    COLUMN_VARCHAR10);
 
     private static final String ALL_COLUMNS = " id, bigint, boolean_b, char, char10, " +
             " date, decimal_eighteen_zero, decimal_nine_zero, decimal_nineteen_zero, decimal_ten_two, " +
@@ -171,15 +171,6 @@ public class DataTypesH2Repo extends Dao<DataTypesH2, Long> {
                 ALL_COLUMNS +
                 "FROM public.data_types_h2 " +
                 "LIMIT %d", maxSelectCount);
-    }
-
-    @Override
-    protected String getSelectPageSql(long start, int pageSize) {
-        return String.format("SELECT %n" +
-                ALL_COLUMNS +
-                "FROM public.data_types_h2 %n" +
-                "ORDER BY id " +
-                "LIMIT %d OFFSET %d", pageSize, start);
     }
 
     @Override

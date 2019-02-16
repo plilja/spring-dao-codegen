@@ -70,15 +70,6 @@ public class OneColumnNaturalIdMsSqlDao extends Dao<OneColumnNaturalIdMsSqlEntit
     }
 
     @Override
-    protected String getSelectPageSql(long start, int pageSize) {
-        return String.format("SELECT %n" +
-                ALL_COLUMNS +
-                "FROM dbo.ONE_COLUMN_NATURAL_ID_MS_SQL %n" +
-                "ORDER BY id %n" +
-                "OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", start, pageSize);
-    }
-
-    @Override
     protected String getInsertSql() {
         return "INSERT INTO dbo.ONE_COLUMN_NATURAL_ID_MS_SQL (" +
                 "id" +

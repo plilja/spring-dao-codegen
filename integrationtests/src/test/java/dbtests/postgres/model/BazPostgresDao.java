@@ -108,15 +108,6 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
     }
 
     @Override
-    protected String getSelectPageSql(long start, int pageSize) {
-        return String.format("SELECT %n" +
-                ALL_COLUMNS +
-                "FROM test_schema.baz_postgres %n" +
-                "ORDER BY baz_id " +
-                "LIMIT %d OFFSET %d", pageSize, start);
-    }
-
-    @Override
     protected String getInsertSql() {
         return "INSERT INTO test_schema.baz_postgres (" +
                 "baz_name, " +

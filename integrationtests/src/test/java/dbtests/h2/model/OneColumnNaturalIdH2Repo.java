@@ -71,15 +71,6 @@ public class OneColumnNaturalIdH2Repo extends Dao<OneColumnNaturalIdH2, String> 
     }
 
     @Override
-    protected String getSelectPageSql(long start, int pageSize) {
-        return String.format("SELECT %n" +
-                ALL_COLUMNS +
-                "FROM test_schema.one_column_natural_id_h2 %n" +
-                "ORDER BY id " +
-                "LIMIT %d OFFSET %d", pageSize, start);
-    }
-
-    @Override
     protected String getInsertSql() {
         return "INSERT INTO test_schema.one_column_natural_id_h2 (" +
                 "id" +
