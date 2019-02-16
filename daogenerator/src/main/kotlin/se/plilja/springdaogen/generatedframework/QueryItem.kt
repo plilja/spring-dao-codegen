@@ -11,6 +11,9 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import java.util.List;
 import java.util.function.Supplier;
 
+/** @noinspection unused
+ * The parameter is not used but it ads type safety to the Dao.
+ **/
 public abstract class QueryItem<Entity extends BaseEntity<?>> {
 
     protected abstract String getClause(MapSqlParameterSource params, Supplier<String> paramNameGenerator);
