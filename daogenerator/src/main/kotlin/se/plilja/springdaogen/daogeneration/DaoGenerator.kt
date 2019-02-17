@@ -29,6 +29,7 @@ import kotlin.reflect.full.staticProperties
 
 
 fun generateDao(config: Config, table: Table): ClassGenerator {
+    println("Generating dao for table '${table.name}', dao will be named '${table.daoName()}'.")
     val g = ClassGenerator(table.daoName(), config.daoOutputPackage, config.daoOutputFolder)
     if (!config.daosAreAbstract) {
         g.addClassAnnotation("@Repository")
@@ -37,7 +38,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
     g.extends = "Dao<${table.entityName()}, ${table.primaryKey.typeName()}>"
     if (config.featureGenerateQueryApi) {
         ensureImported(g, config) { columnClass(config.frameworkOutputPackage) }
-        var columnsConstantNames = ArrayList<String>()
+        val columnsConstantNames = ArrayList<String>()
         for (column in table.columns) {
             val type = column.type()
             when (type) {

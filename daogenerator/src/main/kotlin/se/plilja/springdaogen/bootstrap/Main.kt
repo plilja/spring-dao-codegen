@@ -1,5 +1,7 @@
 package se.plilja.springdaogen.bootstrap
 
+import org.apache.log4j.Level
+import org.slf4j.bridge.SLF4JBridgeHandler
 import org.springframework.boot.jdbc.DataSourceBuilder
 import se.plilja.springdaogen.codegeneration.toH2Ddl
 import se.plilja.springdaogen.daogeneration.generateCode
@@ -15,14 +17,19 @@ import se.plilja.springdaogen.generatedframework.sortOrder
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Schema
 import java.io.File
+import java.lang.IllegalStateException
+import java.util.logging.LogManager
 import javax.sql.DataSource
 import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
-    if (args.size != 1) {
-        System.err.println("This program expects exactly one argument, a properties file.")
+    initLogging(args)
+    if (args.isEmpty()) {
+        System.err.println("Usage: program pathToPropertiesFile")
+        System.err.println("You can also supply the flag --verbose to get extra log output")
         exitProcess(1)
     }
+    println("Starting...")
     val config = readConfig(args)
     val dataSource = getDataSource(config)
     val schema = readSchema(config, dataSource)
@@ -30,6 +37,17 @@ fun main(args: Array<String>) {
     copyFrameworkClasses(config)
     writeTestDdl(config, schema, dataSource)
     close(dataSource)
+    println("Done.")
+}
+
+fun initLogging(args: Array<String>) {
+    LogManager.getLogManager().reset();
+    SLF4JBridgeHandler.install(); // Schemacrawler uses java.util.logging
+    for (arg in args) {
+        if (arg == "--verbose") {
+            org.apache.log4j.LogManager.getRootLogger().level = Level.DEBUG
+        }
+    }
 }
 
 private fun writeDaos(config: Config, schema: Schema, dataSource: DataSource) {
@@ -43,11 +61,12 @@ private fun writeDaos(config: Config, schema: Schema, dataSource: DataSource) {
 }
 
 private fun readConfig(args: Array<String>): Config {
-    return if (args.isNotEmpty()) {
-        Config.readDefaultConfig(File(args[0]))
-    } else {
-        Config.readDefaultConfig()
+    for (arg in args) {
+        if (arg != "--verbose") {
+            return Config.readDefaultConfig(File(arg))
+        }
     }
+    throw IllegalStateException("Properties file must be provided")
 }
 
 /**
@@ -61,6 +80,7 @@ fun copyFrameworkClasses(config: Config) {
         File(dir.absolutePath + "/" + clazz.first + ".java").writeText(clazz.second)
     }
 
+    println("Writing framework classes")
     writeFrameworkClass(baseEntity(config.frameworkOutputPackage))
     if (config.featureGenerateQueryApi) {
         writeFrameworkClass(queryItem(config.frameworkOutputPackage))

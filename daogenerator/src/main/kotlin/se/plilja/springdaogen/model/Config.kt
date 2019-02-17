@@ -43,12 +43,6 @@ data class Config(
 ) {
 
     companion object {
-
-        fun readDefaultConfig(): Config {
-            val f = File(Config::class.java.getResource("/settings.properties").file)
-            return readDefaultConfig(f)
-        }
-
         fun readDefaultConfig(file: File) = ConfigReader(file).readConfig()
     }
 }

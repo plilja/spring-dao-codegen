@@ -30,6 +30,7 @@ fun readSchema(config: Config, dataSource: DataSource): Schema {
     } else {
         RegularExpressionInclusionRule(Pattern.compile("(?i)" + config.schemas.joinToString("|")))
     }
+    println("Starting to crawl schema. This might be slow depending on the size of your database...")
     val options = SchemaCrawlerOptionsBuilder.builder()
         .withSchemaInfoLevel(SchemaInfoLevelBuilder.standard())
         .includeColumns(IncludeAll())
@@ -39,16 +40,22 @@ fun readSchema(config: Config, dataSource: DataSource): Schema {
         .includeRoutines(ExcludeAll())
         .toOptions()
     val catalog = SchemaCrawlerUtility.getCatalog(dataSource.connection, options)
+    println("Done crawling schema.")
     return catalogToSchema(catalog, config)
 }
 
 fun catalogToSchema(catalog: Catalog, config: Config): Schema {
+    println("Found these tables: ${ catalog.tables.map { it.name }.joinToString(", ")}.")
     val tablesMap = HashMap<schemacrawler.schema.Table, Table>()
     val columnsMap = HashMap<schemacrawler.schema.Column, Column>()
-    catalog.tables
+    val filteredTables = catalog.tables
         .filter { it.hasPrimaryKey() }
         .filter { it.primaryKey.columns.size == 1 } // Currently does not support tables with composite keys
-        .forEach { convertTable(it, config, tablesMap, columnsMap) }
+    if (filteredTables.size != catalog.tables.size) {
+        val excluded = catalog.tables.map { it.name }.toSet() - filteredTables.map { it.name }.toSet()
+        println("Will not generate dao:s or entities for these unsupported tables: " + excluded.joinToString(", "))
+    }
+    filteredTables.forEach { convertTable(it, config, tablesMap, columnsMap) }
     setForeignKeys(catalog, tablesMap, columnsMap)
     return Schema(tablesMap.values.toList())
 }

@@ -3,7 +3,6 @@
  Work in progress
 
 # TODO:s
-* Nicer console output
 * Normalize config
 * Evil Oracle dependency optional
 * Test time stamps with time zones

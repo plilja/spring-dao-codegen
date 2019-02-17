@@ -21,6 +21,7 @@ import javax.validation.constraints.Size
 
 
 fun generateEntity(config: Config, table: Table): ClassGenerator {
+    println("Generating entity for table '${table.name}', entity will be named '${table.entityName()}'.")
     val g = ClassGenerator(table.entityName(), config.entityOutputPackage, config.entityOutputFolder)
     g.addImplements("BaseEntity<${table.primaryKey.typeName()}>")
     if (config.useLombok) {
