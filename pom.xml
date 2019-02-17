@@ -13,4 +13,25 @@
         <module>integrationtests</module>
     </modules>
     <packaging>pom</packaging>
+
+    <profiles>
+        <profile>
+            <id>oracle</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <!-- This Oracle driver must (annoyingly) be downloaded from Oracle's homepage and
+                 installed locally to your local maven repo. If you don't intend
+                 to use it you can disable this profile when building. -->
+            <dependencies>
+                <dependency>
+                    <groupId>com.oracle</groupId>
+                    <artifactId>ojdbc8</artifactId>
+                    <version>12.2.0.1</version>
+                    <optional>true</optional>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
 </project>

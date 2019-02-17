@@ -78,15 +78,6 @@
             <artifactId>mssql-jdbc</artifactId>
         </dependency>
 
-        <!-- This Oracle driver must (annoyingly) be downloaded from Oracle's homepage and
-             installed locally to your local maven repo. -->
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc8</artifactId>
-            <version>12.2.0.1</version>
-            <optional>true</optional>
-        </dependency>
-
         <!-- Something in MSSQL server driver needs this -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
