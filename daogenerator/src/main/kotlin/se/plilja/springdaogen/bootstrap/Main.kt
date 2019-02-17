@@ -16,8 +16,13 @@ import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Schema
 import java.io.File
 import javax.sql.DataSource
+import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
+    if (args.size != 1) {
+        System.err.println("This program expects exactly one argument, a properties file.")
+        exitProcess(1)
+    }
     val config = readConfig(args)
     val dataSource = getDataSource(config)
     val schema = readSchema(config, dataSource)

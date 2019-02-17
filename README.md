@@ -4,14 +4,11 @@
 
 # TODO:s
 * Nicer console output
-* Command line interface
 * Normalize config
 * Evil Oracle dependency optional
 * Test time stamps with time zones
 * No unused imports should be generated
 * Indentation generated column list
-* Views
-* Bulk insert
 
 # Maybe later release
 * SqlLite
@@ -24,3 +21,5 @@
 * Kotlin support?
 * More database patterns? (soft delete etc...)
 * Merge into, would increase performance for inserts with natural key
+* Bulk insert (looks like it will be hard to set generated keys after)
+* Views (how to handle abscence of pk? only read?)
