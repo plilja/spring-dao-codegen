@@ -3,21 +3,22 @@ package dbtests.postgres.model;
 import dbtests.framework.Column;
 import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.Types;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.Types;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
 
 @Repository
 public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
@@ -60,7 +61,11 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
 
     public static final Column<DataTypesPostgresEntity, String> COLUMN_TEXT = new Column<>("text");
 
+    public static final Column<DataTypesPostgresEntity, LocalTime> COLUMN_TIME = new Column<>("time");
+
     public static final Column<DataTypesPostgresEntity, LocalDateTime> COLUMN_TIMESTAMP = new Column<>("timestamp");
+
+    public static final Column<DataTypesPostgresEntity, OffsetDateTime> COLUMN_TIMESTAMP_TZ = new Column<>("timestamp_tz");
 
     public static final Column<DataTypesPostgresEntity, String> COLUMN_VARCHAR10 = new Column<>("varchar10");
 
@@ -86,15 +91,17 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
             COLUMN_NUMERIC_TEN_TWO,
             COLUMN_SMALLINT,
             COLUMN_TEXT,
+            COLUMN_TIME,
             COLUMN_TIMESTAMP,
+            COLUMN_TIMESTAMP_TZ,
             COLUMN_VARCHAR10,
             COLUMN_XML);
 
     private static final String ALL_COLUMNS = " id, bigint, boolean_b, bytea, char, " +
             " char10, date, decimal_eighteen_zero, decimal_nine_zero, decimal_nineteen_zero, " +
             " decimal_ten_two, decimal_ten_zero, double, float, guid, " +
-            " integer, numeric_ten_two, smallint, text, timestamp, " +
-            " varchar10, xml ";
+            " integer, numeric_ten_two, smallint, text, time, " +
+            " timestamp, timestamp_tz, varchar10, xml ";
 
     private static final RowMapper<DataTypesPostgresEntity> ROW_MAPPER = (rs, i) -> {
         DataTypesPostgresEntity r = new DataTypesPostgresEntity();
@@ -117,7 +124,9 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
         r.setNumericTenTwo(rs.getBigDecimal("numeric_ten_two"));
         r.setSmallint(rs.getObject("smallint") != null ? rs.getInt("smallint") : null);
         r.setText(rs.getString("text"));
+        r.setTime(rs.getObject("time") != null ? rs.getTime("time").toLocalTime() : null);
         r.setTimestamp(rs.getObject("timestamp") != null ? rs.getTimestamp("timestamp").toLocalDateTime() : null);
+        r.setTimestampTz(rs.getObject("timestamp_tz", OffsetDateTime.class));
         r.setVarchar10(rs.getString("varchar10"));
         r.setXml(rs.getString("xml"));
         return r;
@@ -150,7 +159,9 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
         m.addValue("numeric_ten_two", o.getNumericTenTwo(), Types.NUMERIC);
         m.addValue("smallint", o.getSmallint(), Types.SMALLINT);
         m.addValue("text", o.getText(), Types.VARCHAR);
+        m.addValue("time", o.getTime(), Types.TIME);
         m.addValue("timestamp", o.getTimestamp(), Types.TIMESTAMP);
+        m.addValue("timestamp_tz", o.getTimestampTz(), Types.TIMESTAMP_WITH_TIMEZONE);
         m.addValue("varchar10", o.getVarchar10(), Types.VARCHAR);
         m.addValue("xml", o.getXml(), Types.SQLXML);
         return m;
@@ -206,7 +217,9 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
                 "numeric_ten_two, " +
                 "smallint, " +
                 "text, " +
+                "time, " +
                 "timestamp, " +
+                "timestamp_tz, " +
                 "varchar10, " +
                 "xml" +
                 ") " +
@@ -229,7 +242,9 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
                 ":numeric_ten_two, " +
                 ":smallint, " +
                 ":text, " +
+                ":time, " +
                 ":timestamp, " +
+                ":timestamp_tz, " +
                 ":varchar10, " +
                 ":xml" +
                 ")";
@@ -256,7 +271,9 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
                 "numeric_ten_two = :numeric_ten_two, " +
                 "smallint = :smallint, " +
                 "text = :text, " +
+                "time = :time, " +
                 "timestamp = :timestamp, " +
+                "timestamp_tz = :timestamp_tz, " +
                 "varchar10 = :varchar10, " +
                 "xml = :xml " +
                 "WHERE id = :id";

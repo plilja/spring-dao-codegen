@@ -14,10 +14,18 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ContextConfiguration(classes = {PostgresITConfig.class})
 @ExtendWith(SpringExtension.class)
@@ -35,7 +43,8 @@ public class PostgresDataTypesIT {
 
     @Test
     void test() {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        OffsetDateTime nowAsOffsetDateTime = now.atOffset(ZoneOffset.UTC);
 
         DataTypesPostgresEntity r = new DataTypesPostgresEntity();
         r.setBigint(123412341234413214L);
@@ -43,7 +52,7 @@ public class PostgresDataTypesIT {
         r.setBytea(new byte[]{1, 2, 3});
         r.setChaR("d");
         r.setChar10("AAAAAAAAAA");
-        r.setDate(now.toLocalDate());
+        r.setDate(nowAsOffsetDateTime.toLocalDate());
         r.setDecimalEighteenZero(432143143124134321L);
         r.setDecimalNineZero(14312);
         r.setDecimalNineteenZero(new BigInteger("9999999999999999999"));
@@ -57,6 +66,8 @@ public class PostgresDataTypesIT {
         r.setSmallint(14); // TODO more compact?
         r.setText("foo bar 123");
         r.setTimestamp(now);
+        r.setTimestampTz(nowAsOffsetDateTime);
+        r.setTime(now.toLocalTime());
         r.setVarchar10("sabtw");
         r.setXml("<foo>bar</foo>");
 
@@ -84,8 +95,48 @@ public class PostgresDataTypesIT {
         assertEquals(r.getSmallint(), r2.getSmallint());
         assertEquals(r.getText(), r2.getText());
         assertEquals(r.getTimestamp(), r2.getTimestamp());
+        assertEquals(r.getTimestampTz(), r2.getTimestampTz());
+        assertEquals(r.getTime(), r2.getTime());
         assertEquals(r.getVarchar10(), r2.getVarchar10());
         assertEquals(r.getXml(), r2.getXml());
     }
+
+    @Test
+    void timeStampWithTimeZone() {
+        var dateTime = OffsetDateTime.parse("2019-02-15T12:00:00+01:00[Europe/Paris]", DateTimeFormatter.ISO_ZONED_DATE_TIME);
+        var r = new DataTypesPostgresEntity();
+        r.setTimestampTz(dateTime);
+
+        // when
+        repo.save(r);
+
+        // then
+        var retrieved = repo.getOne(r.getId());
+        assertEquals(OffsetDateTime.parse("2019-02-15T11:00Z", DateTimeFormatter.ISO_ZONED_DATE_TIME), retrieved.getTimestampTz());
+    }
+
+    @Test
+    void infinityDate() {
+        jdbcTemplate.update("INSERT INTO public.data_types_postgres(timestamp, timestamp_tz) values ('infinity', 'infinity')", new MapSqlParameterSource());
+
+        List<DataTypesPostgresEntity> res = repo.findAll();
+
+        LocalDateTime farIntoTheFuture = LocalDateTime.now().plusYears(100000);
+        assertNotNull(res.get(0).getTimestamp());
+        assertTrue(res.get(0).getTimestamp().isAfter(farIntoTheFuture));
+        assertNotNull(res.get(0).getTimestampTz().toLocalDateTime());
+        assertTrue(res.get(0).getTimestampTz().toLocalDateTime().isAfter(farIntoTheFuture));
+    }
+
+    @Test
+    void epochDate() {
+        jdbcTemplate.update("INSERT INTO public.data_types_postgres(timestamp, timestamp_tz) values ('epoch', 'epoch')", new MapSqlParameterSource());
+
+        List<DataTypesPostgresEntity> res = repo.findAll();
+
+        assertEquals(0L, res.get(0).getTimestamp().toEpochSecond(ZoneOffset.UTC));
+        assertEquals(0L, res.get(0).getTimestampTz().toEpochSecond());
+    }
+
 
 }

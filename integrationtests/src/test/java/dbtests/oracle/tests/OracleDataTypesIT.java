@@ -14,6 +14,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,6 +38,7 @@ public class OracleDataTypesIT {
     @Test
     void test() {
         LocalDateTime now = LocalDateTime.now();
+        OffsetDateTime nowAsOffsetDateTime = LocalDateTime.now().atOffset(ZoneOffset.UTC);
 
         DataTypesOracle r = new DataTypesOracle();
         r.setId("ID");
@@ -52,6 +56,7 @@ public class OracleDataTypesIT {
         r.setNumberTenTwo(new BigDecimal("242112.23"));
         r.setNumberTenZero(213412234L);
         r.setTimestamp(now);
+        r.setTimestampTz(nowAsOffsetDateTime);
         r.setVarchar("foo bar1");
         r.setVarchar2("foo bar2");
 
@@ -75,6 +80,7 @@ public class OracleDataTypesIT {
         assertEquals(r.getNumberTenTwo(), r2.getNumberTenTwo());
         assertEquals(r.getNumberTenZero(), r2.getNumberTenZero());
         assertEquals(r.getTimestamp(), r2.getTimestamp());
+        assertEquals(r.getTimestamp().truncatedTo(ChronoUnit.SECONDS), r2.getTimestamp().truncatedTo(ChronoUnit.SECONDS));
         assertEquals(r.getVarchar(), r2.getVarchar());
         assertEquals(r.getVarchar2(), r2.getVarchar2());
     }

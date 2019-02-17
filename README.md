@@ -4,7 +4,6 @@
 
 # TODO:s
 * Normalize config
-* Test time stamps with time zones
 * Write a proper readme
 
 # Maybe later release
@@ -20,3 +19,4 @@
 * Merge into, would increase performance for inserts with natural key
 * Bulk insert (looks like it will be hard to set generated keys after)
 * Views (how to handle abscence of pk? only read?)
+* Array data types

@@ -18,6 +18,7 @@ import java.sql.JDBCType
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.OffsetDateTime
 import java.util.*
 import java.util.regex.Pattern
 import javax.sql.DataSource
@@ -45,7 +46,7 @@ fun readSchema(config: Config, dataSource: DataSource): Schema {
 }
 
 fun catalogToSchema(catalog: Catalog, config: Config): Schema {
-    println("Found these tables: ${ catalog.tables.map { it.name }.joinToString(", ")}.")
+    println("Found these tables: ${catalog.tables.map { it.name }.joinToString(", ")}.")
     val tablesMap = HashMap<schemacrawler.schema.Table, Table>()
     val columnsMap = HashMap<schemacrawler.schema.Column, Column>()
     val filteredTables = catalog.tables
@@ -116,7 +117,8 @@ fun convertColumn(table: schemacrawler.schema.Table, column: schemacrawler.schem
 
 
 fun resolveType(column: schemacrawler.schema.Column, config: Config): Pair<Class<out Any>, JDBCType?> {
-    if (config.databaseDialect in listOf(DatabaseDialect.ORACLE, DatabaseDialect.ORACLE12)) {
+    val isOracle = config.databaseDialect in listOf(DatabaseDialect.ORACLE, DatabaseDialect.ORACLE12)
+    if (isOracle) {
         if (column.type.name == "BINARY_DOUBLE") {
             return Pair(java.lang.Double::class.java, JDBCType.DOUBLE)
         } else if (column.type.name == "BINARY_FLOAT") {
@@ -155,6 +157,14 @@ fun resolveType(column: schemacrawler.schema.Column, config: Config): Pair<Class
     if (jdbcType == JDBCType.BLOB) {
         // Doesn't work, let spring deduct type from param instead
         jdbcType = null
+    }
+    if (jdbcType == null && config.databaseDialect == DatabaseDialect.MSSQL_SERVER && column.type.name.toLowerCase() == "datetimeoffset") {
+        return Pair(OffsetDateTime::class.java, JDBCType.TIMESTAMP_WITH_TIMEZONE)
+    }
+    if ((jdbcType == JDBCType.TIMESTAMP || (jdbcType == null && isOracle)) &&
+        (column.type.name.toLowerCase().contains("tz") || column.type.name.toLowerCase().contains("zone"))
+    ) {
+        return Pair(OffsetDateTime::class.java, JDBCType.TIMESTAMP_WITH_TIMEZONE)
     }
 
     val javaType =

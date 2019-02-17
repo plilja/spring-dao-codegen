@@ -8,6 +8,8 @@ import java.math.BigDecimal
 import java.math.BigInteger
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.OffsetDateTime
 import javax.sql.DataSource
 
 
@@ -97,6 +99,8 @@ private fun dataType(column: Column): String {
         java.lang.Integer::class.java -> "INTEGER"
         LocalDate::class.java -> "DATE"
         LocalDateTime::class.java -> "TIMESTAMP"
+        OffsetDateTime::class.java -> "TIMESTAMP WITH TIME ZONE"
+        LocalTime::class.java -> "TIME"
         BigDecimal::class.java -> "DECIMAL(${column.size}, ${column.precision})"
         BigInteger::class.java -> "DECIMAL(${column.size}, 0)"
         java.lang.Double::class.java -> "DOUBLE"

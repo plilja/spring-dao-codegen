@@ -14,6 +14,12 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,7 +40,8 @@ public class H2DataTypesIT {
 
     @Test
     void test() {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        OffsetDateTime nowAsOffsetDateTime = now.atOffset(ZoneOffset.UTC);
 
         var r = new DataTypesH2();
         r.setBigint(123412341234413214L);
@@ -55,6 +62,8 @@ public class H2DataTypesIT {
         r.setSmallint(14);
         r.setText("foo bar 123");
         r.setTimestamp(now);
+        r.setTimestampTz(nowAsOffsetDateTime);
+        r.setTime(now.toLocalTime());
         r.setVarchar10("sabtw");
 
         // when
@@ -80,7 +89,23 @@ public class H2DataTypesIT {
         assertEquals(r.getSmallint(), r2.getSmallint());
         assertEquals(r.getText(), r2.getText());
         assertEquals(r.getTimestamp(), r2.getTimestamp());
+        assertEquals(r.getTimestampTz(), r2.getTimestampTz());
+        assertEquals(r.getTime(), r2.getTime());
         assertEquals(r.getVarchar10(), r2.getVarchar10());
+    }
+
+    @Test
+    void timeStampWithTimeZone() {
+        OffsetDateTime dateTime = OffsetDateTime.parse("2019-02-15T12:00:00+01:00[Europe/Paris]", DateTimeFormatter.ISO_ZONED_DATE_TIME);
+        var r = new DataTypesH2();
+        r.setTimestampTz(dateTime);
+
+        // when
+        repo.save(r);
+
+        // then
+        var retrieved = repo.getOne(r.getId());
+        assertEquals(dateTime, retrieved.getTimestampTz());
     }
 
 }

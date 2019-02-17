@@ -33,7 +33,9 @@ integer INTEGER,
 numeric_ten_two DECIMAL(10, 2),
 smallint INTEGER,
 text CLOB,
+time TIME,
 timestamp TIMESTAMP,
+timestamp_tz TIMESTAMP WITH TIME ZONE,
 varchar10 VARCHAR(10),
 PRIMARY KEY(id));
 

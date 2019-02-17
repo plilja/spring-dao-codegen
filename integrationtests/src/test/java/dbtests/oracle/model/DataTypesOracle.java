@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -43,6 +44,8 @@ public class DataTypesOracle implements BaseEntity<String> {
     @NotNull
     private LocalDateTime timestamp;
     @NotNull
+    private OffsetDateTime timestampTz;
+    @NotNull
     @Size(max = 100)
     private String varchar;
     @NotNull
@@ -52,7 +55,7 @@ public class DataTypesOracle implements BaseEntity<String> {
     public DataTypesOracle() {
     }
 
-    public DataTypesOracle(String id, Double binaryDouble, Float binaryFloat, byte[] blob, String char1, String char10, String clob, LocalDate date, String nlob, Long numberEighteenZero, Integer numberNineZero, BigInteger numberNineteenZero, BigDecimal numberTenTwo, Long numberTenZero, LocalDateTime timestamp, String varchar, String varchar2) {
+    public DataTypesOracle(String id, Double binaryDouble, Float binaryFloat, byte[] blob, String char1, String char10, String clob, LocalDate date, String nlob, Long numberEighteenZero, Integer numberNineZero, BigInteger numberNineteenZero, BigDecimal numberTenTwo, Long numberTenZero, LocalDateTime timestamp, OffsetDateTime timestampTz, String varchar, String varchar2) {
         this.id = id;
         this.binaryDouble = binaryDouble;
         this.binaryFloat = binaryFloat;
@@ -68,6 +71,7 @@ public class DataTypesOracle implements BaseEntity<String> {
         this.numberTenTwo = numberTenTwo;
         this.numberTenZero = numberTenZero;
         this.timestamp = timestamp;
+        this.timestampTz = timestampTz;
         this.varchar = varchar;
         this.varchar2 = varchar2;
     }
@@ -182,6 +186,14 @@ public class DataTypesOracle implements BaseEntity<String> {
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public OffsetDateTime getTimestampTz() {
+        return timestampTz;
+    }
+
+    public void setTimestampTz(OffsetDateTime timestampTz) {
+        this.timestampTz = timestampTz;
     }
 
     public String getVarchar() {

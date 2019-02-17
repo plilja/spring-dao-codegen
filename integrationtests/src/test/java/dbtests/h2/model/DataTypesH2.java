@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 import javax.validation.constraints.Size;
 
@@ -32,14 +34,16 @@ public class DataTypesH2 implements BaseEntity<Long> {
     private BigDecimal numericTenTwo;
     private Integer smallint;
     private String text;
+    private LocalTime time;
     private LocalDateTime timestamp;
+    private OffsetDateTime timestampTz;
     @Size(max = 10)
     private String varchar10;
 
     public DataTypesH2() {
     }
 
-    public DataTypesH2(Long id, Long bigint, Boolean booleanB, String chaR, String char10, LocalDate date, Long decimalEighteenZero, Integer decimalNineZero, BigInteger decimalNineteenZero, BigDecimal decimalTenTwo, Long decimalTenZero, Double doublE, Float floaT, UUID guid, Integer integer, BigDecimal numericTenTwo, Integer smallint, String text, LocalDateTime timestamp, String varchar10) {
+    public DataTypesH2(Long id, Long bigint, Boolean booleanB, String chaR, String char10, LocalDate date, Long decimalEighteenZero, Integer decimalNineZero, BigInteger decimalNineteenZero, BigDecimal decimalTenTwo, Long decimalTenZero, Double doublE, Float floaT, UUID guid, Integer integer, BigDecimal numericTenTwo, Integer smallint, String text, LocalTime time, LocalDateTime timestamp, OffsetDateTime timestampTz, String varchar10) {
         this.id = id;
         this.bigint = bigint;
         this.booleanB = booleanB;
@@ -58,7 +62,9 @@ public class DataTypesH2 implements BaseEntity<Long> {
         this.numericTenTwo = numericTenTwo;
         this.smallint = smallint;
         this.text = text;
+        this.time = time;
         this.timestamp = timestamp;
+        this.timestampTz = timestampTz;
         this.varchar10 = varchar10;
     }
 
@@ -198,12 +204,28 @@ public class DataTypesH2 implements BaseEntity<Long> {
         this.text = text;
     }
 
+    public LocalTime getTime() {
+        return time;
+    }
+
+    public void setTime(LocalTime time) {
+        this.time = time;
+    }
+
     public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
     public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public OffsetDateTime getTimestampTz() {
+        return timestampTz;
+    }
+
+    public void setTimestampTz(OffsetDateTime timestampTz) {
+        this.timestampTz = timestampTz;
     }
 
     public String getVarchar10() {

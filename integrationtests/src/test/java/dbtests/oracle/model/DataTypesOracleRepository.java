@@ -4,21 +4,21 @@ import dbtests.framework.Column;
 import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.stereotype.Repository;
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.stereotype.Repository;
 
 @Repository
 public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
@@ -53,6 +53,8 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
 
     public static final Column<DataTypesOracle, LocalDateTime> COLUMN_TIMESTAMP = new Column<>("TIMESTAMP");
 
+    public static final Column<DataTypesOracle, OffsetDateTime> COLUMN_TIMESTAMP_TZ = new Column<>("TIMESTAMP_TZ");
+
     public static final Column<DataTypesOracle, String> COLUMN_VARCHAR = new Column<>("\"VARCHAR\"");
 
     public static final Column<DataTypesOracle, String> COLUMN_VARCHAR2 = new Column<>("\"VARCHAR2\"");
@@ -73,13 +75,14 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
             COLUMN_NUMBER_TEN_TWO,
             COLUMN_NUMBER_TEN_ZERO,
             COLUMN_TIMESTAMP,
+            COLUMN_TIMESTAMP_TZ,
             COLUMN_VARCHAR,
             COLUMN_VARCHAR2);
 
     private static final String ALL_COLUMNS = " ID, BINARY_DOUBLE, BINARY_FLOAT, BLOB, CHAR1, " +
             " CHAR10, CLOB, \"DATE\", NLOB, NUMBER_EIGHTEEN_ZERO, " +
             " NUMBER_NINE_ZERO, NUMBER_NINETEEN_ZERO, NUMBER_TEN_TWO, NUMBER_TEN_ZERO, TIMESTAMP, " +
-            " \"VARCHAR\", \"VARCHAR2\" ";
+            " TIMESTAMP_TZ, \"VARCHAR\", \"VARCHAR2\" ";
 
     private static final RowMapper<DataTypesOracle> ROW_MAPPER = (rs, i) -> {
         try {
@@ -99,6 +102,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
             r.setNumberTenTwo(rs.getBigDecimal("NUMBER_TEN_TWO"));
             r.setNumberTenZero(rs.getLong("NUMBER_TEN_ZERO"));
             r.setTimestamp(rs.getTimestamp("TIMESTAMP").toLocalDateTime());
+            r.setTimestampTz(rs.getObject("TIMESTAMP_TZ", OffsetDateTime.class));
             r.setVarchar(rs.getString("VARCHAR"));
             r.setVarchar2(rs.getString("VARCHAR2"));
             return r;
@@ -130,6 +134,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
         m.addValue("NUMBER_TEN_TWO", o.getNumberTenTwo(), Types.NUMERIC);
         m.addValue("NUMBER_TEN_ZERO", o.getNumberTenZero(), Types.BIGINT);
         m.addValue("TIMESTAMP", o.getTimestamp(), Types.TIMESTAMP);
+        m.addValue("TIMESTAMP_TZ", o.getTimestampTz(), Types.TIMESTAMP_WITH_TIMEZONE);
         m.addValue("VARCHAR", o.getVarchar(), Types.VARCHAR);
         m.addValue("VARCHAR2", o.getVarchar2(), Types.VARCHAR);
         return m;
@@ -182,6 +187,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
                 "NUMBER_TEN_TWO, " +
                 "NUMBER_TEN_ZERO, " +
                 "TIMESTAMP, " +
+                "TIMESTAMP_TZ, " +
                 "\"VARCHAR\", " +
                 "\"VARCHAR2\"" +
                 ") " +
@@ -201,6 +207,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
                 ":NUMBER_TEN_TWO, " +
                 ":NUMBER_TEN_ZERO, " +
                 ":TIMESTAMP, " +
+                ":TIMESTAMP_TZ, " +
                 ":VARCHAR, " +
                 ":VARCHAR2" +
                 ")";
@@ -223,6 +230,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
                 "NUMBER_TEN_TWO = :NUMBER_TEN_TWO, " +
                 "NUMBER_TEN_ZERO = :NUMBER_TEN_ZERO, " +
                 "TIMESTAMP = :TIMESTAMP, " +
+                "TIMESTAMP_TZ = :TIMESTAMP_TZ, " +
                 "VARCHAR = :VARCHAR, " +
                 "VARCHAR2 = :VARCHAR2 " +
                 "WHERE ID = :ID";

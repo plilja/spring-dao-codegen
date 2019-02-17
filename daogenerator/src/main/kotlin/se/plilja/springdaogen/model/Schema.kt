@@ -14,6 +14,7 @@ import java.sql.SQLXML
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.time.OffsetDateTime
 import java.util.*
 
 
@@ -189,6 +190,8 @@ data class Column(
             method = "$rs.getBigDecimal(\"$name\")"
         } else if (javaType == String::class.java || javaType == SQLXML::class.java) {
             method = "$rs.getString(\"$name\")"
+        } else if (javaType == OffsetDateTime::class.java) {
+            method = "$rs.getObject(\"$name\", OffsetDateTime.class)"
         }
 
         if (nullable) {

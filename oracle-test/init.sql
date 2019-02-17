@@ -51,6 +51,7 @@ CREATE TABLE DOCKER.DATA_TYPES_ORACLE (
 	"NLOB" NCLOB not null,
 	"DATE" DATE not null,
 	"TIMESTAMP" TIMESTAMP not null,
+	"TIMESTAMP_TZ" TIMESTAMP WITH TIME ZONE not null,
 	NUMBER_TEN_TWO NUMBER(10, 2) not null,
 	NUMBER_NINE_ZERO NUMBER(9, 0) not null, -- Fits in int
 	NUMBER_TEN_ZERO NUMBER(10, 0) not null, -- Does not fit in int but fits in long
