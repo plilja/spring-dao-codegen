@@ -3,7 +3,6 @@ package dbtests.h2.model;
 import dbtests.framework.Column;
 import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
-import dbtests.framework.DatabaseException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Types;

@@ -63,7 +63,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
     g.addPrivateConstant("ALL_COLUMNS", "String", columnsList(table, config.databaseDialect))
     g.addPrivateConstant(
         "ROW_MAPPER", "RowMapper<${table.entityName()}>",
-        rowMapper(table, g)
+        rowMapper(table, g, config)
     )
     g.addCustomMethod(rowUnmapper(table, g))
     g.addImport(RowMapper::class.java)
@@ -239,15 +239,15 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
     }
     if (config.frameworkOutputPackage != config.daoOutputPackage) {
         g.addImport("${config.frameworkOutputPackage}.${dao(config.frameworkOutputPackage, config).first}")
-        g.addImport("${config.frameworkOutputPackage}.${databaseException(config.frameworkOutputPackage).first}")
     }
     return g
 }
 
-private fun rowMapper(table: Table, classGenerator: ClassGenerator): String {
+private fun rowMapper(table: Table, classGenerator: ClassGenerator, config: Config): String {
     val needsTryCatch = table.containsClobLikeField()
     val setters = table.columns.map { "r.${it.setter()}(${it.recordSetMethod("rs")});" }.joinToString("\n")
     return if (needsTryCatch) {
+        classGenerator.addImport("${config.frameworkOutputPackage}.${databaseException(config.frameworkOutputPackage).first}")
         classGenerator.addImport(IOException::class.java)
         """(rs, i) -> {
                 try {

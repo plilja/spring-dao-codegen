@@ -3,7 +3,6 @@ package dbtests.mysql.model;
 import dbtests.framework.Column;
 import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
-import dbtests.framework.DatabaseException;
 import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.Arrays;

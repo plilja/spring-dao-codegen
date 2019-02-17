@@ -5,7 +5,6 @@
 # TODO:s
 * Normalize config
 * Test time stamps with time zones
-* No unused imports should be generated
 * Indentation generated column list
 
 # Maybe later release
