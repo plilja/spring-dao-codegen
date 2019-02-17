@@ -3,16 +3,17 @@ package dbtests.mssql.model;
 import dbtests.framework.Column;
 import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
-import java.sql.Types;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
+
+import java.sql.Types;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 @Repository
 public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
@@ -33,14 +34,15 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
 
     public static final Column<BazMsSqlEntity, Integer> COLUMN_VERSION = new Column<>("version");
 
-    public static final List<Column<BazMsSqlEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_ID,
-    COLUMN_COLOR,
-    COLUMN_INSERTED_AT,
-    COLUMN_INSERTED_BY,
-    COLUMN_MODIFIED_AT,
-    COLUMN_MODIFIED_BY,
-    COLUMN_NAME,
-    COLUMN_VERSION);
+    public static final List<Column<BazMsSqlEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(
+            COLUMN_ID,
+            COLUMN_COLOR,
+            COLUMN_INSERTED_AT,
+            COLUMN_INSERTED_BY,
+            COLUMN_MODIFIED_AT,
+            COLUMN_MODIFIED_BY,
+            COLUMN_NAME,
+            COLUMN_VERSION);
 
     private static final String ALL_COLUMNS = " id, color, inserted_at, inserted_by, modified_at, " +
             " modified_by, name, version ";

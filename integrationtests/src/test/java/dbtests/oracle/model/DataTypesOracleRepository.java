@@ -4,6 +4,13 @@ import dbtests.framework.Column;
 import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.stereotype.Repository;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -12,12 +19,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.stereotype.Repository;
 
 @Repository
 public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
@@ -56,23 +57,24 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
 
     public static final Column<DataTypesOracle, String> COLUMN_VARCHAR2 = new Column<>("\"VARCHAR2\"");
 
-    public static final List<Column<DataTypesOracle, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_ID,
-    COLUMN_BINARY_DOUBLE,
-    COLUMN_BINARY_FLOAT,
-    COLUMN_BLOB,
-    COLUMN_CHAR1,
-    COLUMN_CHAR10,
-    COLUMN_CLOB,
-    COLUMN_DATE,
-    COLUMN_NLOB,
-    COLUMN_NUMBER_EIGHTEEN_ZERO,
-    COLUMN_NUMBER_NINE_ZERO,
-    COLUMN_NUMBER_NINETEEN_ZERO,
-    COLUMN_NUMBER_TEN_TWO,
-    COLUMN_NUMBER_TEN_ZERO,
-    COLUMN_TIMESTAMP,
-    COLUMN_VARCHAR,
-    COLUMN_VARCHAR2);
+    public static final List<Column<DataTypesOracle, ?>> ALL_COLUMNS_LIST = Arrays.asList(
+            COLUMN_ID,
+            COLUMN_BINARY_DOUBLE,
+            COLUMN_BINARY_FLOAT,
+            COLUMN_BLOB,
+            COLUMN_CHAR1,
+            COLUMN_CHAR10,
+            COLUMN_CLOB,
+            COLUMN_DATE,
+            COLUMN_NLOB,
+            COLUMN_NUMBER_EIGHTEEN_ZERO,
+            COLUMN_NUMBER_NINE_ZERO,
+            COLUMN_NUMBER_NINETEEN_ZERO,
+            COLUMN_NUMBER_TEN_TWO,
+            COLUMN_NUMBER_TEN_ZERO,
+            COLUMN_TIMESTAMP,
+            COLUMN_VARCHAR,
+            COLUMN_VARCHAR2);
 
     private static final String ALL_COLUMNS = " ID, BINARY_DOUBLE, BINARY_FLOAT, BLOB, CHAR1, " +
             " CHAR10, CLOB, \"DATE\", NLOB, NUMBER_EIGHTEEN_ZERO, " +

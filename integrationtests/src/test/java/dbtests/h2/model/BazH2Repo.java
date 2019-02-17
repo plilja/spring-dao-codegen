@@ -3,16 +3,17 @@ package dbtests.h2.model;
 import dbtests.framework.Column;
 import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
-import java.sql.Types;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
+
+import java.sql.Types;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 @Repository
 public class BazH2Repo extends Dao<BazH2, Integer> {
@@ -33,14 +34,15 @@ public class BazH2Repo extends Dao<BazH2, Integer> {
 
     public static final Column<BazH2, Integer> COLUMN_VERSION = new Column<>("version");
 
-    public static final List<Column<BazH2, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_BAZ_ID,
-    COLUMN_BAZ_NAME,
-    COLUMN_CHANGED_AT,
-    COLUMN_CHANGED_BY,
-    COLUMN_COLOR,
-    COLUMN_CREATED_AT,
-    COLUMN_CREATED_BY,
-    COLUMN_VERSION);
+    public static final List<Column<BazH2, ?>> ALL_COLUMNS_LIST = Arrays.asList(
+            COLUMN_BAZ_ID,
+            COLUMN_BAZ_NAME,
+            COLUMN_CHANGED_AT,
+            COLUMN_CHANGED_BY,
+            COLUMN_COLOR,
+            COLUMN_CREATED_AT,
+            COLUMN_CREATED_BY,
+            COLUMN_VERSION);
 
     private static final String ALL_COLUMNS = " baz_id, baz_name, changed_at, changed_by, color, " +
             " created_at, created_by, version ";

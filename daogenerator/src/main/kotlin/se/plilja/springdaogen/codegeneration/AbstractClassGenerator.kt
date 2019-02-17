@@ -145,12 +145,12 @@ fun indent(code: String): String {
             continue
         }
         val extraIndent = if (prevLine != "" && prevLine.last() !in listOf(
-                ',',
                 ';',
                 '{',
                 '}'
-            ) && !prevLine.startsWith("//") && prevLine[0] != '@'
+            ) && !prevLine.startsWith("//") && prevLine[0] != '@' && !prevLine.endsWith("),")
         ) {
+            // This is only a heuristic, we would need something considerably smarter to be foolproof
             tab + tab
         } else {
             ""

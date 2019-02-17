@@ -58,7 +58,11 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         }
         g.addImport(Arrays::class.java)
         g.addImport(java.util.List::class.java)
-        g.addConstant("ALL_COLUMNS_LIST", "List<Column<${table.entityName()}, ?>>", "Arrays.asList(${columnsConstantNames.joinToString(",\n")})")
+        g.addConstant(
+            "ALL_COLUMNS_LIST",
+            "List<Column<${table.entityName()}, ?>>",
+            "Arrays.asList(\n${columnsConstantNames.joinToString(",\n")})"
+        )
     }
     g.addPrivateConstant("ALL_COLUMNS", "String", columnsList(table, config.databaseDialect))
     g.addPrivateConstant(

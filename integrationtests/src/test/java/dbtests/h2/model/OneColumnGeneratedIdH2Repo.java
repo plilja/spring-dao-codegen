@@ -3,9 +3,6 @@ package dbtests.h2.model;
 import dbtests.framework.Column;
 import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
-import java.sql.Types;
-import java.util.Arrays;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -13,12 +10,17 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Types;
+import java.util.Arrays;
+import java.util.List;
+
 @Repository
 public class OneColumnGeneratedIdH2Repo extends Dao<OneColumnGeneratedIdH2, Integer> {
 
     public static final Column<OneColumnGeneratedIdH2, Integer> COLUMN_ID = new Column<>("id");
 
-    public static final List<Column<OneColumnGeneratedIdH2, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_ID);
+    public static final List<Column<OneColumnGeneratedIdH2, ?>> ALL_COLUMNS_LIST = Arrays.asList(
+            COLUMN_ID);
 
     private static final String ALL_COLUMNS = " id ";
 

@@ -5,7 +5,7 @@
 # TODO:s
 * Normalize config
 * Test time stamps with time zones
-* Indentation generated column list
+* Write a proper readme
 
 # Maybe later release
 * SqlLite

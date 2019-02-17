@@ -3,6 +3,13 @@ package dbtests.mssql.model;
 import dbtests.framework.Column;
 import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.stereotype.Repository;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.Types;
@@ -11,12 +18,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.stereotype.Repository;
 
 @Repository
 public class DataTypesMsSqlDao extends Dao<DataTypesMsSqlEntity, Long> {
@@ -77,34 +78,35 @@ public class DataTypesMsSqlDao extends Dao<DataTypesMsSqlEntity, Long> {
 
     public static final Column<DataTypesMsSqlEntity, String> COLUMN_XML = new Column<>("xml");
 
-    public static final List<Column<DataTypesMsSqlEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_ID,
-    COLUMN_BINARY10,
-    COLUMN_BIT,
-    COLUMN_CHAR,
-    COLUMN_CHAR10,
-    COLUMN_DATE,
-    COLUMN_DATETIME,
-    COLUMN_DATETIME2,
-    COLUMN_DECIMAL_EIGHTEEN_ZERO,
-    COLUMN_DECIMAL_NINE_ZERO,
-    COLUMN_DECIMAL_NINETEEN_ZERO,
-    COLUMN_DECIMAL_TEN_TWO,
-    COLUMN_DECIMAL_TEN_ZERO,
-    COLUMN_FLOAT,
-    COLUMN_INT,
-    COLUMN_MONEY,
-    COLUMN_NCHAR10,
-    COLUMN_NTEXT,
-    COLUMN_NVARCHAR10,
-    COLUMN_REAL,
-    COLUMN_SMALLINT,
-    COLUMN_SMALLMONEY,
-    COLUMN_TEXT,
-    COLUMN_TIME,
-    COLUMN_TINYINT,
-    COLUMN_VARBINARY10,
-    COLUMN_VARCHAR10,
-    COLUMN_XML);
+    public static final List<Column<DataTypesMsSqlEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(
+            COLUMN_ID,
+            COLUMN_BINARY10,
+            COLUMN_BIT,
+            COLUMN_CHAR,
+            COLUMN_CHAR10,
+            COLUMN_DATE,
+            COLUMN_DATETIME,
+            COLUMN_DATETIME2,
+            COLUMN_DECIMAL_EIGHTEEN_ZERO,
+            COLUMN_DECIMAL_NINE_ZERO,
+            COLUMN_DECIMAL_NINETEEN_ZERO,
+            COLUMN_DECIMAL_TEN_TWO,
+            COLUMN_DECIMAL_TEN_ZERO,
+            COLUMN_FLOAT,
+            COLUMN_INT,
+            COLUMN_MONEY,
+            COLUMN_NCHAR10,
+            COLUMN_NTEXT,
+            COLUMN_NVARCHAR10,
+            COLUMN_REAL,
+            COLUMN_SMALLINT,
+            COLUMN_SMALLMONEY,
+            COLUMN_TEXT,
+            COLUMN_TIME,
+            COLUMN_TINYINT,
+            COLUMN_VARBINARY10,
+            COLUMN_VARCHAR10,
+            COLUMN_XML);
 
     private static final String ALL_COLUMNS = " id, binary10, bit, char, char10, " +
             " date, datetime, datetime2, decimal_eighteen_zero, decimal_nine_zero, " +

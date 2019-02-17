@@ -4,6 +4,13 @@ import dbtests.framework.Column;
 import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.stereotype.Repository;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -13,12 +20,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.stereotype.Repository;
 
 @Repository
 public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
@@ -77,33 +78,34 @@ public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
 
     public static final Column<MDataTypesMysql, Integer> COLUMN_YEAR = new Column<>("`year`");
 
-    public static final List<Column<MDataTypesMysql, ?>> ALL_COLUMNS_LIST = Arrays.asList(COLUMN_ID,
-    COLUMN_BIGINT,
-    COLUMN_BIT,
-    COLUMN_BLOB,
-    COLUMN_BOOL,
-    COLUMN_DATE,
-    COLUMN_DATETIME,
-    COLUMN_DECIMAL_EIGHTEEN_ZERO,
-    COLUMN_DECIMAL_NINE_ZERO,
-    COLUMN_DECIMAL_NINETEEN_ZERO,
-    COLUMN_DECIMAL_TEN_TWO,
-    COLUMN_DECIMAL_TEN_ZERO,
-    COLUMN_DOUBLE,
-    COLUMN_FLOAT,
-    COLUMN_INT,
-    COLUMN_INTEGER,
-    COLUMN_JSON,
-    COLUMN_MEDIUMINT,
-    COLUMN_SMALLINT,
-    COLUMN_TEXT,
-    COLUMN_TIME,
-    COLUMN_TIMESTAMP,
-    COLUMN_TINYBLOB,
-    COLUMN_TINYINT,
-    COLUMN_VARCHAR_10,
-    COLUMN_VARCHAR_BINARY_10,
-    COLUMN_YEAR);
+    public static final List<Column<MDataTypesMysql, ?>> ALL_COLUMNS_LIST = Arrays.asList(
+            COLUMN_ID,
+            COLUMN_BIGINT,
+            COLUMN_BIT,
+            COLUMN_BLOB,
+            COLUMN_BOOL,
+            COLUMN_DATE,
+            COLUMN_DATETIME,
+            COLUMN_DECIMAL_EIGHTEEN_ZERO,
+            COLUMN_DECIMAL_NINE_ZERO,
+            COLUMN_DECIMAL_NINETEEN_ZERO,
+            COLUMN_DECIMAL_TEN_TWO,
+            COLUMN_DECIMAL_TEN_ZERO,
+            COLUMN_DOUBLE,
+            COLUMN_FLOAT,
+            COLUMN_INT,
+            COLUMN_INTEGER,
+            COLUMN_JSON,
+            COLUMN_MEDIUMINT,
+            COLUMN_SMALLINT,
+            COLUMN_TEXT,
+            COLUMN_TIME,
+            COLUMN_TIMESTAMP,
+            COLUMN_TINYBLOB,
+            COLUMN_TINYINT,
+            COLUMN_VARCHAR_10,
+            COLUMN_VARCHAR_BINARY_10,
+            COLUMN_YEAR);
 
     private static final String ALL_COLUMNS = " id, `bigint`, `bit`, `blob`, `bool`, " +
             " `date`, `datetime`, decimal_eighteen_zero, decimal_nine_zero, decimal_nineteen_zero, " +
