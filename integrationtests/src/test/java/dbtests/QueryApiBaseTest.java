@@ -11,6 +11,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import static dbtests.framework.QueryItem.contains;
+import static dbtests.framework.QueryItem.endsWith;
 import static dbtests.framework.QueryItem.eq;
 import static dbtests.framework.QueryItem.gt;
 import static dbtests.framework.QueryItem.gte;
@@ -20,6 +22,7 @@ import static dbtests.framework.QueryItem.lte;
 import static dbtests.framework.QueryItem.neq;
 import static dbtests.framework.QueryItem.notIn;
 import static dbtests.framework.QueryItem.or;
+import static dbtests.framework.QueryItem.startsWith;
 import static dbtests.framework.SortOrder.asc;
 import static dbtests.framework.SortOrder.desc;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -264,6 +267,91 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         assertEquals(2, result.size());
         assertEquals(entity3.getId(), result.get(0).getId());
         assertEquals(entity4.getId(), result.get(1).getId());
+    }
+
+    @Test
+    void queryWithStartsWith() {
+        var entity1 = newEntity("Davide");
+        getRepo().save(entity1);
+
+        var entity2 = newEntity("David");
+        getRepo().save(entity2);
+
+        var entity3 = newEntity("Dave");
+        getRepo().save(entity3);
+
+        var entity4 = newEntity("Chris");
+        getRepo().save(entity4);
+
+        List<Entity> result1 = getRepo().query(startsWith(getNameColumn(), ""));
+        assertEquals(4, result1.size());
+
+        List<Entity> result2 = getRepo().query(startsWith(getNameColumn(), "D"));
+        assertEquals(3, result2.size());
+
+        List<Entity> result3 = getRepo().query(startsWith(getNameColumn(), "David"), asc(getNameColumn()));
+        assertEquals(2, result3.size());
+        assertEquals(entity2.getId(), result3.get(0).getId());
+        assertEquals(entity1.getId(), result3.get(1).getId());
+
+        List<Entity> result4 = getRepo().query(startsWith(getNameColumn(), "Dave"));
+        assertEquals(1, result4.size());
+        assertEquals(entity3.getId(), result4.get(0).getId());
+    }
+
+    @Test
+    void queryWithEndsWith() {
+        var entity1 = newEntity("Davide");
+        getRepo().save(entity1);
+
+        var entity2 = newEntity("David");
+        getRepo().save(entity2);
+
+        var entity3 = newEntity("Dave");
+        getRepo().save(entity3);
+
+        var entity4 = newEntity("Chris");
+        getRepo().save(entity4);
+
+        List<Entity> result1 = getRepo().query(endsWith(getNameColumn(), ""));
+        assertEquals(4, result1.size());
+
+        List<Entity> result2 = getRepo().query(endsWith(getNameColumn(), "e"), asc(getNameColumn()));
+        assertEquals(2, result2.size());
+        assertEquals(entity3.getId(), result2.get(0).getId());
+        assertEquals(entity1.getId(), result2.get(1).getId());
+
+        List<Entity> result3 = getRepo().query(endsWith(getNameColumn(), "Dave"));
+        assertEquals(1, result3.size());
+        assertEquals(entity3.getId(), result3.get(0).getId());
+    }
+
+    @Test
+    void queryWithContains() {
+        var entity1 = newEntity("Davide");
+        getRepo().save(entity1);
+
+        var entity2 = newEntity("David");
+        getRepo().save(entity2);
+
+        var entity3 = newEntity("Dave");
+        getRepo().save(entity3);
+
+        var entity4 = newEntity("Chris");
+        getRepo().save(entity4);
+
+        List<Entity> result1 = getRepo().query(contains(getNameColumn(), ""));
+        assertEquals(4, result1.size());
+
+        List<Entity> result2 = getRepo().query(contains(getNameColumn(), "v"), asc(getNameColumn()));
+        assertEquals(3, result2.size());
+        assertEquals(entity3.getId(), result2.get(0).getId());
+        assertEquals(entity2.getId(), result2.get(1).getId());
+        assertEquals(entity1.getId(), result2.get(2).getId());
+
+        List<Entity> result3 = getRepo().query(contains(getNameColumn(), "Chris"));
+        assertEquals(1, result3.size());
+        assertEquals(entity4.getId(), result3.get(0).getId());
     }
 
     @Test

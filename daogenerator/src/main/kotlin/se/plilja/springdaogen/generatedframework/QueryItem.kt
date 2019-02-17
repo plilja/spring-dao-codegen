@@ -111,6 +111,31 @@ public abstract class QueryItem<Entity extends BaseEntity<?>> {
         }
     }
 
+    private static class LikeQueryItem<Entity extends BaseEntity<?>> extends QueryItem<Entity> {
+        private final Column<Entity, String> column;
+        private final String value;
+        private final String ending;
+        private final String beginning;
+
+        private LikeQueryItem(Column<Entity, String> column, String value, String beginning, String ending) {
+            if (value == null) {
+                throw new IllegalArgumentException("Can't perform like query with null");
+            }
+            this.column = column;
+            this.value = value;
+            this.beginning = beginning;
+            this.ending = ending;
+        }
+
+        @Override
+        protected String getClause(MapSqlParameterSource params, Supplier<String> paramNameGenerator) {
+            String param = paramNameGenerator.get();
+            params.addValue(param, String.format("%s%s%s", beginning, value, ending));
+            return String.format("%s LIKE :%s", column.getName(), param);
+        }
+
+    }
+
     public static <Entity extends BaseEntity<?>, ValueType> QueryItem<Entity> eq(Column<Entity, ValueType> column, ValueType value) {
         return new ComparisonQueryItem<>(column, value, Operator.EQ, false);
     }
@@ -145,6 +170,18 @@ public abstract class QueryItem<Entity extends BaseEntity<?>> {
 
     public static <Entity extends BaseEntity<?>> QueryItem<Entity> or(QueryItem<Entity> clause1, QueryItem<Entity> clause2) {
         return new Or<>(clause1, clause2);
+    }
+
+    public static <Entity extends BaseEntity<?>> QueryItem<Entity> startsWith(Column<Entity, String> column, String value) {
+        return new LikeQueryItem<>(column, value, "", "%");
+    }
+
+    public static <Entity extends BaseEntity<?>> QueryItem<Entity> endsWith(Column<Entity, String> column, String value) {
+        return new LikeQueryItem<>(column, value, "%", "");
+    }
+
+    public static <Entity extends BaseEntity<?>> QueryItem<Entity> contains(Column<Entity, String> column, String value) {
+        return new LikeQueryItem<>(column, value, "%", "%");
     }
 
     private enum Operator {
