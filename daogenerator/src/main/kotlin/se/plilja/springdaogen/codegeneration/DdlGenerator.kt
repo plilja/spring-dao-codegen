@@ -22,13 +22,13 @@ fun toH2Ddl(config: Config, schema: Schema, dataSource: DataSource): String {
     for (schemaName in schemaNames) {
         if (schemaName != "public") {
             // public exists by default
-            res += "CREATE SCHEMA $schemaName;\n"
+            res += "CREATE SCHEMA IF NOT EXISTS $schemaName;\n"
         }
     }
     res += "\n"
     res += "\n"
     for (table in schema.tables) {
-        res += "CREATE TABLE ${formatIdentifier(table.schemaName, table.name)} (\n"
+        res += "CREATE TABLE IF NOT EXISTS ${formatIdentifier(table.schemaName, table.name)} (\n"
         for (column in table.columns) {
             val maybeNotNull = if (!column.nullable) " NOT NULL" else ""
             res += "${column.name} ${dataType(column)}$maybeNotNull,\n"
@@ -59,7 +59,7 @@ fun toH2Ddl(config: Config, schema: Schema, dataSource: DataSource): String {
             for (row in rows) {
                 val columns = table.columns.map { it.name }.joinToString(", ")
                 val values = table.columns.map { extractValue(row[it.name], it) }.joinToString(", ")
-                res += "INSERT INTO $t($columns) VALUES($values);"
+                res += "MERGE INTO $t($columns) VALUES($values);"
                 res += "\n"
             }
         }
