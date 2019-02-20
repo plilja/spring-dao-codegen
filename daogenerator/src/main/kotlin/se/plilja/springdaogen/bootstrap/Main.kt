@@ -105,7 +105,7 @@ fun copyFrameworkClasses(config: Config) {
  * H2-database to be used for testing.
  */
 fun writeTestDdl(config: Config, schema: Schema, dataSource: DataSource) {
-    if (config.generateTestDdl) {
+    if (config.featureGenerateTestDdl) {
         val ddl = toH2Ddl(config, schema, dataSource)
         File(config.testResourceFolder).mkdirs()
         File(config.testResourceFolder + "/init.sql").writeText(ddl)

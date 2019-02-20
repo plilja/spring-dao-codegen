@@ -13,7 +13,6 @@ class EntityGeneratorTest {
     fun `entity with property named "id"`() {
         val config =
             Config(
-                "",
                 DatabaseDialect.MYSQL,
                 "",
                 "",
@@ -71,7 +70,6 @@ public class Table implements BaseEntity<Integer> {
     fun `entity with one field`() {
         val config =
             Config(
-                "",
                 DatabaseDialect.MYSQL,
                 "",
                 "",

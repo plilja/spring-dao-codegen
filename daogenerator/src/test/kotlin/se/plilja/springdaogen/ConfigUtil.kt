@@ -6,7 +6,6 @@ import se.plilja.springdaogen.model.DatabaseDialect
 
 fun defaultTestConfig(): Config {
     return Config(
-            "",
             DatabaseDialect.POSTGRES,
             "",
             "",

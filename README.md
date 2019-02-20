@@ -3,7 +3,6 @@
  Work in progress
 
 # TODO:s
-* Normalize config
 * Write a proper readme
 
 # Maybe later release

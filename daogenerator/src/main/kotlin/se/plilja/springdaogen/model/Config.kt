@@ -1,11 +1,11 @@
 package se.plilja.springdaogen.model
 
 import java.io.File
+import java.lang.IllegalStateException
 import java.util.*
 
 
 data class Config(
-    val databaseName: String,
     val databaseDialect: DatabaseDialect,
     val databaseUrl: String,
     val databaseUser: String,
@@ -26,7 +26,7 @@ data class Config(
     val entitySuffix: String = "",
     val daoPrefix: String = "",
     val daoSuffix: String = "Dao",
-    val generateTestDdl: Boolean = false,
+    val featureGenerateTestDdl: Boolean = false,
     val testResourceFolder: String? = null,
     val createdAtColumnNames: List<String> = emptyList(),
     val changedAtColumnNames: List<String> = emptyList(),
@@ -60,28 +60,26 @@ private class ConfigReader(file: File) {
 
     fun readConfig(): Config {
         return Config(
-            databaseName = properties.getProperty("database.name"),
             databaseDialect = DatabaseDialect.valueOf(properties.getProperty("database.dialect")),
             databaseUrl = properties.getProperty("database.url"),
             databaseUser = properties.getProperty("database.user"),
             databasePassword = properties.getProperty("database.password"),
             databaseDriver = properties.getProperty("database.driver"),
-            entityOutputFolder = getFolderProperty("entity.output.folder"),
-            entityOutputPackage = properties.getProperty("entity.output.package"),
-            daoOutputFolder = getFolderProperty("dao.output.folder"),
-            daoOutputPackage = properties.getProperty("dao.output.package"),
-            frameworkOutputFolder = getFolderProperty("framework.output.folder"),
-            frameworkOutputPackage = properties.getProperty("framework.output.package"),
-            maxSelectAllCount = properties.getProperty("max.select.all.count").toInt(),
+            entityOutputFolder = getFolderProperty("entity.output_folder"),
+            entityOutputPackage = properties.getProperty("entity.output_package"),
+            daoOutputFolder = getFolderProperty("dao.output_folder"),
+            daoOutputPackage = properties.getProperty("dao.output_package"),
+            frameworkOutputFolder = getFolderProperty("framework.output_folder"),
+            frameworkOutputPackage = properties.getProperty("framework.output_package"),
+            maxSelectAllCount = properties.getProperty("dao.max_select_count").toInt(),
             schemas = getListProperty("database.schemas"),
             useLombok = properties.getProperty("use_lombok", "false") == "true",
-            daosAreAbstract = properties.getProperty("dao.output.abstract", "false") == "true",
+            daosAreAbstract = properties.getProperty("dao.generate_abstract", "false") == "true",
             hasGeneratedPrimaryKeysOverride = getListProperty("generated_primary_keys_override"),
-            entityPrefix = properties.getProperty("entity.output.prefix", ""),
-            entitySuffix = properties.getProperty("entity.output.suffix", ""),
-            daoPrefix = properties.getProperty("dao.output.prefix", ""),
-            daoSuffix = properties.getProperty("dao.output.suffix", "Dao"),
-            generateTestDdl = properties.getProperty("test.generate_ddl", "false") == "true",
+            entityPrefix = properties.getProperty("entity.output_prefix", ""),
+            entitySuffix = properties.getProperty("entity.output_suffix", ""),
+            daoPrefix = properties.getProperty("dao.output_prefix", ""),
+            daoSuffix = properties.getProperty("dao.output_suffix", "Dao"),
             testResourceFolder = properties.getProperty("test.resource_folder", null),
             createdAtColumnNames = getListProperty("entity.created_at_name").map { it.toUpperCase() },
             changedAtColumnNames = getListProperty("entity.changed_at_name").map { it.toUpperCase() },
@@ -94,6 +92,7 @@ private class ConfigReader(file: File) {
                 properties.getProperty("enum.name_column_regex", "^$"),
                 RegexOption.IGNORE_CASE
             ),
+            featureGenerateTestDdl = properties.getProperty("features.generate_test_ddl", "false") == "true",
             featureGenerateJavaxValidation = properties.getProperty(
                 "features.generate_javax_validation",
                 "false"
@@ -114,7 +113,7 @@ private class ConfigReader(file: File) {
     }
 
     private fun getFolderProperty(property: String): String {
-        val f = properties.getProperty(property)
+        val f = properties.getProperty(property, null) ?: throw IllegalStateException("Property $property missing")
         if (f.last() != '/') {
             return "$f/"
         } else {
