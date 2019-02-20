@@ -40,9 +40,10 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final Class<ID> idClass;
-    private final boolean idIsGenerated;
-${if (config.featureGenerateChangeTracking) {
-            """    private final CurrentUserProvider currentUserProvider;"""
+    private final boolean idIsGenerated;${if (config.featureGenerateChangeTracking) {"""
+
+    private final CurrentUserProvider currentUserProvider;
+            """.trimMargin()
         } else {
             ""
         }
@@ -183,14 +184,12 @@ ${if (config.featureGenerateQueryApi) {
         }
     }
 
-    private void create(T object) {
-${if (config.featureGenerateChangeTracking) {
-            """        setCreatedAt(object);
+    private void create(T object) {${if (config.featureGenerateChangeTracking) {"""
+        setCreatedAt(object);
         setCreatedBy(object);
         setChangedAt(object);
         setChangedBy(object);
-        initializeVersion(object);
-"""
+        initializeVersion(object);"""
         } else {
             ""
         }
@@ -211,9 +210,8 @@ ${if (config.featureGenerateChangeTracking) {
         }
     }
 
-    private void update(T object) {
-${if (config.featureGenerateChangeTracking) {
-            """        setChangedAt(object);
+    private void update(T object) {${if (config.featureGenerateChangeTracking) {"""
+        setChangedAt(object);
         setChangedBy(object);"""
         } else {
             ""
@@ -226,11 +224,8 @@ ${if (config.featureGenerateChangeTracking) {
             throw new NoRowsUpdatedException(String.format("No rows affected when trying to update object with id %s", object.getId()));
         } else if (updated > 1) {
             throw new TooManyRowsUpdatedException(String.format("More than one row (%d) affected by update of object with id %s", updated, object.getId()));
-        }
-${if (config.featureGenerateChangeTracking) {
-            """
-        bumpVersion(object);
-"""
+        }${if (config.featureGenerateChangeTracking) {"""
+        bumpVersion(object);"""
         } else {
             ""
         }

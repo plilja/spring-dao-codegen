@@ -11,6 +11,7 @@
     <modules>
         <module>daogenerator</module>
         <module>integrationtests</module>
+        <module>generated-different-configs</module>
     </modules>
     <packaging>pom</packaging>
 
