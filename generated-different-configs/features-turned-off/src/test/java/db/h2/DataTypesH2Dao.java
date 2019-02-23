@@ -2,6 +2,7 @@ package db.h2;
 
 import java.math.BigDecimal;
 import java.sql.Types;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;

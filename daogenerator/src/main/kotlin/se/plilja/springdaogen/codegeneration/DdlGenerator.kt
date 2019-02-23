@@ -41,9 +41,10 @@ fun toH2Ddl(config: Config, schema: Schema, dataSource: DataSource): String {
         for (column in table.columns) {
             val references = column.references
             if (references != null) {
+                val table_ = formatIdentifier(table.schemaName, table.name)
                 val refTable = formatIdentifier(references.first.schemaName, references.first.name)
                 res += """
-                    ALTER TABLE ${table.schemaName}.${table.name}
+                    ALTER TABLE $table_
                     ADD FOREIGN KEY (${column.name})
                     REFERENCES ${refTable}(${references.second.name});
                 """.trimIndent()

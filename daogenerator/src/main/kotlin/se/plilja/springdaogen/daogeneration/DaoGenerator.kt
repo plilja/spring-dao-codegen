@@ -23,6 +23,7 @@ import java.sql.Blob
 import java.sql.Clob
 import java.sql.NClob
 import java.sql.Types
+import java.time.OffsetDateTime
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.reflect.full.staticProperties
@@ -231,8 +232,11 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         """
     )
 
-    val mayNeedImport =
-        listOf(UUID::class.java, Clob::class.java, NClob::class.java, Blob::class.java, BigDecimal::class.java)
+    val mayNeedImport = listOf(
+        UUID::class.java, Clob::class.java,
+        NClob::class.java, Blob::class.java,
+        BigDecimal::class.java, OffsetDateTime::class.java
+    )
     for (column in table.columns) {
         if (column.rawType() in mayNeedImport) {
             g.addImport(column.rawType())

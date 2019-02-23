@@ -15,6 +15,7 @@
 
     <modules>
         <module>features-turned-off</module>
+        <module>mysql-h2</module>
     </modules>
     <packaging>pom</packaging>
 

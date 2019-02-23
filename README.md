@@ -4,6 +4,7 @@
 
 # TODO:s
 * Write a proper readme
+* blob.getBinaryStream().readAllBytes() doesn't work in java 8
 
 # Maybe later release
 * SqlLite
