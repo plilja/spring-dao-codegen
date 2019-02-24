@@ -12,6 +12,7 @@ import se.plilja.springdaogen.generatedframework.columnClass
 import se.plilja.springdaogen.generatedframework.currentUserProvider
 import se.plilja.springdaogen.generatedframework.dao
 import se.plilja.springdaogen.generatedframework.databaseException
+import se.plilja.springdaogen.model.Column
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Left
 import se.plilja.springdaogen.model.Table
@@ -51,24 +52,24 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
             }
             val name = "COLUMN_${snakeCase(column.name).toUpperCase()}"
             g.addConstant(
-                name,
-                "Column<${table.entityName()}, ${column.typeName()}>",
-                "new Column<>(\"${formatIdentifier(column.name, config.databaseDialect)}\")"
+                    name,
+                    "Column<${table.entityName()}, ${column.typeName()}>",
+                    columnConstantInitializer(column, config)
             )
             columnsConstantNames.add(name)
         }
         g.addImport(Arrays::class.java)
         g.addImport(java.util.List::class.java)
         g.addConstant(
-            "ALL_COLUMNS_LIST",
-            "List<Column<${table.entityName()}, ?>>",
-            "Arrays.asList(\n${columnsConstantNames.joinToString(",\n")})"
+                "ALL_COLUMNS_LIST",
+                "List<Column<${table.entityName()}, ?>>",
+                "Arrays.asList(\n${columnsConstantNames.joinToString(",\n")})"
         )
     }
     g.addPrivateConstant("ALL_COLUMNS", "String", columnsList(table, config.databaseDialect))
     g.addPrivateConstant(
-        "ROW_MAPPER", "RowMapper<${table.entityName()}>",
-        rowMapper(table, g, config)
+            "ROW_MAPPER", "RowMapper<${table.entityName()}>",
+            rowMapper(table, g, config)
     )
     g.addCustomMethod(rowUnmapper(table, g))
     g.addImport(RowMapper::class.java)
@@ -82,7 +83,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
     if (config.featureGenerateChangeTracking) {
         ensureImported(g, config) { currentUserProvider(config.frameworkOutputPackage) }
         g.addCustomConstructor(
-            """
+                """
             @Autowired
             public ${g.name}(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
                 super(${table.primaryKey.typeName()}.class, ${table.primaryKey.generated}, jdbcTemplate, currentUserProvider);
@@ -92,7 +93,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
 
     } else {
         g.addCustomConstructor(
-            """
+                """
             @Autowired
             public ${g.name}(NamedParameterJdbcTemplate jdbcTemplate) {
                 super(${table.primaryKey.typeName()}.class, ${table.primaryKey.generated}, jdbcTemplate);
@@ -103,7 +104,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
     g.addImport(NamedParameterJdbcTemplate::class.java)
 
     g.addCustomMethod(
-        """
+            """
             @Override
             protected RowMapper<${table.entityName()}> getRowMapper() {
                 return ROW_MAPPER;
@@ -111,7 +112,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         """
     )
     g.addCustomMethod(
-        """
+            """
             @Override
             protected String getExistsByIdSql() {
                 return ${existsById(table, config.databaseDialect)};
@@ -119,7 +120,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         """
     )
     g.addCustomMethod(
-        """
+            """
             @Override
             protected String getSelectIdsSql() {
                 return ${selectOne(table, config.databaseDialect)};
@@ -127,7 +128,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         """
     )
     g.addCustomMethod(
-        """
+            """
             @Override
             protected String getSelectManySql(int maxSelectCount) {
                 return String.format(${selectMany(table, config.databaseDialect)}, maxSelectCount);
@@ -135,7 +136,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         """
     )
     g.addCustomMethod(
-        """
+            """
             @Override
             protected String getInsertSql() {
                 return ${insert(table, config.databaseDialect)};
@@ -144,7 +145,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
     )
     val updateString = update(table, config.databaseDialect)
     g.addCustomMethod(
-        """
+            """
             @Override
             protected String getUpdateSql() {
                 ${if (updateString != null) "return $updateString;" else "throw new UnsupportedOperationException();"}
@@ -152,7 +153,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         """
     )
     g.addCustomMethod(
-        """
+            """
             @Override
             protected String getDeleteSql() {
                 return ${delete(table, config.databaseDialect)};
@@ -160,7 +161,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         """
     )
     g.addCustomMethod(
-        """
+            """
             @Override
             protected String getCountSql() {
                 return ${count(table, config.databaseDialect)};
@@ -169,7 +170,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
     )
     if (config.featureGenerateQueryApi) {
         g.addCustomMethod(
-            """
+                """
             @Override
             public Column<${table.entityName()}, ?> getColumnByName(String name) {
                 for (Column<${table.entityName()}, ?> column : ALL_COLUMNS_LIST) {
@@ -182,7 +183,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         """
         )
         g.addCustomMethod(
-            """
+                """
             @Override
             protected String getQueryOrderBySql(int maxAllowedCount, String whereClause, String orderBy) {
                 return ${selectManyQuery(table, config.databaseDialect)};
@@ -190,7 +191,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         """
         )
         g.addCustomMethod(
-            """
+                """
             @Override
             protected String getQueryPageOrderBySql(long start, int pageSize, String whereClause, String orderBy) {
                 return ${selectPageQuery(table, config.databaseDialect)}
@@ -199,7 +200,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         )
     } else {
         g.addCustomMethod(
-            """
+                """
             @Override
             protected String getSelectPageSql(long start, int pageSize) {
                 return ${selectPage(table, config.databaseDialect)}
@@ -208,7 +209,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         )
     }
     g.addCustomMethod(
-        """
+            """
             @Override
             protected String getSelectAndLockSql(String databaseProductName) {
                 ${lock(table, config)}
@@ -216,7 +217,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         """
     )
     g.addCustomMethod(
-        """
+            """
             @Override
             protected String getPrimaryKeyColumnName() {
                 return "${table.primaryKey.name}";
@@ -224,7 +225,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         """
     )
     g.addCustomMethod(
-        """
+            """
             @Override
             protected int getSelectAllDefaultMaxCount() {
                 return ${config.maxSelectAllCount};
@@ -233,9 +234,9 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
     )
 
     val mayNeedImport = listOf(
-        UUID::class.java, Clob::class.java,
-        NClob::class.java, Blob::class.java,
-        BigDecimal::class.java, OffsetDateTime::class.java
+            UUID::class.java, Clob::class.java,
+            NClob::class.java, Blob::class.java,
+            BigDecimal::class.java, OffsetDateTime::class.java
     )
     for (column in table.columns) {
         if (column.rawType() in mayNeedImport) {
@@ -250,6 +251,19 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
     }
     return g
 }
+
+private fun columnConstantInitializer(column: Column, config: Config) =
+        when (column.typeName()) {
+            "Boolean" -> "new Column.BooleanColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\")"
+            "String" -> "new Column.StringColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\")"
+            "Integer" -> "new Column.IntColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\")"
+            "Long" -> "new Column.LongColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\")"
+            "Double" -> "new Column.DoubleColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\")"
+            "LocalDate" -> "new Column.DateColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\")"
+            "LocalDateTime" -> "new Column.DateTimeColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\")"
+            "BigDecimal" -> "new Column.BigDecimalColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\")"
+            else -> "new Column<>(\"${formatIdentifier(column.name, config.databaseDialect)}\", ${column.typeName()}.class)"
+        }
 
 private fun rowMapper(table: Table, classGenerator: ClassGenerator, config: Config): String {
     val needsTryCatch = table.containsClobLikeField()

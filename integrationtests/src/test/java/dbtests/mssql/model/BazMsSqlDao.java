@@ -17,21 +17,21 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
 
-    public static final Column<BazMsSqlEntity, Integer> COLUMN_ID = new Column<>("id");
+    public static final Column<BazMsSqlEntity, Integer> COLUMN_ID = new Column.IntColumn<>("id");
 
-    public static final Column<BazMsSqlEntity, ColorEnumMsSql> COLUMN_COLOR = new Column<>("color");
+    public static final Column<BazMsSqlEntity, ColorEnumMsSql> COLUMN_COLOR = new Column<>("color", ColorEnumMsSql.class);
 
-    public static final Column<BazMsSqlEntity, LocalDateTime> COLUMN_INSERTED_AT = new Column<>("inserted_at");
+    public static final Column<BazMsSqlEntity, LocalDateTime> COLUMN_INSERTED_AT = new Column.DateTimeColumn<>("inserted_at");
 
-    public static final Column<BazMsSqlEntity, String> COLUMN_INSERTED_BY = new Column<>("inserted_by");
+    public static final Column<BazMsSqlEntity, String> COLUMN_INSERTED_BY = new Column.StringColumn<>("inserted_by");
 
-    public static final Column<BazMsSqlEntity, LocalDateTime> COLUMN_MODIFIED_AT = new Column<>("modified_at");
+    public static final Column<BazMsSqlEntity, LocalDateTime> COLUMN_MODIFIED_AT = new Column.DateTimeColumn<>("modified_at");
 
-    public static final Column<BazMsSqlEntity, String> COLUMN_MODIFIED_BY = new Column<>("modified_by");
+    public static final Column<BazMsSqlEntity, String> COLUMN_MODIFIED_BY = new Column.StringColumn<>("modified_by");
 
-    public static final Column<BazMsSqlEntity, String> COLUMN_NAME = new Column<>("name");
+    public static final Column<BazMsSqlEntity, String> COLUMN_NAME = new Column.StringColumn<>("name");
 
-    public static final Column<BazMsSqlEntity, Integer> COLUMN_VERSION = new Column<>("version");
+    public static final Column<BazMsSqlEntity, Integer> COLUMN_VERSION = new Column.IntColumn<>("version");
 
     public static final List<Column<BazMsSqlEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID,

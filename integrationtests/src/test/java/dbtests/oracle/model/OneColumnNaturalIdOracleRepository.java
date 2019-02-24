@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class OneColumnNaturalIdOracleRepository extends Dao<OneColumnNaturalIdOracle, String> {
 
-    public static final Column<OneColumnNaturalIdOracle, String> COLUMN_ID = new Column<>("ID");
+    public static final Column<OneColumnNaturalIdOracle, String> COLUMN_ID = new Column.StringColumn<>("ID");
 
     public static final List<Column<OneColumnNaturalIdOracle, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID);

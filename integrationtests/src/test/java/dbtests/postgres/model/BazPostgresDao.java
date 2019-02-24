@@ -17,21 +17,21 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
 
-    public static final Column<BazPostgresEntity, Integer> COLUMN_BAZ_ID = new Column<>("baz_id");
+    public static final Column<BazPostgresEntity, Integer> COLUMN_BAZ_ID = new Column.IntColumn<>("baz_id");
 
-    public static final Column<BazPostgresEntity, String> COLUMN_BAZ_NAME = new Column<>("baz_name");
+    public static final Column<BazPostgresEntity, String> COLUMN_BAZ_NAME = new Column.StringColumn<>("baz_name");
 
-    public static final Column<BazPostgresEntity, LocalDateTime> COLUMN_CHANGED_AT = new Column<>("changed_at");
+    public static final Column<BazPostgresEntity, LocalDateTime> COLUMN_CHANGED_AT = new Column.DateTimeColumn<>("changed_at");
 
-    public static final Column<BazPostgresEntity, String> COLUMN_CHANGED_BY = new Column<>("changed_by");
+    public static final Column<BazPostgresEntity, String> COLUMN_CHANGED_BY = new Column.StringColumn<>("changed_by");
 
-    public static final Column<BazPostgresEntity, ColorEnumPostgres> COLUMN_COLOR = new Column<>("color");
+    public static final Column<BazPostgresEntity, ColorEnumPostgres> COLUMN_COLOR = new Column<>("color", ColorEnumPostgres.class);
 
-    public static final Column<BazPostgresEntity, Integer> COLUMN_COUNTER = new Column<>("counter");
+    public static final Column<BazPostgresEntity, Integer> COLUMN_COUNTER = new Column.IntColumn<>("counter");
 
-    public static final Column<BazPostgresEntity, LocalDateTime> COLUMN_CREATED_AT = new Column<>("created_at");
+    public static final Column<BazPostgresEntity, LocalDateTime> COLUMN_CREATED_AT = new Column.DateTimeColumn<>("created_at");
 
-    public static final Column<BazPostgresEntity, String> COLUMN_CREATED_BY = new Column<>("created_by");
+    public static final Column<BazPostgresEntity, String> COLUMN_CREATED_BY = new Column.StringColumn<>("created_by");
 
     public static final List<Column<BazPostgresEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_BAZ_ID,

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class OneColumnGeneratedIdOracleRepository extends Dao<OneColumnGeneratedIdOracle, Integer> {
 
-    public static final Column<OneColumnGeneratedIdOracle, Integer> COLUMN_ID = new Column<>("ID");
+    public static final Column<OneColumnGeneratedIdOracle, Integer> COLUMN_ID = new Column.IntColumn<>("ID");
 
     public static final List<Column<OneColumnGeneratedIdOracle, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID);

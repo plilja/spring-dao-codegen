@@ -17,21 +17,21 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class BazOracleRepository extends Dao<BazOracle, Integer> {
 
-    public static final Column<BazOracle, Integer> COLUMN_ID = new Column<>("ID");
+    public static final Column<BazOracle, Integer> COLUMN_ID = new Column.IntColumn<>("ID");
 
-    public static final Column<BazOracle, LocalDateTime> COLUMN_CHANGED_AT = new Column<>("CHANGED_AT");
+    public static final Column<BazOracle, LocalDateTime> COLUMN_CHANGED_AT = new Column.DateTimeColumn<>("CHANGED_AT");
 
-    public static final Column<BazOracle, String> COLUMN_CHANGED_BY = new Column<>("CHANGED_BY");
+    public static final Column<BazOracle, String> COLUMN_CHANGED_BY = new Column.StringColumn<>("CHANGED_BY");
 
-    public static final Column<BazOracle, ColorEnumOracle> COLUMN_COLOR = new Column<>("COLOR");
+    public static final Column<BazOracle, ColorEnumOracle> COLUMN_COLOR = new Column<>("COLOR", ColorEnumOracle.class);
 
-    public static final Column<BazOracle, LocalDateTime> COLUMN_CREATED_AT = new Column<>("CREATED_AT");
+    public static final Column<BazOracle, LocalDateTime> COLUMN_CREATED_AT = new Column.DateTimeColumn<>("CREATED_AT");
 
-    public static final Column<BazOracle, String> COLUMN_CREATED_BY = new Column<>("CREATED_BY");
+    public static final Column<BazOracle, String> COLUMN_CREATED_BY = new Column.StringColumn<>("CREATED_BY");
 
-    public static final Column<BazOracle, String> COLUMN_NAME = new Column<>("NAME");
+    public static final Column<BazOracle, String> COLUMN_NAME = new Column.StringColumn<>("NAME");
 
-    public static final Column<BazOracle, Integer> COLUMN_VERSION = new Column<>("VERSION");
+    public static final Column<BazOracle, Integer> COLUMN_VERSION = new Column.IntColumn<>("VERSION");
 
     public static final List<Column<BazOracle, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID,

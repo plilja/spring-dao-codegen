@@ -23,53 +23,53 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
 
-    public static final Column<DataTypesPostgresEntity, Long> COLUMN_ID = new Column<>("id");
+    public static final Column<DataTypesPostgresEntity, Long> COLUMN_ID = new Column.LongColumn<>("id");
 
-    public static final Column<DataTypesPostgresEntity, Long> COLUMN_BIGINT = new Column<>("bigint");
+    public static final Column<DataTypesPostgresEntity, Long> COLUMN_BIGINT = new Column.LongColumn<>("bigint");
 
-    public static final Column<DataTypesPostgresEntity, Boolean> COLUMN_BOOLEAN_B = new Column<>("boolean_b");
+    public static final Column<DataTypesPostgresEntity, Boolean> COLUMN_BOOLEAN_B = new Column.BooleanColumn<>("boolean_b");
 
-    public static final Column<DataTypesPostgresEntity, byte[]> COLUMN_BYTEA = new Column<>("bytea");
+    public static final Column<DataTypesPostgresEntity, byte[]> COLUMN_BYTEA = new Column<>("bytea", byte[].class);
 
-    public static final Column<DataTypesPostgresEntity, String> COLUMN_CHAR = new Column<>("char");
+    public static final Column<DataTypesPostgresEntity, String> COLUMN_CHAR = new Column.StringColumn<>("char");
 
-    public static final Column<DataTypesPostgresEntity, String> COLUMN_CHAR10 = new Column<>("char10");
+    public static final Column<DataTypesPostgresEntity, String> COLUMN_CHAR10 = new Column.StringColumn<>("char10");
 
-    public static final Column<DataTypesPostgresEntity, LocalDate> COLUMN_DATE = new Column<>("date");
+    public static final Column<DataTypesPostgresEntity, LocalDate> COLUMN_DATE = new Column.DateColumn<>("date");
 
-    public static final Column<DataTypesPostgresEntity, Long> COLUMN_DECIMAL_EIGHTEEN_ZERO = new Column<>("decimal_eighteen_zero");
+    public static final Column<DataTypesPostgresEntity, Long> COLUMN_DECIMAL_EIGHTEEN_ZERO = new Column.LongColumn<>("decimal_eighteen_zero");
 
-    public static final Column<DataTypesPostgresEntity, Integer> COLUMN_DECIMAL_NINE_ZERO = new Column<>("decimal_nine_zero");
+    public static final Column<DataTypesPostgresEntity, Integer> COLUMN_DECIMAL_NINE_ZERO = new Column.IntColumn<>("decimal_nine_zero");
 
-    public static final Column<DataTypesPostgresEntity, BigInteger> COLUMN_DECIMAL_NINETEEN_ZERO = new Column<>("decimal_nineteen_zero");
+    public static final Column<DataTypesPostgresEntity, BigInteger> COLUMN_DECIMAL_NINETEEN_ZERO = new Column<>("decimal_nineteen_zero", BigInteger.class);
 
-    public static final Column<DataTypesPostgresEntity, BigDecimal> COLUMN_DECIMAL_TEN_TWO = new Column<>("decimal_ten_two");
+    public static final Column<DataTypesPostgresEntity, BigDecimal> COLUMN_DECIMAL_TEN_TWO = new Column.BigDecimalColumn<>("decimal_ten_two");
 
-    public static final Column<DataTypesPostgresEntity, Long> COLUMN_DECIMAL_TEN_ZERO = new Column<>("decimal_ten_zero");
+    public static final Column<DataTypesPostgresEntity, Long> COLUMN_DECIMAL_TEN_ZERO = new Column.LongColumn<>("decimal_ten_zero");
 
-    public static final Column<DataTypesPostgresEntity, Double> COLUMN_DOUBLE = new Column<>("double");
+    public static final Column<DataTypesPostgresEntity, Double> COLUMN_DOUBLE = new Column.DoubleColumn<>("double");
 
-    public static final Column<DataTypesPostgresEntity, Float> COLUMN_FLOAT = new Column<>("float");
+    public static final Column<DataTypesPostgresEntity, Float> COLUMN_FLOAT = new Column<>("float", Float.class);
 
-    public static final Column<DataTypesPostgresEntity, UUID> COLUMN_GUID = new Column<>("guid");
+    public static final Column<DataTypesPostgresEntity, UUID> COLUMN_GUID = new Column<>("guid", UUID.class);
 
-    public static final Column<DataTypesPostgresEntity, Integer> COLUMN_INTEGER = new Column<>("integer");
+    public static final Column<DataTypesPostgresEntity, Integer> COLUMN_INTEGER = new Column.IntColumn<>("integer");
 
-    public static final Column<DataTypesPostgresEntity, BigDecimal> COLUMN_NUMERIC_TEN_TWO = new Column<>("numeric_ten_two");
+    public static final Column<DataTypesPostgresEntity, BigDecimal> COLUMN_NUMERIC_TEN_TWO = new Column.BigDecimalColumn<>("numeric_ten_two");
 
-    public static final Column<DataTypesPostgresEntity, Integer> COLUMN_SMALLINT = new Column<>("smallint");
+    public static final Column<DataTypesPostgresEntity, Integer> COLUMN_SMALLINT = new Column.IntColumn<>("smallint");
 
-    public static final Column<DataTypesPostgresEntity, String> COLUMN_TEXT = new Column<>("text");
+    public static final Column<DataTypesPostgresEntity, String> COLUMN_TEXT = new Column.StringColumn<>("text");
 
-    public static final Column<DataTypesPostgresEntity, LocalTime> COLUMN_TIME = new Column<>("time");
+    public static final Column<DataTypesPostgresEntity, LocalTime> COLUMN_TIME = new Column<>("time", LocalTime.class);
 
-    public static final Column<DataTypesPostgresEntity, LocalDateTime> COLUMN_TIMESTAMP = new Column<>("timestamp");
+    public static final Column<DataTypesPostgresEntity, LocalDateTime> COLUMN_TIMESTAMP = new Column.DateTimeColumn<>("timestamp");
 
-    public static final Column<DataTypesPostgresEntity, OffsetDateTime> COLUMN_TIMESTAMP_TZ = new Column<>("timestamp_tz");
+    public static final Column<DataTypesPostgresEntity, OffsetDateTime> COLUMN_TIMESTAMP_TZ = new Column<>("timestamp_tz", OffsetDateTime.class);
 
-    public static final Column<DataTypesPostgresEntity, String> COLUMN_VARCHAR10 = new Column<>("varchar10");
+    public static final Column<DataTypesPostgresEntity, String> COLUMN_VARCHAR10 = new Column.StringColumn<>("varchar10");
 
-    public static final Column<DataTypesPostgresEntity, String> COLUMN_XML = new Column<>("xml");
+    public static final Column<DataTypesPostgresEntity, String> COLUMN_XML = new Column.StringColumn<>("xml");
 
     public static final List<Column<DataTypesPostgresEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID,

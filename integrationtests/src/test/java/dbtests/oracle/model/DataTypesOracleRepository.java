@@ -23,41 +23,41 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
 
-    public static final Column<DataTypesOracle, String> COLUMN_ID = new Column<>("ID");
+    public static final Column<DataTypesOracle, String> COLUMN_ID = new Column.StringColumn<>("ID");
 
-    public static final Column<DataTypesOracle, Double> COLUMN_BINARY_DOUBLE = new Column<>("BINARY_DOUBLE");
+    public static final Column<DataTypesOracle, Double> COLUMN_BINARY_DOUBLE = new Column.DoubleColumn<>("BINARY_DOUBLE");
 
-    public static final Column<DataTypesOracle, Float> COLUMN_BINARY_FLOAT = new Column<>("BINARY_FLOAT");
+    public static final Column<DataTypesOracle, Float> COLUMN_BINARY_FLOAT = new Column<>("BINARY_FLOAT", Float.class);
 
-    public static final Column<DataTypesOracle, byte[]> COLUMN_BLOB = new Column<>("BLOB");
+    public static final Column<DataTypesOracle, byte[]> COLUMN_BLOB = new Column<>("BLOB", byte[].class);
 
-    public static final Column<DataTypesOracle, String> COLUMN_CHAR1 = new Column<>("CHAR1");
+    public static final Column<DataTypesOracle, String> COLUMN_CHAR1 = new Column.StringColumn<>("CHAR1");
 
-    public static final Column<DataTypesOracle, String> COLUMN_CHAR10 = new Column<>("CHAR10");
+    public static final Column<DataTypesOracle, String> COLUMN_CHAR10 = new Column.StringColumn<>("CHAR10");
 
-    public static final Column<DataTypesOracle, String> COLUMN_CLOB = new Column<>("CLOB");
+    public static final Column<DataTypesOracle, String> COLUMN_CLOB = new Column.StringColumn<>("CLOB");
 
-    public static final Column<DataTypesOracle, LocalDate> COLUMN_DATE = new Column<>("\"DATE\"");
+    public static final Column<DataTypesOracle, LocalDate> COLUMN_DATE = new Column.DateColumn<>("\"DATE\"");
 
-    public static final Column<DataTypesOracle, String> COLUMN_NLOB = new Column<>("NLOB");
+    public static final Column<DataTypesOracle, String> COLUMN_NLOB = new Column.StringColumn<>("NLOB");
 
-    public static final Column<DataTypesOracle, Long> COLUMN_NUMBER_EIGHTEEN_ZERO = new Column<>("NUMBER_EIGHTEEN_ZERO");
+    public static final Column<DataTypesOracle, Long> COLUMN_NUMBER_EIGHTEEN_ZERO = new Column.LongColumn<>("NUMBER_EIGHTEEN_ZERO");
 
-    public static final Column<DataTypesOracle, Integer> COLUMN_NUMBER_NINE_ZERO = new Column<>("NUMBER_NINE_ZERO");
+    public static final Column<DataTypesOracle, Integer> COLUMN_NUMBER_NINE_ZERO = new Column.IntColumn<>("NUMBER_NINE_ZERO");
 
-    public static final Column<DataTypesOracle, BigInteger> COLUMN_NUMBER_NINETEEN_ZERO = new Column<>("NUMBER_NINETEEN_ZERO");
+    public static final Column<DataTypesOracle, BigInteger> COLUMN_NUMBER_NINETEEN_ZERO = new Column<>("NUMBER_NINETEEN_ZERO", BigInteger.class);
 
-    public static final Column<DataTypesOracle, BigDecimal> COLUMN_NUMBER_TEN_TWO = new Column<>("NUMBER_TEN_TWO");
+    public static final Column<DataTypesOracle, BigDecimal> COLUMN_NUMBER_TEN_TWO = new Column.BigDecimalColumn<>("NUMBER_TEN_TWO");
 
-    public static final Column<DataTypesOracle, Long> COLUMN_NUMBER_TEN_ZERO = new Column<>("NUMBER_TEN_ZERO");
+    public static final Column<DataTypesOracle, Long> COLUMN_NUMBER_TEN_ZERO = new Column.LongColumn<>("NUMBER_TEN_ZERO");
 
-    public static final Column<DataTypesOracle, LocalDateTime> COLUMN_TIMESTAMP = new Column<>("TIMESTAMP");
+    public static final Column<DataTypesOracle, LocalDateTime> COLUMN_TIMESTAMP = new Column.DateTimeColumn<>("TIMESTAMP");
 
-    public static final Column<DataTypesOracle, OffsetDateTime> COLUMN_TIMESTAMP_TZ = new Column<>("TIMESTAMP_TZ");
+    public static final Column<DataTypesOracle, OffsetDateTime> COLUMN_TIMESTAMP_TZ = new Column<>("TIMESTAMP_TZ", OffsetDateTime.class);
 
-    public static final Column<DataTypesOracle, String> COLUMN_VARCHAR = new Column<>("\"VARCHAR\"");
+    public static final Column<DataTypesOracle, String> COLUMN_VARCHAR = new Column.StringColumn<>("\"VARCHAR\"");
 
-    public static final Column<DataTypesOracle, String> COLUMN_VARCHAR2 = new Column<>("\"VARCHAR2\"");
+    public static final Column<DataTypesOracle, String> COLUMN_VARCHAR2 = new Column.StringColumn<>("\"VARCHAR2\"");
 
     public static final List<Column<DataTypesOracle, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID,

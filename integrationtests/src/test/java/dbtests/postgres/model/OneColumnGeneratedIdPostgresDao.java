@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class OneColumnGeneratedIdPostgresDao extends Dao<OneColumnGeneratedIdPostgresEntity, Integer> {
 
-    public static final Column<OneColumnGeneratedIdPostgresEntity, Integer> COLUMN_ID = new Column<>("id");
+    public static final Column<OneColumnGeneratedIdPostgresEntity, Integer> COLUMN_ID = new Column.IntColumn<>("id");
 
     public static final List<Column<OneColumnGeneratedIdPostgresEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID);

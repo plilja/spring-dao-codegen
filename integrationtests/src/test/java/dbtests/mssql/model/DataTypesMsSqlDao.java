@@ -21,61 +21,61 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class DataTypesMsSqlDao extends Dao<DataTypesMsSqlEntity, Long> {
 
-    public static final Column<DataTypesMsSqlEntity, Long> COLUMN_ID = new Column<>("id");
+    public static final Column<DataTypesMsSqlEntity, Long> COLUMN_ID = new Column.LongColumn<>("id");
 
-    public static final Column<DataTypesMsSqlEntity, byte[]> COLUMN_BINARY10 = new Column<>("binary10");
+    public static final Column<DataTypesMsSqlEntity, byte[]> COLUMN_BINARY10 = new Column<>("binary10", byte[].class);
 
-    public static final Column<DataTypesMsSqlEntity, Boolean> COLUMN_BIT = new Column<>("bit");
+    public static final Column<DataTypesMsSqlEntity, Boolean> COLUMN_BIT = new Column.BooleanColumn<>("bit");
 
-    public static final Column<DataTypesMsSqlEntity, String> COLUMN_CHAR = new Column<>("char");
+    public static final Column<DataTypesMsSqlEntity, String> COLUMN_CHAR = new Column.StringColumn<>("char");
 
-    public static final Column<DataTypesMsSqlEntity, String> COLUMN_CHAR10 = new Column<>("char10");
+    public static final Column<DataTypesMsSqlEntity, String> COLUMN_CHAR10 = new Column.StringColumn<>("char10");
 
-    public static final Column<DataTypesMsSqlEntity, LocalDate> COLUMN_DATE = new Column<>("date");
+    public static final Column<DataTypesMsSqlEntity, LocalDate> COLUMN_DATE = new Column.DateColumn<>("date");
 
-    public static final Column<DataTypesMsSqlEntity, LocalDateTime> COLUMN_DATETIME = new Column<>("datetime");
+    public static final Column<DataTypesMsSqlEntity, LocalDateTime> COLUMN_DATETIME = new Column.DateTimeColumn<>("datetime");
 
-    public static final Column<DataTypesMsSqlEntity, LocalDateTime> COLUMN_DATETIME2 = new Column<>("datetime2");
+    public static final Column<DataTypesMsSqlEntity, LocalDateTime> COLUMN_DATETIME2 = new Column.DateTimeColumn<>("datetime2");
 
-    public static final Column<DataTypesMsSqlEntity, Long> COLUMN_DECIMAL_EIGHTEEN_ZERO = new Column<>("decimal_eighteen_zero");
+    public static final Column<DataTypesMsSqlEntity, Long> COLUMN_DECIMAL_EIGHTEEN_ZERO = new Column.LongColumn<>("decimal_eighteen_zero");
 
-    public static final Column<DataTypesMsSqlEntity, Integer> COLUMN_DECIMAL_NINE_ZERO = new Column<>("decimal_nine_zero");
+    public static final Column<DataTypesMsSqlEntity, Integer> COLUMN_DECIMAL_NINE_ZERO = new Column.IntColumn<>("decimal_nine_zero");
 
-    public static final Column<DataTypesMsSqlEntity, BigInteger> COLUMN_DECIMAL_NINETEEN_ZERO = new Column<>("decimal_nineteen_zero");
+    public static final Column<DataTypesMsSqlEntity, BigInteger> COLUMN_DECIMAL_NINETEEN_ZERO = new Column<>("decimal_nineteen_zero", BigInteger.class);
 
-    public static final Column<DataTypesMsSqlEntity, BigDecimal> COLUMN_DECIMAL_TEN_TWO = new Column<>("decimal_ten_two");
+    public static final Column<DataTypesMsSqlEntity, BigDecimal> COLUMN_DECIMAL_TEN_TWO = new Column.BigDecimalColumn<>("decimal_ten_two");
 
-    public static final Column<DataTypesMsSqlEntity, Long> COLUMN_DECIMAL_TEN_ZERO = new Column<>("decimal_ten_zero");
+    public static final Column<DataTypesMsSqlEntity, Long> COLUMN_DECIMAL_TEN_ZERO = new Column.LongColumn<>("decimal_ten_zero");
 
-    public static final Column<DataTypesMsSqlEntity, Float> COLUMN_FLOAT = new Column<>("float");
+    public static final Column<DataTypesMsSqlEntity, Float> COLUMN_FLOAT = new Column<>("float", Float.class);
 
-    public static final Column<DataTypesMsSqlEntity, Integer> COLUMN_INT = new Column<>("int");
+    public static final Column<DataTypesMsSqlEntity, Integer> COLUMN_INT = new Column.IntColumn<>("int");
 
-    public static final Column<DataTypesMsSqlEntity, BigDecimal> COLUMN_MONEY = new Column<>("money");
+    public static final Column<DataTypesMsSqlEntity, BigDecimal> COLUMN_MONEY = new Column.BigDecimalColumn<>("money");
 
-    public static final Column<DataTypesMsSqlEntity, String> COLUMN_NCHAR10 = new Column<>("nchar10");
+    public static final Column<DataTypesMsSqlEntity, String> COLUMN_NCHAR10 = new Column.StringColumn<>("nchar10");
 
-    public static final Column<DataTypesMsSqlEntity, String> COLUMN_NTEXT = new Column<>("ntext");
+    public static final Column<DataTypesMsSqlEntity, String> COLUMN_NTEXT = new Column.StringColumn<>("ntext");
 
-    public static final Column<DataTypesMsSqlEntity, String> COLUMN_NVARCHAR10 = new Column<>("nvarchar10");
+    public static final Column<DataTypesMsSqlEntity, String> COLUMN_NVARCHAR10 = new Column.StringColumn<>("nvarchar10");
 
-    public static final Column<DataTypesMsSqlEntity, Float> COLUMN_REAL = new Column<>("real");
+    public static final Column<DataTypesMsSqlEntity, Float> COLUMN_REAL = new Column<>("real", Float.class);
 
-    public static final Column<DataTypesMsSqlEntity, Integer> COLUMN_SMALLINT = new Column<>("smallint");
+    public static final Column<DataTypesMsSqlEntity, Integer> COLUMN_SMALLINT = new Column.IntColumn<>("smallint");
 
-    public static final Column<DataTypesMsSqlEntity, BigDecimal> COLUMN_SMALLMONEY = new Column<>("smallmoney");
+    public static final Column<DataTypesMsSqlEntity, BigDecimal> COLUMN_SMALLMONEY = new Column.BigDecimalColumn<>("smallmoney");
 
-    public static final Column<DataTypesMsSqlEntity, String> COLUMN_TEXT = new Column<>("text");
+    public static final Column<DataTypesMsSqlEntity, String> COLUMN_TEXT = new Column.StringColumn<>("text");
 
-    public static final Column<DataTypesMsSqlEntity, LocalTime> COLUMN_TIME = new Column<>("time");
+    public static final Column<DataTypesMsSqlEntity, LocalTime> COLUMN_TIME = new Column<>("time", LocalTime.class);
 
-    public static final Column<DataTypesMsSqlEntity, Integer> COLUMN_TINYINT = new Column<>("tinyint");
+    public static final Column<DataTypesMsSqlEntity, Integer> COLUMN_TINYINT = new Column.IntColumn<>("tinyint");
 
-    public static final Column<DataTypesMsSqlEntity, byte[]> COLUMN_VARBINARY10 = new Column<>("varbinary10");
+    public static final Column<DataTypesMsSqlEntity, byte[]> COLUMN_VARBINARY10 = new Column<>("varbinary10", byte[].class);
 
-    public static final Column<DataTypesMsSqlEntity, String> COLUMN_VARCHAR10 = new Column<>("varchar10");
+    public static final Column<DataTypesMsSqlEntity, String> COLUMN_VARCHAR10 = new Column.StringColumn<>("varchar10");
 
-    public static final Column<DataTypesMsSqlEntity, String> COLUMN_XML = new Column<>("xml");
+    public static final Column<DataTypesMsSqlEntity, String> COLUMN_XML = new Column.StringColumn<>("xml");
 
     public static final List<Column<DataTypesMsSqlEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID,

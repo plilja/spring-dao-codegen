@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class OneColumnGeneratedIdMsSqlDao extends Dao<OneColumnGeneratedIdMsSqlEntity, Integer> {
 
-    public static final Column<OneColumnGeneratedIdMsSqlEntity, Integer> COLUMN_ID = new Column<>("id");
+    public static final Column<OneColumnGeneratedIdMsSqlEntity, Integer> COLUMN_ID = new Column.IntColumn<>("id");
 
     public static final List<Column<OneColumnGeneratedIdMsSqlEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID);

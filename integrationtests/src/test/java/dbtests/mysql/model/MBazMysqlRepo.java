@@ -17,21 +17,21 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
 
-    public static final Column<MBazMysql, Integer> COLUMN_ID = new Column<>("id");
+    public static final Column<MBazMysql, Integer> COLUMN_ID = new Column.IntColumn<>("id");
 
-    public static final Column<MBazMysql, LocalDateTime> COLUMN_CHANGED_AT = new Column<>("changed_at");
+    public static final Column<MBazMysql, LocalDateTime> COLUMN_CHANGED_AT = new Column.DateTimeColumn<>("changed_at");
 
-    public static final Column<MBazMysql, String> COLUMN_CHANGED_BY = new Column<>("changed_by");
+    public static final Column<MBazMysql, String> COLUMN_CHANGED_BY = new Column.StringColumn<>("changed_by");
 
-    public static final Column<MBazMysql, ColorEnumMysql> COLUMN_COLOR_ENUM_MYSQL_ID = new Column<>("color_enum_mysql_id");
+    public static final Column<MBazMysql, ColorEnumMysql> COLUMN_COLOR_ENUM_MYSQL_ID = new Column<>("color_enum_mysql_id", ColorEnumMysql.class);
 
-    public static final Column<MBazMysql, LocalDateTime> COLUMN_CREATED_AT = new Column<>("created_at");
+    public static final Column<MBazMysql, LocalDateTime> COLUMN_CREATED_AT = new Column.DateTimeColumn<>("created_at");
 
-    public static final Column<MBazMysql, String> COLUMN_CREATED_BY = new Column<>("created_by");
+    public static final Column<MBazMysql, String> COLUMN_CREATED_BY = new Column.StringColumn<>("created_by");
 
-    public static final Column<MBazMysql, String> COLUMN_NAME = new Column<>("name");
+    public static final Column<MBazMysql, String> COLUMN_NAME = new Column.StringColumn<>("name");
 
-    public static final Column<MBazMysql, Integer> COLUMN_VERSION = new Column<>("version");
+    public static final Column<MBazMysql, Integer> COLUMN_VERSION = new Column.IntColumn<>("version");
 
     public static final List<Column<MBazMysql, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID,
