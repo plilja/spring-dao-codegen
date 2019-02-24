@@ -17,21 +17,21 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
 
-    public static final Column<BazPostgresEntity, Integer> COLUMN_BAZ_ID = new Column.IntColumn<>("baz_id");
+    public static final Column<BazPostgresEntity, Integer> COLUMN_BAZ_ID = new Column.IntColumn<>("baz_id", "bazId");
 
-    public static final Column<BazPostgresEntity, String> COLUMN_BAZ_NAME = new Column.StringColumn<>("baz_name");
+    public static final Column<BazPostgresEntity, String> COLUMN_BAZ_NAME = new Column.StringColumn<>("baz_name", "bazName");
 
-    public static final Column<BazPostgresEntity, LocalDateTime> COLUMN_CHANGED_AT = new Column.DateTimeColumn<>("changed_at");
+    public static final Column<BazPostgresEntity, LocalDateTime> COLUMN_CHANGED_AT = new Column.DateTimeColumn<>("changed_at", "changedAt");
 
-    public static final Column<BazPostgresEntity, String> COLUMN_CHANGED_BY = new Column.StringColumn<>("changed_by");
+    public static final Column<BazPostgresEntity, String> COLUMN_CHANGED_BY = new Column.StringColumn<>("changed_by", "changedBy");
 
-    public static final Column<BazPostgresEntity, ColorEnumPostgres> COLUMN_COLOR = new Column<>("color", ColorEnumPostgres.class);
+    public static final Column<BazPostgresEntity, ColorEnumPostgres> COLUMN_COLOR = new Column<>("color", "color", ColorEnumPostgres.class);
 
-    public static final Column<BazPostgresEntity, Integer> COLUMN_COUNTER = new Column.IntColumn<>("counter");
+    public static final Column<BazPostgresEntity, Integer> COLUMN_COUNTER = new Column.IntColumn<>("counter", "counter");
 
-    public static final Column<BazPostgresEntity, LocalDateTime> COLUMN_CREATED_AT = new Column.DateTimeColumn<>("created_at");
+    public static final Column<BazPostgresEntity, LocalDateTime> COLUMN_CREATED_AT = new Column.DateTimeColumn<>("created_at", "createdAt");
 
-    public static final Column<BazPostgresEntity, String> COLUMN_CREATED_BY = new Column.StringColumn<>("created_by");
+    public static final Column<BazPostgresEntity, String> COLUMN_CREATED_BY = new Column.StringColumn<>("created_by", "createdBy");
 
     public static final List<Column<BazPostgresEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_BAZ_ID,
@@ -152,13 +152,8 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
     }
 
     @Override
-    public Column<BazPostgresEntity, ?> getColumnByName(String name) {
-        for (Column<BazPostgresEntity, ?> column : ALL_COLUMNS_LIST) {
-            if (column.getName().equals(name)) {
-                return column;
-            }
-        }
-        return null;
+    protected List<Column<BazPostgresEntity, ?>> getColumnsList() {
+        return ALL_COLUMNS_LIST;
     }
 
     @Override

@@ -23,41 +23,41 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
 
-    public static final Column<DataTypesOracle, String> COLUMN_ID = new Column.StringColumn<>("ID");
+    public static final Column<DataTypesOracle, String> COLUMN_ID = new Column.StringColumn<>("ID", "id");
 
-    public static final Column<DataTypesOracle, Double> COLUMN_BINARY_DOUBLE = new Column.DoubleColumn<>("BINARY_DOUBLE");
+    public static final Column<DataTypesOracle, Double> COLUMN_BINARY_DOUBLE = new Column.DoubleColumn<>("BINARY_DOUBLE", "binaryDouble");
 
-    public static final Column<DataTypesOracle, Float> COLUMN_BINARY_FLOAT = new Column<>("BINARY_FLOAT", Float.class);
+    public static final Column<DataTypesOracle, Float> COLUMN_BINARY_FLOAT = new Column<>("BINARY_FLOAT", "binaryFloat", Float.class);
 
-    public static final Column<DataTypesOracle, byte[]> COLUMN_BLOB = new Column<>("BLOB", byte[].class);
+    public static final Column<DataTypesOracle, byte[]> COLUMN_BLOB = new Column<>("BLOB", "blob", byte[].class);
 
-    public static final Column<DataTypesOracle, String> COLUMN_CHAR1 = new Column.StringColumn<>("CHAR1");
+    public static final Column<DataTypesOracle, String> COLUMN_CHAR1 = new Column.StringColumn<>("CHAR1", "char1");
 
-    public static final Column<DataTypesOracle, String> COLUMN_CHAR10 = new Column.StringColumn<>("CHAR10");
+    public static final Column<DataTypesOracle, String> COLUMN_CHAR10 = new Column.StringColumn<>("CHAR10", "char10");
 
-    public static final Column<DataTypesOracle, String> COLUMN_CLOB = new Column.StringColumn<>("CLOB");
+    public static final Column<DataTypesOracle, String> COLUMN_CLOB = new Column.StringColumn<>("CLOB", "clob");
 
-    public static final Column<DataTypesOracle, LocalDate> COLUMN_DATE = new Column.DateColumn<>("\"DATE\"");
+    public static final Column<DataTypesOracle, LocalDate> COLUMN_DATE = new Column.DateColumn<>("\"DATE\"", "date");
 
-    public static final Column<DataTypesOracle, String> COLUMN_NLOB = new Column.StringColumn<>("NLOB");
+    public static final Column<DataTypesOracle, String> COLUMN_NLOB = new Column.StringColumn<>("NLOB", "nlob");
 
-    public static final Column<DataTypesOracle, Long> COLUMN_NUMBER_EIGHTEEN_ZERO = new Column.LongColumn<>("NUMBER_EIGHTEEN_ZERO");
+    public static final Column<DataTypesOracle, Long> COLUMN_NUMBER_EIGHTEEN_ZERO = new Column.LongColumn<>("NUMBER_EIGHTEEN_ZERO", "numberEighteenZero");
 
-    public static final Column<DataTypesOracle, Integer> COLUMN_NUMBER_NINE_ZERO = new Column.IntColumn<>("NUMBER_NINE_ZERO");
+    public static final Column<DataTypesOracle, Integer> COLUMN_NUMBER_NINE_ZERO = new Column.IntColumn<>("NUMBER_NINE_ZERO", "numberNineZero");
 
-    public static final Column<DataTypesOracle, BigInteger> COLUMN_NUMBER_NINETEEN_ZERO = new Column<>("NUMBER_NINETEEN_ZERO", BigInteger.class);
+    public static final Column<DataTypesOracle, BigInteger> COLUMN_NUMBER_NINETEEN_ZERO = new Column<>("NUMBER_NINETEEN_ZERO", "numberNineteenZero", BigInteger.class);
 
-    public static final Column<DataTypesOracle, BigDecimal> COLUMN_NUMBER_TEN_TWO = new Column.BigDecimalColumn<>("NUMBER_TEN_TWO");
+    public static final Column<DataTypesOracle, BigDecimal> COLUMN_NUMBER_TEN_TWO = new Column.BigDecimalColumn<>("NUMBER_TEN_TWO", "numberTenTwo");
 
-    public static final Column<DataTypesOracle, Long> COLUMN_NUMBER_TEN_ZERO = new Column.LongColumn<>("NUMBER_TEN_ZERO");
+    public static final Column<DataTypesOracle, Long> COLUMN_NUMBER_TEN_ZERO = new Column.LongColumn<>("NUMBER_TEN_ZERO", "numberTenZero");
 
-    public static final Column<DataTypesOracle, LocalDateTime> COLUMN_TIMESTAMP = new Column.DateTimeColumn<>("TIMESTAMP");
+    public static final Column<DataTypesOracle, LocalDateTime> COLUMN_TIMESTAMP = new Column.DateTimeColumn<>("TIMESTAMP", "timestamp");
 
-    public static final Column<DataTypesOracle, OffsetDateTime> COLUMN_TIMESTAMP_TZ = new Column<>("TIMESTAMP_TZ", OffsetDateTime.class);
+    public static final Column<DataTypesOracle, OffsetDateTime> COLUMN_TIMESTAMP_TZ = new Column<>("TIMESTAMP_TZ", "timestampTz", OffsetDateTime.class);
 
-    public static final Column<DataTypesOracle, String> COLUMN_VARCHAR = new Column.StringColumn<>("\"VARCHAR\"");
+    public static final Column<DataTypesOracle, String> COLUMN_VARCHAR = new Column.StringColumn<>("\"VARCHAR\"", "varchar");
 
-    public static final Column<DataTypesOracle, String> COLUMN_VARCHAR2 = new Column.StringColumn<>("\"VARCHAR2\"");
+    public static final Column<DataTypesOracle, String> COLUMN_VARCHAR2 = new Column.StringColumn<>("\"VARCHAR2\"", "varchar2");
 
     public static final List<Column<DataTypesOracle, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID,
@@ -248,13 +248,8 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
     }
 
     @Override
-    public Column<DataTypesOracle, ?> getColumnByName(String name) {
-        for (Column<DataTypesOracle, ?> column : ALL_COLUMNS_LIST) {
-            if (column.getName().equals(name)) {
-                return column;
-            }
-        }
-        return null;
+    protected List<Column<DataTypesOracle, ?>> getColumnsList() {
+        return ALL_COLUMNS_LIST;
     }
 
     @Override

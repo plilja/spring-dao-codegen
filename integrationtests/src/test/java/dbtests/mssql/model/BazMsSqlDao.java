@@ -17,21 +17,21 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
 
-    public static final Column<BazMsSqlEntity, Integer> COLUMN_ID = new Column.IntColumn<>("id");
+    public static final Column<BazMsSqlEntity, Integer> COLUMN_ID = new Column.IntColumn<>("id", "id");
 
-    public static final Column<BazMsSqlEntity, ColorEnumMsSql> COLUMN_COLOR = new Column<>("color", ColorEnumMsSql.class);
+    public static final Column<BazMsSqlEntity, ColorEnumMsSql> COLUMN_COLOR = new Column<>("color", "color", ColorEnumMsSql.class);
 
-    public static final Column<BazMsSqlEntity, LocalDateTime> COLUMN_INSERTED_AT = new Column.DateTimeColumn<>("inserted_at");
+    public static final Column<BazMsSqlEntity, LocalDateTime> COLUMN_INSERTED_AT = new Column.DateTimeColumn<>("inserted_at", "insertedAt");
 
-    public static final Column<BazMsSqlEntity, String> COLUMN_INSERTED_BY = new Column.StringColumn<>("inserted_by");
+    public static final Column<BazMsSqlEntity, String> COLUMN_INSERTED_BY = new Column.StringColumn<>("inserted_by", "insertedBy");
 
-    public static final Column<BazMsSqlEntity, LocalDateTime> COLUMN_MODIFIED_AT = new Column.DateTimeColumn<>("modified_at");
+    public static final Column<BazMsSqlEntity, LocalDateTime> COLUMN_MODIFIED_AT = new Column.DateTimeColumn<>("modified_at", "modifiedAt");
 
-    public static final Column<BazMsSqlEntity, String> COLUMN_MODIFIED_BY = new Column.StringColumn<>("modified_by");
+    public static final Column<BazMsSqlEntity, String> COLUMN_MODIFIED_BY = new Column.StringColumn<>("modified_by", "modifiedBy");
 
-    public static final Column<BazMsSqlEntity, String> COLUMN_NAME = new Column.StringColumn<>("name");
+    public static final Column<BazMsSqlEntity, String> COLUMN_NAME = new Column.StringColumn<>("name", "name");
 
-    public static final Column<BazMsSqlEntity, Integer> COLUMN_VERSION = new Column.IntColumn<>("version");
+    public static final Column<BazMsSqlEntity, Integer> COLUMN_VERSION = new Column.IntColumn<>("version", "version");
 
     public static final List<Column<BazMsSqlEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID,
@@ -151,13 +151,8 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
     }
 
     @Override
-    public Column<BazMsSqlEntity, ?> getColumnByName(String name) {
-        for (Column<BazMsSqlEntity, ?> column : ALL_COLUMNS_LIST) {
-            if (column.getName().equals(name)) {
-                return column;
-            }
-        }
-        return null;
+    protected List<Column<BazMsSqlEntity, ?>> getColumnsList() {
+        return ALL_COLUMNS_LIST;
     }
 
     @Override

@@ -48,7 +48,7 @@ public abstract class QueryItem<Entity extends BaseEntity<?>> {
         protected String getClause(MapSqlParameterSource params, Supplier<String> paramNameGenerator) {
             String param = paramNameGenerator.get();
             params.addValue(param, values);
-            return String.format("%s IN (:%s)", column.getName(), param);
+            return String.format("%s IN (:%s)", column.getColumnName(), param);
         }
     }
 
@@ -65,7 +65,7 @@ public abstract class QueryItem<Entity extends BaseEntity<?>> {
         protected String getClause(MapSqlParameterSource params, Supplier<String> paramNameGenerator) {
             String param = paramNameGenerator.get();
             params.addValue(param, values);
-            return String.format("%s NOT IN (:%s)", column.getName(), param);
+            return String.format("%s NOT IN (:%s)", column.getColumnName(), param);
         }
     }
 
@@ -88,17 +88,17 @@ public abstract class QueryItem<Entity extends BaseEntity<?>> {
             String clause;
             if (value == null) {
                 if (operator == QueryItem.Operator.EQ) {
-                    clause = String.format("%s IS NULL", column.getName());
+                    clause = String.format("%s IS NULL", column.getColumnName());
                 } else if (operator == QueryItem.Operator.NEQ) {
-                    clause = String.format("%s IS NOT NULL", column.getName());
+                    clause = String.format("%s IS NOT NULL", column.getColumnName());
                 } else {
                     throw new IllegalArgumentException(String.format("Unsupported operator %s for comparison with NULL", operator.name()));
                 }
             } else {
                 if (operator == QueryItem.Operator.NEQ && includeNulls) {
-                    clause = String.format("(%s %s :%s OR %s IS NULL)", column.getName(), operator.getSymbol(), param, column.getName());
+                    clause = String.format("(%s %s :%s OR %s IS NULL)", column.getColumnName(), operator.getSymbol(), param, column.getColumnName());
                 } else {
-                    clause = String.format("%s %s :%s", column.getName(), operator.getSymbol(), param);
+                    clause = String.format("%s %s :%s", column.getColumnName(), operator.getSymbol(), param);
                 }
                 if (value instanceof BaseDatabaseEnum<?>) {
                     params.addValue(param, ((BaseDatabaseEnum<?>) value).getId());
@@ -131,7 +131,7 @@ public abstract class QueryItem<Entity extends BaseEntity<?>> {
         protected String getClause(MapSqlParameterSource params, Supplier<String> paramNameGenerator) {
             String param = paramNameGenerator.get();
             params.addValue(param, String.format("%s%s%s", beginning, value, ending));
-            return String.format("%s LIKE :%s", column.getName(), param);
+            return String.format("%s LIKE :%s", column.getColumnName(), param);
         }
 
     }

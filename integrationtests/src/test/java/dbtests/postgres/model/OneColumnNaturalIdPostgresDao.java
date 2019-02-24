@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class OneColumnNaturalIdPostgresDao extends Dao<OneColumnNaturalIdPostgresEntity, String> {
 
-    public static final Column<OneColumnNaturalIdPostgresEntity, String> COLUMN_ID = new Column.StringColumn<>("id");
+    public static final Column<OneColumnNaturalIdPostgresEntity, String> COLUMN_ID = new Column.StringColumn<>("id", "id");
 
     public static final List<Column<OneColumnNaturalIdPostgresEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID);
@@ -97,13 +97,8 @@ public class OneColumnNaturalIdPostgresDao extends Dao<OneColumnNaturalIdPostgre
     }
 
     @Override
-    public Column<OneColumnNaturalIdPostgresEntity, ?> getColumnByName(String name) {
-        for (Column<OneColumnNaturalIdPostgresEntity, ?> column : ALL_COLUMNS_LIST) {
-            if (column.getName().equals(name)) {
-                return column;
-            }
-        }
-        return null;
+    protected List<Column<OneColumnNaturalIdPostgresEntity, ?>> getColumnsList() {
+        return ALL_COLUMNS_LIST;
     }
 
     @Override

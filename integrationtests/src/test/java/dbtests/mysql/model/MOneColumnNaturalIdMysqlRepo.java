@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class MOneColumnNaturalIdMysqlRepo extends Dao<MOneColumnNaturalIdMysql, String> {
 
-    public static final Column<MOneColumnNaturalIdMysql, String> COLUMN_ID = new Column.StringColumn<>("id");
+    public static final Column<MOneColumnNaturalIdMysql, String> COLUMN_ID = new Column.StringColumn<>("id", "id");
 
     public static final List<Column<MOneColumnNaturalIdMysql, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID);
@@ -97,13 +97,8 @@ public class MOneColumnNaturalIdMysqlRepo extends Dao<MOneColumnNaturalIdMysql, 
     }
 
     @Override
-    public Column<MOneColumnNaturalIdMysql, ?> getColumnByName(String name) {
-        for (Column<MOneColumnNaturalIdMysql, ?> column : ALL_COLUMNS_LIST) {
-            if (column.getName().equals(name)) {
-                return column;
-            }
-        }
-        return null;
+    protected List<Column<MOneColumnNaturalIdMysql, ?>> getColumnsList() {
+        return ALL_COLUMNS_LIST;
     }
 
     @Override

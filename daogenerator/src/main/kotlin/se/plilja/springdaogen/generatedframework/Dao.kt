@@ -358,7 +358,7 @@ ${if (config.featureGenerateQueryApi) {
         if (!orderBy.isEmpty()) {
             orderByClause.append("ORDER BY ");
             List<String> columnNames = orderBy.stream()
-                    .map(s -> s.getColumn().getName() + " " + s.getOrder())
+                    .map(s -> s.getColumn().getColumnName() + " " + s.getOrder())
                     .collect(Collectors.toList());
             orderByClause.append(String.join(", ", columnNames));
         }
@@ -385,7 +385,67 @@ ${if (config.featureGenerateQueryApi) {
         }
     }
 
-    public abstract Column<T, ?> getColumnByName(String name);
+    protected abstract List<Column<T, ?>> getColumnsList();
+
+    /**
+     * Find a column by it's database name.
+     * Returns null if no matching column was found.
+     *
+     * Comparison is case sensitive.
+     */
+    public Column<T, ?> getColumnByName(String name) {
+        for (Column<T, ?> column : getColumnsList()) {
+            if (column.getColumnName().equals(name)) {
+                return column;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Find a column by it's database name.
+     * Returns null if no matching column was found.
+     *
+     * Comparison is case insensitive.
+     */
+    public Column<T, ?> getColumnByNameIgnoreCase(String name) {
+        for (Column<T, ?> column : getColumnsList()) {
+            if (column.getColumnName().equalsIgnoreCase(name)) {
+                return column;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Find a column by it's name in the Java code.
+     * Returns null if no matching column was found.
+     *
+     * Comparison is case sensitive.
+     */
+    public Column<T, ?> getColumnByFieldName(String name) {
+        for (Column<T, ?> column : getColumnsList()) {
+            if (column.getFieldName().equals(name)) {
+                return column;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Find a column by it's name in the Java code.
+     * Returns null if no matching column was found.
+     *
+     * Comparison is case insensitive.
+     */
+    public Column<T, ?> getColumnByFieldNameIgnoreCase(String name) {
+        for (Column<T, ?> column : getColumnsList()) {
+            if (column.getFieldName().equalsIgnoreCase(name)) {
+                return column;
+            }
+        }
+        return null;
+    }
 
     protected abstract String getQueryOrderBySql(int maxAllowedCount, String whereClause, String orderBy);
 
@@ -395,7 +455,6 @@ ${if (config.featureGenerateQueryApi) {
             """    protected abstract String getSelectPageSql(long start, int pageSize);
 """
         }}
-
     protected abstract RowMapper<T> getRowMapper();
 
     protected abstract SqlParameterSource getParams(T object);

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class OneColumnGeneratedIdOracleRepository extends Dao<OneColumnGeneratedIdOracle, Integer> {
 
-    public static final Column<OneColumnGeneratedIdOracle, Integer> COLUMN_ID = new Column.IntColumn<>("ID");
+    public static final Column<OneColumnGeneratedIdOracle, Integer> COLUMN_ID = new Column.IntColumn<>("ID", "id");
 
     public static final List<Column<OneColumnGeneratedIdOracle, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID);
@@ -92,13 +92,8 @@ public class OneColumnGeneratedIdOracleRepository extends Dao<OneColumnGenerated
     }
 
     @Override
-    public Column<OneColumnGeneratedIdOracle, ?> getColumnByName(String name) {
-        for (Column<OneColumnGeneratedIdOracle, ?> column : ALL_COLUMNS_LIST) {
-            if (column.getName().equals(name)) {
-                return column;
-            }
-        }
-        return null;
+    protected List<Column<OneColumnGeneratedIdOracle, ?>> getColumnsList() {
+        return ALL_COLUMNS_LIST;
     }
 
     @Override

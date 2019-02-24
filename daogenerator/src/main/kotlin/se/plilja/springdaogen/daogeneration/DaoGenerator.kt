@@ -172,13 +172,8 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         g.addCustomMethod(
                 """
             @Override
-            public Column<${table.entityName()}, ?> getColumnByName(String name) {
-                for (Column<${table.entityName()}, ?> column : ALL_COLUMNS_LIST) {
-                    if (column.getName().equals(name)) {
-                        return column;
-                    }
-                }
-                return null;
+            protected List<Column<${table.entityName()}, ?>> getColumnsList() {
+                return ALL_COLUMNS_LIST;
             }
         """
         )
@@ -254,15 +249,15 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
 
 private fun columnConstantInitializer(column: Column, config: Config) =
         when (column.typeName()) {
-            "Boolean" -> "new Column.BooleanColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\")"
-            "String" -> "new Column.StringColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\")"
-            "Integer" -> "new Column.IntColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\")"
-            "Long" -> "new Column.LongColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\")"
-            "Double" -> "new Column.DoubleColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\")"
-            "LocalDate" -> "new Column.DateColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\")"
-            "LocalDateTime" -> "new Column.DateTimeColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\")"
-            "BigDecimal" -> "new Column.BigDecimalColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\")"
-            else -> "new Column<>(\"${formatIdentifier(column.name, config.databaseDialect)}\", ${column.typeName()}.class)"
+            "Boolean" -> "new Column.BooleanColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\", \"${column.fieldName()}\")"
+            "String" -> "new Column.StringColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\", \"${column.fieldName()}\")"
+            "Integer" -> "new Column.IntColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\", \"${column.fieldName()}\")"
+            "Long" -> "new Column.LongColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\", \"${column.fieldName()}\")"
+            "Double" -> "new Column.DoubleColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\", \"${column.fieldName()}\")"
+            "LocalDate" -> "new Column.DateColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\", \"${column.fieldName()}\")"
+            "LocalDateTime" -> "new Column.DateTimeColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\", \"${column.fieldName()}\")"
+            "BigDecimal" -> "new Column.BigDecimalColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\", \"${column.fieldName()}\")"
+            else -> "new Column<>(\"${formatIdentifier(column.name, config.databaseDialect)}\", \"${column.fieldName()}\", ${column.typeName()}.class)"
         }
 
 private fun rowMapper(table: Table, classGenerator: ClassGenerator, config: Config): String {

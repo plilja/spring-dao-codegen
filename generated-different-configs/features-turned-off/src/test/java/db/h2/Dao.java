@@ -224,7 +224,6 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
 
     protected abstract String getSelectPageSql(long start, int pageSize);
 
-
     protected abstract RowMapper<T> getRowMapper();
 
     protected abstract SqlParameterSource getParams(T object);
