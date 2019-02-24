@@ -127,7 +127,7 @@ public class OneColumnNaturalIdPostgresDao extends Dao<OneColumnNaturalIdPostgre
     }
 
     @Override
-    protected String getSelectAndLockSql() {
+    protected String getSelectAndLockSql(String databaseProductName) {
         return "SELECT " +
                 ALL_COLUMNS +
                 "FROM test_schema.one_column_natural_id_postgres " +

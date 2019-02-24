@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ContextConfiguration(classes = {MysqlITConfig.class})
 @ExtendWith(SpringExtension.class)
-public class MysqlDataTypesTest {
+class MysqlDataTypesTest {
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;

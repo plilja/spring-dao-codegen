@@ -1,5 +1,7 @@
 package dbtests.postgres.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dbtests.framework.BaseEntity;
 import dbtests.framework.ChangedAtTracked;
 import dbtests.framework.ChangedByTracked;
@@ -8,6 +10,7 @@ import dbtests.framework.CreatedByTracked;
 import dbtests.framework.VersionTracked;
 import java.time.LocalDateTime;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BazPostgresEntity implements BaseEntity<Integer>, CreatedAtTracked<LocalDateTime>, ChangedAtTracked<LocalDateTime>, CreatedByTracked, ChangedByTracked, VersionTracked {
 
     private Integer bazId;
@@ -15,6 +18,7 @@ public class BazPostgresEntity implements BaseEntity<Integer>, CreatedAtTracked<
     private LocalDateTime changedAt;
     private String changedBy;
     private ColorEnumPostgres color;
+    @JsonIgnore
     private Integer counter;
     private LocalDateTime createdAt;
     private String createdBy;
@@ -65,11 +69,13 @@ public class BazPostgresEntity implements BaseEntity<Integer>, CreatedAtTracked<
         this.counter = counter;
     }
 
+    @JsonIgnore
     @Override
     public Integer getId() {
         return bazId;
     }
 
+    @JsonIgnore
     @Override
     public void setId(Integer id) {
         this.bazId = id;
@@ -124,6 +130,7 @@ public class BazPostgresEntity implements BaseEntity<Integer>, CreatedAtTracked<
     }
 
     @Override
+    @JsonIgnore
     public Integer getVersion() {
         return counter;
     }

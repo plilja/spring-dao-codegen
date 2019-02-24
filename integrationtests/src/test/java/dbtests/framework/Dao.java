@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,6 +28,8 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final Class<ID> idClass;
+    private boolean databaseProductNameInitialized = false;
+    private String databaseProductName = null;
     private final boolean idIsGenerated;
     private final CurrentUserProvider currentUserProvider;
 
@@ -79,7 +82,7 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
      * default isolation level.
      */
     public T getOneAndLock(ID id) {
-        String sql = getSelectAndLockSql();
+        String sql = getSelectAndLockSql(getDatabaseProductName());
         Map<String, Object> params = new HashMap<>();
         params.put("id", id);
         return jdbcTemplate.queryForObject(sql, params, getRowMapper());
@@ -367,7 +370,7 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
 
     protected abstract String getCountSql();
 
-    protected abstract String getSelectAndLockSql();
+    protected abstract String getSelectAndLockSql(String databaseProductName);
 
     @SuppressWarnings("unchecked")
     private void setId(T object, Number newKey) {
@@ -378,6 +381,18 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         } else {
             throw new IllegalArgumentException(String.format("Unknown type of generated key %s", idClass.getSimpleName()));
         }
+    }
+
+    private String getDatabaseProductName() {
+        if (!databaseProductNameInitialized) {
+            try {
+                databaseProductName = jdbcTemplate.getJdbcTemplate().getDataSource().getConnection().getMetaData().getDatabaseProductName();
+            } catch (SQLException | RuntimeException ex) {
+                throw new DatabaseException("Error retrieving database product name, continuing without database product name", ex);
+            }
+            databaseProductNameInitialized = true;
+        }
+        return databaseProductName;
     }
 
     /**

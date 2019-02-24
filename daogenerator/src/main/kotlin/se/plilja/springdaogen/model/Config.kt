@@ -1,7 +1,6 @@
 package se.plilja.springdaogen.model
 
 import java.io.File
-import java.lang.IllegalStateException
 import java.util.*
 
 
@@ -28,6 +27,7 @@ data class Config(
     val daoSuffix: String = "Dao",
     val featureGenerateTestDdl: Boolean = false,
     val testResourceFolder: String? = null,
+    val testDdlFileName: String = "init.sql",
     val createdAtColumnNames: List<String> = emptyList(),
     val changedAtColumnNames: List<String> = emptyList(),
     val createdByColumnNames: List<String> = emptyList(),
@@ -81,6 +81,7 @@ private class ConfigReader(file: File) {
             daoPrefix = properties.getProperty("dao.output_prefix", ""),
             daoSuffix = properties.getProperty("dao.output_suffix", "Dao"),
             testResourceFolder = properties.getProperty("test.resource_folder", null),
+            testDdlFileName = properties.getProperty("test.ddl_file_name", "init.sql"),
             createdAtColumnNames = getListProperty("entity.created_at_name").map { it.toUpperCase() },
             changedAtColumnNames = getListProperty("entity.changed_at_name").map { it.toUpperCase() },
             createdByColumnNames = getListProperty("entity.created_by_name").map { it.toUpperCase() },

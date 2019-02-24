@@ -131,7 +131,7 @@ public class OneColumnNaturalIdOracleRepository extends Dao<OneColumnNaturalIdOr
     }
 
     @Override
-    protected String getSelectAndLockSql() {
+    protected String getSelectAndLockSql(String databaseProductName) {
         return "SELECT " +
                 ALL_COLUMNS +
                 "FROM DOCKER.ONE_COLUMN_NATURAL_ID_ORACLE " +

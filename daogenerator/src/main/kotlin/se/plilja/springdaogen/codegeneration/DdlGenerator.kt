@@ -92,7 +92,7 @@ private fun dataType(column: Column): String {
             if (column.size > 4000) {
                 return "BLOB"
             } else {
-                return "BINARY${column.size}"
+                return "BINARY(${column.size})"
             }
         }
     }

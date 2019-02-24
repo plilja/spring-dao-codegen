@@ -17,8 +17,3 @@ services:
         build: ./oracle-test
         ports:
             - "4006:1521"
-    h2:
-        build: ./h2-test
-        ports:
-            - "4007:5432"
-

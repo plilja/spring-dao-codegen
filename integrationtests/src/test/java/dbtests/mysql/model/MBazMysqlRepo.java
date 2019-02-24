@@ -182,7 +182,7 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
     }
 
     @Override
-    protected String getSelectAndLockSql() {
+    protected String getSelectAndLockSql(String databaseProductName) {
         return "SELECT " +
                 ALL_COLUMNS +
                 "FROM BazMysql " +

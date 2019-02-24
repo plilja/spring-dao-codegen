@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ContextConfiguration(classes = {MysqlITConfig.class})
 @ExtendWith(SpringExtension.class)
-public class MysqlIT extends BaseIntegrationTest<MBazMysql, MBazMysqlRepo> {
+class MysqlIT extends BaseIntegrationTest<MBazMysql, MBazMysqlRepo> {
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;

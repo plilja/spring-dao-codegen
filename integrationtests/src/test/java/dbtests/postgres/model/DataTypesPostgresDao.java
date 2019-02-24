@@ -321,7 +321,7 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
     }
 
     @Override
-    protected String getSelectAndLockSql() {
+    protected String getSelectAndLockSql(String databaseProductName) {
         return "SELECT " +
                 ALL_COLUMNS +
                 "FROM public.data_types_postgres " +

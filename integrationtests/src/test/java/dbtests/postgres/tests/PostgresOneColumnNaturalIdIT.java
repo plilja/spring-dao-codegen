@@ -29,7 +29,6 @@ public class PostgresOneColumnNaturalIdIT extends OneColumnNaturalIdBaseTest<One
     @Override
     protected void clearTable() {
         jdbcTemplate.update("DELETE FROM test_schema.one_column_natural_id_postgres", new MapSqlParameterSource());
-
     }
 
     @Override

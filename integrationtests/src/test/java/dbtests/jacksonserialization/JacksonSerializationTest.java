@@ -3,9 +3,10 @@ package dbtests.jacksonserialization;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import dbtests.h2.model.BazH2;
-import dbtests.h2.model.ColorEnumH2;
 import dbtests.mssql.model.BazMsSqlEntity;
+import dbtests.postgres.model.BazPostgresDao;
+import dbtests.postgres.model.BazPostgresEntity;
+import dbtests.postgres.model.ColorEnumPostgres;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +36,7 @@ class JacksonSerializationTest {
         // is serialized for example in a rest endpoint, that
         // detail should not leak.
 
-        BazH2 o = new BazH2();
+        var o = new BazPostgresEntity();
         o.setId(1);
         o.setBazName("Name");
         o.setCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
@@ -53,7 +54,7 @@ class JacksonSerializationTest {
         String json = "{\"bazId\":1,\"version\":4,\"bazName\":\"Name\",\"changedAt\":null,\"color\":null,\"createdAt\":\"2019-02-10T11:26:07\"}";
 
         // when
-        BazH2 o = objectMapper.readValue(json, BazH2.class);
+        var o = objectMapper.readValue(json, BazPostgresEntity.class);
 
         // then
         assertEquals(Integer.valueOf(1), o.getId());
@@ -67,7 +68,7 @@ class JacksonSerializationTest {
     void pkColumnIsNotNamedIdSerialization() throws Exception {
         // If the pk column is not named id there will be a method named
         // id on the class as well as a getter for the original id field.
-        BazH2 o = new BazH2();
+        var o = new BazPostgresEntity();
         o.setId(1);
         o.setBazName("Name");
         o.setCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
@@ -85,7 +86,7 @@ class JacksonSerializationTest {
         String json = "{\"id\":1,\"bazName\":\"Name\",\"changedAt\":null,\"color\":null,\"createdAt\":\"2019-02-10T11:26:07\"}";
 
         // when
-        BazH2 o = objectMapper.readValue(json, BazH2.class);
+        var o = objectMapper.readValue(json, BazPostgresEntity.class);
 
         // then
         assertNull(o.getId());
@@ -146,7 +147,7 @@ class JacksonSerializationTest {
 
     @Test
     void changedAtAndCreatedWhenColumnsAreNamedChangeAtAndCreatedAt() throws Exception {
-        BazH2 o = new BazH2();
+        var o = new BazPostgresEntity();
         o.setId(1);
         o.setBazName("Name");
         o.setCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
@@ -163,17 +164,17 @@ class JacksonSerializationTest {
 
     @Test
     void serializationEnum() throws Exception {
-        BazH2 o = new BazH2();
+        var o = new BazPostgresEntity();
         o.setId(1);
         o.setBazName("Name");
-        o.setColor(ColorEnumH2.BLUE);
+        o.setColor(ColorEnumPostgres.BLUE);
 
         // when
         String json = objectMapper.writeValueAsString(o);
-        BazH2 deserialized = objectMapper.readValue(json, BazH2.class);
+        var deserialized = objectMapper.readValue(json, BazPostgresEntity.class);
 
         // then
         assertTrue(json.contains("\"BLUE\""));
-        assertEquals(ColorEnumH2.BLUE, deserialized.getColor());
+        assertEquals(ColorEnumPostgres.BLUE, deserialized.getColor());
     }
 }

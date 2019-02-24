@@ -122,7 +122,7 @@ public class OneColumnGeneratedIdPostgresDao extends Dao<OneColumnGeneratedIdPos
     }
 
     @Override
-    protected String getSelectAndLockSql() {
+    protected String getSelectAndLockSql(String databaseProductName) {
         return "SELECT " +
                 ALL_COLUMNS +
                 "FROM test_schema.one_column_generated_id_postgres " +

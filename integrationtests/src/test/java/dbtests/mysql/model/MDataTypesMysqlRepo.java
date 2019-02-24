@@ -350,7 +350,7 @@ public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
     }
 
     @Override
-    protected String getSelectAndLockSql() {
+    protected String getSelectAndLockSql(String databaseProductName) {
         return "SELECT " +
                 ALL_COLUMNS +
                 "FROM DATA_TYPES_MYSQL " +

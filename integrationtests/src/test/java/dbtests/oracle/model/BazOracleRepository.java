@@ -186,7 +186,7 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
     }
 
     @Override
-    protected String getSelectAndLockSql() {
+    protected String getSelectAndLockSql(String databaseProductName) {
         return "SELECT " +
                 ALL_COLUMNS +
                 "FROM DOCKER.BAZ_ORACLE " +

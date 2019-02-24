@@ -15,9 +15,6 @@
 
     <modules>
         <module>features-turned-off</module>
-        <module>mysql-h2</module>
-        <module>mssql-h2</module>
-        <module>oracle-h2</module>
     </modules>
     <packaging>pom</packaging>
 

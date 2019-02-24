@@ -12,7 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {MysqlITConfig.class})
 @ExtendWith(SpringExtension.class)
-public class MysqlOneColumnGeneratedIdIT extends OneColumnGeneratedIdBaseTest<MOneColumnGeneratedIdMysql, MOneColumnGeneratedIdMysqlRepo> {
+class MysqlOneColumnGeneratedIdIT extends OneColumnGeneratedIdBaseTest<MOneColumnGeneratedIdMysql, MOneColumnGeneratedIdMysqlRepo> {
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;

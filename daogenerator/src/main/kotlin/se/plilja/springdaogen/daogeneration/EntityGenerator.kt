@@ -75,7 +75,6 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
         } else if (config.featureGenerateChangeTracking && column == table.changedAtColumn() && column.getter() == "getChangedAt") {
             g.addPrivateField(column.fieldName(), column.typeName(), annotations)
         } else if (config.featureGenerateChangeTracking && column == table.versionColumn() && column.getter() == "getVersion") {
-            // Always use Integer for version column no matter what the db says
             g.addPrivateField(column.fieldName(), column.typeName(), annotations)
         } else if (config.featureGenerateChangeTracking && column == table.changedByColumn() && column.getter() == "getChangedBy") {
             g.addPrivateField(column.fieldName(), column.typeName(), annotations)
@@ -149,17 +148,9 @@ private fun generatedChangeTracking(
             """.trimMargin()
             )
         }
-        if (!config.useLombok) {
-            val maybeJsonIgnore =
-                if (config.featureGenerateJacksonAnnotations && createdAtColumn.setter() != "setCreatedAt") {
-                    g.addImport(JsonIgnore::class.java)
-                    "@JsonIgnore"
-                } else {
-                    ""
-                }
+        if (!config.useLombok && createdAtColumn.setter() == "setCreatedAt") {
             g.addCustomMethod(
                 """
-            |   $maybeJsonIgnore
             |   public void ${createdAtColumn.setter()}(${createdAtColumn.typeName()} value) {
             |       this.${createdAtColumn.fieldName()} = value;
             |   }
@@ -199,17 +190,9 @@ private fun generatedChangeTracking(
             """.trimMargin()
             )
         }
-        if (!config.useLombok) {
-            val maybeJsonIgnore =
-                if (config.featureGenerateJacksonAnnotations && changedAtColumn.setter() != "setChangedAt") {
-                    g.addImport(JsonIgnore::class.java)
-                    "@JsonIgnore"
-                } else {
-                    ""
-                }
+        if (!config.useLombok && changedAtColumn.setter() == "setChangedAt") {
             g.addCustomMethod(
                 """
-            |   $maybeJsonIgnore
             |   public void ${changedAtColumn.setter()}(${changedAtColumn.typeName()} value) {
             |       this.${changedAtColumn.fieldName()} = value;
             |   }
@@ -298,15 +281,21 @@ private fun generatedChangeTracking(
         ensureImported(g, config) { versionTracked(config.frameworkOutputPackage) }
         g.addImplements("VersionTracked")
         if (!config.useLombok || versionColumn.getter() != "getVersion") {
+            val maybeJsonIgnore =
+                    if (config.featureGenerateJacksonAnnotations) {
+                        g.addImport(JsonIgnore::class.java)
+                        "\n   @JsonIgnore"
+                    } else {
+                        ""
+                    }
             g.addCustomMethod(
                 """
-            |   @Override
+            |   @Override$maybeJsonIgnore
             |   public ${versionColumn.typeName()} getVersion() {
             |       return ${versionColumn.fieldName()};
             |   }
             """.trimMargin()
             )
-
 
             g.addCustomMethod(
                 """

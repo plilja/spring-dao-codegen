@@ -14,7 +14,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {MysqlITConfig.class})
 @ExtendWith(SpringExtension.class)
-public class MysqlQueryApiIT extends QueryApiBaseTest<MBazMysql, MBazMysqlRepo> {
+class MysqlQueryApiIT extends QueryApiBaseTest<MBazMysql, MBazMysqlRepo> {
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
 

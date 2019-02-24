@@ -1,7 +1,9 @@
 package dbtests.postgres.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dbtests.framework.BaseEntity;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class OneColumnGeneratedIdPostgresEntity implements BaseEntity<Integer> {
 
     private Integer id;

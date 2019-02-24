@@ -108,7 +108,7 @@ fun writeTestDdl(config: Config, schema: Schema, dataSource: DataSource) {
     if (config.featureGenerateTestDdl) {
         val ddl = toH2Ddl(config, schema, dataSource)
         File(config.testResourceFolder).mkdirs()
-        File(config.testResourceFolder + "/init.sql").writeText(ddl)
+        File(config.testResourceFolder + "/" + config.testDdlFileName).writeText(ddl)
     }
 }
 

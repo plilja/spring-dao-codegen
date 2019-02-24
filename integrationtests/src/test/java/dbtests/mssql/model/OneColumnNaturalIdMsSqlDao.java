@@ -125,11 +125,19 @@ public class OneColumnNaturalIdMsSqlDao extends Dao<OneColumnNaturalIdMsSqlEntit
     }
 
     @Override
-    protected String getSelectAndLockSql() {
-        return "SELECT " +
-                ALL_COLUMNS +
-                "FROM dbo.ONE_COLUMN_NATURAL_ID_MS_SQL WITH (UPDLOCK) " +
-                "WHERE id = :id";
+    protected String getSelectAndLockSql(String databaseProductName) {
+        if ("H2".equals(databaseProductName)) {
+            return "SELECT " +
+                    ALL_COLUMNS +
+                    "FROM dbo.ONE_COLUMN_NATURAL_ID_MS_SQL " +
+                    "WHERE id = :id " +
+                    "FOR UPDATE";
+        } else {
+            return "SELECT " +
+                    ALL_COLUMNS +
+                    "FROM dbo.ONE_COLUMN_NATURAL_ID_MS_SQL WITH (UPDLOCK) " +
+                    "WHERE id = :id";
+        }
     }
 
     @Override

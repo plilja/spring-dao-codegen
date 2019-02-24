@@ -1,6 +1,7 @@
 package se.plilja.springdaogen.sqlgeneration
 
 import se.plilja.springdaogen.model.Column
+import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.DatabaseDialect
 import se.plilja.springdaogen.model.Table
 
@@ -14,8 +15,8 @@ fun insert(table: Table, databaseDialect: DatabaseDialect): String {
             DatabaseDialect.ORACLE -> {
                 // TODO will this work with Oracle12c identity style columns?
                 "\"INSERT INTO ${formatTable(table, databaseDialect)}(${formatIdentifier(
-                    table.primaryKey.name,
-                    databaseDialect
+                        table.primaryKey.name,
+                        databaseDialect
                 )}) VALUES(null)\""
             }
             else -> "\"INSERT INTO ${formatTable(table, databaseDialect)} DEFAULT VALUES\""
@@ -36,9 +37,9 @@ fun update(table: Table, databaseDialect: DatabaseDialect): String? {
     fun assignment(column: Column): String {
         return if (table.versionColumn() == column) {
             return if (table.versionColumn() == column && databaseDialect in listOf(
-                    DatabaseDialect.ORACLE,
-                    DatabaseDialect.ORACLE12
-                )
+                            DatabaseDialect.ORACLE,
+                            DatabaseDialect.ORACLE12
+                    )
             ) {
                 "${column.name} = MOD(NVL(:${column.name}, -1) + 1, 128)"
             } else if (databaseDialect == DatabaseDialect.MYSQL) {
@@ -53,9 +54,9 @@ fun update(table: Table, databaseDialect: DatabaseDialect): String? {
     }
 
     val updateColumns = table.columns
-        .filter { it != table.primaryKey }
-        .filter { it != table.createdAtColumn() }
-        .filter { it != table.createdByColumn() }
+            .filter { it != table.primaryKey }
+            .filter { it != table.createdAtColumn() }
+            .filter { it != table.createdByColumn() }
     return if (updateColumns.isEmpty()) {
         null // Special case, table only consists of PK-columns. Update is not supported.
     } else {
@@ -78,9 +79,9 @@ fun update(table: Table, databaseDialect: DatabaseDialect): String? {
 
 fun columnsList(table: Table, databaseDialect: DatabaseDialect): String {
     return table.columns
-        .map { formatIdentifier(it.name, databaseDialect) }
-        .chunked(5).map { "\" ${it.joinToString(", ")}" }
-        .joinToString(", \" +\n") + " \""
+            .map { formatIdentifier(it.name, databaseDialect) }
+            .chunked(5).map { "\" ${it.joinToString(", ")}" }
+            .joinToString(", \" +\n") + " \""
 }
 
 fun selectOne(table: Table, databaseDialect: DatabaseDialect): String {
@@ -92,22 +93,36 @@ fun selectOne(table: Table, databaseDialect: DatabaseDialect): String {
             """.trimMargin()
 }
 
-fun lock(table: Table, databaseDialect: DatabaseDialect): String {
-    val pk = formatIdentifier(table.primaryKey.name, databaseDialect)
-    val tb = formatTable(table, databaseDialect)
-    return when (databaseDialect) {
-        DatabaseDialect.MSSQL_SERVER -> """
-            |"SELECT " +
+fun lock(table: Table, config: Config): String {
+    val pk = formatIdentifier(table.primaryKey.name, config.databaseDialect)
+    val tb = formatTable(table, config.databaseDialect)
+    return when {
+        config.featureGenerateTestDdl && config.databaseDialect == DatabaseDialect.MSSQL_SERVER -> """
+            |if ("H2".equals(databaseProductName)) {
+            |   return "SELECT " +
+            |       ALL_COLUMNS +
+            |       "FROM $tb " +
+            |       "WHERE $pk = :id " +
+            |       "FOR UPDATE";
+            |} else {
+            |   return "SELECT " +
+            |       ALL_COLUMNS +
+            |       "FROM $tb WITH (UPDLOCK) " +
+            |       "WHERE $pk = :id";
+            |}
+        """.trimMargin()
+        !config.featureGenerateTestDdl && config.databaseDialect == DatabaseDialect.MSSQL_SERVER -> """
+            |return "SELECT " +
             |ALL_COLUMNS +
             |"FROM $tb WITH (UPDLOCK) " +
-            |"WHERE $pk = :id"
+            |"WHERE $pk = :id";
         """.trimMargin()
         else -> """
-            |"SELECT " +
+            |return "SELECT " +
             |ALL_COLUMNS +
             |"FROM $tb " +
             |"WHERE $pk = :id " +
-            |"FOR UPDATE"
+            |"FOR UPDATE";
         """.trimMargin()
     }
 }
@@ -265,7 +280,7 @@ fun formatIdentifier(identifier: String, databaseDialect: DatabaseDialect): Stri
         else -> "\\\""
     }
     val needsPostgresCaseEscaping =
-        databaseDialect == DatabaseDialect.POSTGRES && identifier.toLowerCase() != identifier
+            databaseDialect == DatabaseDialect.POSTGRES && identifier.toLowerCase() != identifier
     if (needsPostgresCaseEscaping || isDatabaseIdentifier(identifier, databaseDialect)) {
         return "$escapeSeq$identifier$escapeSeq"
     } else {

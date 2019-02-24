@@ -282,7 +282,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
     }
 
     @Override
-    protected String getSelectAndLockSql() {
+    protected String getSelectAndLockSql(String databaseProductName) {
         return "SELECT " +
                 ALL_COLUMNS +
                 "FROM DOCKER.DATA_TYPES_ORACLE " +

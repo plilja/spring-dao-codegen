@@ -182,7 +182,7 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
     }
 
     @Override
-    protected String getSelectAndLockSql() {
+    protected String getSelectAndLockSql(String databaseProductName) {
         return "SELECT " +
                 ALL_COLUMNS +
                 "FROM test_schema.baz_postgres " +

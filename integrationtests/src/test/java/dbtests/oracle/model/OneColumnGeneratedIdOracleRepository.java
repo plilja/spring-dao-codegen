@@ -126,7 +126,7 @@ public class OneColumnGeneratedIdOracleRepository extends Dao<OneColumnGenerated
     }
 
     @Override
-    protected String getSelectAndLockSql() {
+    protected String getSelectAndLockSql(String databaseProductName) {
         return "SELECT " +
                 ALL_COLUMNS +
                 "FROM DOCKER.ONE_COLUMN_GENERATED_ID_ORACLE " +

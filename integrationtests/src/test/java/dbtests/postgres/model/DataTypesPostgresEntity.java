@@ -1,5 +1,6 @@
 package dbtests.postgres.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dbtests.framework.BaseEntity;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -9,6 +10,7 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class DataTypesPostgresEntity implements BaseEntity<Long> {
 
     private Long id;
