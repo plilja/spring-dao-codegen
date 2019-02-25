@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.NoSuchElementException;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 
 
@@ -110,7 +111,7 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
      * @return a list of rows between index start (inclusive) and start + page_size (exclusive)
      */
     public List<T> findPage(long start, int pageSize) {
-        return queryForPage(start, pageSize, Collections.emptyList(), Collections.emptyList());
+        return findPageOrderBy(start, pageSize, Collections.emptyList(), Collections.emptyList());
     }
 
     /**
@@ -234,31 +235,82 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
     }
 
 
-    public List<T> findAll(SortOrder<T> orderBy) {
-        return query(Collections.emptyList(), Collections.singletonList(orderBy));
+
+    /**
+     * Find exactly one element using a findAllOrderBy. Fails
+     * if zero elements or more than one element is found.
+     *
+     * @throws IllegalArgumentException if more than one element was found
+     * @throws NoSuchElementException if no element was found
+     */
+    public T getOne(QueryItem<T> queryItem) throws IllegalArgumentException, NoSuchElementException {
+        return getOne(Collections.singletonList(queryItem));
     }
 
-    public List<T> findAll(List<SortOrder<T>> orderBy) {
-        return query(Collections.emptyList(), orderBy);
+    /**
+     * Find one element using a findAllOrderBy. Fails
+     * if more than one element is found.
+     *
+     * @throws IllegalArgumentException if more than one element was found
+     */
+    public Optional<T> findOne(QueryItem<T> queryItem) throws IllegalArgumentException {
+        return findOne(Collections.singletonList(queryItem));
     }
 
-    public List<T> query(QueryItem<T> queryItem) {
-        return query(Collections.singletonList(queryItem));
+    /**
+     * Find exactly one element using a findAllOrderBy. Fails
+     * if zero elements or more than one element is found.
+     *
+     * @throws IllegalArgumentException if more than one element was found
+     * @throws NoSuchElementException if no element was found
+     */
+    public T getOne(List<QueryItem<T>> queryItems) throws IllegalArgumentException, NoSuchElementException {
+        return findOne(queryItems)
+                .orElseThrow(() -> new NoSuchElementException("No matching row was found"));
     }
 
-    public List<T> query(List<QueryItem<T>> queryItems) {
-        return query(queryItems, Collections.emptyList());
+    /**
+     * Find one element using a findAllOrderBy. Fails
+     * if more than one element is found.
+     *
+     * @throws IllegalArgumentException if more than one element was found
+     */
+    public Optional<T> findOne(List<QueryItem<T>> queryItems) throws IllegalArgumentException {
+        List<T> results = findAll(queryItems);
+        if (results.size() > 1) {
+            throw new IllegalArgumentException("More than one row available, expected exactly one");
+        } else if (results.size() == 0) {
+            return Optional.empty();
+        } else {
+            return Optional.of(results.get(0));
+        }
     }
 
-    public List<T> query(QueryItem<T> queryItem, SortOrder<T> orderBy) {
-        return query(Collections.singletonList(queryItem), Collections.singletonList(orderBy));
+    public List<T> findAllOrderBy(SortOrder<T> orderBy) {
+        return findAllOrderBy(Collections.emptyList(), Collections.singletonList(orderBy));
     }
 
-    public List<T> query(List<QueryItem<T>> queryItems, SortOrder<T> orderBy) {
-        return query(queryItems, Collections.singletonList(orderBy));
+    public List<T> findAllOrderBy(List<SortOrder<T>> orderBy) {
+        return findAllOrderBy(Collections.emptyList(), orderBy);
     }
 
-    public List<T> query(List<QueryItem<T>> queryItems, List<SortOrder<T>> orderBy) {
+    public List<T> findAll(QueryItem<T> queryItem) {
+        return findAll(Collections.singletonList(queryItem));
+    }
+
+    public List<T> findAll(List<QueryItem<T>> queryItems) {
+        return findAllOrderBy(queryItems, Collections.emptyList());
+    }
+
+    public List<T> findAllOrderBy(QueryItem<T> queryItem, SortOrder<T> orderBy) {
+        return findAllOrderBy(Collections.singletonList(queryItem), Collections.singletonList(orderBy));
+    }
+
+    public List<T> findAllOrderBy(List<QueryItem<T>> queryItems, SortOrder<T> orderBy) {
+        return findAllOrderBy(queryItems, Collections.singletonList(orderBy));
+    }
+
+    public List<T> findAllOrderBy(List<QueryItem<T>> queryItems, List<SortOrder<T>> orderBy) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         StringBuilder whereClause = getWhereClause(queryItems, params);
         StringBuilder orderByClause = getOrderByClause(orderBy);
@@ -268,31 +320,31 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         return result;
     }
 
-    public List<T> findPage(long start, int pageSize, SortOrder<T> orderBy) {
-        return queryForPage(start, pageSize, Collections.emptyList(), Collections.singletonList(orderBy));
+    public List<T> findPageOrderBy(long start, int pageSize, SortOrder<T> orderBy) {
+        return findPageOrderBy(start, pageSize, Collections.emptyList(), Collections.singletonList(orderBy));
     }
 
-    public List<T> findPage(long start, int pageSize, List<SortOrder<T>> orderBy) {
-        return queryForPage(start, pageSize, Collections.emptyList(), orderBy);
+    public List<T> findPageOrderBy(long start, int pageSize, List<SortOrder<T>> orderBy) {
+        return findPageOrderBy(start, pageSize, Collections.emptyList(), orderBy);
     }
 
-    public List<T> queryForPage(long start, int pageSize, QueryItem<T> queryItem) {
-        return queryForPage(start, pageSize, Collections.singletonList(queryItem));
+    public List<T> findPage(long start, int pageSize, QueryItem<T> queryItem) {
+        return findPage(start, pageSize, Collections.singletonList(queryItem));
     }
 
-    public List<T> queryForPage(long start, int pageSize, List<QueryItem<T>> queryItems) {
-        return queryForPage(start, pageSize, queryItems, Collections.emptyList());
+    public List<T> findPage(long start, int pageSize, List<QueryItem<T>> queryItems) {
+        return findPageOrderBy(start, pageSize, queryItems, Collections.emptyList());
     }
 
-    public List<T> queryForPage(long start, int pageSize, QueryItem<T> queryItem, SortOrder<T> orderBy) {
-        return queryForPage(start, pageSize, Collections.singletonList(queryItem), Collections.singletonList(orderBy));
+    public List<T> findPageOrderBy(long start, int pageSize, QueryItem<T> queryItem, SortOrder<T> orderBy) {
+        return findPageOrderBy(start, pageSize, Collections.singletonList(queryItem), Collections.singletonList(orderBy));
     }
 
-    public List<T> queryForPage(long start, int pageSize, List<QueryItem<T>> queryItems, SortOrder<T> orderBy) {
-        return queryForPage(start, pageSize, queryItems, Collections.singletonList(orderBy));
+    public List<T> findPageOrderBy(long start, int pageSize, List<QueryItem<T>> queryItems, SortOrder<T> orderBy) {
+        return findPageOrderBy(start, pageSize, queryItems, Collections.singletonList(orderBy));
     }
 
-    public List<T> queryForPage(long start, int pageSize, List<QueryItem<T>> queryItems, List<SortOrder<T>> orderBy) {
+    public List<T> findPageOrderBy(long start, int pageSize, List<QueryItem<T>> queryItems, List<SortOrder<T>> orderBy) {
         if (pageSize <= 0) {
             return Collections.emptyList();
         }

@@ -3,6 +3,7 @@ package dbtests;
 import dbtests.framework.BaseEntity;
 import dbtests.framework.Column;
 import dbtests.framework.Dao;
+import dbtests.framework.QueryItem;
 import dbtests.framework.TooManyRowsAvailableException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static dbtests.framework.QueryItem.contains;
 import static dbtests.framework.QueryItem.endsWith;
@@ -26,6 +29,7 @@ import static dbtests.framework.QueryItem.startsWith;
 import static dbtests.framework.SortOrder.asc;
 import static dbtests.framework.SortOrder.desc;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -75,7 +79,7 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         getRepo().save(entity4);
 
         // when
-        var result = getRepo().query(eq(getNameColumn(), "David"));
+        var result = getRepo().findAll(eq(getNameColumn(), "David"));
 
         result.sort(Comparator.comparing(BaseEntity::getId)); // No guaranty about sort order from db
 
@@ -104,7 +108,7 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         getRepo().save(entity4);
 
         // when
-        List<Entity> result = getRepo().query(List.of(
+        List<Entity> result = getRepo().findAll(List.of(
                 eq(getNameColumn(), "David"),
                 eq((Column) getColorColumn(), getColorByName("BLUE"))
         ));
@@ -131,7 +135,7 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         getRepo().save(entity4);
 
         // when
-        List<Entity> result = getRepo().query(
+        List<Entity> result = getRepo().findAllOrderBy(
                 eq(getColorColumn(), null),
                 asc(getIdColumn())
         );
@@ -159,7 +163,7 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         getRepo().save(entity4);
 
         // when
-        List<Entity> result = getRepo().query(List.of(
+        List<Entity> result = getRepo().findAll(List.of(
                 neq(getNameColumn(), "David", true),
                 neq((Column) getColorColumn(), getColorByName("GREEN"), true)
         ));
@@ -186,7 +190,7 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         getRepo().save(entity4);
 
         // when
-        List<Entity> result = getRepo().query(lt(getIdColumn(), entity3.getId()));
+        List<Entity> result = getRepo().findAll(lt(getIdColumn(), entity3.getId()));
 
         // then
         assertEquals(2, result.size());
@@ -211,7 +215,7 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         getRepo().save(entity4);
 
         // when
-        List<Entity> result = getRepo().query(lte(getIdColumn(), entity2.getId()));
+        List<Entity> result = getRepo().findAll(lte(getIdColumn(), entity2.getId()));
 
         // then
         assertEquals(2, result.size());
@@ -236,7 +240,7 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         getRepo().save(entity4);
 
         // when
-        List<Entity> result = getRepo().query(gt(getIdColumn(), entity2.getId()));
+        List<Entity> result = getRepo().findAll(gt(getIdColumn(), entity2.getId()));
 
         // then
         assertEquals(2, result.size());
@@ -261,7 +265,7 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         getRepo().save(entity4);
 
         // when
-        List<Entity> result = getRepo().query(gte(getIdColumn(), entity3.getId()));
+        List<Entity> result = getRepo().findAll(gte(getIdColumn(), entity3.getId()));
 
         // then
         assertEquals(2, result.size());
@@ -283,18 +287,18 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         var entity4 = newEntity("Chris");
         getRepo().save(entity4);
 
-        List<Entity> result1 = getRepo().query(startsWith(getNameColumn(), ""));
+        List<Entity> result1 = getRepo().findAll(startsWith(getNameColumn(), ""));
         assertEquals(4, result1.size());
 
-        List<Entity> result2 = getRepo().query(startsWith(getNameColumn(), "D"));
+        List<Entity> result2 = getRepo().findAll(startsWith(getNameColumn(), "D"));
         assertEquals(3, result2.size());
 
-        List<Entity> result3 = getRepo().query(startsWith(getNameColumn(), "David"), asc(getNameColumn()));
+        List<Entity> result3 = getRepo().findAllOrderBy(startsWith(getNameColumn(), "David"), asc(getNameColumn()));
         assertEquals(2, result3.size());
         assertEquals(entity2.getId(), result3.get(0).getId());
         assertEquals(entity1.getId(), result3.get(1).getId());
 
-        List<Entity> result4 = getRepo().query(startsWith(getNameColumn(), "Dave"));
+        List<Entity> result4 = getRepo().findAll(startsWith(getNameColumn(), "Dave"));
         assertEquals(1, result4.size());
         assertEquals(entity3.getId(), result4.get(0).getId());
     }
@@ -313,15 +317,15 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         var entity4 = newEntity("Chris");
         getRepo().save(entity4);
 
-        List<Entity> result1 = getRepo().query(endsWith(getNameColumn(), ""));
+        List<Entity> result1 = getRepo().findAll(endsWith(getNameColumn(), ""));
         assertEquals(4, result1.size());
 
-        List<Entity> result2 = getRepo().query(endsWith(getNameColumn(), "e"), asc(getNameColumn()));
+        List<Entity> result2 = getRepo().findAllOrderBy(endsWith(getNameColumn(), "e"), asc(getNameColumn()));
         assertEquals(2, result2.size());
         assertEquals(entity3.getId(), result2.get(0).getId());
         assertEquals(entity1.getId(), result2.get(1).getId());
 
-        List<Entity> result3 = getRepo().query(endsWith(getNameColumn(), "Dave"));
+        List<Entity> result3 = getRepo().findAll(endsWith(getNameColumn(), "Dave"));
         assertEquals(1, result3.size());
         assertEquals(entity3.getId(), result3.get(0).getId());
     }
@@ -340,16 +344,16 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         var entity4 = newEntity("Chris");
         getRepo().save(entity4);
 
-        List<Entity> result1 = getRepo().query(contains(getNameColumn(), ""));
+        List<Entity> result1 = getRepo().findAll(contains(getNameColumn(), ""));
         assertEquals(4, result1.size());
 
-        List<Entity> result2 = getRepo().query(contains(getNameColumn(), "v"), asc(getNameColumn()));
+        List<Entity> result2 = getRepo().findAllOrderBy(contains(getNameColumn(), "v"), asc(getNameColumn()));
         assertEquals(3, result2.size());
         assertEquals(entity3.getId(), result2.get(0).getId());
         assertEquals(entity2.getId(), result2.get(1).getId());
         assertEquals(entity1.getId(), result2.get(2).getId());
 
-        List<Entity> result3 = getRepo().query(contains(getNameColumn(), "Chris"));
+        List<Entity> result3 = getRepo().findAll(contains(getNameColumn(), "Chris"));
         assertEquals(1, result3.size());
         assertEquals(entity4.getId(), result3.get(0).getId());
     }
@@ -371,7 +375,7 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         getRepo().save(entity4);
 
         // when
-        List<Entity> result = getRepo().query(
+        List<Entity> result = getRepo().findAllOrderBy(
                 or(
                         eq(getIdColumn(), entity1.getId()),
                         eq(getIdColumn(), entity3.getId())
@@ -402,7 +406,7 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         getRepo().save(entity4);
 
         // when
-        List<Entity> result = getRepo().query(
+        List<Entity> result = getRepo().findAllOrderBy(
                 List.of(or(
                         eq(getIdColumn(), entity1.getId()),
                         eq(getIdColumn(), entity3.getId())
@@ -435,7 +439,7 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         getRepo().save(entity4);
 
         // when
-        List<Entity> result = getRepo().query(
+        List<Entity> result = getRepo().findAllOrderBy(
                 in(getNameColumn(), List.of("Chris", "Phil")),
                 asc(getNameColumn())
         );
@@ -463,7 +467,7 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         getRepo().save(entity4);
 
         // when
-        List<Entity> result = getRepo().query(
+        List<Entity> result = getRepo().findAllOrderBy(
                 notIn(getIdColumn(), List.of(entity2.getId(), entity4.getId())),
                 asc(getIdColumn())
         );
@@ -480,14 +484,14 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
             var entity = newEntity(String.format("Name %d", i));
             getRepo().save(entity);
         }
-        var res = getRepo().query(gte(getIdColumn(), 0));
+        var res = getRepo().findAll(gte(getIdColumn(), 0));
         assertEquals(10, res.size()); // Should be fine as we are below limit
 
         var entity = newEntity("Name 11");
         getRepo().save(entity);
 
         assertThrows(TooManyRowsAvailableException.class, () -> {
-            getRepo().query(gte(getIdColumn(), 0));
+            getRepo().findAll(gte(getIdColumn(), 0));
         });
     }
 
@@ -508,7 +512,7 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         getRepo().save(entity4);
 
         // when
-        List<Entity> result = getRepo().query(Collections.emptyList());
+        List<Entity> result = getRepo().findAll(Collections.emptyList());
 
         result.sort(Comparator.comparing(BaseEntity::getId)); // No guaranty about sort order from DB
 
@@ -539,7 +543,7 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         getRepo().save(entity4);
 
         // when
-        List<Entity> result = getRepo().query(
+        List<Entity> result = getRepo().findAllOrderBy(
                 eq((Column) getColorColumn(), getColorByName("GREEN")),
                 asc(getNameColumn())
         );
@@ -569,7 +573,7 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         getRepo().save(entity4);
 
         // when
-        List<Entity> result = getRepo().query(
+        List<Entity> result = getRepo().findAllOrderBy(
                 eq((Column) getColorColumn(), getColorByName("GREEN")),
                 desc(getNameColumn())
         );
@@ -599,7 +603,7 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         getRepo().save(entity4);
 
         // when
-        List<Entity> result = getRepo().findAll(
+        List<Entity> result = getRepo().findAllOrderBy(
                 asc(getNameColumn())
         );
 
@@ -619,7 +623,7 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         }
 
         // when, then
-        assertThrows(TooManyRowsAvailableException.class, () -> getRepo().findAll(asc(getNameColumn())));
+        assertThrows(TooManyRowsAvailableException.class, () -> getRepo().findAllOrderBy(asc(getNameColumn())));
     }
 
     @Test
@@ -632,7 +636,7 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
 
         // when, then
         assertThrows(TooManyRowsAvailableException.class, () -> {
-            getRepo().query(eq((Column) getColorColumn(), getColorByName("BLUE")));
+            getRepo().findAll(eq((Column) getColorColumn(), getColorByName("BLUE")));
         });
     }
 
@@ -650,7 +654,7 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         }
 
         // First page
-        List<Entity> firstPage = getRepo().queryForPage(0, 10, List.of(eq((Column) getColorColumn(), getColorByName("BLUE"))));
+        List<Entity> firstPage = getRepo().findPage(0, 10, List.of(eq((Column) getColorColumn(), getColorByName("BLUE"))));
         assertEquals(10, firstPage.size());
         for (var entity : firstPage) {
             assertEquals(0, entity.getId() % 2);
@@ -658,7 +662,7 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         }
 
         // Second page
-        List<Entity> secondPage = getRepo().queryForPage(10, 10, List.of(eq((Column) getColorColumn(), getColorByName("BLUE"))));
+        List<Entity> secondPage = getRepo().findPage(10, 10, List.of(eq((Column) getColorColumn(), getColorByName("BLUE"))));
         assertEquals(10, secondPage.size());
         for (var entity : secondPage) {
             assertTrue(entity.getId() >= 20);
@@ -667,7 +671,7 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
         }
 
         // Third page
-        var thirdPage = getRepo().queryForPage(20, 10, List.of(eq((Column) getColorColumn(), getColorByName("BLUE"))));
+        var thirdPage = getRepo().findPage(20, 10, List.of(eq((Column) getColorColumn(), getColorByName("BLUE"))));
         assertEquals(1, thirdPage.size());
     }
 
@@ -677,18 +681,100 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
             var entity = newEntity(String.format("Name %d", i));
             getRepo().save(entity);
         }
-        System.out.println(getRepo().findAll(100).size());
 
         // First page
-        List<Entity> firstPage = getRepo().findPage(0, 10, asc(getIdColumn()));
+        List<Entity> firstPage = getRepo().findPageOrderBy(0, 10, asc(getIdColumn()));
         assertEquals(10, firstPage.size());
         for (int i = 0; i < 10; i++) {
             assertEquals(String.format("Name %d", i), getName(firstPage.get(i)));
         }
 
-        List<Entity> secondPage = getRepo().findPage(10, 10, asc(getIdColumn()));
+        List<Entity> secondPage = getRepo().findPageOrderBy(10, 10, asc(getIdColumn()));
         assertEquals(2, secondPage.size());
         assertEquals("Name 10", getName(secondPage.get(0)));
         assertEquals("Name 11", getName(secondPage.get(1)));
     }
+
+    @Test
+    void getOneByQuery() {
+        for (int i = 0; i < 12; i++) {
+            var entity = newEntity(String.format("Name %d", i));
+            getRepo().save(entity);
+        }
+
+        // when
+        Entity entity = getRepo().getOne(QueryItem.eq(getNameColumn(), "Name 5"));
+
+        // then
+        assertNotNull(entity);
+        assertEquals("Name 5", getName(entity));
+    }
+
+    @Test
+    void getOneByQueryMoreThanOne() {
+        for (int i = 0; i < 12; i++) {
+            var entity = newEntity(String.format("Name %d", i));
+            getRepo().save(entity);
+        }
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            getRepo().getOne(QueryItem.gt(getNameColumn(), "Name 5"));
+
+        });
+    }
+
+    @Test
+    void getOneNothingFound() {
+        for (int i = 0; i < 12; i++) {
+            var entity = newEntity(String.format("Name %d", i));
+            getRepo().save(entity);
+        }
+
+        assertThrows(NoSuchElementException.class, () -> {
+            getRepo().getOne(QueryItem.lt(getNameColumn(), "Name 0"));
+        });
+    }
+
+    @Test
+    void findOneByQuery() {
+        for (int i = 0; i < 12; i++) {
+            var entity = newEntity(String.format("Name %d", i));
+            getRepo().save(entity);
+        }
+
+        // when
+        var maybeEntity = getRepo().findOne(QueryItem.eq(getNameColumn(), "Name 5"));
+
+        // then
+        assertTrue(maybeEntity.isPresent());
+        assertEquals("Name 5", getName(maybeEntity.get()));
+    }
+
+    @Test
+    void findOneByQueryMoreThanOne() {
+        for (int i = 0; i < 12; i++) {
+            var entity = newEntity(String.format("Name %d", i));
+            getRepo().save(entity);
+        }
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            getRepo().findOne(QueryItem.gt(getNameColumn(), "Name 5"));
+
+        });
+    }
+
+    @Test
+    void findOneNothingFound() {
+        for (int i = 0; i < 12; i++) {
+            var entity = newEntity(String.format("Name %d", i));
+            getRepo().save(entity);
+        }
+
+        // when
+        var maybeEntity = getRepo().findOne(QueryItem.lt(getNameColumn(), "Name 0"));
+
+        // then
+        assertEquals(Optional.empty(), maybeEntity);
+    }
+
 }
