@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Column<EntityType extends BaseEntity<?>, ValueType> {
     private final String columnName;
@@ -40,6 +41,21 @@ public class Column<EntityType extends BaseEntity<?>, ValueType> {
                 "name='" + columnName + '\'' +
                 ", type=" + type.getSimpleName() +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Column)) return false;
+        Column<?, ?> column = (Column<?, ?>) o;
+        return Objects.equals(columnName, column.columnName) &&
+                Objects.equals(fieldName, column.fieldName) &&
+                Objects.equals(type, column.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(columnName, fieldName, type);
     }
 
     public static class StringColumn<EntityType extends BaseEntity<?>> extends Column<EntityType, String> {
