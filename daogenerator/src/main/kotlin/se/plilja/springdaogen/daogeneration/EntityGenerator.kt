@@ -6,12 +6,7 @@ import lombok.AllArgsConstructor
 import lombok.Data
 import lombok.NoArgsConstructor
 import se.plilja.springdaogen.codegeneration.ClassGenerator
-import se.plilja.springdaogen.generatedframework.baseEntity
-import se.plilja.springdaogen.generatedframework.changedAtTracked
-import se.plilja.springdaogen.generatedframework.changedByTracked
-import se.plilja.springdaogen.generatedframework.createdAtTracked
-import se.plilja.springdaogen.generatedframework.createdByTracked
-import se.plilja.springdaogen.generatedframework.versionTracked
+import se.plilja.springdaogen.generatedframework.*
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Left
 import se.plilja.springdaogen.model.Table
@@ -114,6 +109,21 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
 
     if (config.featureGenerateChangeTracking) {
         generatedChangeTracking(table, g, config)
+    }
+    if (!config.useLombok) {
+        val nameColumnOrNull = table.nameColumn()
+        val maybeNameColumn = if (nameColumnOrNull != null) {
+            "\"${nameColumnOrNull.fieldName()}=\" + ${nameColumnOrNull.fieldName()} + "
+        } else {
+            ""
+        }
+        g.addCustomMethod(
+                """
+        |   @Override
+        |   public String toString() {
+        |       return "${table.entityName()}{${table.primaryKey.fieldName()}=" + ${table.primaryKey.fieldName()} + $maybeNameColumn"}"}";
+        |   }
+        """.trimMargin())
     }
 
     ensureImported(g, config) { baseEntity(config.frameworkOutputPackage) }

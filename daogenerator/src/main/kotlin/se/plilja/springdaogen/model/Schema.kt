@@ -42,6 +42,10 @@ data class Table(
         }
     }
 
+    fun nameColumn() : Column? {
+        return columns.firstOrNull { it.name.toLowerCase().contains("name") }
+    }
+
     fun daoName(): String {
         return config.daoPrefix + capitalizeFirst(camelCase(name)) + config.daoSuffix
     }
