@@ -71,7 +71,7 @@ private class ConfigReader(file: File) {
             daoOutputPackage = properties.getProperty("dao.output_package"),
             frameworkOutputFolder = getFolderProperty("framework.output_folder"),
             frameworkOutputPackage = properties.getProperty("framework.output_package"),
-            maxSelectAllCount = properties.getProperty("dao.max_select_count").toInt(),
+            maxSelectAllCount = properties.getProperty("dao.max_select_count", "1500").toInt(),
             schemas = getListProperty("database.schemas"),
             useLombok = properties.getProperty("use_lombok", "false") == "true",
             daosAreAbstract = properties.getProperty("dao.generate_abstract", "false") == "true",

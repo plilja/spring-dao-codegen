@@ -9,7 +9,6 @@
 * Equals and hashCode methods on Column-classes
 * queryForOne ?
 * Optimize nullVersions, can exclude clause if not nullable
-* Default value for selectMaxCount
 
 # Maybe later release
 * SqlLite
