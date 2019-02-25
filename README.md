@@ -5,6 +5,11 @@
 # TODO:s
 * Write a proper readme
 * blob.getBinaryStream().readAllBytes() doesn't work in java 8
+* ToString methods on generated objects
+* Equals and hashCode methods on Column-classes
+* queryForOne ?
+* Optimize nullVersions, can exclude clause if not nullable
+* Default value for selectMaxCount
 
 # Maybe later release
 * SqlLite
