@@ -288,4 +288,9 @@ public class MDataTypesMysql implements BaseEntity<Long> {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "MDataTypesMysql{id=" + id + "}";
+    }
+
 }

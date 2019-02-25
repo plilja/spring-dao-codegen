@@ -21,4 +21,9 @@ public class OneColumnGeneratedIdPostgres implements BaseEntity<Integer> {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "OneColumnGeneratedIdPostgres{id=" + id + "}";
+    }
+
 }

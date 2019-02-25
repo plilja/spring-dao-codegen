@@ -31,4 +31,9 @@ public class ColorEnumPostgres implements BaseEntity<String> {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "ColorEnumPostgres{id=" + id + "}";
+    }
+
 }

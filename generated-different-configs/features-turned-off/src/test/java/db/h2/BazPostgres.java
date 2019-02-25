@@ -101,4 +101,9 @@ public class BazPostgres implements BaseEntity<Integer> {
         this.bazId = id;
     }
 
+    @Override
+    public String toString() {
+        return "BazPostgres{bazId=" + bazId + ", bazName=" + bazName + "}";
+    }
+
 }

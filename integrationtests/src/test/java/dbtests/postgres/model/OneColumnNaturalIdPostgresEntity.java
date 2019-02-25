@@ -25,4 +25,9 @@ public class OneColumnNaturalIdPostgresEntity implements BaseEntity<String> {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "OneColumnNaturalIdPostgresEntity{id=" + id + "}";
+    }
+
 }

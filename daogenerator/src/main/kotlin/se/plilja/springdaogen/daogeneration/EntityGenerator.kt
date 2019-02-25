@@ -113,7 +113,7 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
     if (!config.useLombok) {
         val nameColumnOrNull = table.nameColumn()
         val maybeNameColumn = if (nameColumnOrNull != null) {
-            "\"${nameColumnOrNull.fieldName()}=\" + ${nameColumnOrNull.fieldName()} + "
+            "\", ${nameColumnOrNull.fieldName()}=\" + ${nameColumnOrNull.fieldName()} + "
         } else {
             ""
         }
@@ -121,7 +121,7 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
                 """
         |   @Override
         |   public String toString() {
-        |       return "${table.entityName()}{${table.primaryKey.fieldName()}=" + ${table.primaryKey.fieldName()} + $maybeNameColumn"}"}";
+        |       return "${table.entityName()}{${table.primaryKey.fieldName()}=" + ${table.primaryKey.fieldName()} + $maybeNameColumn"}";
         |   }
         """.trimMargin())
     }

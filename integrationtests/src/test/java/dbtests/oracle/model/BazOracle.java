@@ -124,4 +124,9 @@ public class BazOracle implements BaseEntity<Integer>, CreatedAtTracked<LocalDat
         this.version = value;
     }
 
+    @Override
+    public String toString() {
+        return "BazOracle{id=" + id + ", name=" + name + "}";
+    }
+
 }

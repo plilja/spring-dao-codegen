@@ -222,4 +222,9 @@ public class DataTypesOracle implements BaseEntity<String> {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "DataTypesOracle{id=" + id + "}";
+    }
+
 }

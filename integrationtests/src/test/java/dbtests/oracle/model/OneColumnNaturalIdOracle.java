@@ -25,4 +25,9 @@ public class OneColumnNaturalIdOracle implements BaseEntity<String> {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "OneColumnNaturalIdOracle{id=" + id + "}";
+    }
+
 }

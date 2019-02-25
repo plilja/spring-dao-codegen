@@ -117,4 +117,9 @@ public class MBazMysql implements BaseEntity<Integer>, CreatedAtTracked<LocalDat
         this.version = value;
     }
 
+    @Override
+    public String toString() {
+        return "MBazMysql{id=" + id + ", name=" + name + "}";
+    }
+
 }

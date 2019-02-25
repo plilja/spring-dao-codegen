@@ -23,4 +23,9 @@ public class MOneColumnGeneratedIdMysql implements BaseEntity<Integer> {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "MOneColumnGeneratedIdMysql{id=" + id + "}";
+    }
+
 }

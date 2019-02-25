@@ -259,4 +259,9 @@ public class DataTypesPostgres implements BaseEntity<Long> {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "DataTypesPostgres{id=" + id + "}";
+    }
+
 }

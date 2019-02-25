@@ -140,4 +140,9 @@ public class BazPostgresEntity implements BaseEntity<Integer>, CreatedAtTracked<
         this.counter = value;
     }
 
+    @Override
+    public String toString() {
+        return "BazPostgresEntity{bazId=" + bazId + ", bazName=" + bazName + "}";
+    }
+
 }

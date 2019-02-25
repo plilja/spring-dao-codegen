@@ -5,7 +5,6 @@
 # TODO:s
 * Write a proper readme
 * blob.getBinaryStream().readAllBytes() doesn't work in java 8
-* ToString methods on generated objects
 * queryForOne ?
 * Optimize nullVersions, can exclude clause if not nullable
 
