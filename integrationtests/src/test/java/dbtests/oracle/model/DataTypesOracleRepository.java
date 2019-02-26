@@ -214,7 +214,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
     }
 
     @Override
-    protected String getUpdateSql() {
+    protected String getUpdateSql(DataTypesOracle object) {
         return "UPDATE DOCKER.DATA_TYPES_ORACLE SET " +
                 "BINARY_DOUBLE = :BINARY_DOUBLE, " +
                 "BINARY_FLOAT = :BINARY_FLOAT, " +

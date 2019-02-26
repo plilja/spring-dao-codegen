@@ -130,14 +130,21 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
     }
 
     @Override
-    protected String getUpdateSql() {
-        return "UPDATE test_schema.baz_postgres SET " +
+    protected String getUpdateSql(BazPostgresEntity object) {
+        String updateSql = "UPDATE test_schema.baz_postgres SET " +
                 "baz_name = :baz_name, " +
                 "changed_at = :changed_at, " +
                 "changed_by = :changed_by, " +
                 "color = :color, " +
-                "counter = (COALESCE(:counter, -1) + 1) % 128 " +
-                "WHERE baz_id = :baz_id AND (counter = :counter OR counter IS NULL OR COALESCE(:counter, -1) = -1)";
+                "counter = (COALESCE(:counter, -1) + 1) %% 128 " +
+                "WHERE baz_id = :baz_id %s";
+        String versionClause;
+        if (object.getVersion() != null) {
+            versionClause = "AND (counter = :counter OR counter IS NULL)";
+        } else {
+            versionClause = "";
+        }
+        return String.format(updateSql, versionClause);
     }
 
     @Override

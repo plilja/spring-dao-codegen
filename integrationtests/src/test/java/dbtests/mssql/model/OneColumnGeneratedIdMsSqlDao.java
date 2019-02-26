@@ -75,7 +75,7 @@ public class OneColumnGeneratedIdMsSqlDao extends Dao<OneColumnGeneratedIdMsSqlE
     }
 
     @Override
-    protected String getUpdateSql() {
+    protected String getUpdateSql(OneColumnGeneratedIdMsSqlEntity object) {
         throw new UnsupportedOperationException();
     }
 

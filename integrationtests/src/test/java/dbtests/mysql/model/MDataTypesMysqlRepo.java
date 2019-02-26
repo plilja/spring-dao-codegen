@@ -277,7 +277,7 @@ public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
     }
 
     @Override
-    protected String getUpdateSql() {
+    protected String getUpdateSql(MDataTypesMysql object) {
         return "UPDATE DATA_TYPES_MYSQL SET " +
                 "bigint = :bigint, " +
                 "bit = :bit, " +

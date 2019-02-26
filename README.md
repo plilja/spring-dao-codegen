@@ -5,8 +5,8 @@
 # TODO:s
 * Write a proper readme
 * blob.getBinaryStream().readAllBytes() doesn't work in java 8
-* Optimize nullVersions, can exclude clause if not nullable
 * Config options to specify table inclusions/exclusions
+* Have another look at views
 
 # Maybe later release
 * SqlLite

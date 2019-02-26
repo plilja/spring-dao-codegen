@@ -251,7 +251,7 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
     }
 
     @Override
-    protected String getUpdateSql() {
+    protected String getUpdateSql(DataTypesPostgresEntity object) {
         return "UPDATE public.data_types_postgres SET " +
                 "bigint = :bigint, " +
                 "boolean_b = :boolean_b, " +

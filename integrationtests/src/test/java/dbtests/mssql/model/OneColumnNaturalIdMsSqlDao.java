@@ -80,7 +80,7 @@ public class OneColumnNaturalIdMsSqlDao extends Dao<OneColumnNaturalIdMsSqlEntit
     }
 
     @Override
-    protected String getUpdateSql() {
+    protected String getUpdateSql(OneColumnNaturalIdMsSqlEntity object) {
         throw new UnsupportedOperationException();
     }
 

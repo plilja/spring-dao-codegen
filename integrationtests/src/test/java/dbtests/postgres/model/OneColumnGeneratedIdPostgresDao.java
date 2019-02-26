@@ -76,7 +76,7 @@ public class OneColumnGeneratedIdPostgresDao extends Dao<OneColumnGeneratedIdPos
     }
 
     @Override
-    protected String getUpdateSql() {
+    protected String getUpdateSql(OneColumnGeneratedIdPostgresEntity object) {
         throw new UnsupportedOperationException();
     }
 

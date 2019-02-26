@@ -147,8 +147,8 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
     g.addCustomMethod(
             """
             @Override
-            protected String getUpdateSql() {
-                ${if (updateString != null) "return $updateString;" else "throw new UnsupportedOperationException();"}
+            protected String getUpdateSql(${table.entityName()} object) {
+                ${if (updateString != null) "$updateString" else "throw new UnsupportedOperationException();"}
             }
         """
     )

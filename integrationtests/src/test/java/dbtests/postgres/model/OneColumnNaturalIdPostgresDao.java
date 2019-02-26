@@ -81,7 +81,7 @@ public class OneColumnNaturalIdPostgresDao extends Dao<OneColumnNaturalIdPostgre
     }
 
     @Override
-    protected String getUpdateSql() {
+    protected String getUpdateSql(OneColumnNaturalIdPostgresEntity object) {
         throw new UnsupportedOperationException();
     }
 

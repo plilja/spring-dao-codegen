@@ -76,7 +76,7 @@ public class OneColumnGeneratedIdOracleRepository extends Dao<OneColumnGenerated
     }
 
     @Override
-    protected String getUpdateSql() {
+    protected String getUpdateSql(OneColumnGeneratedIdOracle object) {
         throw new UnsupportedOperationException();
     }
 

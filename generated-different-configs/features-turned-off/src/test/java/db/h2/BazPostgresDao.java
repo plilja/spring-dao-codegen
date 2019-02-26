@@ -98,7 +98,7 @@ public class BazPostgresDao extends Dao<BazPostgres, Integer> {
     }
 
     @Override
-    protected String getUpdateSql() {
+    protected String getUpdateSql(BazPostgres object) {
         return "UPDATE test_schema.baz_postgres SET " +
                 "baz_name = :baz_name, " +
                 "changed_at = :changed_at, " +

@@ -81,7 +81,7 @@ public class OneColumnNaturalIdOracleRepository extends Dao<OneColumnNaturalIdOr
     }
 
     @Override
-    protected String getUpdateSql() {
+    protected String getUpdateSql(OneColumnNaturalIdOracle object) {
         throw new UnsupportedOperationException();
     }
 

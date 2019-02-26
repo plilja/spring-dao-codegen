@@ -130,14 +130,21 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
     }
 
     @Override
-    protected String getUpdateSql() {
-        return "UPDATE BazMysql SET " +
+    protected String getUpdateSql(MBazMysql object) {
+        String updateSql = "UPDATE BazMysql SET " +
                 "changed_at = :changed_at, " +
                 "changed_by = :changed_by, " +
                 "color_enum_mysql_id = :color_enum_mysql_id, " +
                 "name = :name, " +
-                "version = (IFNULL(:version, -1) + 1) % 128 " +
-                "WHERE id = :id AND (version = :version OR version IS NULL OR :version IS NULL)";
+                "version = (IFNULL(:version, -1) + 1) %% 128 " +
+                "WHERE id = :id %s";
+        String versionClause;
+        if (object.getVersion() != null) {
+            versionClause = "AND (version = :version OR version IS NULL)";
+        } else {
+            versionClause = "";
+        }
+        return String.format(updateSql, versionClause);
     }
 
     @Override

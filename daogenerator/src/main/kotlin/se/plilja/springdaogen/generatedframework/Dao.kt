@@ -221,7 +221,7 @@ ${if (config.featureGenerateQueryApi) {
             ""
         }
         }
-        String sql = getUpdateSql();
+        String sql = getUpdateSql(object);
         SqlParameterSource params = getParams(object);
         int updated = jdbcTemplate.update(sql, params);
         if (updated == 0) {
@@ -519,7 +519,7 @@ ${if (config.featureGenerateQueryApi) {
 
     protected abstract String getInsertSql();
 
-    protected abstract String getUpdateSql();
+    protected abstract String getUpdateSql(T object);
 
     protected abstract String getPrimaryKeyColumnName();
 

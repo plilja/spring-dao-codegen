@@ -129,14 +129,21 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
     }
 
     @Override
-    protected String getUpdateSql() {
-        return "UPDATE dbo.baz_ms_sql SET " +
+    protected String getUpdateSql(BazMsSqlEntity object) {
+        String updateSql = "UPDATE dbo.baz_ms_sql SET " +
                 "color = :color, " +
                 "modified_at = :modified_at, " +
                 "modified_by = :modified_by, " +
                 "name = :name, " +
-                "version = (COALESCE(:version, -1) + 1) % 128 " +
-                "WHERE id = :id AND (version = :version OR version IS NULL OR :version IS NULL)";
+                "version = (COALESCE(:version, -1) + 1) %% 128 " +
+                "WHERE id = :id %s";
+        String versionClause;
+        if (object.getVersion() != null) {
+            versionClause = "AND (version = :version OR version IS NULL)";
+        } else {
+            versionClause = "";
+        }
+        return String.format(updateSql, versionClause);
     }
 
     @Override

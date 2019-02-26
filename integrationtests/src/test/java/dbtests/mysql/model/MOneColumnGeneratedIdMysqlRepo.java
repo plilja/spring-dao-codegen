@@ -76,7 +76,7 @@ public class MOneColumnGeneratedIdMysqlRepo extends Dao<MOneColumnGeneratedIdMys
     }
 
     @Override
-    protected String getUpdateSql() {
+    protected String getUpdateSql(MOneColumnGeneratedIdMysql object) {
         throw new UnsupportedOperationException();
     }
 

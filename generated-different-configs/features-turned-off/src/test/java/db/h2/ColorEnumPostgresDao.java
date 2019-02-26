@@ -75,7 +75,7 @@ public class ColorEnumPostgresDao extends Dao<ColorEnumPostgres, String> {
     }
 
     @Override
-    protected String getUpdateSql() {
+    protected String getUpdateSql(ColorEnumPostgres object) {
         return "UPDATE test_schema.color_enum_postgres SET " +
                 "hex = :hex " +
                 "WHERE id = :id";

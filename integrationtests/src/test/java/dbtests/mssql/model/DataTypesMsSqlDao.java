@@ -277,7 +277,7 @@ public class DataTypesMsSqlDao extends Dao<DataTypesMsSqlEntity, Long> {
     }
 
     @Override
-    protected String getUpdateSql() {
+    protected String getUpdateSql(DataTypesMsSqlEntity object) {
         return "UPDATE dbo.DATA_TYPES_MS_SQL SET " +
                 "binary10 = :binary10, " +
                 "bit = :bit, " +

@@ -41,16 +41,27 @@ fun update(table: Table, databaseDialect: DatabaseDialect): String? {
                             DatabaseDialect.ORACLE12
                     )
             ) {
-                "${column.name} = MOD(NVL(:${column.name}, -1) + 1, 128)"
+                if (column.nullable) {
+                    "${column.name} = MOD(NVL(:${column.name}, -1) + 1, 128)"
+                } else {
+                    "${column.name} = MOD(:${column.name} + 1, 128)"
+                }
             } else if (databaseDialect == DatabaseDialect.MYSQL) {
-                "${column.name} = (IFNULL(:${column.name}, -1) + 1) % 128"
+                if (column.nullable) {
+                    "${column.name} = (IFNULL(:${column.name}, -1) + 1) %% 128"
+                } else {
+                    "${column.name} = (:${column.name} + 1) %% 128"
+                }
             } else {
-                "${column.name} = (COALESCE(:${column.name}, -1) + 1) % 128"
+                if (column.nullable) {
+                    "${column.name} = (COALESCE(:${column.name}, -1) + 1) %% 128"
+                } else {
+                    "${column.name} = (:${column.name} + 1) %% 128"
+                }
             }
         } else {
             "${column.name} = :${column.name}"
         }
-
     }
 
     val updateColumns = table.columns
@@ -61,19 +72,33 @@ fun update(table: Table, databaseDialect: DatabaseDialect): String? {
         null // Special case, table only consists of PK-columns. Update is not supported.
     } else {
         val versionColumn = table.versionColumn()
-        val extraVersionClause = if (versionColumn != null) {
-            if (databaseDialect == DatabaseDialect.POSTGRES)
-                " AND (${versionColumn.name} = :${versionColumn.name} OR ${versionColumn.name} IS NULL OR COALESCE(:${versionColumn.name}, -1) = -1)"
-            else
-                " AND (${versionColumn.name} = :${versionColumn.name} OR ${versionColumn.name} IS NULL OR :${versionColumn.name} IS NULL)"
-        } else {
-            ""
-        }
-        """
+        if (versionColumn != null) {
+            val updateSql = """
             |"UPDATE ${formatTable(table, databaseDialect)} SET " +
             |${updateColumns.map { "\"${assignment(it)}" }.joinToString(", \" +\n")} " +
-            |"WHERE ${table.primaryKey.name} = :${table.primaryKey.name}$extraVersionClause"
+            |"WHERE ${table.primaryKey.name} = :${table.primaryKey.name} %s"
             """.trimMargin()
+            val versionClause = """
+                   |String versionClause;
+                   |if (object.getVersion() != null) {
+                   |    versionClause = "AND (${versionColumn.name} = :${versionColumn.name}${if (versionColumn.nullable) " OR ${versionColumn.name} IS NULL)" else ""}";
+                   |} else {
+                   |    versionClause = "";
+                   |}
+                   """.trimMargin()
+            return """
+                   |String updateSql = $updateSql;
+                   |$versionClause
+                   |return String.format(updateSql, versionClause);
+                """.trimMargin()
+
+        } else {
+            return """
+            |return "UPDATE ${formatTable(table, databaseDialect)} SET " +
+            |${updateColumns.map { "\"${assignment(it)}" }.joinToString(", \" +\n")} " +
+            |"WHERE ${table.primaryKey.name} = :${table.primaryKey.name}";
+            """.trimMargin()
+        }
     }
 }
 

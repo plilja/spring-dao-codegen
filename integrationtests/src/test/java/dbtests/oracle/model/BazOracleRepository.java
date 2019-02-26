@@ -130,14 +130,21 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
     }
 
     @Override
-    protected String getUpdateSql() {
-        return "UPDATE DOCKER.BAZ_ORACLE SET " +
+    protected String getUpdateSql(BazOracle object) {
+        String updateSql = "UPDATE DOCKER.BAZ_ORACLE SET " +
                 "CHANGED_AT = :CHANGED_AT, " +
                 "CHANGED_BY = :CHANGED_BY, " +
                 "COLOR = :COLOR, " +
                 "NAME = :NAME, " +
                 "VERSION = MOD(NVL(:VERSION, -1) + 1, 128) " +
-                "WHERE ID = :ID AND (VERSION = :VERSION OR VERSION IS NULL OR :VERSION IS NULL)";
+                "WHERE ID = :ID %s";
+        String versionClause;
+        if (object.getVersion() != null) {
+            versionClause = "AND (VERSION = :VERSION OR VERSION IS NULL)";
+        } else {
+            versionClause = "";
+        }
+        return String.format(updateSql, versionClause);
     }
 
     @Override
