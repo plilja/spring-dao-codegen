@@ -1,17 +1,10 @@
 package se.plilja.springdaogen.bootstrap
 
 import schemacrawler.schema.Catalog
-import schemacrawler.schemacrawler.ExcludeAll
-import schemacrawler.schemacrawler.IncludeAll
-import schemacrawler.schemacrawler.RegularExpressionInclusionRule
-import schemacrawler.schemacrawler.SchemaCrawlerOptionsBuilder
-import schemacrawler.schemacrawler.SchemaInfoLevelBuilder
+import schemacrawler.schemacrawler.*
 import schemacrawler.utility.SchemaCrawlerUtility
-import se.plilja.springdaogen.model.Column
+import se.plilja.springdaogen.model.*
 import se.plilja.springdaogen.model.Config
-import se.plilja.springdaogen.model.DatabaseDialect
-import se.plilja.springdaogen.model.Schema
-import se.plilja.springdaogen.model.Table
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.sql.JDBCType
@@ -33,13 +26,13 @@ fun readSchema(config: Config, dataSource: DataSource): Schema {
     }
     println("Starting to crawl schema. This might be slow depending on the size of your database...")
     val options = SchemaCrawlerOptionsBuilder.builder()
-        .withSchemaInfoLevel(SchemaInfoLevelBuilder.standard())
-        .includeColumns(IncludeAll())
-        .includeTables(IncludeAll())
-        .includeSchemas(schemaFilter)
-        .includeSynonyms(ExcludeAll())
-        .includeRoutines(ExcludeAll())
-        .toOptions()
+            .withSchemaInfoLevel(SchemaInfoLevelBuilder.standard())
+            .includeColumns(IncludeAll())
+            .includeTables(IncludeAll())
+            .includeSchemas(schemaFilter)
+            .includeSynonyms(ExcludeAll())
+            .includeRoutines(ExcludeAll())
+            .toOptions()
     val catalog = SchemaCrawlerUtility.getCatalog(dataSource.connection, options)
     println("Done crawling schema.")
     return catalogToSchema(catalog, config)
@@ -47,46 +40,73 @@ fun readSchema(config: Config, dataSource: DataSource): Schema {
 
 fun catalogToSchema(catalog: Catalog, config: Config): Schema {
     println("Found these tables: ${catalog.tables.map { it.name }.joinToString(", ")}.")
-    val tablesMap = HashMap<schemacrawler.schema.Table, Table>()
+    val tablesMap = HashMap<schemacrawler.schema.Table, TableOrView>()
     val columnsMap = HashMap<schemacrawler.schema.Column, Column>()
     val filteredTables = catalog.tables
-        .filter { it.hasPrimaryKey() }
-        .filter { it.primaryKey.columns.size == 1 } // Currently does not support tables with composite keys
+            .filter { it.hasPrimaryKey() && it.primaryKey.columns.size == 1 } // Currently does not support tables with composite keys
     if (filteredTables.size != catalog.tables.size) {
         val excluded = catalog.tables.map { it.name }.toSet() - filteredTables.map { it.name }.toSet()
         println("Will not generate dao:s or entities for these unsupported tables: " + excluded.joinToString(", "))
     }
+    val filteredViews = catalog.tables
+            .filter { it.tableType.isView }
+            .filter { config.featureGenerateQueryApi } // Views are only supported if query API is being generated
     filteredTables.forEach { convertTable(it, config, tablesMap, columnsMap) }
+    filteredViews.forEach { convertView(it, config, tablesMap, columnsMap) }
     setForeignKeys(catalog, tablesMap, columnsMap)
-    return Schema(tablesMap.values.toList())
+    return Schema(
+            tablesMap.values.filter { it is Table }.map { it as Table }.toList(),
+            tablesMap.values.filter { it is View }.map { it as View }.toList()
+    )
 }
 
 fun convertTable(
-    table: schemacrawler.schema.Table,
-    config: Config,
-    tablesMap: HashMap<schemacrawler.schema.Table, Table>,
-    columnsMap: HashMap<schemacrawler.schema.Column, Column>
+        table: schemacrawler.schema.Table,
+        config: Config,
+        tablesMap: HashMap<schemacrawler.schema.Table, TableOrView>,
+        columnsMap: HashMap<schemacrawler.schema.Column, Column>
 ) {
     for (column in table.columns) {
         columnsMap[column] = convertColumn(table, column, config)
     }
     val sortedColumns =
-        table.columns.sortedBy { c -> if (c.isPartOfPrimaryKey) "-${c.name.toLowerCase()}" else c.name.toLowerCase() } // Primary keys first, then other columns in alphabetic order
+            table.columns.sortedBy { c -> if (c.isPartOfPrimaryKey) "-${c.name.toLowerCase()}" else c.name.toLowerCase() } // Primary keys first, then other columns in alphabetic order
 
     val convertedTable = Table(
-        if (table.schema != null) table.schema.name else null,
-        table.name,
-        columnsMap[table.primaryKey.columns[0]]!!,
-        sortedColumns.map { columnsMap[it]!! },
-        config
+            table.schema?.name,
+            table.name,
+            columnsMap[table.primaryKey.columns[0]]!!,
+            sortedColumns.map { columnsMap[it]!! },
+            config
+    )
+    tablesMap[table] = convertedTable
+}
+
+fun convertView(
+        table: schemacrawler.schema.Table,
+        config: Config,
+        tablesMap: HashMap<schemacrawler.schema.Table, TableOrView>,
+        columnsMap: HashMap<schemacrawler.schema.Column, Column>
+) {
+    for (column in table.columns) {
+        columnsMap[column] = convertColumn(table, column, config)
+    }
+    val sortedColumns =
+            table.columns.sortedBy { it.name.toLowerCase() }
+
+    val convertedTable = View(
+            table.schema?.name,
+            table.name,
+            sortedColumns.map { columnsMap[it]!! },
+            config
     )
     tablesMap[table] = convertedTable
 }
 
 fun setForeignKeys(
-    catalog: Catalog,
-    tablesMap: HashMap<schemacrawler.schema.Table, Table>,
-    columnsMap: HashMap<schemacrawler.schema.Column, Column>
+        catalog: Catalog,
+        tablesMap: HashMap<schemacrawler.schema.Table, TableOrView>,
+        columnsMap: HashMap<schemacrawler.schema.Column, Column>
 ) {
     val columnToTable = catalog.tables.flatMap { t -> t.columns.map { Pair(it, t) } }.toMap()
     for (table in catalog.tables) {
@@ -104,14 +124,14 @@ fun setForeignKeys(
 fun convertColumn(table: schemacrawler.schema.Table, column: schemacrawler.schema.Column, config: Config): Column {
     val (type, jdbcType) = resolveType(column, config)
     return Column(
-        name = column.name,
-        javaType = type,
-        config = config,
-        jdbcType = jdbcType,
-        generated = isGenerated(table, column, config),
-        nullable = column.isNullable,
-        size = column.size,
-        precision = column.decimalDigits
+            name = column.name,
+            javaType = type,
+            config = config,
+            jdbcType = jdbcType,
+            generated = isGenerated(table, column, config),
+            nullable = column.isNullable,
+            size = column.size,
+            precision = column.decimalDigits
     )
 }
 
@@ -162,29 +182,29 @@ fun resolveType(column: schemacrawler.schema.Column, config: Config): Pair<Class
         return Pair(OffsetDateTime::class.java, JDBCType.TIMESTAMP_WITH_TIMEZONE)
     }
     if ((jdbcType == JDBCType.TIMESTAMP || (jdbcType == null && isOracle)) &&
-        (column.type.name.toLowerCase().contains("tz") || column.type.name.toLowerCase().contains("zone"))
+            (column.type.name.toLowerCase().contains("tz") || column.type.name.toLowerCase().contains("zone"))
     ) {
         return Pair(OffsetDateTime::class.java, JDBCType.TIMESTAMP_WITH_TIMEZONE)
     }
 
     val javaType =
-        if (column.type.name.toLowerCase().contains("char") && column.type.typeMappedClass.simpleName == "Array") {
-            // Varchar
-            String::class.java
-        } else if (column.type.typeMappedClass == java.sql.Timestamp::class.java) {
-            LocalDateTime::class.java
-        } else if (column.type.typeMappedClass == java.sql.Time::class.java) {
-            LocalTime::class.java
-        } else if (column.type.name == "uuid") {
-            UUID::class.java
-        } else if (column.type.typeMappedClass == java.math.BigDecimal::class.java) {
-            // Numeric and decimal seem to behave the same in almost all cases
-            // but numeric behave a little nicer for Oracle. According to the spec
-            // numeric is supposed to be slightly more precise.
-            return Pair(BigDecimal::class.java, JDBCType.NUMERIC)
-        } else {
-            column.type.typeMappedClass
-        }
+            if (column.type.name.toLowerCase().contains("char") && column.type.typeMappedClass.simpleName == "Array") {
+                // Varchar
+                String::class.java
+            } else if (column.type.typeMappedClass == java.sql.Timestamp::class.java) {
+                LocalDateTime::class.java
+            } else if (column.type.typeMappedClass == java.sql.Time::class.java) {
+                LocalTime::class.java
+            } else if (column.type.name == "uuid") {
+                UUID::class.java
+            } else if (column.type.typeMappedClass == java.math.BigDecimal::class.java) {
+                // Numeric and decimal seem to behave the same in almost all cases
+                // but numeric behave a little nicer for Oracle. According to the spec
+                // numeric is supposed to be slightly more precise.
+                return Pair(BigDecimal::class.java, JDBCType.NUMERIC)
+            } else {
+                column.type.typeMappedClass
+            }
     return Pair(javaType, jdbcType)
 }
 

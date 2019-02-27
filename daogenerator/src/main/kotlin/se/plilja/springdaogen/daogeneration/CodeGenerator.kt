@@ -9,7 +9,7 @@ import se.plilja.springdaogen.sqlgeneration.formatTable
 import javax.sql.DataSource
 
 fun generateCode(config: Config, schema: Schema, dataSource: DataSource): List<AbstractClassGenerator> {
-    return schema.tables.flatMap {
+    val tableClasses = schema.tables.flatMap {
         val list = ArrayList<AbstractClassGenerator>()
         if (it.isEnum()) {
             val rows = selectRows(dataSource, it, config)
@@ -20,6 +20,13 @@ fun generateCode(config: Config, schema: Schema, dataSource: DataSource): List<A
         }
         list
     }
+    val viewClasses = schema.views.flatMap {
+        val list = ArrayList<AbstractClassGenerator>()
+        list.add(generateViewQueryable(config, it))
+        list.add(generateViewEntity(config, it))
+        list
+    }
+    return tableClasses + viewClasses
 }
 
 // TODO extract to appropriate util

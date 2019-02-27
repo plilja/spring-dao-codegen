@@ -3,6 +3,7 @@ package dbtests.mssql.tests;
 import dbtests.FakeSpringSecurity;
 import dbtests.TransactionUtil;
 import dbtests.mssql.model.BazMsSqlDao;
+import dbtests.mssql.model.BazViewMsSqlDao;
 import dbtests.mssql.model.DataTypesMsSqlDao;
 import dbtests.mssql.model.OneColumnGeneratedIdMsSqlDao;
 import dbtests.mssql.model.OneColumnNaturalIdMsSqlDao;
@@ -17,7 +18,14 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
-@Import({BazMsSqlDao.class, OneColumnNaturalIdMsSqlDao.class, OneColumnGeneratedIdMsSqlDao.class, DataTypesMsSqlDao.class, TransactionUtil.class})
+@Import({
+        BazMsSqlDao.class,
+        OneColumnNaturalIdMsSqlDao.class,
+        OneColumnGeneratedIdMsSqlDao.class,
+        DataTypesMsSqlDao.class,
+        BazViewMsSqlDao.class,
+        TransactionUtil.class
+})
 @EnableTransactionManagement
 @Configuration
 public class MsSqlITConfig {

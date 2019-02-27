@@ -3,6 +3,7 @@ package dbtests.mysql.tests;
 import dbtests.FakeSpringSecurity;
 import dbtests.TransactionUtil;
 import dbtests.mysql.model.MBazMysqlRepo;
+import dbtests.mysql.model.MBazViewMysqlRepo;
 import dbtests.mysql.model.MDataTypesMysqlRepo;
 import dbtests.mysql.model.MOneColumnGeneratedIdMysqlRepo;
 import dbtests.mysql.model.MOneColumnNaturalIdMysqlRepo;
@@ -17,7 +18,14 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
-@Import({MBazMysqlRepo.class, MOneColumnNaturalIdMysqlRepo.class, MOneColumnGeneratedIdMysqlRepo.class, MDataTypesMysqlRepo.class, TransactionUtil.class})
+@Import({
+        MBazMysqlRepo.class,
+        MOneColumnNaturalIdMysqlRepo.class,
+        MOneColumnGeneratedIdMysqlRepo.class,
+        MDataTypesMysqlRepo.class,
+        MBazViewMysqlRepo.class,
+        TransactionUtil.class
+})
 @EnableTransactionManagement
 @Configuration
 public class MysqlITConfig {

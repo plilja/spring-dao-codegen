@@ -6,7 +6,7 @@ fun sortOrder(_package: String) : Pair<String, String> {
         "SortOrder", """
 package $_package;
 
-public class SortOrder<E extends BaseEntity<?>> {
+public class SortOrder<E> {
     private final Column<E, ?> column;
     private final Order order;
 
@@ -23,11 +23,11 @@ public class SortOrder<E extends BaseEntity<?>> {
         return order.name();
     }
 
-    public static <E extends BaseEntity<?>> SortOrder<E> asc(Column<E, ?> column) {
+    public static <E> SortOrder<E> asc(Column<E, ?> column) {
         return new SortOrder<>(column, Order.ASC);
     }
 
-    public static <E extends BaseEntity<?>> SortOrder<E> desc(Column<E, ?> column) {
+    public static <E> SortOrder<E> desc(Column<E, ?> column) {
         return new SortOrder<>(column, Order.DESC);
     }
 

@@ -5,19 +5,10 @@ import org.slf4j.bridge.SLF4JBridgeHandler
 import org.springframework.boot.jdbc.DataSourceBuilder
 import se.plilja.springdaogen.codegeneration.toH2Ddl
 import se.plilja.springdaogen.daogeneration.generateCode
-import se.plilja.springdaogen.generatedframework.baseDatabaseEnum
-import se.plilja.springdaogen.generatedframework.baseEntity
-import se.plilja.springdaogen.generatedframework.columnClass
-import se.plilja.springdaogen.generatedframework.currentUserProvider
-import se.plilja.springdaogen.generatedframework.dao
-import se.plilja.springdaogen.generatedframework.entityInterfaces
-import se.plilja.springdaogen.generatedframework.frameworkExceptions
-import se.plilja.springdaogen.generatedframework.queryItem
-import se.plilja.springdaogen.generatedframework.sortOrder
+import se.plilja.springdaogen.generatedframework.*
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Schema
 import java.io.File
-import java.lang.IllegalStateException
 import java.util.logging.LogManager
 import javax.sql.DataSource
 import kotlin.system.exitProcess
@@ -86,6 +77,7 @@ fun copyFrameworkClasses(config: Config) {
         writeFrameworkClass(queryItem(config.frameworkOutputPackage))
         writeFrameworkClass(columnClass(config.frameworkOutputPackage))
         writeFrameworkClass(sortOrder(config.frameworkOutputPackage))
+        writeFrameworkClass(queryable(config.frameworkOutputPackage, config))
     }
     writeFrameworkClass(baseDatabaseEnum(config.frameworkOutputPackage))
     writeFrameworkClass(dao(config.frameworkOutputPackage, config))

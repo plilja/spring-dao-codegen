@@ -42,7 +42,7 @@ class ColumnListTest {
 
         // when
         val res = columnsList(
-            Table("public", "FOO", pk, listOf(pk, a, b, c, d, e, f, g, h, i, j, k, l), defaultTestConfig()),
+                Table("public", "FOO", pk, listOf(pk, a, b, c, d, e, f, g, h, i, j, k, l), defaultTestConfig()),
             DatabaseDialect.MYSQL
         )
 

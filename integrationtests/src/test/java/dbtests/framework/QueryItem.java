@@ -5,14 +5,11 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import java.util.List;
 import java.util.function.Supplier;
 
-/** @noinspection unused
- * The parameter is not used but it ads type safety to the Dao.
- **/
-public abstract class QueryItem<Entity extends BaseEntity<?>> {
+public abstract class QueryItem<Entity> {
 
     protected abstract String getClause(MapSqlParameterSource params, Supplier<String> paramNameGenerator);
 
-    private static class Or<Entity extends BaseEntity<?>> extends QueryItem<Entity> {
+    private static class Or<Entity> extends QueryItem<Entity> {
         private final QueryItem<Entity> clause1;
         private final QueryItem<Entity> clause2;
 
@@ -29,7 +26,7 @@ public abstract class QueryItem<Entity extends BaseEntity<?>> {
         }
     }
 
-    private static class In<Entity extends BaseEntity<?>, ValueType> extends QueryItem<Entity> {
+    private static class In<Entity, ValueType> extends QueryItem<Entity> {
         private final Column<Entity, ValueType> column;
         private final List<ValueType> values;
 
@@ -46,7 +43,7 @@ public abstract class QueryItem<Entity extends BaseEntity<?>> {
         }
     }
 
-    private static class NotIn<Entity extends BaseEntity<?>, ValueType> extends QueryItem<Entity> {
+    private static class NotIn<Entity, ValueType> extends QueryItem<Entity> {
         private final Column<Entity, ValueType> column;
         private final List<ValueType> values;
 
@@ -63,7 +60,7 @@ public abstract class QueryItem<Entity extends BaseEntity<?>> {
         }
     }
 
-    private static class ComparisonQueryItem<Entity extends BaseEntity<?>, ValueType> extends QueryItem<Entity> {
+    private static class ComparisonQueryItem<Entity, ValueType> extends QueryItem<Entity> {
         private final Column<Entity, ValueType> column;
         private final ValueType value;
         private final Operator operator;
@@ -105,7 +102,7 @@ public abstract class QueryItem<Entity extends BaseEntity<?>> {
         }
     }
 
-    private static class LikeQueryItem<Entity extends BaseEntity<?>> extends QueryItem<Entity> {
+    private static class LikeQueryItem<Entity> extends QueryItem<Entity> {
         private final Column<Entity, String> column;
         private final String value;
         private final String ending;
@@ -130,51 +127,51 @@ public abstract class QueryItem<Entity extends BaseEntity<?>> {
 
     }
 
-    public static <Entity extends BaseEntity<?>, ValueType> QueryItem<Entity> eq(Column<Entity, ValueType> column, ValueType value) {
+    public static <Entity, ValueType> QueryItem<Entity> eq(Column<Entity, ValueType> column, ValueType value) {
         return new ComparisonQueryItem<>(column, value, Operator.EQ, false);
     }
 
-    public static <Entity extends BaseEntity<?>, ValueType> QueryItem<Entity> neq(Column<Entity, ValueType> column, ValueType value, boolean includeNulls) {
+    public static <Entity, ValueType> QueryItem<Entity> neq(Column<Entity, ValueType> column, ValueType value, boolean includeNulls) {
         return new ComparisonQueryItem<>(column, value, Operator.NEQ, includeNulls);
     }
 
-    public static <Entity extends BaseEntity<?>, ValueType> QueryItem<Entity> lt(Column<Entity, ValueType> column, ValueType value) {
+    public static <Entity, ValueType> QueryItem<Entity> lt(Column<Entity, ValueType> column, ValueType value) {
         return new ComparisonQueryItem<>(column, value, Operator.LT, false);
     }
 
-    public static <Entity extends BaseEntity<?>, ValueType> QueryItem<Entity> lte(Column<Entity, ValueType> column, ValueType value) {
+    public static <Entity, ValueType> QueryItem<Entity> lte(Column<Entity, ValueType> column, ValueType value) {
         return new ComparisonQueryItem<>(column, value, Operator.LTE, false);
     }
 
-    public static <Entity extends BaseEntity<?>, ValueType> QueryItem<Entity> gt(Column<Entity, ValueType> column, ValueType value) {
+    public static <Entity, ValueType> QueryItem<Entity> gt(Column<Entity, ValueType> column, ValueType value) {
         return new ComparisonQueryItem<>(column, value, Operator.GT, false);
     }
 
-    public static <Entity extends BaseEntity<?>, ValueType> QueryItem<Entity> gte(Column<Entity, ValueType> column, ValueType value) {
+    public static <Entity, ValueType> QueryItem<Entity> gte(Column<Entity, ValueType> column, ValueType value) {
         return new ComparisonQueryItem<>(column, value, Operator.GTE, false);
     }
 
-    public static <Entity extends BaseEntity<?>, ValueType> QueryItem<Entity> in(Column<Entity, ValueType> column, List<ValueType> values) {
+    public static <Entity, ValueType> QueryItem<Entity> in(Column<Entity, ValueType> column, List<ValueType> values) {
         return new In<>(column, values);
     }
 
-    public static <Entity extends BaseEntity<?>, ValueType> QueryItem<Entity> notIn(Column<Entity, ValueType> column, List<ValueType> values) {
+    public static <Entity, ValueType> QueryItem<Entity> notIn(Column<Entity, ValueType> column, List<ValueType> values) {
         return new NotIn<>(column, values);
     }
 
-    public static <Entity extends BaseEntity<?>> QueryItem<Entity> or(QueryItem<Entity> clause1, QueryItem<Entity> clause2) {
+    public static <Entity> QueryItem<Entity> or(QueryItem<Entity> clause1, QueryItem<Entity> clause2) {
         return new Or<>(clause1, clause2);
     }
 
-    public static <Entity extends BaseEntity<?>> QueryItem<Entity> startsWith(Column<Entity, String> column, String value) {
+    public static <Entity> QueryItem<Entity> startsWith(Column<Entity, String> column, String value) {
         return new LikeQueryItem<>(column, value, "", "%");
     }
 
-    public static <Entity extends BaseEntity<?>> QueryItem<Entity> endsWith(Column<Entity, String> column, String value) {
+    public static <Entity> QueryItem<Entity> endsWith(Column<Entity, String> column, String value) {
         return new LikeQueryItem<>(column, value, "%", "");
     }
 
-    public static <Entity extends BaseEntity<?>> QueryItem<Entity> contains(Column<Entity, String> column, String value) {
+    public static <Entity> QueryItem<Entity> contains(Column<Entity, String> column, String value) {
         return new LikeQueryItem<>(column, value, "%", "%");
     }
 

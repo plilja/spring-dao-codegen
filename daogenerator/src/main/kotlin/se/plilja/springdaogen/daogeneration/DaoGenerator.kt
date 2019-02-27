@@ -11,23 +11,18 @@ import se.plilja.springdaogen.codegeneration.ClassGenerator
 import se.plilja.springdaogen.generatedframework.columnClass
 import se.plilja.springdaogen.generatedframework.currentUserProvider
 import se.plilja.springdaogen.generatedframework.dao
-import se.plilja.springdaogen.generatedframework.databaseException
-import se.plilja.springdaogen.model.Column
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Left
 import se.plilja.springdaogen.model.Table
 import se.plilja.springdaogen.sqlgeneration.*
 import se.plilja.springdaogen.util.snakeCase
-import java.io.IOException
 import java.math.BigDecimal
 import java.sql.Blob
 import java.sql.Clob
 import java.sql.NClob
-import java.sql.Types
 import java.time.OffsetDateTime
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.reflect.full.staticProperties
 
 
 fun generateDao(config: Config, table: Table): ClassGenerator {
@@ -245,74 +240,5 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
         g.addImport("${config.frameworkOutputPackage}.${dao(config.frameworkOutputPackage, config).first}")
     }
     return g
-}
-
-private fun columnConstantInitializer(column: Column, config: Config) =
-        when (column.typeName()) {
-            "Boolean" -> "new Column.BooleanColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\", \"${column.fieldName()}\")"
-            "String" -> "new Column.StringColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\", \"${column.fieldName()}\")"
-            "Integer" -> "new Column.IntColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\", \"${column.fieldName()}\")"
-            "Long" -> "new Column.LongColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\", \"${column.fieldName()}\")"
-            "Double" -> "new Column.DoubleColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\", \"${column.fieldName()}\")"
-            "LocalDate" -> "new Column.DateColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\", \"${column.fieldName()}\")"
-            "LocalDateTime" -> "new Column.DateTimeColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\", \"${column.fieldName()}\")"
-            "BigDecimal" -> "new Column.BigDecimalColumn<>(\"${formatIdentifier(column.name, config.databaseDialect)}\", \"${column.fieldName()}\")"
-            else -> "new Column<>(\"${formatIdentifier(column.name, config.databaseDialect)}\", \"${column.fieldName()}\", ${column.typeName()}.class)"
-        }
-
-private fun rowMapper(table: Table, classGenerator: ClassGenerator, config: Config): String {
-    val needsTryCatch = table.containsClobLikeField()
-    val setters = table.columns.map { "r.${it.setter()}(${it.recordSetMethod("rs")});" }.joinToString("\n")
-    return if (needsTryCatch) {
-        classGenerator.addImport("${config.frameworkOutputPackage}.${databaseException(config.frameworkOutputPackage).first}")
-        classGenerator.addImport(IOException::class.java)
-        """(rs, i) -> {
-                try {
-                ${table.entityName()} r = new ${table.entityName()}();
-                $setters
-                return r;
-            } catch (IOException ex) {
-                throw new DatabaseException("Caught exception while reading row", ex);
-            }
-        }"""
-    } else {
-        """(rs, i) -> {
-                ${table.entityName()} r = new ${table.entityName()}();
-                $setters
-                return r;
-              }"""
-    }
-}
-
-private fun rowUnmapper(table: Table, classGenerator: ClassGenerator): String {
-    val attributes = table.columns.map { column ->
-        val jdbcType = column.jdbcType
-        var typeDeclaration = ""
-        if (jdbcType != null) {
-            typeDeclaration = ""
-            for (member in Types::class.staticProperties) {
-                if (jdbcType.vendorTypeNumber == member.get()) {
-                    typeDeclaration = ", Types.${member.name}"
-                }
-            }
-            classGenerator.addImport(Types::class.java)
-        }
-
-        if (table.primaryKey == column) {
-            "m.addValue(\"${column.name}\", o.getId()$typeDeclaration);"
-        } else if (column.references != null && column.references!!.first.isEnum()) {
-            "m.addValue(\"${column.name}\", o.${column.getter()}() != null ? o.${column.getter()}().getId() : null$typeDeclaration);"
-        } else {
-            "m.addValue(\"${column.name}\", o.${column.getter()}()$typeDeclaration);"
-        }
-    }.joinToString("\n")
-    return """
-            @Override
-            protected SqlParameterSource getParams(${table.entityName()} o) {
-                MapSqlParameterSource m = new MapSqlParameterSource();
-                $attributes
-                return m;
-            }
-    """.trimMargin()
 }
 

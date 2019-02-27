@@ -3,6 +3,7 @@ package dbtests.postgres.tests;
 import dbtests.FakeSpringSecurity;
 import dbtests.TransactionUtil;
 import dbtests.postgres.model.BazPostgresDao;
+import dbtests.postgres.model.BazViewPostgresDao;
 import dbtests.postgres.model.DataTypesPostgresDao;
 import dbtests.postgres.model.OneColumnGeneratedIdPostgresDao;
 import dbtests.postgres.model.OneColumnNaturalIdPostgresDao;
@@ -17,7 +18,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
-@Import({BazPostgresDao.class, OneColumnNaturalIdPostgresDao.class, OneColumnGeneratedIdPostgresDao.class, DataTypesPostgresDao.class, TransactionUtil.class})
+@Import({BazPostgresDao.class,
+        OneColumnNaturalIdPostgresDao.class,
+        OneColumnGeneratedIdPostgresDao.class,
+        DataTypesPostgresDao.class,
+        BazViewPostgresDao.class,
+        TransactionUtil.class})
 @EnableTransactionManagement
 @Configuration
 public class PostgresITConfig {

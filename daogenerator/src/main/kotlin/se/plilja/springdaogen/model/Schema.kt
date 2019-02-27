@@ -6,11 +6,7 @@ import se.plilja.springdaogen.util.capitalizeLast
 import se.plilja.springdaogen.util.snakeCase
 import java.math.BigDecimal
 import java.math.BigInteger
-import java.sql.Blob
-import java.sql.Clob
-import java.sql.JDBCType
-import java.sql.NClob
-import java.sql.SQLXML
+import java.sql.*
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -19,16 +15,15 @@ import java.util.*
 
 
 data class Schema(
-    val tables: List<Table>
+        val tables: List<Table>,
+        val views: List<View>
 )
 
-data class Table(
-    val schemaName: String?, // TODO should this be lifted to the schema object?
-    val name: String,
-    val primaryKey: Column,
-    val columns: List<Column>,
+interface TableOrView {
+    val schemaName: String? // TODO should this be lifted to the schema object?
+    val name: String
+    val columns: List<Column>
     val config: Config
-) {
 
     fun isEnum(): Boolean {
         return name in config.enumTables || config.enumTablesRegexp.matches(name)
@@ -42,7 +37,7 @@ data class Table(
         }
     }
 
-    fun nameColumn() : Column? {
+    fun nameColumn(): Column? {
         return columns.firstOrNull { it.name.toLowerCase().contains("name") }
     }
 
@@ -53,6 +48,22 @@ data class Table(
     fun containsClobLikeField(): Boolean {
         return columns.map { it.isClobLike() }.any { it }
     }
+}
+
+data class View(
+        override val schemaName: String?,
+        override val name: String,
+        override val columns: List<Column>,
+        override val config: Config
+) : TableOrView
+
+data class Table(
+        override val schemaName: String?,
+        override val name: String,
+        val primaryKey: Column,
+        override val columns: List<Column>,
+        override val config: Config
+) : TableOrView {
 
     fun createdAtColumn(): Column? {
         return columns.firstOrNull { it.isCreatedAtColumn() }
@@ -85,7 +96,7 @@ data class Column(
     val size: Int = 100,
     val precision: Int = 0
 ) {
-    var references: Pair<Table, Column>? = null
+    var references: Pair<TableOrView, Column>? = null
 
     fun isChangedAtColumn(): Boolean {
         val types = listOf(

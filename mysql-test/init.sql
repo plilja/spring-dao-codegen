@@ -61,3 +61,7 @@ CREATE TABLE BazMysql (
         references COLOR_ENUM_MYSQL(id)
 );
 
+CREATE VIEW BazViewMysql AS
+SELECT id, name, color_enum_mysql_id FROM BazMysql;
+
+

@@ -6,7 +6,6 @@
 * Write a proper readme
 * blob.getBinaryStream().readAllBytes() doesn't work in java 8
 * Config options to specify table inclusions/exclusions
-* Have another look at views
 
 # Maybe later release
 * SqlLite
@@ -20,5 +19,4 @@
 * More database patterns? (soft delete etc...)
 * Merge into, would increase performance for inserts with natural key
 * Bulk insert (looks like it will be hard to set generated keys after)
-* Views (how to handle abscence of pk? only read?)
 * Array data types

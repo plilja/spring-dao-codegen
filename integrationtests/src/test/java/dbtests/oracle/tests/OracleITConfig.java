@@ -3,6 +3,7 @@ package dbtests.oracle.tests;
 import dbtests.FakeSpringSecurity;
 import dbtests.TransactionUtil;
 import dbtests.oracle.model.BazOracleRepository;
+import dbtests.oracle.model.BazViewOracleRepository;
 import dbtests.oracle.model.DataTypesOracleRepository;
 import dbtests.oracle.model.OneColumnGeneratedIdOracleRepository;
 import dbtests.oracle.model.OneColumnNaturalIdOracleRepository;
@@ -17,7 +18,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 
-@Import({BazOracleRepository.class, OneColumnNaturalIdOracleRepository.class, OneColumnGeneratedIdOracleRepository.class, DataTypesOracleRepository.class, TransactionUtil.class})
+@Import({BazOracleRepository.class,
+        OneColumnNaturalIdOracleRepository.class,
+        OneColumnGeneratedIdOracleRepository.class,
+        DataTypesOracleRepository.class,
+        BazViewOracleRepository.class,
+        TransactionUtil.class})
 @EnableTransactionManagement
 @Configuration
 public class OracleITConfig {

@@ -72,3 +72,7 @@ CREATE TABLE test_schema."baz_postgres"
     CONSTRAINT "baz_pkey" PRIMARY KEY ("baz_id")
 );
 
+
+CREATE VIEW test_schema.baz_view_postgres AS
+SELECT baz_id, baz_name, color FROM test_schema.baz_postgres;
+

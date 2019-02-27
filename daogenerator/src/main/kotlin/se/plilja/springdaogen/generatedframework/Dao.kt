@@ -22,44 +22,26 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-${if (config.featureGenerateQueryApi) {
-            """
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.NoSuchElementException;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 
-"""
-        } else {
-            ""
-        }
-        }
 /**
- * Base class providing basic CRUD access to a database
+ * Base class providing CRUD access to a database
  * table.
  */
-public abstract class Dao<T extends BaseEntity<ID>, ID> {
+public abstract class Dao<T extends BaseEntity<ID>, ID> ${if (config.featureGenerateQueryApi) "extends Queryable<T> " else ""}{
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
     private final Class<ID> idClass;
     private boolean databaseProductNameInitialized = false;
     private String databaseProductName = null;
-    private final boolean idIsGenerated;${if (config.featureGenerateChangeTracking) {"""
+    private final boolean idIsGenerated;${if (config.featureGenerateChangeTracking) """
+    private final CurrentUserProvider currentUserProvider;""" else ""}
 
-    private final CurrentUserProvider currentUserProvider;
-            """.trimMargin()
-        } else {
-            ""
-        }
-        }
-
-    protected Dao(Class<ID> idClass, boolean idIsGenerated, NamedParameterJdbcTemplate jdbcTemplate${if (config.featureGenerateChangeTracking) ", CurrentUserProvider currentUserProvider" else ""}) {
+    protected Dao(Class<ID> idClass, boolean idIsGenerated, NamedParameterJdbcTemplate jdbcTemplate${if (config.featureGenerateChangeTracking) ", CurrentUserProvider currentUserProvider" else ""}) {${if (config.featureGenerateQueryApi) """
+        super(jdbcTemplate);""" else ""}
         this.idClass = idClass;
         this.idIsGenerated = idIsGenerated;
-        this.jdbcTemplate = jdbcTemplate;${if (config.featureGenerateChangeTracking) {
-            """
-        this.currentUserProvider = currentUserProvider;"""
-        } else ""}
+        this.jdbcTemplate = jdbcTemplate;${if (config.featureGenerateChangeTracking) """
+        this.currentUserProvider = currentUserProvider;""" else ""}
     }
 
     public boolean exists(ID id) {
@@ -109,48 +91,16 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         params.put("id", id);
         return jdbcTemplate.queryForObject(sql, params, getRowMapper());
     }
-
-    public List<T> findAllById(Iterable<ID> ids) {
-        String sql = getSelectIdsSql();
-        List<ID> idsList = new ArrayList<>();
-        for (ID id : ids) {
-            idsList.add(id);
-        }
-        Map<String, Object> params = new HashMap<>();
-        params.put("ids", idsList);
-        return jdbcTemplate.query(sql, params, getRowMapper());
-    }
+${if (!config.featureGenerateQueryApi) """
 
     /**
-     * Find a page in a table. Will return a smaller list or
-     * an empty list if start + pageSize reaches outside of table.
-     * An iteration over the pages should end whenever the returned
-     * list is smaller than the pageSize.
-     *
-     * @param start    what offset to start at
-     * @param pageSize size of retrieved page
-     * @return a list of rows between index start (inclusive) and start + page_size (exclusive)
-     */
-    public List<T> findPage(long start, int pageSize) {
-${if (config.featureGenerateQueryApi) {
-            """        return findPageOrderBy(start, pageSize, Collections.emptyList(), Collections.emptyList());"""
-        } else {
-            """        if (pageSize <= 0) {
-            return Collections.emptyList();
-        }
-        String sql = getSelectPageSql(start, pageSize);
-        return jdbcTemplate.query(sql, Collections.emptyMap(), getRowMapper());"""
-        }}
-    }
-
-    /**
-     * Finds all rows in the table. Note that
-     * this will throw a {@link TooManyRowsAvailableException}
-     * if the table is larger than expected. If you
-     * expect many rows to be returned, you should either
-     * use the {@link #findPage} method. If you know that the table
-     * will fit in memory you can also use {@link #findAll(int)}
-     * or reconfigure the limit for when to throw the exception.
+     * Finds all rows. Note that this will throw a
+     * {@link TooManyRowsAvailableException} if the table/view
+     * is larger than expected. If you expect many rows to be
+     * returned, you should either use one of the findPage-methods
+     * or if you know that the table will fit in memory
+     * you can also use {@link #findAll(int)} or reconfigure
+     * the limit for when to throw the exception.
      */
     public List<T> findAll() throws TooManyRowsAvailableException {
         return findAll(getSelectAllDefaultMaxCount());
@@ -174,7 +124,54 @@ ${if (config.featureGenerateQueryApi) {
             throw new TooManyRowsAvailableException(String.format("Max allowed count of %d rows exceeded", maxAllowedCount));
         }
     }
+""".trimMargin() else ""}
+    public List<T> findAllById(Iterable<ID> ids) {
+        String sql = getSelectIdsSql();
+        List<ID> idsList = new ArrayList<>();
+        for (ID id : ids) {
+            idsList.add(id);
+        }
+        Map<String, Object> params = new HashMap<>();
+        params.put("ids", idsList);
+        return jdbcTemplate.query(sql, params, getRowMapper());
+    }
 
+    /**
+     * Find a page in a table. Will return a smaller list or
+     * an empty list if start + pageSize reaches outside of table.
+     * An iteration over the pages should end whenever the returned
+     * list is smaller than the pageSize.
+     *
+     * @param start    what offset to start at
+     * @param pageSize size of retrieved page
+     * @return a list of rows between index start (inclusive) and start + page_size (exclusive)
+     */
+    public List<T> findPage(long start, int pageSize) {
+${if (config.featureGenerateQueryApi) {
+        """
+        SortOrder<T> orderByPrimaryKey = SortOrder.asc(getColumnByName(getPrimaryKeyColumnName()));
+        return findPageOrderBy(start, pageSize, orderByPrimaryKey);""".trimMargin()
+    } else {
+        """        if (pageSize <= 0) {
+            return Collections.emptyList();
+        }
+        String sql = getSelectPageSql(start, pageSize);
+        return jdbcTemplate.query(sql, Collections.emptyMap(), getRowMapper());"""
+    }}
+    }
+${if (config.featureGenerateQueryApi) """
+
+    public List<T> findPage(long start, int pageSize, QueryItem<T> queryItem) {
+        SortOrder<T> orderByPrimaryKey = SortOrder.asc(getColumnByName(getPrimaryKeyColumnName()));
+        return findPageOrderBy(start, pageSize, queryItem, orderByPrimaryKey);
+    }
+
+    public List<T> findPage(long start, int pageSize, List<QueryItem<T>> queryItems) {
+        SortOrder<T> orderByPrimaryKey = SortOrder.asc(getColumnByName(getPrimaryKeyColumnName()));
+        return findPageOrderBy(start, pageSize, queryItems, orderByPrimaryKey);
+    }
+
+""".trimMargin() else ""}
     @Transactional
     public void save(T object) {
         if (object.getId() == null) {
@@ -188,16 +185,14 @@ ${if (config.featureGenerateQueryApi) {
         }
     }
 
-    private void create(T object) {${if (config.featureGenerateChangeTracking) {"""
+    private void create(T object) {${if (config.featureGenerateChangeTracking) """
+
         setCreatedAt(object);
         setCreatedBy(object);
         setChangedAt(object);
         setChangedBy(object);
-        initializeVersion(object);"""
-        } else {
-            ""
-        }
-        }
+        initializeVersion(object);
+    """.trimMargin() else ""}
         if (idIsGenerated) {
             if (object.getId() != null) {
                 throw new IllegalArgumentException(String.format("Attempting to create a new object with an existing id %s", object.getId()));
@@ -214,13 +209,11 @@ ${if (config.featureGenerateQueryApi) {
         }
     }
 
-    private void update(T object) {${if (config.featureGenerateChangeTracking) {"""
+    private void update(T object) {${if (config.featureGenerateChangeTracking) """
+
         setChangedAt(object);
-        setChangedBy(object);"""
-        } else {
-            ""
-        }
-        }
+        setChangedBy(object);
+    """.trimMargin() else ""}
         String sql = getUpdateSql(object);
         SqlParameterSource params = getParams(object);
         int updated = jdbcTemplate.update(sql, params);
@@ -228,12 +221,10 @@ ${if (config.featureGenerateQueryApi) {
             throw new NoRowsUpdatedException(String.format("No rows affected when trying to update object with id %s", object.getId()));
         } else if (updated > 1) {
             throw new TooManyRowsUpdatedException(String.format("More than one row (%d) affected by update of object with id %s", updated, object.getId()));
-        }${if (config.featureGenerateChangeTracking) {"""
-        bumpVersion(object);"""
-        } else {
-            ""
-        }
-        }
+        }${if (config.featureGenerateChangeTracking) """
+
+        bumpVersion(object);
+        """.trimMargin() else ""}
     }
 
     @Transactional
@@ -269,244 +260,8 @@ ${if (config.featureGenerateQueryApi) {
         }
     }
 
-    public long count() {
-        String sql = getCountSql();
-        HashMap<String, Object> noParams = new HashMap<>();
-        return jdbcTemplate.queryForObject(sql, noParams, Long.class);
-    }
+    protected abstract int getSelectAllDefaultMaxCount();
 
-${if (config.featureGenerateQueryApi) {
-            """
-
-    /**
-     * Find exactly one element using a findAllOrderBy. Fails
-     * if zero elements or more than one element is found.
-     *
-     * @throws IllegalArgumentException if more than one element was found
-     * @throws NoSuchElementException if no element was found
-     */
-    public T getOne(QueryItem<T> queryItem) throws IllegalArgumentException, NoSuchElementException {
-        return getOne(Collections.singletonList(queryItem));
-    }
-
-    /**
-     * Find one element using a findAllOrderBy. Fails
-     * if more than one element is found.
-     *
-     * @throws IllegalArgumentException if more than one element was found
-     */
-    public Optional<T> findOne(QueryItem<T> queryItem) throws IllegalArgumentException {
-        return findOne(Collections.singletonList(queryItem));
-    }
-
-    /**
-     * Find exactly one element using a findAllOrderBy. Fails
-     * if zero elements or more than one element is found.
-     *
-     * @throws IllegalArgumentException if more than one element was found
-     * @throws NoSuchElementException if no element was found
-     */
-    public T getOne(List<QueryItem<T>> queryItems) throws IllegalArgumentException, NoSuchElementException {
-        return findOne(queryItems)
-                .orElseThrow(() -> new NoSuchElementException("No matching row was found"));
-    }
-
-    /**
-     * Find one element using a findAllOrderBy. Fails
-     * if more than one element is found.
-     *
-     * @throws IllegalArgumentException if more than one element was found
-     */
-    public Optional<T> findOne(List<QueryItem<T>> queryItems) throws IllegalArgumentException {
-        List<T> results = findAll(queryItems);
-        if (results.size() > 1) {
-            throw new IllegalArgumentException("More than one row available, expected exactly one");
-        } else if (results.size() == 0) {
-            return Optional.empty();
-        } else {
-            return Optional.of(results.get(0));
-        }
-    }
-
-    public List<T> findAllOrderBy(SortOrder<T> orderBy) {
-        return findAllOrderBy(Collections.emptyList(), Collections.singletonList(orderBy));
-    }
-
-    public List<T> findAllOrderBy(List<SortOrder<T>> orderBy) {
-        return findAllOrderBy(Collections.emptyList(), orderBy);
-    }
-
-    public List<T> findAll(QueryItem<T> queryItem) {
-        return findAll(Collections.singletonList(queryItem));
-    }
-
-    public List<T> findAll(List<QueryItem<T>> queryItems) {
-        return findAllOrderBy(queryItems, Collections.emptyList());
-    }
-
-    public List<T> findAllOrderBy(QueryItem<T> queryItem, SortOrder<T> orderBy) {
-        return findAllOrderBy(Collections.singletonList(queryItem), Collections.singletonList(orderBy));
-    }
-
-    public List<T> findAllOrderBy(List<QueryItem<T>> queryItems, SortOrder<T> orderBy) {
-        return findAllOrderBy(queryItems, Collections.singletonList(orderBy));
-    }
-
-    public List<T> findAllOrderBy(List<QueryItem<T>> queryItems, List<SortOrder<T>> orderBy) {
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        StringBuilder whereClause = getWhereClause(queryItems, params);
-        StringBuilder orderByClause = getOrderByClause(orderBy);
-        String sql = getQueryOrderBySql(getSelectAllDefaultMaxCount() + 1, whereClause.toString(), orderByClause.toString());
-        List<T> result = jdbcTemplate.query(sql, params, getRowMapper());
-        ensureMaxCountNotExceeded(getSelectAllDefaultMaxCount(), result);
-        return result;
-    }
-
-    public List<T> findPageOrderBy(long start, int pageSize, SortOrder<T> orderBy) {
-        return findPageOrderBy(start, pageSize, Collections.emptyList(), Collections.singletonList(orderBy));
-    }
-
-    public List<T> findPageOrderBy(long start, int pageSize, List<SortOrder<T>> orderBy) {
-        return findPageOrderBy(start, pageSize, Collections.emptyList(), orderBy);
-    }
-
-    public List<T> findPage(long start, int pageSize, QueryItem<T> queryItem) {
-        return findPage(start, pageSize, Collections.singletonList(queryItem));
-    }
-
-    public List<T> findPage(long start, int pageSize, List<QueryItem<T>> queryItems) {
-        return findPageOrderBy(start, pageSize, queryItems, Collections.emptyList());
-    }
-
-    public List<T> findPageOrderBy(long start, int pageSize, QueryItem<T> queryItem, SortOrder<T> orderBy) {
-        return findPageOrderBy(start, pageSize, Collections.singletonList(queryItem), Collections.singletonList(orderBy));
-    }
-
-    public List<T> findPageOrderBy(long start, int pageSize, List<QueryItem<T>> queryItems, SortOrder<T> orderBy) {
-        return findPageOrderBy(start, pageSize, queryItems, Collections.singletonList(orderBy));
-    }
-
-    public List<T> findPageOrderBy(long start, int pageSize, List<QueryItem<T>> queryItems, List<SortOrder<T>> orderBy) {
-        if (pageSize <= 0) {
-            return Collections.emptyList();
-        }
-        List<SortOrder<T>> adjustedSortOrder;
-        if (orderBy.isEmpty()) {
-            adjustedSortOrder = Collections.singletonList(SortOrder.asc(getColumnByName(getPrimaryKeyColumnName())));
-        } else {
-            adjustedSortOrder = orderBy;
-        }
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        StringBuilder whereClause = getWhereClause(queryItems, params);
-        StringBuilder orderByClause = getOrderByClause(adjustedSortOrder);
-        String sql = getQueryPageOrderBySql(start, pageSize, whereClause.toString(), orderByClause.toString());
-        List<T> result = jdbcTemplate.query(sql, params, getRowMapper());
-        ensureMaxCountNotExceeded(pageSize, result);
-        return result;
-    }
-
-    private StringBuilder getOrderByClause(List<SortOrder<T>> orderBy) {
-        StringBuilder orderByClause = new StringBuilder();
-        if (!orderBy.isEmpty()) {
-            orderByClause.append("ORDER BY ");
-            List<String> columnNames = orderBy.stream()
-                    .map(s -> s.getColumn().getColumnName() + " " + s.getOrder())
-                    .collect(Collectors.toList());
-            orderByClause.append(String.join(", ", columnNames));
-        }
-        return orderByClause;
-    }
-
-    private StringBuilder getWhereClause(List<QueryItem<T>> queryItems, MapSqlParameterSource params) {
-        StringBuilder whereClause = new StringBuilder(" ");
-        ParamGenerator paramGenerator = new ParamGenerator();
-        for (QueryItem<T> queryItem : queryItems) {
-            whereClause.append(" AND ");
-            whereClause.append(queryItem.getClause(params, paramGenerator));
-        }
-        whereClause.append(" ");
-        return whereClause;
-    }
-
-    private static class ParamGenerator implements Supplier<String> {
-        private int counter = 0;
-
-        @Override
-        public String get() {
-            return String.format("q%d", counter++);
-        }
-    }
-
-    protected abstract List<Column<T, ?>> getColumnsList();
-
-    /**
-     * Find a column by it's database name.
-     * Returns null if no matching column was found.
-     *
-     * Comparison is case sensitive.
-     */
-    public Column<T, ?> getColumnByName(String name) {
-        for (Column<T, ?> column : getColumnsList()) {
-            if (column.getColumnName().equals(name)) {
-                return column;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Find a column by it's database name.
-     * Returns null if no matching column was found.
-     *
-     * Comparison is case insensitive.
-     */
-    public Column<T, ?> getColumnByNameIgnoreCase(String name) {
-        for (Column<T, ?> column : getColumnsList()) {
-            if (column.getColumnName().equalsIgnoreCase(name)) {
-                return column;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Find a column by it's name in the Java code.
-     * Returns null if no matching column was found.
-     *
-     * Comparison is case sensitive.
-     */
-    public Column<T, ?> getColumnByFieldName(String name) {
-        for (Column<T, ?> column : getColumnsList()) {
-            if (column.getFieldName().equals(name)) {
-                return column;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Find a column by it's name in the Java code.
-     * Returns null if no matching column was found.
-     *
-     * Comparison is case insensitive.
-     */
-    public Column<T, ?> getColumnByFieldNameIgnoreCase(String name) {
-        for (Column<T, ?> column : getColumnsList()) {
-            if (column.getFieldName().equalsIgnoreCase(name)) {
-                return column;
-            }
-        }
-        return null;
-    }
-
-    protected abstract String getQueryOrderBySql(int maxAllowedCount, String whereClause, String orderBy);
-
-    protected abstract String getQueryPageOrderBySql(long start, int pageSize, String whereClause, String orderBy);
-"""
-        } else {
-            """    protected abstract String getSelectPageSql(long start, int pageSize);
-"""
-        }}
     protected abstract RowMapper<T> getRowMapper();
 
     protected abstract SqlParameterSource getParams(T object);
@@ -528,7 +283,7 @@ ${if (config.featureGenerateQueryApi) {
     protected abstract String getCountSql();
 
     protected abstract String getSelectAndLockSql(String databaseProductName);
-
+${if (!config.featureGenerateQueryApi) "\n    protected abstract String getSelectPageSql(long start, int pageSize);\n" else ""}
     @SuppressWarnings("unchecked")
     private void setId(T object, Number newKey) {
         if (idClass.isAssignableFrom(Integer.class)) {
@@ -550,15 +305,9 @@ ${if (config.featureGenerateQueryApi) {
             databaseProductNameInitialized = true;
         }
         return databaseProductName;
-    }
+    }${if (config.featureGenerateChangeTracking) """
 
-    /**
-     * Max allowed count when selecting all objects. Protects against
-     * unexpectedly large queries that may cause performance degradation.
-     */
-    protected abstract int getSelectAllDefaultMaxCount();
-${if (config.featureGenerateChangeTracking) {
-            """
+
     private void setCreatedAt(T object) {
         if (object instanceof CreatedAtTracked<?>) {
             ((CreatedAtTracked<?>) object).setCreatedNow();
@@ -604,11 +353,8 @@ ${if (config.featureGenerateChangeTracking) {
             versionTracked.setVersion(0);
         }
     }
-"""
-        } else {
-            ""
-        }
-        }
+""".trimMargin() else ""}
+
 }
     """.trimIndent()
     )

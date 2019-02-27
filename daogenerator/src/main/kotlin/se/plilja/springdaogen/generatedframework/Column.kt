@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class Column<EntityType extends BaseEntity<?>, ValueType> {
+public class Column<EntityType, ValueType> {
     private final String columnName;
     private final String fieldName;
     private final Class<ValueType> type;
@@ -58,55 +58,55 @@ public class Column<EntityType extends BaseEntity<?>, ValueType> {
         return Objects.hash(columnName, fieldName, type);
     }
 
-    public static class StringColumn<EntityType extends BaseEntity<?>> extends Column<EntityType, String> {
+    public static class StringColumn<EntityType> extends Column<EntityType, String> {
         public StringColumn(String columnName, String fieldName) {
             super(columnName, fieldName, String.class);
         }
     }
 
-    public static class IntColumn<EntityType extends BaseEntity<?>> extends Column<EntityType, Integer> {
+    public static class IntColumn<EntityType> extends Column<EntityType, Integer> {
         public IntColumn(String columnName, String fieldName) {
             super(columnName, fieldName, Integer.class);
         }
     }
 
-    public static class LongColumn<EntityType extends BaseEntity<?>> extends Column<EntityType, Long> {
+    public static class LongColumn<EntityType> extends Column<EntityType, Long> {
         public LongColumn(String columnName, String fieldName) {
             super(columnName, fieldName, Long.class);
         }
     }
 
-    public static class DoubleColumn<EntityType extends BaseEntity<?>> extends Column<EntityType, Double> {
+    public static class DoubleColumn<EntityType> extends Column<EntityType, Double> {
         public DoubleColumn(String columnName, String fieldName) {
             super(columnName, fieldName, Double.class);
         }
     }
 
-    public static class BooleanColumn<EntityType extends BaseEntity<?>> extends Column<EntityType, Boolean> {
+    public static class BooleanColumn<EntityType> extends Column<EntityType, Boolean> {
         public BooleanColumn(String columnName, String fieldName) {
             super(columnName, fieldName, Boolean.class);
         }
     }
 
-    public static class DateColumn<EntityType extends BaseEntity<?>> extends Column<EntityType, LocalDate> {
+    public static class DateColumn<EntityType> extends Column<EntityType, LocalDate> {
         public DateColumn(String columnName, String fieldName) {
             super(columnName, fieldName, LocalDate.class);
         }
     }
 
-    public static class DateTimeColumn<EntityType extends BaseEntity<?>> extends Column<EntityType, LocalDateTime> {
+    public static class DateTimeColumn<EntityType> extends Column<EntityType, LocalDateTime> {
         public DateTimeColumn(String columnName, String fieldName) {
             super(columnName, fieldName, LocalDateTime.class);
         }
     }
 
-    public static class BigDecimalColumn<EntityType extends BaseEntity<?>> extends Column<EntityType, BigDecimal> {
+    public static class BigDecimalColumn<EntityType> extends Column<EntityType, BigDecimal> {
         public BigDecimalColumn(String columnName, String fieldName) {
             super(columnName, fieldName, BigDecimal.class);
         }
     }
 
-    public static class BigIntegerColumn<EntityType extends BaseEntity<?>> extends Column<EntityType, BigInteger> {
+    public static class BigIntegerColumn<EntityType> extends Column<EntityType, BigInteger> {
         public BigIntegerColumn(String columnName, String fieldName) {
             super(columnName, fieldName, BigInteger.class);
         }

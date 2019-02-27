@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Base class providing basic CRUD access to a database
+ * Base class providing CRUD access to a database
  * table.
  */
 public abstract class Dao<T extends BaseEntity<ID>, ID> {
@@ -81,6 +81,37 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         return jdbcTemplate.queryForObject(sql, params, getRowMapper());
     }
 
+    /**
+     * Finds all rows. Note that this will throw a
+     * {@link TooManyRowsAvailableException} if the table/view
+     * is larger than expected. If you expect many rows to be
+     * returned, you should either use one of the findPage-methods
+     * or if you know that the table will fit in memory
+     * you can also use {@link #findAll(int)} or reconfigure
+     * the limit for when to throw the exception.
+     */
+    public List<T> findAll() throws TooManyRowsAvailableException {
+        return findAll(getSelectAllDefaultMaxCount());
+    }
+
+    /**
+     * Same as {@link #findAll()} but with a parameter indicating
+     * what is considered too many rows.
+     */
+    public List<T> findAll(int maxAllowedCount) throws TooManyRowsAvailableException {
+        List<T> result = jdbcTemplate.query(getSelectManySql(maxAllowedCount + 1), Collections.emptyMap(), getRowMapper());
+        ensureMaxCountNotExceeded(maxAllowedCount, result);
+        return result;
+    }
+
+    private void ensureMaxCountNotExceeded(int maxAllowedCount, List<T> result) {
+        // If queries have been correctly generated it should never be possible to select
+        // more than maxAllowedCount + 1 even if the table is larger than that
+        assert result.size() <= maxAllowedCount + 1;
+        if (result.size() > maxAllowedCount) {
+            throw new TooManyRowsAvailableException(String.format("Max allowed count of %d rows exceeded", maxAllowedCount));
+        }
+    }
     public List<T> findAllById(Iterable<ID> ids) {
         String sql = getSelectIdsSql();
         List<ID> idsList = new ArrayList<>();
@@ -108,38 +139,6 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         }
         String sql = getSelectPageSql(start, pageSize);
         return jdbcTemplate.query(sql, Collections.emptyMap(), getRowMapper());
-    }
-
-    /**
-     * Finds all rows in the table. Note that
-     * this will throw a {@link TooManyRowsAvailableException}
-     * if the table is larger than expected. If you
-     * expect many rows to be returned, you should either
-     * use the {@link #findPage} method. If you know that the table
-     * will fit in memory you can also use {@link #findAll(int)}
-     * or reconfigure the limit for when to throw the exception.
-     */
-    public List<T> findAll() throws TooManyRowsAvailableException {
-        return findAll(getSelectAllDefaultMaxCount());
-    }
-
-    /**
-     * Same as {@link #findAll()} but with a parameter indicating
-     * what is considered too many rows.
-     */
-    public List<T> findAll(int maxAllowedCount) throws TooManyRowsAvailableException {
-        List<T> result = jdbcTemplate.query(getSelectManySql(maxAllowedCount + 1), Collections.emptyMap(), getRowMapper());
-        ensureMaxCountNotExceeded(maxAllowedCount, result);
-        return result;
-    }
-
-    private void ensureMaxCountNotExceeded(int maxAllowedCount, List<T> result) {
-        // If queries have been correctly generated it should never be possible to select
-        // more than maxAllowedCount + 1 even if the table is larger than that
-        assert result.size() <= maxAllowedCount + 1;
-        if (result.size() > maxAllowedCount) {
-            throw new TooManyRowsAvailableException(String.format("Max allowed count of %d rows exceeded", maxAllowedCount));
-        }
     }
 
     @Transactional
@@ -216,13 +215,7 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         }
     }
 
-    public long count() {
-        String sql = getCountSql();
-        HashMap<String, Object> noParams = new HashMap<>();
-        return jdbcTemplate.queryForObject(sql, noParams, Long.class);
-    }
-
-    protected abstract String getSelectPageSql(long start, int pageSize);
+    protected abstract int getSelectAllDefaultMaxCount();
 
     protected abstract RowMapper<T> getRowMapper();
 
@@ -246,6 +239,8 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
 
     protected abstract String getSelectAndLockSql(String databaseProductName);
 
+    protected abstract String getSelectPageSql(long start, int pageSize);
+
     @SuppressWarnings("unchecked")
     private void setId(T object, Number newKey) {
         if (idClass.isAssignableFrom(Integer.class)) {
@@ -268,11 +263,5 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         }
         return databaseProductName;
     }
-
-    /**
-     * Max allowed count when selecting all objects. Protects against
-     * unexpectedly large queries that may cause performance degradation.
-     */
-    protected abstract int getSelectAllDefaultMaxCount();
 
 }

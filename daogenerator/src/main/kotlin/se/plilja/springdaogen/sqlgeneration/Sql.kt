@@ -1,9 +1,6 @@
 package se.plilja.springdaogen.sqlgeneration
 
-import se.plilja.springdaogen.model.Column
-import se.plilja.springdaogen.model.Config
-import se.plilja.springdaogen.model.DatabaseDialect
-import se.plilja.springdaogen.model.Table
+import se.plilja.springdaogen.model.*
 
 
 fun insert(table: Table, databaseDialect: DatabaseDialect): String {
@@ -102,8 +99,8 @@ fun update(table: Table, databaseDialect: DatabaseDialect): String? {
     }
 }
 
-fun columnsList(table: Table, databaseDialect: DatabaseDialect): String {
-    return table.columns
+fun columnsList(tableOrView: TableOrView, databaseDialect: DatabaseDialect): String {
+    return tableOrView.columns
             .map { formatIdentifier(it.name, databaseDialect) }
             .chunked(5).map { "\" ${it.joinToString(", ")}" }
             .joinToString(", \" +\n") + " \""
@@ -200,11 +197,11 @@ fun existsById(table: Table, databaseDialect: DatabaseDialect): String {
             """.trimMargin()
 }
 
-fun selectMany(table: Table, databaseDialect: DatabaseDialect): String {
+fun selectMany(tableOrView: TableOrView, databaseDialect: DatabaseDialect): String {
     var result = """
             |"SELECT${if (databaseDialect == DatabaseDialect.MSSQL_SERVER) " TOP %d" else ""} " +
             |ALL_COLUMNS +
-            |"FROM ${formatTable(table, databaseDialect)} "
+            |"FROM ${formatTable(tableOrView, databaseDialect)} "
             """.trimMargin()
     if (databaseDialect in listOf(DatabaseDialect.ORACLE, DatabaseDialect.ORACLE12)) {
         result += """ +
@@ -220,26 +217,26 @@ fun selectMany(table: Table, databaseDialect: DatabaseDialect): String {
     return result
 }
 
-fun selectManyQuery(table: Table, databaseDialect: DatabaseDialect): String {
+fun selectManyQuery(tableOrView: TableOrView, databaseDialect: DatabaseDialect): String {
     return when {
         databaseDialect == DatabaseDialect.MSSQL_SERVER -> """
             |String.format("SELECT TOP %d %n" +
             |ALL_COLUMNS +
-            |"FROM ${formatTable(table, databaseDialect)} %n" +
+            |"FROM ${formatTable(tableOrView, databaseDialect)} %n" +
             |"WHERE 1=1 %s %n" +
             |"%s", maxAllowedCount, whereClause, orderBy)
             """.trimMargin()
         databaseDialect in listOf(DatabaseDialect.ORACLE, DatabaseDialect.ORACLE12) -> """
             |String.format("SELECT %n" +
             |ALL_COLUMNS +
-            |"FROM ${formatTable(table, databaseDialect)} %n" +
+            |"FROM ${formatTable(tableOrView, databaseDialect)} %n" +
             |"WHERE ROWNUM <= %d %s %n" +
             |"%s", maxAllowedCount, whereClause, orderBy)
             """.trimMargin()
         else -> """
             |String.format("SELECT %n" +
             |ALL_COLUMNS +
-            |"FROM ${formatTable(table, databaseDialect)} %n" +
+            |"FROM ${formatTable(tableOrView, databaseDialect)} %n" +
             |"WHERE 1=1 %s %n" +
             |"%s " +
             |"LIMIT %d", whereClause, orderBy, maxAllowedCount)
@@ -247,12 +244,12 @@ fun selectManyQuery(table: Table, databaseDialect: DatabaseDialect): String {
     }
 }
 
-fun selectPageQuery(table: Table, databaseDialect: DatabaseDialect): String {
+fun selectPageQuery(tableOrView: TableOrView, databaseDialect: DatabaseDialect): String {
     return when {
         databaseDialect in listOf(DatabaseDialect.MYSQL, DatabaseDialect.POSTGRES) -> """
             |String.format("SELECT %n" +
             |ALL_COLUMNS +
-            |"FROM ${formatTable(table, databaseDialect)} %n" +
+            |"FROM ${formatTable(tableOrView, databaseDialect)} %n" +
             |"WHERE 1=1 %s %n" +
             |"%s %n" +
             |"LIMIT %d OFFSET %d", whereClause, orderBy, pageSize, start);
@@ -261,7 +258,7 @@ fun selectPageQuery(table: Table, databaseDialect: DatabaseDialect): String {
         databaseDialect in listOf(DatabaseDialect.MSSQL_SERVER, DatabaseDialect.ORACLE12) -> """
             |String.format("SELECT %n" +
             |ALL_COLUMNS +
-            |"FROM ${formatTable(table, databaseDialect)} %n" +
+            |"FROM ${formatTable(tableOrView, databaseDialect)} %n" +
             |"WHERE 1=1 %s" +
             |"%s %n" +
             |"OFFSET %d ROWS FETCH NEXT %d ROWS ONLY", whereClause, orderBy, start, pageSize);
@@ -272,7 +269,7 @@ fun selectPageQuery(table: Table, databaseDialect: DatabaseDialect): String {
             |"SELECT rownum tmp_rownum_, a.* %n" +
             |"FROM (SELECT %n" +
             |ALL_COLUMNS +
-            |"FROM ${formatTable(table, databaseDialect)} %n" +
+            |"FROM ${formatTable(tableOrView, databaseDialect)} %n" +
             |"WHERE 1=1 %s %n" +
             |"%s %n" +
             |") a %n" +
@@ -285,14 +282,15 @@ fun selectPageQuery(table: Table, databaseDialect: DatabaseDialect): String {
     }
 }
 
-fun count(table: Table, databaseDialect: DatabaseDialect): String {
-    return "\"SELECT COUNT(*) FROM ${formatTable(table, databaseDialect)}\""
+fun count(tableOrView: TableOrView, databaseDialect: DatabaseDialect): String {
+    return "\"SELECT COUNT(*) FROM ${formatTable(tableOrView, databaseDialect)}\""
 }
 
-fun formatTable(table: Table, databaseDialect: DatabaseDialect): String {
-    val identifier = formatIdentifier(table.name, databaseDialect)
-    val schema = if (table.schemaName != null) {
-        "${formatIdentifier(table.schemaName, databaseDialect)}."
+fun formatTable(tableOrView: TableOrView, databaseDialect: DatabaseDialect): String {
+    val identifier = formatIdentifier(tableOrView.name, databaseDialect)
+    val schemaName = tableOrView.schemaName
+    val schema = if (schemaName != null) {
+        "${formatIdentifier(schemaName, databaseDialect)}."
     } else {
         ""
     }
