@@ -2,15 +2,16 @@ package dbtests.mysql.model;
 
 import dbtests.framework.Column;
 import dbtests.framework.Queryable;
-import java.util.Arrays;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Repository
-public class MBazViewMysqlRepo extends Queryable<MBazViewMysql> {
+public class BazViewMysqlQueryable extends Queryable<MBazViewMysql> {
 
     public static final Column<MBazViewMysql, Integer> COLUMN_COLOR_ENUM_MYSQL_ID = new Column.IntColumn<>("color_enum_mysql_id", "colorEnumMysqlId");
 
@@ -34,7 +35,7 @@ public class MBazViewMysqlRepo extends Queryable<MBazViewMysql> {
     };
 
     @Autowired
-    public MBazViewMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate) {
+    public BazViewMysqlQueryable(NamedParameterJdbcTemplate jdbcTemplate) {
         super(jdbcTemplate);
     }
 

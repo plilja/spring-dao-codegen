@@ -2,13 +2,10 @@ package se.plilja.springdaogen.daogeneration
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.RowMapper
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
-import org.springframework.jdbc.core.namedparam.SqlParameterSource
 import org.springframework.stereotype.Repository
 import se.plilja.springdaogen.codegeneration.ClassGenerator
 import se.plilja.springdaogen.generatedframework.columnClass
-import se.plilja.springdaogen.generatedframework.dao
 import se.plilja.springdaogen.generatedframework.queryable
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Left
@@ -25,8 +22,8 @@ import kotlin.collections.ArrayList
 
 
 fun generateViewQueryable(config: Config, view: View): ClassGenerator {
-    println("Generating queryable for view '${view.name}', queryable will be named '${view.daoName()}'.")
-    val g = ClassGenerator(view.daoName(), config.daoOutputPackage, config.daoOutputFolder)
+    println("Generating queryable for view '${view.name}', queryable will be named '${view.queryableName()}'.")
+    val g = ClassGenerator(view.queryableName(), config.daoOutputPackage, config.daoOutputFolder)
     if (!config.daosAreAbstract) {
         g.addClassAnnotation("@Repository")
         g.addImport(Repository::class.java)

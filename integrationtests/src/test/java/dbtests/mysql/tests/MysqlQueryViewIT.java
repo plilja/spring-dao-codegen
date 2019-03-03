@@ -2,11 +2,11 @@ package dbtests.mysql.tests;
 
 import dbtests.QueryViewTest;
 import dbtests.framework.Column;
+import dbtests.mysql.model.BazViewMysqlQueryable;
 import dbtests.mysql.model.ColorEnumMysql;
 import dbtests.mysql.model.MBazMysql;
 import dbtests.mysql.model.MBazMysqlRepo;
 import dbtests.mysql.model.MBazViewMysql;
-import dbtests.mysql.model.MBazViewMysqlRepo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -16,7 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {MysqlITConfig.class})
 @ExtendWith(SpringExtension.class)
-public class MysqlQueryViewIT extends QueryViewTest<MBazViewMysql, MBazViewMysqlRepo> {
+public class MysqlQueryViewIT extends QueryViewTest<MBazViewMysql, BazViewMysqlQueryable> {
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
@@ -25,7 +25,7 @@ public class MysqlQueryViewIT extends QueryViewTest<MBazViewMysql, MBazViewMysql
     private MBazMysqlRepo bazRepo;
 
     @Autowired
-    private MBazViewMysqlRepo viewRepo;
+    private BazViewMysqlQueryable viewQueryable;
 
     @Override
     public void clearTable() {
@@ -51,12 +51,12 @@ public class MysqlQueryViewIT extends QueryViewTest<MBazViewMysql, MBazViewMysql
     }
 
     @Override
-    protected MBazViewMysqlRepo getRepo() {
-        return viewRepo;
+    protected BazViewMysqlQueryable getQueryable() {
+        return viewQueryable;
     }
 
     @Override
     protected Column<MBazViewMysql, String> getNameColumn() {
-        return MBazViewMysqlRepo.COLUMN_NAME;
+        return BazViewMysqlQueryable.COLUMN_NAME;
     }
 }

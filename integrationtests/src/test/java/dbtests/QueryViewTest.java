@@ -25,7 +25,7 @@ public abstract class QueryViewTest<Entity, Repo extends Queryable<Entity>> {
 
     protected abstract String getColor(Entity entity);
 
-    protected abstract Repo getRepo();
+    protected abstract Repo getQueryable();
 
     protected abstract Column<Entity, String> getNameColumn();
 
@@ -40,7 +40,7 @@ public abstract class QueryViewTest<Entity, Repo extends Queryable<Entity>> {
         saveNew("Victoria", "GREEN");
 
         // when
-        List<Entity> res = getRepo().findAll();
+        List<Entity> res = getQueryable().findAll();
 
         // then
         assertEquals(
@@ -61,7 +61,7 @@ public abstract class QueryViewTest<Entity, Repo extends Queryable<Entity>> {
         saveNew("Ally", "BLUE");
 
         // when
-        List<Entity> res = getRepo().findAllOrderBy(SortOrder.asc(getNameColumn()));
+        List<Entity> res = getQueryable().findAllOrderBy(SortOrder.asc(getNameColumn()));
 
         // then
         assertEquals(4, res.size());
@@ -78,7 +78,7 @@ public abstract class QueryViewTest<Entity, Repo extends Queryable<Entity>> {
 
         // when
         assertThrows(TooManyRowsAvailableException.class, () -> {
-            getRepo().findAll(1);
+            getQueryable().findAll(1);
         });
     }
 
@@ -92,7 +92,7 @@ public abstract class QueryViewTest<Entity, Repo extends Queryable<Entity>> {
         saveNew("Ally", "BLUE");
 
         // when
-        List<Entity> res = getRepo().findAll(
+        List<Entity> res = getQueryable().findAll(
                 QueryItem.eq(getNameColumn(), "Victoria")
         );
 

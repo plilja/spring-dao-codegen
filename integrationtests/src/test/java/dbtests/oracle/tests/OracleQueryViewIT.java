@@ -5,7 +5,7 @@ import dbtests.framework.Column;
 import dbtests.oracle.model.BazOracle;
 import dbtests.oracle.model.BazOracleRepository;
 import dbtests.oracle.model.BazViewOracle;
-import dbtests.oracle.model.BazViewOracleRepository;
+import dbtests.oracle.model.BazViewOracleQueryable;
 import dbtests.oracle.model.ColorEnumOracle;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {OracleITConfig.class})
 @ExtendWith(SpringExtension.class)
-public class OracleQueryViewIT extends QueryViewTest<BazViewOracle, BazViewOracleRepository> {
+public class OracleQueryViewIT extends QueryViewTest<BazViewOracle, BazViewOracleQueryable> {
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
@@ -25,7 +25,7 @@ public class OracleQueryViewIT extends QueryViewTest<BazViewOracle, BazViewOracl
     private BazOracleRepository repo;
 
     @Autowired
-    private BazViewOracleRepository viewRepo;
+    private BazViewOracleQueryable viewQueryable;
 
     @Override
     protected void clearTable() {
@@ -52,12 +52,12 @@ public class OracleQueryViewIT extends QueryViewTest<BazViewOracle, BazViewOracl
     }
 
     @Override
-    protected BazViewOracleRepository getRepo() {
-        return viewRepo;
+    protected BazViewOracleQueryable getQueryable() {
+        return viewQueryable;
     }
 
     @Override
     protected Column<BazViewOracle, String> getNameColumn() {
-        return BazViewOracleRepository.COLUMN_NAME;
+        return BazViewOracleQueryable.COLUMN_NAME;
     }
 }

@@ -41,10 +41,6 @@ interface TableOrView {
         return columns.firstOrNull { it.name.toLowerCase().contains("name") }
     }
 
-    fun daoName(): String {
-        return config.daoPrefix + capitalizeFirst(camelCase(name)) + config.daoSuffix
-    }
-
     fun containsClobLikeField(): Boolean {
         return columns.map { it.isClobLike() }.any { it }
     }
@@ -55,7 +51,12 @@ data class View(
         override val name: String,
         override val columns: List<Column>,
         override val config: Config
-) : TableOrView
+) : TableOrView {
+
+    fun queryableName(): String {
+        return config.queryablePrefix + capitalizeFirst(camelCase(name)) + config.queryableSuffix
+    }
+}
 
 data class Table(
         override val schemaName: String?,
@@ -84,6 +85,11 @@ data class Table(
     fun versionColumn(): Column? {
         return columns.firstOrNull { it.isVersionColumn() }
     }
+
+    fun daoName(): String {
+        return config.daoPrefix + capitalizeFirst(camelCase(name)) + config.daoSuffix
+    }
+
 }
 
 data class Column(

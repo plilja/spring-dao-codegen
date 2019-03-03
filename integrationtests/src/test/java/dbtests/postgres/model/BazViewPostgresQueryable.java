@@ -2,15 +2,16 @@ package dbtests.postgres.model;
 
 import dbtests.framework.Column;
 import dbtests.framework.Queryable;
-import java.util.Arrays;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Repository
-public class BazViewPostgresDao extends Queryable<BazViewPostgresEntity> {
+public class BazViewPostgresQueryable extends Queryable<BazViewPostgresEntity> {
 
     public static final Column<BazViewPostgresEntity, Integer> COLUMN_BAZ_ID = new Column.IntColumn<>("baz_id", "bazId");
 
@@ -34,7 +35,7 @@ public class BazViewPostgresDao extends Queryable<BazViewPostgresEntity> {
     };
 
     @Autowired
-    public BazViewPostgresDao(NamedParameterJdbcTemplate jdbcTemplate) {
+    public BazViewPostgresQueryable(NamedParameterJdbcTemplate jdbcTemplate) {
         super(jdbcTemplate);
     }
 

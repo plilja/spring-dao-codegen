@@ -3,7 +3,7 @@ package dbtests.oracle.tests;
 import dbtests.FakeSpringSecurity;
 import dbtests.TransactionUtil;
 import dbtests.oracle.model.BazOracleRepository;
-import dbtests.oracle.model.BazViewOracleRepository;
+import dbtests.oracle.model.BazViewOracleQueryable;
 import dbtests.oracle.model.DataTypesOracleRepository;
 import dbtests.oracle.model.OneColumnGeneratedIdOracleRepository;
 import dbtests.oracle.model.OneColumnNaturalIdOracleRepository;
@@ -22,7 +22,7 @@ import javax.sql.DataSource;
         OneColumnNaturalIdOracleRepository.class,
         OneColumnGeneratedIdOracleRepository.class,
         DataTypesOracleRepository.class,
-        BazViewOracleRepository.class,
+        BazViewOracleQueryable.class,
         TransactionUtil.class})
 @EnableTransactionManagement
 @Configuration

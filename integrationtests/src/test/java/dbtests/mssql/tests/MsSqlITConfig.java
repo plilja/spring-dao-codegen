@@ -3,7 +3,7 @@ package dbtests.mssql.tests;
 import dbtests.FakeSpringSecurity;
 import dbtests.TransactionUtil;
 import dbtests.mssql.model.BazMsSqlDao;
-import dbtests.mssql.model.BazViewMsSqlDao;
+import dbtests.mssql.model.BazViewMsSqlQueryable;
 import dbtests.mssql.model.DataTypesMsSqlDao;
 import dbtests.mssql.model.OneColumnGeneratedIdMsSqlDao;
 import dbtests.mssql.model.OneColumnNaturalIdMsSqlDao;
@@ -23,7 +23,7 @@ import javax.sql.DataSource;
         OneColumnNaturalIdMsSqlDao.class,
         OneColumnGeneratedIdMsSqlDao.class,
         DataTypesMsSqlDao.class,
-        BazViewMsSqlDao.class,
+        BazViewMsSqlQueryable.class,
         TransactionUtil.class
 })
 @EnableTransactionManagement
