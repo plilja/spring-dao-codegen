@@ -72,6 +72,13 @@ CREATE TABLE test_schema."baz_postgres"
     CONSTRAINT "baz_pkey" PRIMARY KEY ("baz_id")
 );
 
+CREATE TABLE test_schema.excluded_postgres
+(
+    excluded_id serial NOT NULL,
+    name character varying(100),
+    CONSTRAINT "excluded_pkey" PRIMARY KEY (excluded_id)
+);
+
 
 CREATE VIEW test_schema.baz_view_postgres AS
 SELECT baz_id, baz_name, color FROM test_schema.baz_postgres;

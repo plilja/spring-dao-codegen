@@ -64,4 +64,8 @@ CREATE TABLE BazMysql (
 CREATE VIEW BazViewMysql AS
 SELECT id, name, color_enum_mysql_id FROM BazMysql;
 
+CREATE TABLE EXCLUDED_TABLE_MYSQL (
+    id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(30) NOT NULL
+);
 

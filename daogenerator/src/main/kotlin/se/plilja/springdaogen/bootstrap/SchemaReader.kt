@@ -22,13 +22,16 @@ fun readSchema(config: Config, dataSource: DataSource): Schema {
     val schemaFilter = if (config.schemas.isEmpty()) {
         IncludeAll()
     } else {
-        RegularExpressionInclusionRule(Pattern.compile("(?i)" + config.schemas.joinToString("|")))
+        RegularExpressionInclusionRule(regularExpressionFromList(config.schemas))
     }
+    val includePattern = if (!config.includeTables.isEmpty()) regularExpressionFromList(config.includeTables) else null
+    val excludePattern = if (!config.excludeTables.isEmpty()) regularExpressionFromList(config.excludeTables) else null
+    val tablesFilter = RegularExpressionRule(includePattern, excludePattern)
     println("Starting to crawl schema. This might be slow depending on the size of your database...")
     val options = SchemaCrawlerOptionsBuilder.builder()
             .withSchemaInfoLevel(SchemaInfoLevelBuilder.standard())
             .includeColumns(IncludeAll())
-            .includeTables(IncludeAll())
+            .includeTables(tablesFilter)
             .includeSchemas(schemaFilter)
             .includeSynonyms(ExcludeAll())
             .includeRoutines(ExcludeAll())
@@ -37,6 +40,9 @@ fun readSchema(config: Config, dataSource: DataSource): Schema {
     println("Done crawling schema.")
     return catalogToSchema(catalog, config)
 }
+
+private fun regularExpressionFromList(rules: List<String>) =
+        Pattern.compile("(?i)" + rules.map { r -> ".*\\.?$r" }.joinToString("|"))
 
 fun catalogToSchema(catalog: Catalog, config: Config): Schema {
     println("Found these tables: ${catalog.tables.map { it.name }.joinToString(", ")}.")
