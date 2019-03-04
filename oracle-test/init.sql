@@ -99,4 +99,8 @@ END;
 
 
 CREATE VIEW DOCKER.BAZ_VIEW_ORACLE(ID, NAME, COLOR) AS
-SELECT id, name, color FROM DOCKER.BAZ_ORACLE;
+SELECT 
+id,
+name as 'name with space',
+color
+FROM DOCKER.BAZ_ORACLE;

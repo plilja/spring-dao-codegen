@@ -19,6 +19,6 @@ public class BazViewMsSqlEntity {
     private Integer id;
     @NotNull
     @Size(max = 30)
-    private String name;
+    private String nameWithSpace;
 
 }

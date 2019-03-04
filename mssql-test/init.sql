@@ -94,7 +94,11 @@ ADD CONSTRAINT enum_fk FOREIGN KEY (color) REFERENCES color_enum_ms_sql (name)
 GO
 
 CREATE VIEW baz_view_ms_sql AS
-SELECT id, name, color FROM baz_ms_sql
+SELECT 
+id,
+name as 'name With space',
+color
+FROM baz_ms_sql
 
 GO
 

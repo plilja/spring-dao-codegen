@@ -42,7 +42,7 @@ public class MysqlQueryViewIT extends QueryViewTest<MBazViewMysql, BazViewMysqlQ
 
     @Override
     protected String getName(MBazViewMysql o) {
-        return o.getName();
+        return o.getNameWithSpace();
     }
 
     @Override
@@ -57,6 +57,6 @@ public class MysqlQueryViewIT extends QueryViewTest<MBazViewMysql, BazViewMysqlQ
 
     @Override
     protected Column<MBazViewMysql, String> getNameColumn() {
-        return BazViewMysqlQueryable.COLUMN_NAME;
+        return BazViewMysqlQueryable.COLUMN_NAME_WITH_SPACE;
     }
 }

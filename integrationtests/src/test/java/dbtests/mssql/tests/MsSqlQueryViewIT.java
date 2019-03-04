@@ -42,7 +42,7 @@ public class MsSqlQueryViewIT extends QueryViewTest<BazViewMsSqlEntity, BazViewM
 
     @Override
     protected String getName(BazViewMsSqlEntity o) {
-        return o.getName();
+        return o.getNameWithSpace();
     }
 
     @Override
@@ -57,6 +57,6 @@ public class MsSqlQueryViewIT extends QueryViewTest<BazViewMsSqlEntity, BazViewM
 
     @Override
     protected Column<BazViewMsSqlEntity, String> getNameColumn() {
-        return BazViewMsSqlQueryable.COLUMN_NAME;
+        return BazViewMsSqlQueryable.COLUMN_NAME_WITH_SPACE;
     }
 }

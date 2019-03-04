@@ -4,15 +4,15 @@ public class MBazViewMysql {
 
     private Integer colorEnumMysqlId;
     private Integer id;
-    private String name;
+    private String nameWithSpace;
 
     public MBazViewMysql() {
     }
 
-    public MBazViewMysql(Integer colorEnumMysqlId, Integer id, String name) {
+    public MBazViewMysql(Integer colorEnumMysqlId, Integer id, String nameWithSpace) {
         this.colorEnumMysqlId = colorEnumMysqlId;
         this.id = id;
-        this.name = name;
+        this.nameWithSpace = nameWithSpace;
     }
 
     public Integer getColorEnumMysqlId() {
@@ -31,12 +31,12 @@ public class MBazViewMysql {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getNameWithSpace() {
+        return nameWithSpace;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNameWithSpace(String nameWithSpace) {
+        this.nameWithSpace = nameWithSpace;
     }
 
 }

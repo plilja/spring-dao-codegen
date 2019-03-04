@@ -304,14 +304,14 @@ fun formatIdentifier(identifier: String, databaseDialect: DatabaseDialect): Stri
     }
     val needsPostgresCaseEscaping =
             databaseDialect == DatabaseDialect.POSTGRES && identifier.toLowerCase() != identifier
-    if (needsPostgresCaseEscaping || isDatabaseIdentifier(identifier, databaseDialect)) {
+    if (needsPostgresCaseEscaping || isDatabaseKeyword(identifier, databaseDialect) || ' ' in identifier) {
         return "$escapeSeq$identifier$escapeSeq"
     } else {
         return identifier
     }
 }
 
-fun isDatabaseIdentifier(identifier: String, databaseDialect: DatabaseDialect): Boolean {
+fun isDatabaseKeyword(identifier: String, databaseDialect: DatabaseDialect): Boolean {
     return SqlKeywords.get(databaseDialect).contains(identifier.toUpperCase())
 }
 

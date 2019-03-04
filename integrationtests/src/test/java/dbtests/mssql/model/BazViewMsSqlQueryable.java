@@ -16,20 +16,20 @@ public class BazViewMsSqlQueryable extends Queryable<BazViewMsSqlEntity> {
 
     public static final Column<BazViewMsSqlEntity, Integer> COLUMN_ID = new Column.IntColumn<>("id", "id");
 
-    public static final Column<BazViewMsSqlEntity, String> COLUMN_NAME = new Column.StringColumn<>("name", "name");
+    public static final Column<BazViewMsSqlEntity, String> COLUMN_NAME_WITH_SPACE = new Column.StringColumn<>("\"name With space\"", "nameWithSpace");
 
     public static final List<Column<BazViewMsSqlEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_COLOR,
             COLUMN_ID,
-            COLUMN_NAME);
+            COLUMN_NAME_WITH_SPACE);
 
-    private static final String ALL_COLUMNS = " color, id, name ";
+    private static final String ALL_COLUMNS = " color, id, \"name With space\" ";
 
     private static final RowMapper<BazViewMsSqlEntity> ROW_MAPPER = (rs, i) -> {
         BazViewMsSqlEntity r = new BazViewMsSqlEntity();
         r.setColor(rs.getString("color"));
         r.setId(rs.getInt("id"));
-        r.setName(rs.getString("name"));
+        r.setNameWithSpace(rs.getString("name With space"));
         return r;
     };
 

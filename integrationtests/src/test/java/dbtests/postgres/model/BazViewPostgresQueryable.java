@@ -14,22 +14,22 @@ public class BazViewPostgresQueryable extends Queryable<BazViewPostgresEntity> {
 
     public static final Column<BazViewPostgresEntity, Integer> COLUMN_BAZ_ID = new Column.IntColumn<>("baz_id", "bazId");
 
-    public static final Column<BazViewPostgresEntity, String> COLUMN_BAZ_NAME = new Column.StringColumn<>("baz_name", "bazName");
-
     public static final Column<BazViewPostgresEntity, String> COLUMN_COLOR = new Column.StringColumn<>("color", "color");
+
+    public static final Column<BazViewPostgresEntity, String> COLUMN_NAME_WITH_SPACE = new Column.StringColumn<>("\"name with space\"", "nameWithSpace");
 
     public static final List<Column<BazViewPostgresEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_BAZ_ID,
-            COLUMN_BAZ_NAME,
-            COLUMN_COLOR);
+            COLUMN_COLOR,
+            COLUMN_NAME_WITH_SPACE);
 
-    private static final String ALL_COLUMNS = " baz_id, baz_name, color ";
+    private static final String ALL_COLUMNS = " baz_id, color, \"name with space\" ";
 
     private static final RowMapper<BazViewPostgresEntity> ROW_MAPPER = (rs, i) -> {
         BazViewPostgresEntity r = new BazViewPostgresEntity();
         r.setBazId(rs.getObject("baz_id") != null ? rs.getInt("baz_id") : null);
-        r.setBazName(rs.getString("baz_name"));
         r.setColor(rs.getString("color"));
+        r.setNameWithSpace(rs.getString("name with space"));
         return r;
     };
 

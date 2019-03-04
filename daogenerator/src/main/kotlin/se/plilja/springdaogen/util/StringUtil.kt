@@ -4,12 +4,12 @@ package se.plilja.springdaogen.util
 fun camelCase(s: String): String {
     return if (isAllUpper(s)) {
         s.toLowerCase()
-    } else if (!s.contains("_")) {
+    } else if (!s.contains('_') && !s.contains(' ')) {
         // Looks like it's already camel
         s
     } else {
         lowerCaseFirst(
-            s.split("_").map { capitalizeFirst(it.toLowerCase()) }.joinToString(
+            s.split('_', ' ').map { capitalizeFirst(it.toLowerCase()) }.joinToString(
                 ""
             )
         )
@@ -29,15 +29,17 @@ fun snakeCase(s: String): String {
     } else {
         val parts = ArrayList<String>()
         var part = ""
+        var wasSpace = false
         for (c in s) {
-            if (c.isUpperCase()) {
+            if (wasSpace || c.isUpperCase()) {
                 if (!part.isEmpty()) {
                     parts.add(part)
                 }
                 part = "$c"
-            } else {
+            } else if (c != ' '){
                 part += c
             }
+            wasSpace = c == ' '
         }
         if (!part.isEmpty()) {
             parts.add(part)

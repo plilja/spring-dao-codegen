@@ -6,16 +6,16 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class BazViewPostgresEntity {
 
     private Integer bazId;
-    private String bazName;
     private String color;
+    private String nameWithSpace;
 
     public BazViewPostgresEntity() {
     }
 
-    public BazViewPostgresEntity(Integer bazId, String bazName, String color) {
+    public BazViewPostgresEntity(Integer bazId, String color, String nameWithSpace) {
         this.bazId = bazId;
-        this.bazName = bazName;
         this.color = color;
+        this.nameWithSpace = nameWithSpace;
     }
 
     public Integer getBazId() {
@@ -26,20 +26,20 @@ public class BazViewPostgresEntity {
         this.bazId = bazId;
     }
 
-    public String getBazName() {
-        return bazName;
-    }
-
-    public void setBazName(String bazName) {
-        this.bazName = bazName;
-    }
-
     public String getColor() {
         return color;
     }
 
     public void setColor(String color) {
         this.color = color;
+    }
+
+    public String getNameWithSpace() {
+        return nameWithSpace;
+    }
+
+    public void setNameWithSpace(String nameWithSpace) {
+        this.nameWithSpace = nameWithSpace;
     }
 
 }

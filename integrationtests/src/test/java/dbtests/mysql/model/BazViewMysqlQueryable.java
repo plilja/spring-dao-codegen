@@ -16,20 +16,20 @@ public class BazViewMysqlQueryable extends Queryable<MBazViewMysql> {
 
     public static final Column<MBazViewMysql, Integer> COLUMN_ID = new Column.IntColumn<>("id", "id");
 
-    public static final Column<MBazViewMysql, String> COLUMN_NAME = new Column.StringColumn<>("name", "name");
+    public static final Column<MBazViewMysql, String> COLUMN_NAME_WITH_SPACE = new Column.StringColumn<>("`Name With space`", "nameWithSpace");
 
     public static final List<Column<MBazViewMysql, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_COLOR_ENUM_MYSQL_ID,
             COLUMN_ID,
-            COLUMN_NAME);
+            COLUMN_NAME_WITH_SPACE);
 
-    private static final String ALL_COLUMNS = " color_enum_mysql_id, id, name ";
+    private static final String ALL_COLUMNS = " color_enum_mysql_id, id, `Name With space` ";
 
     private static final RowMapper<MBazViewMysql> ROW_MAPPER = (rs, i) -> {
         MBazViewMysql r = new MBazViewMysql();
         r.setColorEnumMysqlId(rs.getObject("color_enum_mysql_id") != null ? rs.getInt("color_enum_mysql_id") : null);
         r.setId(rs.getInt("id"));
-        r.setName(rs.getString("name"));
+        r.setNameWithSpace(rs.getString("Name With space"));
         return r;
     };
 

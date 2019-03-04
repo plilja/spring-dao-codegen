@@ -81,5 +81,9 @@ CREATE TABLE test_schema.excluded_postgres
 
 
 CREATE VIEW test_schema.baz_view_postgres AS
-SELECT baz_id, baz_name, color FROM test_schema.baz_postgres;
+SELECT 
+baz_id,
+baz_name as "name with space",
+color 
+FROM test_schema.baz_postgres;
 

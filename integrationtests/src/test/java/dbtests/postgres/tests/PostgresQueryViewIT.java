@@ -42,7 +42,7 @@ public class PostgresQueryViewIT extends QueryViewTest<BazViewPostgresEntity, Ba
 
     @Override
     protected String getName(BazViewPostgresEntity o) {
-        return o.getBazName();
+        return o.getNameWithSpace();
     }
 
     @Override
@@ -57,6 +57,6 @@ public class PostgresQueryViewIT extends QueryViewTest<BazViewPostgresEntity, Ba
 
     @Override
     protected Column<BazViewPostgresEntity, String> getNameColumn() {
-        return BazViewPostgresQueryable.COLUMN_BAZ_NAME;
+        return BazViewPostgresQueryable.COLUMN_NAME_WITH_SPACE;
     }
 }
