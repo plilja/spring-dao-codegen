@@ -25,17 +25,17 @@ public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
 
     public static final Column.LongColumn<MDataTypesMysql> COLUMN_ID = new Column.LongColumn<>("id", "id");
 
-    public static final Column.LongColumn<MDataTypesMysql> COLUMN_BIGINT = new Column.LongColumn<>("`bigint`", "bigint");
+    public static final Column.LongColumn<MDataTypesMysql> COLUMN_BIGINT = new Column.LongColumn<>("bigint", "`bigint`", "bigint");
 
-    public static final Column.BooleanColumn<MDataTypesMysql> COLUMN_BIT = new Column.BooleanColumn<>("`bit`", "bit");
+    public static final Column.BooleanColumn<MDataTypesMysql> COLUMN_BIT = new Column.BooleanColumn<>("bit", "`bit`", "bit");
 
-    public static final Column<MDataTypesMysql, byte[]> COLUMN_BLOB = new Column<>("`blob`", "blob", byte[].class);
+    public static final Column<MDataTypesMysql, byte[]> COLUMN_BLOB = new Column<>("blob", "`blob`", "blob", byte[].class);
 
-    public static final Column.BooleanColumn<MDataTypesMysql> COLUMN_BOOL = new Column.BooleanColumn<>("`bool`", "bool");
+    public static final Column.BooleanColumn<MDataTypesMysql> COLUMN_BOOL = new Column.BooleanColumn<>("bool", "`bool`", "bool");
 
-    public static final Column.DateColumn<MDataTypesMysql> COLUMN_DATE = new Column.DateColumn<>("`date`", "date");
+    public static final Column.DateColumn<MDataTypesMysql> COLUMN_DATE = new Column.DateColumn<>("date", "`date`", "date");
 
-    public static final Column.DateTimeColumn<MDataTypesMysql> COLUMN_DATETIME = new Column.DateTimeColumn<>("`datetime`", "datetime");
+    public static final Column.DateTimeColumn<MDataTypesMysql> COLUMN_DATETIME = new Column.DateTimeColumn<>("datetime", "`datetime`", "datetime");
 
     public static final Column.LongColumn<MDataTypesMysql> COLUMN_DECIMAL_EIGHTEEN_ZERO = new Column.LongColumn<>("decimal_eighteen_zero", "decimalEighteenZero");
 
@@ -47,35 +47,35 @@ public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
 
     public static final Column.LongColumn<MDataTypesMysql> COLUMN_DECIMAL_TEN_ZERO = new Column.LongColumn<>("decimal_ten_zero", "decimalTenZero");
 
-    public static final Column.DoubleColumn<MDataTypesMysql> COLUMN_DOUBLE = new Column.DoubleColumn<>("`double`", "doublE");
+    public static final Column.DoubleColumn<MDataTypesMysql> COLUMN_DOUBLE = new Column.DoubleColumn<>("double", "`double`", "doublE");
 
-    public static final Column<MDataTypesMysql, Float> COLUMN_FLOAT = new Column<>("`float`", "floaT", Float.class);
+    public static final Column<MDataTypesMysql, Float> COLUMN_FLOAT = new Column<>("float", "`float`", "floaT", Float.class);
 
-    public static final Column.IntColumn<MDataTypesMysql> COLUMN_INT = new Column.IntColumn<>("`int`", "inT");
+    public static final Column.IntColumn<MDataTypesMysql> COLUMN_INT = new Column.IntColumn<>("int", "`int`", "inT");
 
-    public static final Column.IntColumn<MDataTypesMysql> COLUMN_INTEGER = new Column.IntColumn<>("`integer`", "integer");
+    public static final Column.IntColumn<MDataTypesMysql> COLUMN_INTEGER = new Column.IntColumn<>("integer", "`integer`", "integer");
 
-    public static final Column.StringColumn<MDataTypesMysql> COLUMN_JSON = new Column.StringColumn<>("`json`", "json");
+    public static final Column.StringColumn<MDataTypesMysql> COLUMN_JSON = new Column.StringColumn<>("json", "`json`", "json");
 
-    public static final Column.IntColumn<MDataTypesMysql> COLUMN_MEDIUMINT = new Column.IntColumn<>("`mediumint`", "mediumint");
+    public static final Column.IntColumn<MDataTypesMysql> COLUMN_MEDIUMINT = new Column.IntColumn<>("mediumint", "`mediumint`", "mediumint");
 
-    public static final Column.IntColumn<MDataTypesMysql> COLUMN_SMALLINT = new Column.IntColumn<>("`smallint`", "smallint");
+    public static final Column.IntColumn<MDataTypesMysql> COLUMN_SMALLINT = new Column.IntColumn<>("smallint", "`smallint`", "smallint");
 
-    public static final Column.StringColumn<MDataTypesMysql> COLUMN_TEXT = new Column.StringColumn<>("`text`", "text");
+    public static final Column.StringColumn<MDataTypesMysql> COLUMN_TEXT = new Column.StringColumn<>("text", "`text`", "text");
 
-    public static final Column<MDataTypesMysql, LocalTime> COLUMN_TIME = new Column<>("`time`", "time", LocalTime.class);
+    public static final Column<MDataTypesMysql, LocalTime> COLUMN_TIME = new Column<>("time", "`time`", "time", LocalTime.class);
 
-    public static final Column.DateTimeColumn<MDataTypesMysql> COLUMN_TIMESTAMP = new Column.DateTimeColumn<>("`timestamp`", "timestamp");
+    public static final Column.DateTimeColumn<MDataTypesMysql> COLUMN_TIMESTAMP = new Column.DateTimeColumn<>("timestamp", "`timestamp`", "timestamp");
 
-    public static final Column<MDataTypesMysql, byte[]> COLUMN_TINYBLOB = new Column<>("`tinyblob`", "tinyblob", byte[].class);
+    public static final Column<MDataTypesMysql, byte[]> COLUMN_TINYBLOB = new Column<>("tinyblob", "`tinyblob`", "tinyblob", byte[].class);
 
-    public static final Column.IntColumn<MDataTypesMysql> COLUMN_TINYINT = new Column.IntColumn<>("`tinyint`", "tinyint");
+    public static final Column.IntColumn<MDataTypesMysql> COLUMN_TINYINT = new Column.IntColumn<>("tinyint", "`tinyint`", "tinyint");
 
     public static final Column.StringColumn<MDataTypesMysql> COLUMN_VARCHAR_10 = new Column.StringColumn<>("varchar_10", "varchar10");
 
     public static final Column<MDataTypesMysql, byte[]> COLUMN_VARCHAR_BINARY_10 = new Column<>("varchar_binary_10", "varcharBinary10", byte[].class);
 
-    public static final Column.IntColumn<MDataTypesMysql> COLUMN_YEAR = new Column.IntColumn<>("`year`", "year");
+    public static final Column.IntColumn<MDataTypesMysql> COLUMN_YEAR = new Column.IntColumn<>("year", "`year`", "year");
 
     public static final List<Column<MDataTypesMysql, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID,

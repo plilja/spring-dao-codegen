@@ -15,12 +15,18 @@ import java.util.Objects;
 public class Column<EntityType, ValueType> {
     private final String columnName;
     private final String fieldName;
+    private String escapedColumnName;
     private final Class<ValueType> type;
 
-    public Column(String columnName, String fieldName, Class<ValueType> type) {
+    public Column(String columnName, String escapedColumnName, String fieldName, Class<ValueType> type) {
         this.columnName = columnName;
         this.fieldName = fieldName;
+        this.escapedColumnName = escapedColumnName;
         this.type = type;
+    }
+
+    public Column(String columnName, String fieldName, Class<ValueType> type) {
+        this(columnName, columnName, fieldName, type);
     }
 
     public String getColumnName() {
@@ -29,6 +35,10 @@ public class Column<EntityType, ValueType> {
 
     public String getFieldName() {
         return fieldName;
+    }
+
+    String getEscapedColumnName() {
+        return escapedColumnName;
     }
 
     public Class<ValueType> getType() {
@@ -50,17 +60,22 @@ public class Column<EntityType, ValueType> {
         Column<?, ?> column = (Column<?, ?>) o;
         return Objects.equals(columnName, column.columnName) &&
                 Objects.equals(fieldName, column.fieldName) &&
+                Objects.equals(escapedColumnName, column.escapedColumnName) &&
                 Objects.equals(type, column.type);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(columnName, fieldName, type);
+        return Objects.hash(columnName, fieldName, escapedColumnName, type);
     }
 
     public static class StringColumn<EntityType> extends Column<EntityType, String> {
         public StringColumn(String columnName, String fieldName) {
             super(columnName, fieldName, String.class);
+        }
+
+        public StringColumn(String columnName, String escapedColumnName, String fieldName) {
+            super(columnName, escapedColumnName, fieldName, String.class);
         }
     }
 
@@ -68,11 +83,19 @@ public class Column<EntityType, ValueType> {
         public IntColumn(String columnName, String fieldName) {
             super(columnName, fieldName, Integer.class);
         }
+
+        public IntColumn(String columnName, String escapedColumnName, String fieldName) {
+            super(columnName, escapedColumnName, fieldName, Integer.class);
+        }
     }
 
     public static class LongColumn<EntityType> extends Column<EntityType, Long> {
         public LongColumn(String columnName, String fieldName) {
             super(columnName, fieldName, Long.class);
+        }
+
+        public LongColumn(String columnName, String escapedColumnName, String fieldName) {
+            super(columnName, escapedColumnName, fieldName, Long.class);
         }
     }
 
@@ -80,11 +103,18 @@ public class Column<EntityType, ValueType> {
         public DoubleColumn(String columnName, String fieldName) {
             super(columnName, fieldName, Double.class);
         }
+        public DoubleColumn(String columnName, String escapedColumnName, String fieldName) {
+            super(columnName, escapedColumnName, fieldName, Double.class);
+        }
     }
 
     public static class BooleanColumn<EntityType> extends Column<EntityType, Boolean> {
         public BooleanColumn(String columnName, String fieldName) {
             super(columnName, fieldName, Boolean.class);
+        }
+
+        public BooleanColumn(String columnName, String escapedColumnName, String fieldName) {
+            super(columnName, escapedColumnName, fieldName, Boolean.class);
         }
     }
 
@@ -92,11 +122,19 @@ public class Column<EntityType, ValueType> {
         public DateColumn(String columnName, String fieldName) {
             super(columnName, fieldName, LocalDate.class);
         }
+
+        public DateColumn(String columnName, String escapedColumnName, String fieldName) {
+            super(columnName, escapedColumnName, fieldName, LocalDate.class);
+        }
     }
 
     public static class DateTimeColumn<EntityType> extends Column<EntityType, LocalDateTime> {
         public DateTimeColumn(String columnName, String fieldName) {
             super(columnName, fieldName, LocalDateTime.class);
+        }
+
+        public DateTimeColumn(String columnName, String escapedColumnName, String fieldName) {
+            super(columnName, escapedColumnName, fieldName, LocalDateTime.class);
         }
     }
 
@@ -104,11 +142,19 @@ public class Column<EntityType, ValueType> {
         public BigDecimalColumn(String columnName, String fieldName) {
             super(columnName, fieldName, BigDecimal.class);
         }
+
+        public BigDecimalColumn(String columnName, String escapedColumnName, String fieldName) {
+            super(columnName, escapedColumnName, fieldName, BigDecimal.class);
+        }
     }
 
     public static class BigIntegerColumn<EntityType> extends Column<EntityType, BigInteger> {
         public BigIntegerColumn(String columnName, String fieldName) {
             super(columnName, fieldName, BigInteger.class);
+        }
+
+        public BigIntegerColumn(String columnName, String escapedColumnName, String fieldName) {
+            super(columnName, escapedColumnName, fieldName, BigInteger.class);
         }
     }
 }

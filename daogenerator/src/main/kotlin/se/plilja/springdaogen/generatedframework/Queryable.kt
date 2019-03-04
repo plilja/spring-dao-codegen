@@ -182,7 +182,7 @@ public abstract class Queryable<T> {
         if (!orderBy.isEmpty()) {
             orderByClause.append("ORDER BY ");
             List<String> columnNames = orderBy.stream()
-                    .map(s -> s.getColumn().getColumnName() + " " + s.getOrder())
+                    .map(s -> s.getColumn().getEscapedColumnName() + " " + s.getOrder())
                     .collect(Collectors.toList());
             orderByClause.append(String.join(", ", columnNames));
         }

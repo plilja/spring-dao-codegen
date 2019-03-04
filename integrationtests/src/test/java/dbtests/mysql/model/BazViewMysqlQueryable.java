@@ -16,7 +16,7 @@ public class BazViewMysqlQueryable extends Queryable<MBazViewMysql> {
 
     public static final Column.IntColumn<MBazViewMysql> COLUMN_ID = new Column.IntColumn<>("id", "id");
 
-    public static final Column.StringColumn<MBazViewMysql> COLUMN_NAME_WITH_SPACE = new Column.StringColumn<>("`Name With space`", "nameWithSpace");
+    public static final Column.StringColumn<MBazViewMysql> COLUMN_NAME_WITH_SPACE = new Column.StringColumn<>("Name With space", "`Name With space`", "nameWithSpace");
 
     public static final List<Column<MBazViewMysql, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_COLOR_ENUM_MYSQL_ID,

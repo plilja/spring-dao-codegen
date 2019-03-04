@@ -37,7 +37,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
 
     public static final Column.StringColumn<DataTypesOracle> COLUMN_CLOB = new Column.StringColumn<>("CLOB", "clob");
 
-    public static final Column.DateColumn<DataTypesOracle> COLUMN_DATE = new Column.DateColumn<>("\"DATE\"", "date");
+    public static final Column.DateColumn<DataTypesOracle> COLUMN_DATE = new Column.DateColumn<>("DATE", "\"DATE\"", "date");
 
     public static final Column.StringColumn<DataTypesOracle> COLUMN_NLOB = new Column.StringColumn<>("NLOB", "nlob");
 
@@ -55,9 +55,9 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
 
     public static final Column<DataTypesOracle, OffsetDateTime> COLUMN_TIMESTAMP_TZ = new Column<>("TIMESTAMP_TZ", "timestampTz", OffsetDateTime.class);
 
-    public static final Column.StringColumn<DataTypesOracle> COLUMN_VARCHAR = new Column.StringColumn<>("\"VARCHAR\"", "varchar");
+    public static final Column.StringColumn<DataTypesOracle> COLUMN_VARCHAR = new Column.StringColumn<>("VARCHAR", "\"VARCHAR\"", "varchar");
 
-    public static final Column.StringColumn<DataTypesOracle> COLUMN_VARCHAR2 = new Column.StringColumn<>("\"VARCHAR2\"", "varchar2");
+    public static final Column.StringColumn<DataTypesOracle> COLUMN_VARCHAR2 = new Column.StringColumn<>("VARCHAR2", "\"VARCHAR2\"", "varchar2");
 
     public static final List<Column<DataTypesOracle, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID,
