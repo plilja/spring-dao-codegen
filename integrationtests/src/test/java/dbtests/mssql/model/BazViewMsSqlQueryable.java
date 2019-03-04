@@ -12,11 +12,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class BazViewMsSqlQueryable extends Queryable<BazViewMsSqlEntity> {
 
-    public static final Column<BazViewMsSqlEntity, String> COLUMN_COLOR = new Column.StringColumn<>("color", "color");
+    public static final Column.StringColumn<BazViewMsSqlEntity> COLUMN_COLOR = new Column.StringColumn<>("color", "color");
 
-    public static final Column<BazViewMsSqlEntity, Integer> COLUMN_ID = new Column.IntColumn<>("id", "id");
+    public static final Column.IntColumn<BazViewMsSqlEntity> COLUMN_ID = new Column.IntColumn<>("id", "id");
 
-    public static final Column<BazViewMsSqlEntity, String> COLUMN_NAME_WITH_SPACE = new Column.StringColumn<>("\"name With space\"", "nameWithSpace");
+    public static final Column.StringColumn<BazViewMsSqlEntity> COLUMN_NAME_WITH_SPACE = new Column.StringColumn<>("\"name With space\"", "nameWithSpace");
 
     public static final List<Column<BazViewMsSqlEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_COLOR,

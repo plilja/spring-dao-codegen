@@ -12,11 +12,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class BazViewOracleQueryable extends Queryable<BazViewOracle> {
 
-    public static final Column<BazViewOracle, String> COLUMN_COLOR = new Column.StringColumn<>("COLOR", "color");
+    public static final Column.StringColumn<BazViewOracle> COLUMN_COLOR = new Column.StringColumn<>("COLOR", "color");
 
-    public static final Column<BazViewOracle, Integer> COLUMN_ID = new Column.IntColumn<>("ID", "id");
+    public static final Column.IntColumn<BazViewOracle> COLUMN_ID = new Column.IntColumn<>("ID", "id");
 
-    public static final Column<BazViewOracle, String> COLUMN_NAME = new Column.StringColumn<>("NAME", "name");
+    public static final Column.StringColumn<BazViewOracle> COLUMN_NAME = new Column.StringColumn<>("NAME", "name");
 
     public static final List<Column<BazViewOracle, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_COLOR,

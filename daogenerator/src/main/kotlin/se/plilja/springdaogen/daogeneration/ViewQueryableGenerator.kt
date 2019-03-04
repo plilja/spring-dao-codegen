@@ -40,10 +40,11 @@ fun generateViewQueryable(config: Config, view: View): ClassGenerator {
             }
         }
         val name = "COLUMN_${snakeCase(column.name).toUpperCase()}"
+        val (columnTypeDecl, init) = columnConstantInitializer(view, column, config)
         g.addConstant(
                 name,
-                "Column<${view.entityName()}, ${column.typeName()}>",
-                columnConstantInitializer(column, config)
+                columnTypeDecl,
+                init
         )
         columnsConstantNames.add(name)
     }

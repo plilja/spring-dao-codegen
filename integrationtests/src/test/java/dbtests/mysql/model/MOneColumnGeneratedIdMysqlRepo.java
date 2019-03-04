@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class MOneColumnGeneratedIdMysqlRepo extends Dao<MOneColumnGeneratedIdMysql, Integer> {
 
-    public static final Column<MOneColumnGeneratedIdMysql, Integer> COLUMN_ID = new Column.IntColumn<>("id", "id");
+    public static final Column.IntColumn<MOneColumnGeneratedIdMysql> COLUMN_ID = new Column.IntColumn<>("id", "id");
 
     public static final List<Column<MOneColumnGeneratedIdMysql, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID);

@@ -17,21 +17,21 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
 
-    public static final Column<MBazMysql, Integer> COLUMN_ID = new Column.IntColumn<>("id", "id");
+    public static final Column.IntColumn<MBazMysql> COLUMN_ID = new Column.IntColumn<>("id", "id");
 
-    public static final Column<MBazMysql, LocalDateTime> COLUMN_CHANGED_AT = new Column.DateTimeColumn<>("changed_at", "changedAt");
+    public static final Column.DateTimeColumn<MBazMysql> COLUMN_CHANGED_AT = new Column.DateTimeColumn<>("changed_at", "changedAt");
 
-    public static final Column<MBazMysql, String> COLUMN_CHANGED_BY = new Column.StringColumn<>("changed_by", "changedBy");
+    public static final Column.StringColumn<MBazMysql> COLUMN_CHANGED_BY = new Column.StringColumn<>("changed_by", "changedBy");
 
     public static final Column<MBazMysql, ColorEnumMysql> COLUMN_COLOR_ENUM_MYSQL_ID = new Column<>("color_enum_mysql_id", "colorEnumMysql", ColorEnumMysql.class);
 
-    public static final Column<MBazMysql, LocalDateTime> COLUMN_CREATED_AT = new Column.DateTimeColumn<>("created_at", "createdAt");
+    public static final Column.DateTimeColumn<MBazMysql> COLUMN_CREATED_AT = new Column.DateTimeColumn<>("created_at", "createdAt");
 
-    public static final Column<MBazMysql, String> COLUMN_CREATED_BY = new Column.StringColumn<>("created_by", "createdBy");
+    public static final Column.StringColumn<MBazMysql> COLUMN_CREATED_BY = new Column.StringColumn<>("created_by", "createdBy");
 
-    public static final Column<MBazMysql, String> COLUMN_NAME = new Column.StringColumn<>("name", "name");
+    public static final Column.StringColumn<MBazMysql> COLUMN_NAME = new Column.StringColumn<>("name", "name");
 
-    public static final Column<MBazMysql, Integer> COLUMN_VERSION = new Column.IntColumn<>("version", "version");
+    public static final Column.IntColumn<MBazMysql> COLUMN_VERSION = new Column.IntColumn<>("version", "version");
 
     public static final List<Column<MBazMysql, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID,

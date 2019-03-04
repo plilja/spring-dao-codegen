@@ -46,10 +46,11 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
                 }
             }
             val name = "COLUMN_${snakeCase(column.name).toUpperCase()}"
+            val (columnTypeDecl, init) = columnConstantInitializer(table, column, config)
             g.addConstant(
                     name,
-                    "Column<${table.entityName()}, ${column.typeName()}>",
-                    columnConstantInitializer(column, config)
+                    columnTypeDecl,
+                    init
             )
             columnsConstantNames.add(name)
         }

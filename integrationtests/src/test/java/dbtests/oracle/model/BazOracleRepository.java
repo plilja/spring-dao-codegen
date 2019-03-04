@@ -17,21 +17,21 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class BazOracleRepository extends Dao<BazOracle, Integer> {
 
-    public static final Column<BazOracle, Integer> COLUMN_ID = new Column.IntColumn<>("ID", "id");
+    public static final Column.IntColumn<BazOracle> COLUMN_ID = new Column.IntColumn<>("ID", "id");
 
-    public static final Column<BazOracle, LocalDateTime> COLUMN_CHANGED_AT = new Column.DateTimeColumn<>("CHANGED_AT", "changedAt");
+    public static final Column.DateTimeColumn<BazOracle> COLUMN_CHANGED_AT = new Column.DateTimeColumn<>("CHANGED_AT", "changedAt");
 
-    public static final Column<BazOracle, String> COLUMN_CHANGED_BY = new Column.StringColumn<>("CHANGED_BY", "changedBy");
+    public static final Column.StringColumn<BazOracle> COLUMN_CHANGED_BY = new Column.StringColumn<>("CHANGED_BY", "changedBy");
 
     public static final Column<BazOracle, ColorEnumOracle> COLUMN_COLOR = new Column<>("COLOR", "color", ColorEnumOracle.class);
 
-    public static final Column<BazOracle, LocalDateTime> COLUMN_CREATED_AT = new Column.DateTimeColumn<>("CREATED_AT", "createdAt");
+    public static final Column.DateTimeColumn<BazOracle> COLUMN_CREATED_AT = new Column.DateTimeColumn<>("CREATED_AT", "createdAt");
 
-    public static final Column<BazOracle, String> COLUMN_CREATED_BY = new Column.StringColumn<>("CREATED_BY", "createdBy");
+    public static final Column.StringColumn<BazOracle> COLUMN_CREATED_BY = new Column.StringColumn<>("CREATED_BY", "createdBy");
 
-    public static final Column<BazOracle, String> COLUMN_NAME = new Column.StringColumn<>("NAME", "name");
+    public static final Column.StringColumn<BazOracle> COLUMN_NAME = new Column.StringColumn<>("NAME", "name");
 
-    public static final Column<BazOracle, Integer> COLUMN_VERSION = new Column.IntColumn<>("VERSION", "version");
+    public static final Column.IntColumn<BazOracle> COLUMN_VERSION = new Column.IntColumn<>("VERSION", "version");
 
     public static final List<Column<BazOracle, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID,

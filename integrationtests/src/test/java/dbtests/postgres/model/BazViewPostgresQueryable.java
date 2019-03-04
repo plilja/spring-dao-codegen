@@ -12,11 +12,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class BazViewPostgresQueryable extends Queryable<BazViewPostgresEntity> {
 
-    public static final Column<BazViewPostgresEntity, Integer> COLUMN_BAZ_ID = new Column.IntColumn<>("baz_id", "bazId");
+    public static final Column.IntColumn<BazViewPostgresEntity> COLUMN_BAZ_ID = new Column.IntColumn<>("baz_id", "bazId");
 
-    public static final Column<BazViewPostgresEntity, String> COLUMN_COLOR = new Column.StringColumn<>("color", "color");
+    public static final Column.StringColumn<BazViewPostgresEntity> COLUMN_COLOR = new Column.StringColumn<>("color", "color");
 
-    public static final Column<BazViewPostgresEntity, String> COLUMN_NAME_WITH_SPACE = new Column.StringColumn<>("\"name with space\"", "nameWithSpace");
+    public static final Column.StringColumn<BazViewPostgresEntity> COLUMN_NAME_WITH_SPACE = new Column.StringColumn<>("\"name with space\"", "nameWithSpace");
 
     public static final List<Column<BazViewPostgresEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_BAZ_ID,
