@@ -6,14 +6,19 @@
 
     <groupId>se.plilja.springdaogen</groupId>
     <artifactId>springdaogen</artifactId>
-    <version>0.1</version>
+    <version>${revision}</version>
 
+    <packaging>pom</packaging>
     <modules>
         <module>daogenerator</module>
         <module>integrationtests</module>
         <module>generated-different-configs</module>
     </modules>
-    <packaging>pom</packaging>
+
+    <properties>
+        <revision>0.9.0</revision>
+        <spring.boot.version>2.0.2.RELEASE</spring.boot.version>
+    </properties>
 
     <profiles>
         <profile>

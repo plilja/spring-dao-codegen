@@ -7,15 +7,15 @@
     <parent>
         <groupId>se.plilja.springdaogen</groupId>
         <artifactId>springdaogen</artifactId>
-        <version>0.1</version>
+        <version>${revision}</version>
     </parent>
 
+    <packaging>pom</packaging>
     <artifactId>generated-different-configs</artifactId>
-    <version>0.1</version>
+    <version>${revision}</version>
 
     <modules>
         <module>features-turned-off</module>
     </modules>
-    <packaging>pom</packaging>
 
 </project>
