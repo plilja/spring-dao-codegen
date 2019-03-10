@@ -31,7 +31,7 @@ public class OneColumnGeneratedIdPostgresDao extends Dao<OneColumnGeneratedIdPos
 
     @Autowired
     public OneColumnGeneratedIdPostgresDao(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
-        super(Integer.class, true, jdbcTemplate, currentUserProvider);
+        super(OneColumnGeneratedIdPostgresEntity.class, Integer.class, true, jdbcTemplate, currentUserProvider);
     }
 
     @Override

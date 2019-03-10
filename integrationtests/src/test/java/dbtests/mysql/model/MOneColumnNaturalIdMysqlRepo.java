@@ -31,7 +31,7 @@ public class MOneColumnNaturalIdMysqlRepo extends Dao<MOneColumnNaturalIdMysql, 
 
     @Autowired
     public MOneColumnNaturalIdMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
-        super(String.class, false, jdbcTemplate, currentUserProvider);
+        super(MOneColumnNaturalIdMysql.class, String.class, false, jdbcTemplate, currentUserProvider);
     }
 
     @Override

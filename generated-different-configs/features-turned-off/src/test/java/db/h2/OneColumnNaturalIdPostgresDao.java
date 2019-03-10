@@ -21,7 +21,7 @@ public class OneColumnNaturalIdPostgresDao extends Dao<OneColumnNaturalIdPostgre
 
     @Autowired
     public OneColumnNaturalIdPostgresDao(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(String.class, false, jdbcTemplate);
+        super(OneColumnNaturalIdPostgres.class, String.class, false, jdbcTemplate);
     }
 
     @Override

@@ -61,7 +61,7 @@ public class BazOracleRepository extends Dao<BazOracle, Integer> {
 
     @Autowired
     public BazOracleRepository(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
-        super(Integer.class, true, jdbcTemplate, currentUserProvider);
+        super(BazOracle.class, Integer.class, true, jdbcTemplate, currentUserProvider);
     }
 
     @Override

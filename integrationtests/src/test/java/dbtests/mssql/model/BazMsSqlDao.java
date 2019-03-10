@@ -61,7 +61,7 @@ public class BazMsSqlDao extends Dao<BazMsSqlEntity, Integer> {
 
     @Autowired
     public BazMsSqlDao(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
-        super(Integer.class, true, jdbcTemplate, currentUserProvider);
+        super(BazMsSqlEntity.class, Integer.class, true, jdbcTemplate, currentUserProvider);
     }
 
     @Override

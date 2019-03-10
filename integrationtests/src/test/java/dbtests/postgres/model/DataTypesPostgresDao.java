@@ -134,7 +134,7 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
 
     @Autowired
     public DataTypesPostgresDao(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
-        super(Long.class, true, jdbcTemplate, currentUserProvider);
+        super(DataTypesPostgresEntity.class, Long.class, true, jdbcTemplate, currentUserProvider);
     }
 
     @Override

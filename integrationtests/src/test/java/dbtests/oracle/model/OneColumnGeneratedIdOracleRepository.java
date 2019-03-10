@@ -31,7 +31,7 @@ public class OneColumnGeneratedIdOracleRepository extends Dao<OneColumnGenerated
 
     @Autowired
     public OneColumnGeneratedIdOracleRepository(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
-        super(Integer.class, true, jdbcTemplate, currentUserProvider);
+        super(OneColumnGeneratedIdOracle.class, Integer.class, true, jdbcTemplate, currentUserProvider);
     }
 
     @Override

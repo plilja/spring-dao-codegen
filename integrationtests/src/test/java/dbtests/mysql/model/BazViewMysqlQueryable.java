@@ -35,7 +35,7 @@ public class BazViewMysqlQueryable extends Queryable<MBazViewMysql> {
 
     @Autowired
     public BazViewMysqlQueryable(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
+        super(MBazViewMysql.class, jdbcTemplate);
     }
 
     @Override

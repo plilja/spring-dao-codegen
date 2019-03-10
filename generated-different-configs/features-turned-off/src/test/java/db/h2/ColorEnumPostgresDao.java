@@ -22,7 +22,7 @@ public class ColorEnumPostgresDao extends Dao<ColorEnumPostgres, String> {
 
     @Autowired
     public ColorEnumPostgresDao(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(String.class, false, jdbcTemplate);
+        super(ColorEnumPostgres.class, String.class, false, jdbcTemplate);
     }
 
     @Override

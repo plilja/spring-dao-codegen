@@ -22,12 +22,14 @@ import java.util.Optional;
 public abstract class Dao<T extends BaseEntity<ID>, ID> {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final Class<T> entityClass;
     private final Class<ID> idClass;
     private boolean databaseProductNameInitialized = false;
     private String databaseProductName = null;
     private final boolean idIsGenerated;
 
-    protected Dao(Class<ID> idClass, boolean idIsGenerated, NamedParameterJdbcTemplate jdbcTemplate) {
+    protected Dao(Class<T> entityClass, Class<ID> idClass, boolean idIsGenerated, NamedParameterJdbcTemplate jdbcTemplate) {
+        this.entityClass = entityClass;
         this.idClass = idClass;
         this.idIsGenerated = idIsGenerated;
         this.jdbcTemplate = jdbcTemplate;
@@ -240,6 +242,10 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
     protected abstract String getSelectAndLockSql(String databaseProductName);
 
     protected abstract String getSelectPageSql(long start, int pageSize);
+
+    public Class<T> getEntityClass() {
+        return entityClass;
+    }
 
     @SuppressWarnings("unchecked")
     private void setId(T object, Number newKey) {

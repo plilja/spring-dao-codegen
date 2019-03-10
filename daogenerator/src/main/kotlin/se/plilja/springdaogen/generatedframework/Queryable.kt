@@ -26,9 +26,11 @@ import java.util.stream.Collectors;
  */
 public abstract class Queryable<T> {
 
+    private final Class<T> entityClass;
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    protected Queryable(NamedParameterJdbcTemplate jdbcTemplate) {
+    protected Queryable(Class<T> entityClass, NamedParameterJdbcTemplate jdbcTemplate) {
+        this.entityClass = entityClass;
         this.jdbcTemplate = jdbcTemplate;
     }
 
@@ -270,6 +272,10 @@ public abstract class Queryable<T> {
     }
 
     protected abstract List<Column<T, ?>> getColumnsList();
+
+    public Class<T> getEntityClass() {
+        return entityClass;
+    }
 
     protected abstract RowMapper<T> getRowMapper();
 

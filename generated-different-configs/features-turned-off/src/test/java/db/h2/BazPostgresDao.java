@@ -29,7 +29,7 @@ public class BazPostgresDao extends Dao<BazPostgres, Integer> {
 
     @Autowired
     public BazPostgresDao(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(Integer.class, true, jdbcTemplate);
+        super(BazPostgres.class, Integer.class, true, jdbcTemplate);
     }
 
     @Override

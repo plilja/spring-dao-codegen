@@ -28,8 +28,8 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> extends Queryable<T> {
     private final boolean idIsGenerated;
     private final CurrentUserProvider currentUserProvider;
 
-    protected Dao(Class<ID> idClass, boolean idIsGenerated, NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
-        super(jdbcTemplate);
+    protected Dao(Class<T> entityClass, Class<ID> idClass, boolean idIsGenerated, NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
+        super(entityClass, jdbcTemplate);
         this.idClass = idClass;
         this.idIsGenerated = idIsGenerated;
         this.jdbcTemplate = jdbcTemplate;

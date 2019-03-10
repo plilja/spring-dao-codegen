@@ -70,7 +70,7 @@ fun generateViewQueryable(config: Config, view: View): ClassGenerator {
             """
             @Autowired
             public ${g.name}(NamedParameterJdbcTemplate jdbcTemplate) {
-                super(jdbcTemplate);
+                super(${view.entityName()}.class, jdbcTemplate);
             }
         """
     )

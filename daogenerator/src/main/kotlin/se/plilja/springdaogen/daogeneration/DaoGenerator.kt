@@ -82,7 +82,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
                 """
             @Autowired
             public ${g.name}(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
-                super(${table.primaryKey.typeName()}.class, ${table.primaryKey.generated}, jdbcTemplate, currentUserProvider);
+                super(${table.entityName()}.class, ${table.primaryKey.typeName()}.class, ${table.primaryKey.generated}, jdbcTemplate, currentUserProvider);
             }
         """
         )
@@ -92,7 +92,7 @@ fun generateDao(config: Config, table: Table): ClassGenerator {
                 """
             @Autowired
             public ${g.name}(NamedParameterJdbcTemplate jdbcTemplate) {
-                super(${table.primaryKey.typeName()}.class, ${table.primaryKey.generated}, jdbcTemplate);
+                super(${table.entityName()}.class, ${table.primaryKey.typeName()}.class, ${table.primaryKey.generated}, jdbcTemplate);
             }
         """
         )

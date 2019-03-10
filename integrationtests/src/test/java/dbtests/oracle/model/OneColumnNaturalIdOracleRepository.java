@@ -31,7 +31,7 @@ public class OneColumnNaturalIdOracleRepository extends Dao<OneColumnNaturalIdOr
 
     @Autowired
     public OneColumnNaturalIdOracleRepository(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
-        super(String.class, false, jdbcTemplate, currentUserProvider);
+        super(OneColumnNaturalIdOracle.class, String.class, false, jdbcTemplate, currentUserProvider);
     }
 
     @Override

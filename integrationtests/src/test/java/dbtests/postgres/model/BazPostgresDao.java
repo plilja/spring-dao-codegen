@@ -61,7 +61,7 @@ public class BazPostgresDao extends Dao<BazPostgresEntity, Integer> {
 
     @Autowired
     public BazPostgresDao(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
-        super(Integer.class, true, jdbcTemplate, currentUserProvider);
+        super(BazPostgresEntity.class, Integer.class, true, jdbcTemplate, currentUserProvider);
     }
 
     @Override

@@ -31,7 +31,7 @@ public class OneColumnGeneratedIdMsSqlDao extends Dao<OneColumnGeneratedIdMsSqlE
 
     @Autowired
     public OneColumnGeneratedIdMsSqlDao(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
-        super(Integer.class, true, jdbcTemplate, currentUserProvider);
+        super(OneColumnGeneratedIdMsSqlEntity.class, Integer.class, true, jdbcTemplate, currentUserProvider);
     }
 
     @Override

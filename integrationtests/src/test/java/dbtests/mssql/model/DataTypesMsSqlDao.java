@@ -149,7 +149,7 @@ public class DataTypesMsSqlDao extends Dao<DataTypesMsSqlEntity, Long> {
 
     @Autowired
     public DataTypesMsSqlDao(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
-        super(Long.class, true, jdbcTemplate, currentUserProvider);
+        super(DataTypesMsSqlEntity.class, Long.class, true, jdbcTemplate, currentUserProvider);
     }
 
     @Override

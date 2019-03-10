@@ -29,15 +29,19 @@ import java.util.Optional;
  */
 public abstract class Dao<T extends BaseEntity<ID>, ID> ${if (config.featureGenerateQueryApi) "extends Queryable<T> " else ""}{
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate jdbcTemplate;${if (!config.featureGenerateQueryApi) """
+    private final Class<T> entityClass;""" else ""}
     private final Class<ID> idClass;
     private boolean databaseProductNameInitialized = false;
     private String databaseProductName = null;
     private final boolean idIsGenerated;${if (config.featureGenerateChangeTracking) """
     private final CurrentUserProvider currentUserProvider;""" else ""}
 
-    protected Dao(Class<ID> idClass, boolean idIsGenerated, NamedParameterJdbcTemplate jdbcTemplate${if (config.featureGenerateChangeTracking) ", CurrentUserProvider currentUserProvider" else ""}) {${if (config.featureGenerateQueryApi) """
-        super(jdbcTemplate);""" else ""}
+    protected Dao(Class<T> entityClass, Class<ID> idClass, boolean idIsGenerated, NamedParameterJdbcTemplate jdbcTemplate${if (config.featureGenerateChangeTracking) ", CurrentUserProvider currentUserProvider" else ""}) {${if (config.featureGenerateQueryApi) """
+        super(entityClass, jdbcTemplate);""" else """
+
+        this.entityClass = entityClass;
+        """.trimMargin()}
         this.idClass = idClass;
         this.idIsGenerated = idIsGenerated;
         this.jdbcTemplate = jdbcTemplate;${if (config.featureGenerateChangeTracking) """
@@ -283,7 +287,15 @@ ${if (config.featureGenerateQueryApi) """
     protected abstract String getCountSql();
 
     protected abstract String getSelectAndLockSql(String databaseProductName);
-${if (!config.featureGenerateQueryApi) "\n    protected abstract String getSelectPageSql(long start, int pageSize);\n" else ""}
+${if (!config.featureGenerateQueryApi) """
+
+    protected abstract String getSelectPageSql(long start, int pageSize);
+
+    public Class<T> getEntityClass() {
+        return entityClass;
+    }
+
+""".trimMargin() else ""}
     @SuppressWarnings("unchecked")
     private void setId(T object, Number newKey) {
         if (idClass.isAssignableFrom(Integer.class)) {

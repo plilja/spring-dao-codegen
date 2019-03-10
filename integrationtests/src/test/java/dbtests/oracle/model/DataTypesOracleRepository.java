@@ -113,7 +113,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
 
     @Autowired
     public DataTypesOracleRepository(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
-        super(String.class, false, jdbcTemplate, currentUserProvider);
+        super(DataTypesOracle.class, String.class, false, jdbcTemplate, currentUserProvider);
     }
 
     @Override

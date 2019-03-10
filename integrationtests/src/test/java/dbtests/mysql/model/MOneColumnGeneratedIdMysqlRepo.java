@@ -31,7 +31,7 @@ public class MOneColumnGeneratedIdMysqlRepo extends Dao<MOneColumnGeneratedIdMys
 
     @Autowired
     public MOneColumnGeneratedIdMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
-        super(Integer.class, true, jdbcTemplate, currentUserProvider);
+        super(MOneColumnGeneratedIdMysql.class, Integer.class, true, jdbcTemplate, currentUserProvider);
     }
 
     @Override

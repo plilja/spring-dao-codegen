@@ -35,7 +35,7 @@ public class BazViewPostgresQueryable extends Queryable<BazViewPostgresEntity> {
 
     @Autowired
     public BazViewPostgresQueryable(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
+        super(BazViewPostgresEntity.class, jdbcTemplate);
     }
 
     @Override

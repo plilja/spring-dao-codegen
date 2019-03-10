@@ -31,7 +31,7 @@ public class OneColumnNaturalIdMsSqlDao extends Dao<OneColumnNaturalIdMsSqlEntit
 
     @Autowired
     public OneColumnNaturalIdMsSqlDao(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
-        super(String.class, false, jdbcTemplate, currentUserProvider);
+        super(OneColumnNaturalIdMsSqlEntity.class, String.class, false, jdbcTemplate, currentUserProvider);
     }
 
     @Override

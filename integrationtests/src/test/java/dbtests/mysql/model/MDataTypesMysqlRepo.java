@@ -151,7 +151,7 @@ public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
 
     @Autowired
     public MDataTypesMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
-        super(Long.class, true, jdbcTemplate, currentUserProvider);
+        super(MDataTypesMysql.class, Long.class, true, jdbcTemplate, currentUserProvider);
     }
 
     @Override

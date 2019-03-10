@@ -35,7 +35,7 @@ public class BazViewMsSqlQueryable extends Queryable<BazViewMsSqlEntity> {
 
     @Autowired
     public BazViewMsSqlQueryable(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
+        super(BazViewMsSqlEntity.class, jdbcTemplate);
     }
 
     @Override

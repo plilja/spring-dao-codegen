@@ -61,7 +61,7 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
 
     @Autowired
     public MBazMysqlRepo(NamedParameterJdbcTemplate jdbcTemplate, CurrentUserProvider currentUserProvider) {
-        super(Integer.class, true, jdbcTemplate, currentUserProvider);
+        super(MBazMysql.class, Integer.class, true, jdbcTemplate, currentUserProvider);
     }
 
     @Override

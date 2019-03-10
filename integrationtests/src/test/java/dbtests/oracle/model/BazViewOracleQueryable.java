@@ -35,7 +35,7 @@ public class BazViewOracleQueryable extends Queryable<BazViewOracle> {
 
     @Autowired
     public BazViewOracleQueryable(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate);
+        super(BazViewOracle.class, jdbcTemplate);
     }
 
     @Override
