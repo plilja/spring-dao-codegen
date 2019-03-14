@@ -7,6 +7,8 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -239,8 +241,9 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> extends Queryable<T> {
 
     private String getDatabaseProductName() {
         if (!databaseProductNameInitialized) {
-            try {
-                databaseProductName = jdbcTemplate.getJdbcTemplate().getDataSource().getConnection().getMetaData().getDatabaseProductName();
+            DataSource dataSource = jdbcTemplate.getJdbcTemplate().getDataSource();
+            try (Connection connection = dataSource.getConnection()) {
+                databaseProductName = connection.getMetaData().getDatabaseProductName();
             } catch (SQLException | RuntimeException ex) {
                 throw new DatabaseException("Error retrieving database product name, continuing without database product name", ex);
             }
