@@ -1,9 +1,70 @@
-# Generate daos
+# Spring Dao class generator
 
- Work in progress
+Generate DAO classes from your database schema for your Spring project. 
+
+If you want to have control over what SQL queries are run in your database,
+then this project is for you. You might be hesitant to use a tool like JPA
+for this reason. But you still want some of the benefits of JPA
+like not having to write the boilerplate code and having consistent interfaces
+for your repositories.
+
+The generated code expects Spring framework and Spring JDBC as dependencies.
+If you choose to use some of the opt in features some additional dependencies
+might be required.
+
+The intention is that the generated code should be readable and debuggable.
+Once generated it should also be maintanable and extendable by you. You
+can also choose to run the generator again if you change your schema.
+
+# Features
+
+* Generates DAO/Repositories with CRUD functionality
+* Generates accompanying entities
+* Supports Postgres, Oracle, SQL Server and MySQL
+* Opt-in enum generation for tables with fixed content
+* Opt-in JPA-like features LastModifiedBy, CreatedBy, LastModifiedDate, CreatedDate
+* Opt-in Lombok for generated entities
+* Opt-in query API (you can opt out and write the queries you need yourself)
+* Opt-in Javax validation annotations
+* Opt-in generation of a DDL file for a H2 database to be used in tests
+
+# Missing features
+
+* Tables with composite primary keys are not supported
+* Columns with array data types are not supported
+* Bulk/batch inserts are not supported
+
+# Building
+
+Checkout the project and run
+```bash
+mvn clean install -P '!oracle'
+```
+If you intend to use Oracle database you need to download and install the Oracle driver manually (they don't have their driver in a central maven repository). 
+
+After having downloaded ojdbc8.jar from the Oracle homepage you should be able to run something like the following to install it.
+```bash
+mvn install:install-file -Dfile=~/Downloads/ojdbc8.jar -DgroupId=com.oracle -DartifactId=ojdbc8 -Dversion=12.2.0.1 -Dpackaging=jar 
+
+mvn clean install
+```
+
+# How-to
+
+See the examples folder (TODO add examples) for some example configurations.
+
+After having built the project run this command to run the program:
+```
+java -jar target/daogenerator-version-spring-boot.jar your-config.properties
+```
+
+# Examples
+
+REST API on top of a MySQL database:
+
+https://github.com/plilja/springdaogen-example-sakila
 
 # TODO:s
-* Write a proper readme
 * blob.getBinaryStream().readAllBytes() doesn't work in java 8
 
 # Maybe later release
