@@ -28,7 +28,7 @@ can also choose to run the generator again if you change your schema.
 * Opt-in Javax validation annotations
 * Opt-in generation of a DDL file for a H2 database to be used in tests
 
-# Missing features
+# Limitations
 
 * Tables with composite primary keys are not supported
 * Columns with array data types are not supported
@@ -51,7 +51,7 @@ mvn clean install
 
 # How-to
 
-See the examples folder (TODO add examples) for some example configurations.
+See the [template configuration](https://github.com/plilja/spring-dao-codegen/blob/master/examples/template.properties) in the example folder how to configure this program.
 
 After having built the project run this command to run the program:
 ```
