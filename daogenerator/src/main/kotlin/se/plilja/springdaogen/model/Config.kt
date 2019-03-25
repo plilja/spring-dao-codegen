@@ -111,7 +111,7 @@ private class ConfigReader(file: File) {
                         "false"
                 ) == "true",
                 featureGenerateQueryApi = properties.getProperty(
-                        "features.generate_jackson_annotations",
+                        "features.generate_query_api",
                         "true"
                 ) == "true",
                 featureGenerateChangeTracking = properties.getProperty(
