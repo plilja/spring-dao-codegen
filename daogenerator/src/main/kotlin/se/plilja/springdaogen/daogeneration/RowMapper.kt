@@ -2,7 +2,9 @@ package se.plilja.springdaogen.daogeneration
 
 import se.plilja.springdaogen.codegeneration.ClassGenerator
 import se.plilja.springdaogen.generatedframework.databaseException
+import se.plilja.springdaogen.generatedframework.iOUtil
 import se.plilja.springdaogen.model.Config
+import se.plilja.springdaogen.model.JavaVersion
 import se.plilja.springdaogen.model.Table
 import se.plilja.springdaogen.model.TableOrView
 import java.io.IOException
@@ -11,10 +13,13 @@ import kotlin.reflect.full.staticProperties
 
 
 fun rowMapper(tableOrView: TableOrView, classGenerator: ClassGenerator, config: Config): String {
-    val needsTryCatch = tableOrView.containsClobLikeField()
+    val containsBlobLike = tableOrView.containsClobLikeField()
     val setters = tableOrView.columns.map { "r.${it.setter()}(${it.recordSetMethod("rs")});" }.joinToString("\n")
-    return if (needsTryCatch) {
+    return if (containsBlobLike) {
         classGenerator.addImport("${config.frameworkOutputPackage}.${databaseException(config.frameworkOutputPackage).first}")
+        if (config.javaVersion == JavaVersion.Java8) {
+            classGenerator.addImport("${config.frameworkOutputPackage}.${iOUtil(config.frameworkOutputPackage).first}")
+        }
         classGenerator.addImport(IOException::class.java)
         """(rs, i) -> {
                 try {

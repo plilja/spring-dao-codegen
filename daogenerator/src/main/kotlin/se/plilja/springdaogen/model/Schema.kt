@@ -238,8 +238,11 @@ data class Column(
                 method =
                         "$rs.getObject(\"$name\") != null ? $rs.getClob(\"$name\").getSubString(1, (int) $rs.getClob(\"$name\").length()) : null"
             } else if (javaType == Blob::class.java) {
-                method =
-                        "$rs.getObject(\"$name\") != null ? $rs.getBlob(\"$name\").getBinaryStream().readAllBytes() : null"
+                if (config.javaVersion == JavaVersion.Java8) {
+                    method = "$rs.getObject(\"$name\") != null ? IOUtil.readAllBytes($rs.getBlob(\"$name\").getBinaryStream()) : null"
+                } else {
+                    method = "$rs.getObject(\"$name\") != null ? $rs.getBlob(\"$name\").getBinaryStream().readAllBytes() : null"
+                }
             } else if (javaType == NClob::class.java) {
                 method =
                         "$rs.getObject(\"$name\") != null ? $rs.getNClob(\"$name\").getSubString(1, (int) $rs.getClob(\"$name\").length()) : null"
@@ -268,7 +271,11 @@ data class Column(
             } else if (javaType == Clob::class.java) {
                 method = "$rs.getClob(\"$name\").getSubString(1, (int) $rs.getClob(\"$name\").length())"
             } else if (javaType == Blob::class.java) {
-                method = "$rs.getBlob(\"$name\").getBinaryStream().readAllBytes()"
+                if (config.javaVersion == JavaVersion.Java8) {
+                    method = "IOUtil.readAllBytes($rs.getBlob(\"$name\").getBinaryStream())"
+                } else {
+                    method = "$rs.getBlob(\"$name\").getBinaryStream().readAllBytes()"
+                }
             } else if (javaType == NClob::class.java) {
                 method = "$rs.getNClob(\"$name\").getSubString(1, (int) $rs.getClob(\"$name\").length())"
             } else if (javaType == BigInteger::class.java) {

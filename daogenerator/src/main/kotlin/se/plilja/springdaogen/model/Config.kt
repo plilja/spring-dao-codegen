@@ -37,6 +37,7 @@ data class Config(
         val createdByColumnNames: List<String> = emptyList(),
         val changedByColumnNames: List<String> = emptyList(),
         val versionColumnNames: List<String> = emptyList(),
+        val javaVersion: JavaVersion = JavaVersion.Java11,
         val enumTables: List<String> = emptyList(),
         val enumTablesRegexp: Regex = Regex("^$"),
         val enumNameColumnRegexp: Regex = Regex("^$"),
@@ -95,6 +96,7 @@ private class ConfigReader(file: File) {
                 createdByColumnNames = getListProperty("entity.created_by_name").map { it.toUpperCase() },
                 changedByColumnNames = getListProperty("entity.changed_by_name").map { it.toUpperCase() },
                 versionColumnNames = getListProperty("entity.version_name").map { it.toUpperCase() },
+                javaVersion = JavaVersion.fromVersionNumber(properties.getProperty("java.version", "11")),
                 enumTables = getListProperty("enum.tables"),
                 enumTablesRegexp = Regex(properties.getProperty("enum.table_regex", "^$"), RegexOption.IGNORE_CASE),
                 enumNameColumnRegexp = Regex(

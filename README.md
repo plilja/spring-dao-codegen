@@ -64,10 +64,8 @@ REST API on top of a MySQL database:
 
 https://github.com/plilja/springdaogen-example-sakila
 
-# TODO:s
-* blob.getBinaryStream().readAllBytes() doesn't work in java 8
+# Features that might appear in a coming release
 
-# Maybe later release
 * SqlLite
 * MariaDb
 * Tables with composite id-columns

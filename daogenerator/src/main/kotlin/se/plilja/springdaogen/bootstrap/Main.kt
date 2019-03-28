@@ -7,6 +7,7 @@ import se.plilja.springdaogen.codegeneration.toH2Ddl
 import se.plilja.springdaogen.daogeneration.generateCode
 import se.plilja.springdaogen.generatedframework.*
 import se.plilja.springdaogen.model.Config
+import se.plilja.springdaogen.model.JavaVersion
 import se.plilja.springdaogen.model.Schema
 import java.io.File
 import java.util.logging.LogManager
@@ -89,6 +90,9 @@ fun copyFrameworkClasses(config: Config) {
         for (entityInterface in entityInterfaces(config.frameworkOutputPackage)) {
             writeFrameworkClass(entityInterface)
         }
+    }
+    if (config.javaVersion == JavaVersion.Java8) {
+        writeFrameworkClass(iOUtil(config.frameworkOutputPackage))
     }
 }
 
