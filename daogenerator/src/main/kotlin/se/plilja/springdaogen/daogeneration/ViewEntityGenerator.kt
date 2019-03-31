@@ -15,7 +15,7 @@ import javax.validation.constraints.Size
 fun generateViewEntity(config: Config, view: View): ClassGenerator {
     println("Generating entity for view '${view.name}', entity will be named '${view.entityName()}'.")
     val g = ClassGenerator(view.entityName(), config.entityOutputPackage, config.entityOutputFolder)
-    if (config.useLombok) {
+    if (config.featuresUseLombok) {
         g.addClassAnnotation("@Data")
         g.addClassAnnotation("@NoArgsConstructor")
         g.addClassAnnotation("@AllArgsConstructor")
@@ -46,7 +46,7 @@ fun generateViewEntity(config: Config, view: View): ClassGenerator {
                 }
             }
         }
-        if (config.useLombok) {
+        if (config.featuresUseLombok) {
             g.addPrivateField(column.fieldName(), column.typeName(), annotations)
         } else {
             g.addField(column.fieldName(), column.typeName(), annotations)

@@ -19,7 +19,7 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
     println("Generating entity for table '${table.name}', entity will be named '${table.entityName()}'.")
     val g = ClassGenerator(table.entityName(), config.entityOutputPackage, config.entityOutputFolder)
     g.addImplements("BaseEntity<${table.primaryKey.typeName()}>")
-    if (config.useLombok) {
+    if (config.featuresUseLombok) {
         g.addClassAnnotation("@Data")
         g.addClassAnnotation("@NoArgsConstructor")
         g.addClassAnnotation("@AllArgsConstructor")
@@ -61,7 +61,7 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
             }
         }
 
-        if (config.useLombok) {
+        if (config.featuresUseLombok) {
             g.addPrivateField(column.fieldName(), column.typeName(), annotations)
         } else if (column == table.primaryKey && column.name.toLowerCase() == "id") {
             g.addPrivateField(column.fieldName(), column.typeName(), annotations)
@@ -79,7 +79,7 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
             g.addField(column.fieldName(), column.typeName(), annotations)
         }
     }
-    val idMethodGeneratedByLombok = config.useLombok && table.primaryKey.name == "id"
+    val idMethodGeneratedByLombok = config.featuresUseLombok && table.primaryKey.name == "id"
     if (!idMethodGeneratedByLombok) {
         val maybeJsonIgnore = if (config.featureGenerateJacksonAnnotations && table.primaryKey.name != "id") {
             g.addImport(JsonIgnore::class.java)
@@ -110,7 +110,7 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
     if (config.featureGenerateChangeTracking) {
         generatedChangeTracking(table, g, config)
     }
-    if (!config.useLombok) {
+    if (!config.featuresUseLombok) {
         val nameColumnOrNull = table.nameColumn()
         val maybeNameColumn = if (nameColumnOrNull != null) {
             "\", ${nameColumnOrNull.fieldName()}=\" + ${nameColumnOrNull.fieldName()} + "
@@ -140,7 +140,7 @@ private fun generatedChangeTracking(
     if (createdAtColumn != null) {
         ensureImported(g, config) { createdAtTracked(config.frameworkOutputPackage) }
         g.addImplements("CreatedAtTracked<${createdAtColumn.typeName()}>")
-        if (!config.useLombok || createdAtColumn.getter() != "getCreatedAt") {
+        if (!config.featuresUseLombok || createdAtColumn.getter() != "getCreatedAt") {
             val maybeJsonIgnore =
                 if (config.featureGenerateJacksonAnnotations && createdAtColumn.getter() != "getCreatedAt") {
                     g.addImport(JsonIgnore::class.java)
@@ -158,7 +158,7 @@ private fun generatedChangeTracking(
             """.trimMargin()
             )
         }
-        if (!config.useLombok && createdAtColumn.setter() == "setCreatedAt") {
+        if (!config.featuresUseLombok && createdAtColumn.setter() == "setCreatedAt") {
             g.addCustomMethod(
                 """
             |   public void ${createdAtColumn.setter()}(${createdAtColumn.typeName()} value) {
@@ -182,7 +182,7 @@ private fun generatedChangeTracking(
     if (changedAtColumn != null) {
         ensureImported(g, config) { changedAtTracked(config.frameworkOutputPackage) }
         g.addImplements("ChangedAtTracked<${changedAtColumn.typeName()}>")
-        if (!config.useLombok || changedAtColumn.getter() != "getChangedAt") {
+        if (!config.featuresUseLombok || changedAtColumn.getter() != "getChangedAt") {
             val maybeJsonIgnore =
                 if (config.featureGenerateJacksonAnnotations && changedAtColumn.getter() != "getChangedAt") {
                     g.addImport(JsonIgnore::class.java)
@@ -200,7 +200,7 @@ private fun generatedChangeTracking(
             """.trimMargin()
             )
         }
-        if (!config.useLombok && changedAtColumn.setter() == "setChangedAt") {
+        if (!config.featuresUseLombok && changedAtColumn.setter() == "setChangedAt") {
             g.addCustomMethod(
                 """
             |   public void ${changedAtColumn.setter()}(${changedAtColumn.typeName()} value) {
@@ -224,7 +224,7 @@ private fun generatedChangeTracking(
     if (createdByColumn != null) {
         ensureImported(g, config) { createdByTracked(config.frameworkOutputPackage) }
         g.addImplements("CreatedByTracked")
-        if (!config.useLombok || createdByColumn.getter() != "getCreatedBy") {
+        if (!config.featuresUseLombok || createdByColumn.getter() != "getCreatedBy") {
             val maybeJsonIgnore =
                 if (config.featureGenerateJacksonAnnotations && createdByColumn.getter() != "getCreatedBy") {
                     g.addImport(JsonIgnore::class.java)
@@ -257,7 +257,7 @@ private fun generatedChangeTracking(
     if (changedByColumn != null) {
         ensureImported(g, config) { changedByTracked(config.frameworkOutputPackage) }
         g.addImplements("ChangedByTracked")
-        if (!config.useLombok || changedByColumn.getter() != "getChangedBy") {
+        if (!config.featuresUseLombok || changedByColumn.getter() != "getChangedBy") {
             val maybeJsonIgnore =
                 if (config.featureGenerateJacksonAnnotations && changedByColumn.getter() != "getChangedBy") {
                     g.addImport(JsonIgnore::class.java)
@@ -290,7 +290,7 @@ private fun generatedChangeTracking(
     if (versionColumn != null) {
         ensureImported(g, config) { versionTracked(config.frameworkOutputPackage) }
         g.addImplements("VersionTracked")
-        if (!config.useLombok || versionColumn.getter() != "getVersion") {
+        if (!config.featuresUseLombok || versionColumn.getter() != "getVersion") {
             val maybeJsonIgnore =
                     if (config.featureGenerateJacksonAnnotations) {
                         g.addImport(JsonIgnore::class.java)

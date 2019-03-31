@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class BazViewMsSqlQueryable extends Queryable<BazViewMsSqlEntity> {
+public class BazViewMsSqlView extends Queryable<BazViewMsSqlEntity> {
 
     public static final Column.StringColumn<BazViewMsSqlEntity> COLUMN_COLOR = new Column.StringColumn<>("color", "color");
 
@@ -34,7 +34,7 @@ public class BazViewMsSqlQueryable extends Queryable<BazViewMsSqlEntity> {
     };
 
     @Autowired
-    public BazViewMsSqlQueryable(NamedParameterJdbcTemplate jdbcTemplate) {
+    public BazViewMsSqlView(NamedParameterJdbcTemplate jdbcTemplate) {
         super(BazViewMsSqlEntity.class, jdbcTemplate);
     }
 

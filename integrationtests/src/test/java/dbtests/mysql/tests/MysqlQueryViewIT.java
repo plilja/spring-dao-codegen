@@ -2,7 +2,7 @@ package dbtests.mysql.tests;
 
 import dbtests.QueryViewTest;
 import dbtests.framework.Column;
-import dbtests.mysql.model.BazViewMysqlQueryable;
+import dbtests.mysql.model.BazViewMysqlView;
 import dbtests.mysql.model.ColorEnumMysql;
 import dbtests.mysql.model.MBazMysql;
 import dbtests.mysql.model.MBazMysqlRepo;
@@ -16,7 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {MysqlITConfig.class})
 @ExtendWith(SpringExtension.class)
-public class MysqlQueryViewIT extends QueryViewTest<MBazViewMysql, BazViewMysqlQueryable> {
+public class MysqlQueryViewIT extends QueryViewTest<MBazViewMysql, BazViewMysqlView> {
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
@@ -25,7 +25,7 @@ public class MysqlQueryViewIT extends QueryViewTest<MBazViewMysql, BazViewMysqlQ
     private MBazMysqlRepo bazRepo;
 
     @Autowired
-    private BazViewMysqlQueryable viewQueryable;
+    private BazViewMysqlView viewQueryable;
 
     @Override
     public void clearTable() {
@@ -51,12 +51,12 @@ public class MysqlQueryViewIT extends QueryViewTest<MBazViewMysql, BazViewMysqlQ
     }
 
     @Override
-    protected BazViewMysqlQueryable getQueryable() {
+    protected BazViewMysqlView getQueryable() {
         return viewQueryable;
     }
 
     @Override
     protected Column<MBazViewMysql, String> getNameColumn() {
-        return BazViewMysqlQueryable.COLUMN_NAME_WITH_SPACE;
+        return BazViewMysqlView.COLUMN_NAME_WITH_SPACE;
     }
 }

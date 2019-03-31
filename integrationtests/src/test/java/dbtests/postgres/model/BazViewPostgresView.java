@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class BazViewPostgresQueryable extends Queryable<BazViewPostgresEntity> {
+public class BazViewPostgresView extends Queryable<BazViewPostgresEntity> {
 
     public static final Column.IntColumn<BazViewPostgresEntity> COLUMN_BAZ_ID = new Column.IntColumn<>("baz_id", "bazId");
 
@@ -34,7 +34,7 @@ public class BazViewPostgresQueryable extends Queryable<BazViewPostgresEntity> {
     };
 
     @Autowired
-    public BazViewPostgresQueryable(NamedParameterJdbcTemplate jdbcTemplate) {
+    public BazViewPostgresView(NamedParameterJdbcTemplate jdbcTemplate) {
         super(BazViewPostgresEntity.class, jdbcTemplate);
     }
 

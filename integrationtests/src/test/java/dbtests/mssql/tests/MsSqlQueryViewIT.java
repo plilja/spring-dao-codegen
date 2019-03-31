@@ -5,7 +5,7 @@ import dbtests.framework.Column;
 import dbtests.mssql.model.BazMsSqlDao;
 import dbtests.mssql.model.BazMsSqlEntity;
 import dbtests.mssql.model.BazViewMsSqlEntity;
-import dbtests.mssql.model.BazViewMsSqlQueryable;
+import dbtests.mssql.model.BazViewMsSqlView;
 import dbtests.mssql.model.ColorEnumMsSql;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @ContextConfiguration(classes = {MsSqlITConfig.class})
 @ExtendWith(SpringExtension.class)
-public class MsSqlQueryViewIT extends QueryViewTest<BazViewMsSqlEntity, BazViewMsSqlQueryable> {
+public class MsSqlQueryViewIT extends QueryViewTest<BazViewMsSqlEntity, BazViewMsSqlView> {
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
@@ -25,7 +25,7 @@ public class MsSqlQueryViewIT extends QueryViewTest<BazViewMsSqlEntity, BazViewM
     private BazMsSqlDao repo;
 
     @Autowired
-    private BazViewMsSqlQueryable viewRepo;
+    private BazViewMsSqlView viewRepo;
 
     @Override
     protected void clearTable() {
@@ -51,12 +51,12 @@ public class MsSqlQueryViewIT extends QueryViewTest<BazViewMsSqlEntity, BazViewM
     }
 
     @Override
-    protected BazViewMsSqlQueryable getQueryable() {
+    protected BazViewMsSqlView getQueryable() {
         return viewRepo;
     }
 
     @Override
     protected Column<BazViewMsSqlEntity, String> getNameColumn() {
-        return BazViewMsSqlQueryable.COLUMN_NAME_WITH_SPACE;
+        return BazViewMsSqlView.COLUMN_NAME_WITH_SPACE;
     }
 }

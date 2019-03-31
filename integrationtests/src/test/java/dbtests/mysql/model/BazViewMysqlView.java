@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class BazViewMysqlQueryable extends Queryable<MBazViewMysql> {
+public class BazViewMysqlView extends Queryable<MBazViewMysql> {
 
     public static final Column.IntColumn<MBazViewMysql> COLUMN_COLOR_ENUM_MYSQL_ID = new Column.IntColumn<>("color_enum_mysql_id", "colorEnumMysqlId");
 
@@ -34,7 +34,7 @@ public class BazViewMysqlQueryable extends Queryable<MBazViewMysql> {
     };
 
     @Autowired
-    public BazViewMysqlQueryable(NamedParameterJdbcTemplate jdbcTemplate) {
+    public BazViewMysqlView(NamedParameterJdbcTemplate jdbcTemplate) {
         super(MBazViewMysql.class, jdbcTemplate);
     }
 

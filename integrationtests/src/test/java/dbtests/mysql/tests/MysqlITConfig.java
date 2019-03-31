@@ -2,7 +2,7 @@ package dbtests.mysql.tests;
 
 import dbtests.FakeSpringSecurity;
 import dbtests.TransactionUtil;
-import dbtests.mysql.model.BazViewMysqlQueryable;
+import dbtests.mysql.model.BazViewMysqlView;
 import dbtests.mysql.model.MBazMysqlRepo;
 import dbtests.mysql.model.MDataTypesMysqlRepo;
 import dbtests.mysql.model.MOneColumnGeneratedIdMysqlRepo;
@@ -23,7 +23,7 @@ import javax.sql.DataSource;
         MOneColumnNaturalIdMysqlRepo.class,
         MOneColumnGeneratedIdMysqlRepo.class,
         MDataTypesMysqlRepo.class,
-        BazViewMysqlQueryable.class,
+        BazViewMysqlView.class,
         TransactionUtil.class
 })
 @EnableTransactionManagement

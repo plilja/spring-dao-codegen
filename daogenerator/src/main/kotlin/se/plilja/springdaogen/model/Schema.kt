@@ -54,7 +54,7 @@ data class View(
 ) : TableOrView {
 
     fun queryableName(): String {
-        return config.queryablePrefix + capitalizeFirst(camelCase(name)) + config.queryableSuffix
+        return config.viewPrefix + capitalizeFirst(camelCase(name)) + config.viewSuffix
     }
 }
 

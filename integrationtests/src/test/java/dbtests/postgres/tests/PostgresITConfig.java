@@ -3,7 +3,7 @@ package dbtests.postgres.tests;
 import dbtests.FakeSpringSecurity;
 import dbtests.TransactionUtil;
 import dbtests.postgres.model.BazPostgresDao;
-import dbtests.postgres.model.BazViewPostgresQueryable;
+import dbtests.postgres.model.BazViewPostgresView;
 import dbtests.postgres.model.DataTypesPostgresDao;
 import dbtests.postgres.model.OneColumnGeneratedIdPostgresDao;
 import dbtests.postgres.model.OneColumnNaturalIdPostgresDao;
@@ -22,7 +22,7 @@ import javax.sql.DataSource;
         OneColumnNaturalIdPostgresDao.class,
         OneColumnGeneratedIdPostgresDao.class,
         DataTypesPostgresDao.class,
-        BazViewPostgresQueryable.class,
+        BazViewPostgresView.class,
         TransactionUtil.class})
 @EnableTransactionManagement
 @Configuration
