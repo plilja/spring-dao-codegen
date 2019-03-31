@@ -51,7 +51,7 @@ mvn clean install
 
 # How-to
 
-See the [template configuration](https://github.com/plilja/spring-dao-codegen/blob/master/examples/template.properties) in the example folder how to configure this program.
+See the [example configurations](https://github.com/plilja/spring-dao-codegen/tree/master/examples) folder for how to configure the program.
 
 After having built the project run this command to run the program:
 ```
