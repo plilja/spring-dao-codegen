@@ -43,7 +43,7 @@ data class Config(
         val enumNameColumnRegexp: Regex = Regex("^$"),
         val featureGenerateJavaxValidation: Boolean = false,
         val featureGenerateJacksonAnnotations: Boolean = false,
-        val featureGenerateQueryApi: Boolean = true,
+        val featureGenerateQueryApi: Boolean = false,
         val featureGenerateChangeTracking: Boolean = false
 ) {
 
@@ -114,7 +114,7 @@ private class ConfigReader(file: File) {
                 ) == "true",
                 featureGenerateQueryApi = properties.getProperty(
                         "features.generate_query_api",
-                        "true"
+                        "false"
                 ) == "true",
                 featureGenerateChangeTracking = properties.getProperty(
                         "features.generate_change_tracking",
