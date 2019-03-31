@@ -315,7 +315,7 @@ ${if (!config.featureGenerateQueryApi) """
             try (Connection connection = dataSource.getConnection()) {
                 databaseProductName = connection.getMetaData().getDatabaseProductName();
             } catch (SQLException | RuntimeException ex) {
-                throw new DatabaseException("Error retrieving database product name, continuing without database product name", ex);
+                throw new DatabaseException("Error retrieving database product name", ex);
             }
             databaseProductNameInitialized = true;
         }
