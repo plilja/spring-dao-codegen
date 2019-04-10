@@ -1,7 +1,7 @@
-package se.plilja.springdaogen.model
+package se.plilja.springdaogen.engine.model
 
 import org.junit.jupiter.api.Test
-import se.plilja.springdaogen.defaultTestConfig
+import se.plilja.springdaogen.config.defaultTestConfig
 import kotlin.test.assertEquals
 
 class TableTest {

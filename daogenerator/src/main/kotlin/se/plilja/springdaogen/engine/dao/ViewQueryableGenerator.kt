@@ -1,16 +1,16 @@
-package se.plilja.springdaogen.engine
+package se.plilja.springdaogen.engine.dao
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
 import se.plilja.springdaogen.classgenerators.ClassGenerator
+import se.plilja.springdaogen.config.Config
 import se.plilja.springdaogen.copyable.columnClass
 import se.plilja.springdaogen.copyable.queryable
-import se.plilja.springdaogen.model.Config
-import se.plilja.springdaogen.model.Left
-import se.plilja.springdaogen.model.View
-import se.plilja.springdaogen.sql.*
+import se.plilja.springdaogen.engine.model.Left
+import se.plilja.springdaogen.engine.model.View
+import se.plilja.springdaogen.engine.sql.*
 import se.plilja.springdaogen.util.snakeCase
 import java.math.BigDecimal
 import java.sql.Blob

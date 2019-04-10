@@ -1,6 +1,10 @@
-package se.plilja.springdaogen.sql
+package se.plilja.springdaogen.engine.sql
 
-import se.plilja.springdaogen.model.*
+import se.plilja.springdaogen.config.Config
+import se.plilja.springdaogen.engine.model.Column
+import se.plilja.springdaogen.engine.model.DatabaseDialect
+import se.plilja.springdaogen.engine.model.Table
+import se.plilja.springdaogen.engine.model.TableOrView
 
 
 fun insert(table: Table, databaseDialect: DatabaseDialect): String {

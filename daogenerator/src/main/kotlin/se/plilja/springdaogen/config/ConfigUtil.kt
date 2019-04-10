@@ -1,7 +1,6 @@
-package se.plilja.springdaogen
+package se.plilja.springdaogen.config
 
-import se.plilja.springdaogen.model.Config
-import se.plilja.springdaogen.model.DatabaseDialect
+import se.plilja.springdaogen.engine.model.DatabaseDialect
 
 
 fun defaultTestConfig(): Config {
@@ -21,6 +20,6 @@ fun defaultTestConfig(): Config {
             emptyList(),
             false,
             entitySuffix = "Entity"
-        )
+    )
 
 }

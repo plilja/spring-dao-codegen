@@ -1,5 +1,7 @@
-package se.plilja.springdaogen.model
+package se.plilja.springdaogen.config
 
+import se.plilja.springdaogen.engine.model.DatabaseDialect
+import se.plilja.springdaogen.engine.model.JavaVersion
 import java.io.File
 import java.util.*
 

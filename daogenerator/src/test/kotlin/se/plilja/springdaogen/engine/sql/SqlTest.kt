@@ -1,10 +1,10 @@
-package se.plilja.springdaogen.sql
+package se.plilja.springdaogen.engine.sql
 
 import org.junit.jupiter.api.Test
-import se.plilja.springdaogen.defaultTestConfig
-import se.plilja.springdaogen.model.Column
-import se.plilja.springdaogen.model.DatabaseDialect
-import se.plilja.springdaogen.model.Table
+import se.plilja.springdaogen.config.defaultTestConfig
+import se.plilja.springdaogen.engine.model.Column
+import se.plilja.springdaogen.engine.model.DatabaseDialect
+import se.plilja.springdaogen.engine.model.Table
 import kotlin.test.assertEquals
 
 class SqlTest {

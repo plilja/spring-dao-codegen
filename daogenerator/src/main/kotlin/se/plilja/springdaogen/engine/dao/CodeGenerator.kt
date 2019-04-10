@@ -1,11 +1,11 @@
-package se.plilja.springdaogen.engine
+package se.plilja.springdaogen.engine.dao
 
 import org.springframework.jdbc.core.JdbcTemplate
 import se.plilja.springdaogen.classgenerators.AbstractClassGenerator
-import se.plilja.springdaogen.model.Config
-import se.plilja.springdaogen.model.Schema
-import se.plilja.springdaogen.model.Table
-import se.plilja.springdaogen.sql.formatTable
+import se.plilja.springdaogen.config.Config
+import se.plilja.springdaogen.engine.model.Schema
+import se.plilja.springdaogen.engine.model.Table
+import se.plilja.springdaogen.engine.sql.formatTable
 import javax.sql.DataSource
 
 fun generateCode(config: Config, schema: Schema, dataSource: DataSource): List<AbstractClassGenerator> {

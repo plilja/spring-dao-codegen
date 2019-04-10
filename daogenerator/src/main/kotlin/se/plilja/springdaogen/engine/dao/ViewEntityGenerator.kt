@@ -1,4 +1,4 @@
-package se.plilja.springdaogen.engine
+package se.plilja.springdaogen.engine.dao
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
@@ -6,9 +6,9 @@ import lombok.AllArgsConstructor
 import lombok.Data
 import lombok.NoArgsConstructor
 import se.plilja.springdaogen.classgenerators.ClassGenerator
-import se.plilja.springdaogen.model.Config
-import se.plilja.springdaogen.model.Left
-import se.plilja.springdaogen.model.View
+import se.plilja.springdaogen.config.Config
+import se.plilja.springdaogen.engine.model.Left
+import se.plilja.springdaogen.engine.model.View
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 

@@ -1,9 +1,9 @@
 package se.plilja.springdaogen.classgenerators
 
-import se.plilja.springdaogen.engine.selectRows
-import se.plilja.springdaogen.model.Column
-import se.plilja.springdaogen.model.Config
-import se.plilja.springdaogen.model.Schema
+import se.plilja.springdaogen.config.Config
+import se.plilja.springdaogen.engine.dao.selectRows
+import se.plilja.springdaogen.engine.model.Column
+import se.plilja.springdaogen.engine.model.Schema
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.time.LocalDate

@@ -1,10 +1,10 @@
-package se.plilja.springdaogen.engine
+package se.plilja.springdaogen.engine.dao
 
 import org.junit.jupiter.api.Test
-import se.plilja.springdaogen.model.Column
-import se.plilja.springdaogen.model.Config
-import se.plilja.springdaogen.model.DatabaseDialect
-import se.plilja.springdaogen.model.Table
+import se.plilja.springdaogen.config.Config
+import se.plilja.springdaogen.engine.model.Column
+import se.plilja.springdaogen.engine.model.DatabaseDialect
+import se.plilja.springdaogen.engine.model.Table
 import kotlin.test.assertEquals
 
 
@@ -12,22 +12,22 @@ class EntityGeneratorTest {
     @Test
     fun `entity with property named "id"`() {
         val config =
-            Config(
-                DatabaseDialect.MYSQL,
-                "",
-                "",
-                "",
-                "",
-                "",
-                "se.plilja.test",
-                "",
-                "",
-                "",
-                "se.plilja.test",
-                10,
-                emptyList(),
-                false
-            )
+                Config(
+                        DatabaseDialect.MYSQL,
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "se.plilja.test",
+                        "",
+                        "",
+                        "",
+                        "se.plilja.test",
+                        10,
+                        emptyList(),
+                        false
+                )
         val pk = Column("ID", Integer::class.java, config, true)
         val table = Table("dbo", "Table", pk, listOf(pk), config)
 
@@ -69,23 +69,23 @@ public class Table implements BaseEntity<Integer> {
     @Test
     fun `entity with one field`() {
         val config =
-            Config(
-                DatabaseDialect.MYSQL,
-                "",
-                "",
-                "",
-                "",
-                "",
-                "se.plilja.test",
-                "",
-                "",
-                "",
-                "se.plilja.test",
-                10,
-                emptyList(),
-                false,
-                entitySuffix = "Entity"
-            )
+                Config(
+                        DatabaseDialect.MYSQL,
+                        "",
+                        "",
+                        "",
+                        "",
+                        "",
+                        "se.plilja.test",
+                        "",
+                        "",
+                        "",
+                        "se.plilja.test",
+                        10,
+                        emptyList(),
+                        false,
+                        entitySuffix = "Entity"
+                )
         val pk = Column("TABLE_ID", Integer::class.java, config, true)
         val name = Column("NAME", String::class.java, config)
         val table = Table("dbo", "TABLE", pk, listOf(pk, name), config)

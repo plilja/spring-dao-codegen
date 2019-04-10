@@ -1,9 +1,9 @@
-package se.plilja.springdaogen.engine
+package se.plilja.springdaogen.engine.dao
 
-import se.plilja.springdaogen.model.Column
-import se.plilja.springdaogen.model.Config
-import se.plilja.springdaogen.model.TableOrView
-import se.plilja.springdaogen.sql.formatIdentifier
+import se.plilja.springdaogen.config.Config
+import se.plilja.springdaogen.engine.model.Column
+import se.plilja.springdaogen.engine.model.TableOrView
+import se.plilja.springdaogen.engine.sql.formatIdentifier
 
 
 fun columnConstantInitializer(tableOrView: TableOrView, column: Column, config: Config) : Pair<String, String> {

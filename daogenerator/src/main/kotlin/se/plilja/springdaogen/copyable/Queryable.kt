@@ -1,6 +1,6 @@
 package se.plilja.springdaogen.copyable
 
-import se.plilja.springdaogen.model.Config
+import se.plilja.springdaogen.config.Config
 
 
 fun queryable(_package: String, config: Config): Pair<String, String> {

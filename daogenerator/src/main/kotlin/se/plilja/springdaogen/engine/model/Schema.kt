@@ -1,5 +1,6 @@
-package se.plilja.springdaogen.model
+package se.plilja.springdaogen.engine.model
 
+import se.plilja.springdaogen.config.Config
 import se.plilja.springdaogen.util.camelCase
 import se.plilja.springdaogen.util.capitalizeFirst
 import se.plilja.springdaogen.util.capitalizeLast
@@ -93,14 +94,14 @@ data class Table(
 }
 
 data class Column(
-    val name: String,
-    private val javaType: Class<out Any>,
-    private val config: Config,
-    val generated: Boolean = false,
-    val jdbcType: JDBCType? = null,
-    val nullable: Boolean = false,
-    val size: Int = 100,
-    val precision: Int = 0
+        val name: String,
+        private val javaType: Class<out Any>,
+        private val config: Config,
+        val generated: Boolean = false,
+        val jdbcType: JDBCType? = null,
+        val nullable: Boolean = false,
+        val size: Int = 100,
+        val precision: Int = 0
 ) {
     var references: Pair<TableOrView, Column>? = null
 

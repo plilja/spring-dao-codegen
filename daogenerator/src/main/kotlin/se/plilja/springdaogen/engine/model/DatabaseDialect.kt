@@ -1,4 +1,4 @@
-package se.plilja.springdaogen.model
+package se.plilja.springdaogen.engine.model
 
 enum class DatabaseDialect {
     ORACLE,

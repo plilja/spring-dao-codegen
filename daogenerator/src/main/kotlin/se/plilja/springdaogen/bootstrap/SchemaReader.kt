@@ -3,8 +3,8 @@ package se.plilja.springdaogen.bootstrap
 import schemacrawler.schema.Catalog
 import schemacrawler.schemacrawler.*
 import schemacrawler.utility.SchemaCrawlerUtility
-import se.plilja.springdaogen.model.*
-import se.plilja.springdaogen.model.Config
+import se.plilja.springdaogen.config.Config
+import se.plilja.springdaogen.engine.model.*
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.sql.JDBCType

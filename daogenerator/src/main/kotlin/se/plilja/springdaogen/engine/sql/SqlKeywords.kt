@@ -1,6 +1,6 @@
-package se.plilja.springdaogen.sql
+package se.plilja.springdaogen.engine.sql
 
-import se.plilja.springdaogen.model.DatabaseDialect
+import se.plilja.springdaogen.engine.model.DatabaseDialect
 
 
 class SqlKeywords {

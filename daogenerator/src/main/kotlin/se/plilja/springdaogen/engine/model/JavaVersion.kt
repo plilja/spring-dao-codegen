@@ -1,6 +1,4 @@
-package se.plilja.springdaogen.model
-
-import java.lang.IllegalArgumentException
+package se.plilja.springdaogen.engine.model
 
 
 enum class JavaVersion(val version: String) {
