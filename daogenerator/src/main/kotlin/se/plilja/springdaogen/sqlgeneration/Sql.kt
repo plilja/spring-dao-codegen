@@ -212,7 +212,7 @@ fun selectMany(tableOrView: TableOrView, databaseDialect: DatabaseDialect): Stri
             |"LIMIT %d"
         """.trimMargin()
     } else if (databaseDialect != DatabaseDialect.MSSQL_SERVER) {
-        throw IllegalArgumentException("Unknown database dialect ${databaseDialect}")
+        throw IllegalArgumentException("Unknown database dialect $databaseDialect")
     }
     return result
 }

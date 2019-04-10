@@ -18,11 +18,11 @@ abstract class AbstractClassGenerator(
     abstract fun generate(): String
 
     fun getOutputFolder(): String {
-        return "${sourceBaseFolder}${packageName.replace(".", "/")}"
+        return "$sourceBaseFolder${packageName.replace(".", "/")}"
     }
 
     fun getOutputFileName(): String {
-        return "${getOutputFolder()}/${name}.java"
+        return "${getOutputFolder()}/$name.java"
     }
 
     fun addImport(type: Class<out Any>) {

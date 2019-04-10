@@ -46,7 +46,7 @@ fun toH2Ddl(config: Config, schema: Schema, dataSource: DataSource): String {
                 res += """
                     ALTER TABLE $table_
                     ADD FOREIGN KEY (${column.name})
-                    REFERENCES ${refTable}(${references.second.name});
+                    REFERENCES $refTable(${references.second.name});
                 """.trimIndent()
                 res += "\n"
             }
