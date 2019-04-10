@@ -36,12 +36,11 @@ fun selectRows(
     config: Config
 ): List<HashMap<String, Any>> {
     val jdbcTemplate = JdbcTemplate(dataSource)
-    val rows = jdbcTemplate.query("select * from ${formatTable(it, config.databaseDialect)}") { rs, _ ->
+    return jdbcTemplate.query("select * from ${formatTable(it, config.databaseDialect)}") { rs, _ ->
         val map = HashMap<String, Any>()
         for (column in it.columns) {
             map[column.name] = rs.getObject(column.name)
         }
         map
     }
-    return rows
 }
