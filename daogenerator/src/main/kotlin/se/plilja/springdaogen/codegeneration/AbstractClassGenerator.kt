@@ -45,30 +45,12 @@ abstract class AbstractClassGenerator(
         implements.add(iface)
     }
 
-    fun addPrivateField(name: String, type: Class<out Any>) {
-        fields.add(Field(name, type.simpleName, true, false, emptyList()))
-        addImport(type)
-    }
-
     fun addPrivateField(name: String, type: String) {
         fields.add(Field(name, type, true, false, emptyList()))
     }
 
-    fun addPublicField(name: String, type: String) {
-        fields.add(Field(name, type, false, false, emptyList()))
-    }
-
-    fun addReadOnlyField(name: String, type: Class<out Any>) {
-        fields.add(Field(name, type.simpleName, false, true, emptyList()))
-        addImport(type)
-    }
-
     fun addReadOnlyField(name: String, type: String) {
         fields.add(Field(name, type, false, true, emptyList()))
-    }
-
-    fun addField(name: String, type: String) {
-        fields.add(Field(name, type, false, false, emptyList()))
     }
 
     fun addField(name: String, type: Class<out Any>) {
@@ -76,35 +58,12 @@ abstract class AbstractClassGenerator(
         addImport(type)
     }
 
-    fun addPrivateField(name: String, type: Class<out Any>, annotations: List<String>) {
-        fields.add(Field(name, type.simpleName, true, false, annotations))
-        addImport(type)
-    }
-
     fun addPrivateField(name: String, type: String, annotations: List<String>) {
         fields.add(Field(name, type, true, false, annotations))
     }
 
-    fun addPublicField(name: String, type: String, annotations: List<String>) {
-        fields.add(Field(name, type, false, false, annotations))
-    }
-
-    fun addReadOnlyField(name: String, type: Class<out Any>, annotations: List<String>) {
-        fields.add(Field(name, type.simpleName, false, true, annotations))
-        addImport(type)
-    }
-
-    fun addReadOnlyField(name: String, type: String, annotations: List<String>) {
-        fields.add(Field(name, type, false, true, annotations))
-    }
-
     fun addField(name: String, type: String, annotations: List<String>) {
         fields.add(Field(name, type, false, false, annotations))
-    }
-
-    fun addField(name: String, type: Class<out Any>, annotations: List<String>) {
-        fields.add(Field(name, type.simpleName, false, false, annotations))
-        addImport(type)
     }
 
     fun addCustomMethod(methodCode: String) {
