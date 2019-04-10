@@ -83,10 +83,10 @@ abstract class AbstractClassGenerator(
                 this.${field.name} = ${field.name};
             }"""
 
-        if (field.readOnly) {
-            return getter
+        return if (field.readOnly) {
+            getter
         } else {
-            return getter + setter
+            getter + setter
         }
     }
 }

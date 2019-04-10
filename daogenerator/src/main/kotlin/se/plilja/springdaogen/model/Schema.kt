@@ -196,10 +196,10 @@ data class Column(
             name
         }
         val s = camelCase(adjustedName)
-        if (isReservedJavaKeyword(s)) {
-            return capitalizeLast(s)
+        return if (isReservedJavaKeyword(s)) {
+            capitalizeLast(s)
         } else {
-            return s
+            s
         }
     }
 

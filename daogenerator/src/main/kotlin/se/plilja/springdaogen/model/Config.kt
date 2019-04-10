@@ -125,10 +125,10 @@ private class ConfigReader(file: File) {
 
     private fun getFolderProperty(property: String): String {
         val f = properties.getProperty(property, null) ?: throw IllegalStateException("Property $property missing")
-        if (f.last() != '/') {
-            return "$f/"
+        return if (f.last() != '/') {
+            "$f/"
         } else {
-            return f
+            f
         }
     }
 

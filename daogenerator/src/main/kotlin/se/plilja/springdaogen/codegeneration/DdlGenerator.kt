@@ -89,10 +89,10 @@ private fun dataType(column: Column): String {
     }
     when (column.typeName()) {
         "byte[]" -> {
-            if (column.size > 4000) {
-                return "BLOB"
+            return if (column.size > 4000) {
+                "BLOB"
             } else {
-                return "BINARY(${column.size})"
+                "BINARY(${column.size})"
             }
         }
     }
@@ -110,10 +110,10 @@ private fun dataType(column: Column): String {
         java.lang.Boolean::class.java -> "BOOLEAN"
         java.util.UUID::class.java -> "UUID"
         java.lang.String::class.java -> {
-            if (column.size == Integer.MAX_VALUE) {
-                return "CLOB"
+            return if (column.size == Integer.MAX_VALUE) {
+                "CLOB"
             } else {
-                return "VARCHAR(${column.size})"
+                "VARCHAR(${column.size})"
             }
         }
         else -> return "VARCHAR(${column.size})"

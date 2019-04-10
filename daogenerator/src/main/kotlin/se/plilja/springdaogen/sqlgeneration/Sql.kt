@@ -304,10 +304,10 @@ fun formatIdentifier(identifier: String, databaseDialect: DatabaseDialect): Stri
     }
     val needsPostgresCaseEscaping =
             databaseDialect == DatabaseDialect.POSTGRES && identifier.toLowerCase() != identifier
-    if (needsPostgresCaseEscaping || isDatabaseKeyword(identifier, databaseDialect) || ' ' in identifier) {
-        return "$escapeSeq$identifier$escapeSeq"
+    return if (needsPostgresCaseEscaping || isDatabaseKeyword(identifier, databaseDialect) || ' ' in identifier) {
+        "$escapeSeq$identifier$escapeSeq"
     } else {
-        return identifier
+        identifier
     }
 }
 
