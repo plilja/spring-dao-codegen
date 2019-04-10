@@ -33,8 +33,8 @@ fun main(args: Array<String>) {
 }
 
 fun initLogging(args: Array<String>) {
-    LogManager.getLogManager().reset();
-    SLF4JBridgeHandler.install(); // Schemacrawler uses java.util.logging
+    LogManager.getLogManager().reset()
+    SLF4JBridgeHandler.install() // Schemacrawler uses java.util.logging
     for (arg in args) {
         if (arg == "--verbose") {
             org.apache.log4j.LogManager.getRootLogger().level = Level.DEBUG

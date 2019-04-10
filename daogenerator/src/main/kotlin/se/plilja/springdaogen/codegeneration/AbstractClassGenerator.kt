@@ -15,7 +15,7 @@ abstract class AbstractClassGenerator(
     protected val customMethods = ArrayList<String>()
     protected var implements = ArrayList<String>()
 
-    abstract fun generate(): String;
+    abstract fun generate(): String
 
     fun getOutputFolder(): String {
         return "${sourceBaseFolder}${packageName.replace(".", "/")}"

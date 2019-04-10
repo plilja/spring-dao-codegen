@@ -53,7 +53,7 @@ data class Config(
 }
 
 private class ConfigReader(file: File) {
-    private val properties: Properties;
+    private val properties: Properties
 
     init {
         val r = Properties()
