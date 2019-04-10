@@ -5,7 +5,7 @@ import se.plilja.springdaogen.codegeneration.AbstractClassGenerator
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Schema
 import se.plilja.springdaogen.model.Table
-import se.plilja.springdaogen.sqlgeneration.formatTable
+import se.plilja.springdaogen.sql.formatTable
 import javax.sql.DataSource
 
 fun generateCode(config: Config, schema: Schema, dataSource: DataSource): List<AbstractClassGenerator> {

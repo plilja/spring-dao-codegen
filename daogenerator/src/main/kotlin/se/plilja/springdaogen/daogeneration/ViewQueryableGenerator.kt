@@ -10,7 +10,7 @@ import se.plilja.springdaogen.copyable.queryable
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Left
 import se.plilja.springdaogen.model.View
-import se.plilja.springdaogen.sqlgeneration.*
+import se.plilja.springdaogen.sql.*
 import se.plilja.springdaogen.util.snakeCase
 import java.math.BigDecimal
 import java.sql.Blob

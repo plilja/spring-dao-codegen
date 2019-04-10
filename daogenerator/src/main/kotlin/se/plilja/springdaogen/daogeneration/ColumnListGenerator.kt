@@ -3,7 +3,7 @@ package se.plilja.springdaogen.daogeneration
 import se.plilja.springdaogen.model.Column
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.TableOrView
-import se.plilja.springdaogen.sqlgeneration.formatIdentifier
+import se.plilja.springdaogen.sql.formatIdentifier
 
 
 fun columnConstantInitializer(tableOrView: TableOrView, column: Column, config: Config) : Pair<String, String> {

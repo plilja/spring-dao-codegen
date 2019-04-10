@@ -1,4 +1,4 @@
-package se.plilja.springdaogen.sqlgeneration
+package se.plilja.springdaogen.sql
 
 import se.plilja.springdaogen.model.DatabaseDialect
 

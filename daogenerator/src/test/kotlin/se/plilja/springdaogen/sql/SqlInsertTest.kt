@@ -1,4 +1,4 @@
-package se.plilja.springdaogen.sqlgeneration
+package se.plilja.springdaogen.sql
 
 import org.junit.jupiter.api.Test
 import se.plilja.springdaogen.defaultTestConfig
