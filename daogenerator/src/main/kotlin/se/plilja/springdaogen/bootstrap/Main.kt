@@ -118,8 +118,5 @@ fun getDataSource(config: Config): DataSource {
 }
 
 fun close(dataSource: DataSource) {
-    val conn = dataSource.connection
-    if (conn != null) {
-        conn.close()
-    }
+    dataSource.connection?.close()
 }
