@@ -1,4 +1,4 @@
-package se.plilja.springdaogen.daogeneration
+package se.plilja.springdaogen.engine
 
 import se.plilja.springdaogen.classgenerators.ClassGenerator
 import se.plilja.springdaogen.copyable.databaseException

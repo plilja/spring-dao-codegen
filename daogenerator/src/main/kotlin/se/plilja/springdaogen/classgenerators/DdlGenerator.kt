@@ -1,6 +1,6 @@
 package se.plilja.springdaogen.classgenerators
 
-import se.plilja.springdaogen.daogeneration.selectRows
+import se.plilja.springdaogen.engine.selectRows
 import se.plilja.springdaogen.model.Column
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Schema

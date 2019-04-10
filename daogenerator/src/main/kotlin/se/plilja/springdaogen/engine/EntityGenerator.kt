@@ -1,4 +1,4 @@
-package se.plilja.springdaogen.daogeneration
+package se.plilja.springdaogen.engine
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties

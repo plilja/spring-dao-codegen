@@ -1,4 +1,4 @@
-package se.plilja.springdaogen.daogeneration
+package se.plilja.springdaogen.engine
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.RowMapper

@@ -1,4 +1,4 @@
-package se.plilja.springdaogen.daogeneration
+package se.plilja.springdaogen.engine
 
 import se.plilja.springdaogen.classgenerators.AbstractClassGenerator
 import se.plilja.springdaogen.model.Config

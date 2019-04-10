@@ -1,4 +1,4 @@
-package se.plilja.springdaogen.daogeneration
+package se.plilja.springdaogen.engine
 
 import se.plilja.springdaogen.classgenerators.EnumGenerator
 import se.plilja.springdaogen.copyable.baseDatabaseEnum

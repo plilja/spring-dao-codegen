@@ -1,4 +1,4 @@
-package se.plilja.springdaogen.daogeneration
+package se.plilja.springdaogen.engine
 
 import org.junit.jupiter.api.Test
 import se.plilja.springdaogen.model.Column

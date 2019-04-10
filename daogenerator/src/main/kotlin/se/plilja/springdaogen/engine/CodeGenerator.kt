@@ -1,4 +1,4 @@
-package se.plilja.springdaogen.daogeneration
+package se.plilja.springdaogen.engine
 
 import org.springframework.jdbc.core.JdbcTemplate
 import se.plilja.springdaogen.classgenerators.AbstractClassGenerator
