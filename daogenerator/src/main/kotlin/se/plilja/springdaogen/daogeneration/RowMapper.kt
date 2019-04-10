@@ -1,6 +1,6 @@
 package se.plilja.springdaogen.daogeneration
 
-import se.plilja.springdaogen.codegeneration.ClassGenerator
+import se.plilja.springdaogen.classgenerators.ClassGenerator
 import se.plilja.springdaogen.copyable.databaseException
 import se.plilja.springdaogen.copyable.iOUtil
 import se.plilja.springdaogen.model.Config

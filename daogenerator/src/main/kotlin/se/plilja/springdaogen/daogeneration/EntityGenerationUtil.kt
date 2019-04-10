@@ -1,6 +1,6 @@
 package se.plilja.springdaogen.daogeneration
 
-import se.plilja.springdaogen.codegeneration.AbstractClassGenerator
+import se.plilja.springdaogen.classgenerators.AbstractClassGenerator
 import se.plilja.springdaogen.model.Config
 
 

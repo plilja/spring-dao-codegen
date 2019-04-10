@@ -3,7 +3,7 @@ package se.plilja.springdaogen.bootstrap
 import org.apache.log4j.Level
 import org.slf4j.bridge.SLF4JBridgeHandler
 import org.springframework.boot.jdbc.DataSourceBuilder
-import se.plilja.springdaogen.codegeneration.toH2Ddl
+import se.plilja.springdaogen.classgenerators.toH2Ddl
 import se.plilja.springdaogen.daogeneration.generateCode
 import se.plilja.springdaogen.copyable.*
 import se.plilja.springdaogen.model.Config

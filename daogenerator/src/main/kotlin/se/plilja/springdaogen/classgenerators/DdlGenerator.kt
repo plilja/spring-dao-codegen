@@ -1,4 +1,4 @@
-package se.plilja.springdaogen.codegeneration
+package se.plilja.springdaogen.classgenerators
 
 import se.plilja.springdaogen.daogeneration.selectRows
 import se.plilja.springdaogen.model.Column

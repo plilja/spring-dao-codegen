@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
-import se.plilja.springdaogen.codegeneration.ClassGenerator
+import se.plilja.springdaogen.classgenerators.ClassGenerator
 import se.plilja.springdaogen.copyable.columnClass
 import se.plilja.springdaogen.copyable.queryable
 import se.plilja.springdaogen.model.Config

@@ -1,4 +1,4 @@
-package se.plilja.springdaogen.codegeneration
+package se.plilja.springdaogen.classgenerators
 
 
 class ClassGenerator(

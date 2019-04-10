@@ -1,7 +1,7 @@
 package se.plilja.springdaogen.daogeneration
 
 import org.springframework.jdbc.core.JdbcTemplate
-import se.plilja.springdaogen.codegeneration.AbstractClassGenerator
+import se.plilja.springdaogen.classgenerators.AbstractClassGenerator
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Schema
 import se.plilja.springdaogen.model.Table
