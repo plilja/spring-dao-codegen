@@ -1,7 +1,7 @@
 package se.plilja.springdaogen.daogeneration
 
 import se.plilja.springdaogen.codegeneration.EnumGenerator
-import se.plilja.springdaogen.generatedframework.baseDatabaseEnum
+import se.plilja.springdaogen.copyable.baseDatabaseEnum
 import se.plilja.springdaogen.model.Column
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Left

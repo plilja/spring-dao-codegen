@@ -1,12 +1,12 @@
-package se.plilja.springdaogen.generatedframework
+package se.plilja.springdaogen.copyable
 
 
 fun frameworkExceptions(_package: String): List<Pair<String, String>> {
     return listOf(
-        databaseException(_package),
-        tooManyRowsAvailableException(_package),
-        tooManyRowsUpdatedException(_package),
-        noRowsUpdatedException(_package)
+            databaseException(_package),
+            tooManyRowsAvailableException(_package),
+            tooManyRowsUpdatedException(_package),
+            noRowsUpdatedException(_package)
     )
 }
 

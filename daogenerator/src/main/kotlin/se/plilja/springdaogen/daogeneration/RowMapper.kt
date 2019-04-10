@@ -1,8 +1,8 @@
 package se.plilja.springdaogen.daogeneration
 
 import se.plilja.springdaogen.codegeneration.ClassGenerator
-import se.plilja.springdaogen.generatedframework.databaseException
-import se.plilja.springdaogen.generatedframework.iOUtil
+import se.plilja.springdaogen.copyable.databaseException
+import se.plilja.springdaogen.copyable.iOUtil
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.JavaVersion
 import se.plilja.springdaogen.model.Table

@@ -5,7 +5,7 @@ import org.slf4j.bridge.SLF4JBridgeHandler
 import org.springframework.boot.jdbc.DataSourceBuilder
 import se.plilja.springdaogen.codegeneration.toH2Ddl
 import se.plilja.springdaogen.daogeneration.generateCode
-import se.plilja.springdaogen.generatedframework.*
+import se.plilja.springdaogen.copyable.*
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.JavaVersion
 import se.plilja.springdaogen.model.Schema

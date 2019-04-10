@@ -1,13 +1,13 @@
-package se.plilja.springdaogen.generatedframework
+package se.plilja.springdaogen.copyable
 
 
 fun entityInterfaces(_package: String): List<Pair<String, String>> {
     return listOf(
-        createdByTracked(_package),
-        changedByTracked(_package),
-        createdAtTracked(_package),
-        changedAtTracked(_package),
-        versionTracked(_package)
+            createdByTracked(_package),
+            changedByTracked(_package),
+            createdAtTracked(_package),
+            changedAtTracked(_package),
+            versionTracked(_package)
     )
 }
 

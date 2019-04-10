@@ -1,4 +1,4 @@
-package se.plilja.springdaogen.generatedframework
+package se.plilja.springdaogen.copyable
 
 
 fun sortOrder(_package: String) : Pair<String, String> {

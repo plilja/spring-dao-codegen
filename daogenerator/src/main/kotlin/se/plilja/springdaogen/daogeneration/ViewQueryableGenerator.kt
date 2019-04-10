@@ -5,8 +5,8 @@ import org.springframework.jdbc.core.RowMapper
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Repository
 import se.plilja.springdaogen.codegeneration.ClassGenerator
-import se.plilja.springdaogen.generatedframework.columnClass
-import se.plilja.springdaogen.generatedframework.queryable
+import se.plilja.springdaogen.copyable.columnClass
+import se.plilja.springdaogen.copyable.queryable
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Left
 import se.plilja.springdaogen.model.View

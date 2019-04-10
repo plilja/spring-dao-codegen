@@ -1,4 +1,4 @@
-package se.plilja.springdaogen.generatedframework
+package se.plilja.springdaogen.copyable
 
 import se.plilja.springdaogen.model.Config
 

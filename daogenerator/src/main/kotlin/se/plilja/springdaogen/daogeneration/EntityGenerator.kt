@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor
 import lombok.Data
 import lombok.NoArgsConstructor
 import se.plilja.springdaogen.codegeneration.ClassGenerator
-import se.plilja.springdaogen.generatedframework.*
+import se.plilja.springdaogen.copyable.*
 import se.plilja.springdaogen.model.Config
 import se.plilja.springdaogen.model.Left
 import se.plilja.springdaogen.model.Table
