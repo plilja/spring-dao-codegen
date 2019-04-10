@@ -1,4 +1,4 @@
-package se.plilja.springdaogen.classgenerators
+package se.plilja.springdaogen.syntaxgenerator
 
 import org.junit.jupiter.api.Test
 import java.sql.Connection
@@ -65,7 +65,7 @@ public class Foo {
         // then
         val exp = """package se.plilja.test;
 
-import se.plilja.springdaogen.classgenerators.ClassGeneratorTest.A;
+import se.plilja.springdaogen.syntaxgenerator.ClassGeneratorTest.A;
 
 public class Foo extends A {
 
@@ -89,7 +89,7 @@ public class Foo extends A {
         // then
         val exp = """package se.plilja.test;
 
-import se.plilja.springdaogen.classgenerators.ClassGeneratorTest.B;
+import se.plilja.springdaogen.syntaxgenerator.ClassGeneratorTest.B;
 
 public class Foo extends B<Integer> {
 

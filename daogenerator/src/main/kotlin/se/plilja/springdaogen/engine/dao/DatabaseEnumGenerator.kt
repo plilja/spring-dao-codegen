@@ -1,12 +1,12 @@
 package se.plilja.springdaogen.engine.dao
 
-import se.plilja.springdaogen.classgenerators.EnumGenerator
 import se.plilja.springdaogen.config.Config
 import se.plilja.springdaogen.copyable.baseDatabaseEnum
 import se.plilja.springdaogen.engine.model.Column
 import se.plilja.springdaogen.engine.model.Left
 import se.plilja.springdaogen.engine.model.Right
 import se.plilja.springdaogen.engine.model.Table
+import se.plilja.springdaogen.syntaxgenerator.EnumGenerator
 import se.plilja.springdaogen.util.snakeCase
 import java.math.BigDecimal
 import java.util.*

@@ -1,4 +1,4 @@
-package se.plilja.springdaogen.classgenerators
+package se.plilja.springdaogen.syntaxgenerator
 
 import se.plilja.springdaogen.config.Config
 import se.plilja.springdaogen.engine.dao.selectRows
