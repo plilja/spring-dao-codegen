@@ -8,7 +8,7 @@ class ClassGenerator(
 ) : AbstractClassGenerator(name, packageName, sourceBaseFolder) {
 
     private val constants = ArrayList<Pair<Field, String>>()
-    var isFinal = false
+    private var isFinal = false
     var isAbstract = false
     var extends: String? = null
     var isConstantsClass = false

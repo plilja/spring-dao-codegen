@@ -5,9 +5,9 @@ import java.util.*
 
 
 abstract class AbstractClassGenerator(
-    val name: String,
-    val packageName: String,
-    val sourceBaseFolder: String
+        val name: String,
+        val packageName: String,
+        private val sourceBaseFolder: String
 ) {
     protected val imports = TreeSet<String>()
     protected val classAnnotations = ArrayList<String>()
