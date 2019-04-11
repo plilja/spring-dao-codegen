@@ -9,21 +9,21 @@ import se.plilja.springdaogen.syntaxgenerator.AbstractClassGenerator
 import javax.sql.DataSource
 
 fun generateCode(config: Config, schema: Schema, dataSource: DataSource): List<AbstractClassGenerator> {
-    val tableClasses = schema.tables.flatMap {
+    val tableClasses = schema.tables.flatMap { table ->
         val list = ArrayList<AbstractClassGenerator>()
-        if (it.isEnum()) {
-            val rows = selectRows(dataSource, it, config)
-            list.add(generateEnums(config, it, rows))
+        if (table.isEnum()) {
+            val rows = selectRows(dataSource, table, config)
+            list.add(generateEnums(config, table, rows))
         } else {
-            list.add(generateDao(config, it))
-            list.add(generateEntity(config, it))
+            list.add(generateDao(config, table))
+            list.add(generateEntity(config, table))
         }
         list
     }
-    val viewClasses = schema.views.flatMap {
+    val viewClasses = schema.views.flatMap { table ->
         val list = ArrayList<AbstractClassGenerator>()
-        list.add(generateViewQueryable(config, it))
-        list.add(generateViewEntity(config, it))
+        list.add(generateViewQueryable(config, table))
+        list.add(generateViewEntity(config, table))
         list
     }
     return tableClasses + viewClasses
