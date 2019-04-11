@@ -1,6 +1,7 @@
 package se.plilja.springdaogen.engine.model
 
 import se.plilja.springdaogen.config.Config
+import se.plilja.springdaogen.config.JavaVersion
 import se.plilja.springdaogen.util.camelCase
 import se.plilja.springdaogen.util.capitalizeFirst
 import se.plilja.springdaogen.util.capitalizeLast

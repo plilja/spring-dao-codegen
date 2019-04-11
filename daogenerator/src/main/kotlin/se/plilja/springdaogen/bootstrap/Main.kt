@@ -4,9 +4,9 @@ import org.apache.log4j.Level
 import org.slf4j.bridge.SLF4JBridgeHandler
 import org.springframework.boot.jdbc.DataSourceBuilder
 import se.plilja.springdaogen.config.Config
+import se.plilja.springdaogen.config.JavaVersion
 import se.plilja.springdaogen.copyable.*
 import se.plilja.springdaogen.engine.dao.generateCode
-import se.plilja.springdaogen.engine.model.JavaVersion
 import se.plilja.springdaogen.engine.model.Schema
 import se.plilja.springdaogen.syntaxgenerator.toH2Ddl
 import java.io.File

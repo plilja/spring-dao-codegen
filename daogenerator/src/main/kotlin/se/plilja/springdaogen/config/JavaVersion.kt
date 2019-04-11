@@ -1,4 +1,4 @@
-package se.plilja.springdaogen.engine.model
+package se.plilja.springdaogen.config
 
 
 enum class JavaVersion(val version: String) {

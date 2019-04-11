@@ -1,9 +1,9 @@
 package se.plilja.springdaogen.engine.dao
 
 import se.plilja.springdaogen.config.Config
+import se.plilja.springdaogen.config.JavaVersion
 import se.plilja.springdaogen.copyable.databaseException
 import se.plilja.springdaogen.copyable.iOUtil
-import se.plilja.springdaogen.engine.model.JavaVersion
 import se.plilja.springdaogen.engine.model.Table
 import se.plilja.springdaogen.engine.model.TableOrView
 import se.plilja.springdaogen.syntaxgenerator.ClassGenerator
