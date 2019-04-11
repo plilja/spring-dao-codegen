@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test
 import se.plilja.springdaogen.config.defaultTestConfig
 import se.plilja.springdaogen.engine.model.Column
 import se.plilja.springdaogen.engine.model.DatabaseDialect
+import se.plilja.springdaogen.engine.model.Schema
 import se.plilja.springdaogen.engine.model.Table
 import kotlin.test.assertEquals
 
@@ -15,9 +16,12 @@ class SqlTest {
         val pk = Column("FOO_ID", Integer::class.java, config, true)
         val name = Column("NAME", String::class.java, config)
         val age = Column("AGE", Integer::class.java, config)
+        val schema = Schema("public", ArrayList(), ArrayList())
+        val table = Table(schema, "FOO", pk, listOf(pk, name, age), defaultTestConfig())
+        schema.tables.add(table)
 
         // when
-        val sql = update(Table("public", "FOO", pk, listOf(pk, name, age), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
+        val sql = update(table, DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals(
@@ -35,9 +39,12 @@ class SqlTest {
         val config = defaultTestConfig()
         val pk = Column("FOO_ID", Integer::class.java, config, true)
         val name = Column("NAME", String::class.java, config)
+        val schema = Schema("public", ArrayList(), ArrayList())
+        val table = Table(schema, "FOO", pk, listOf(pk, name), defaultTestConfig())
+        schema.tables.add(table)
 
         // when
-        val sql = selectOne(Table("public", "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
+        val sql = selectOne(table, DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals(
@@ -55,9 +62,12 @@ class SqlTest {
         val config = defaultTestConfig()
         val pk = Column("FOO_ID", Integer::class.java, config, true)
         val name = Column("NAME", String::class.java, config)
+        val schema = Schema(null, ArrayList(), ArrayList()) // It represents the implicit default schema
+        val table = Table(schema, "FOO", pk, listOf(pk, name), defaultTestConfig())
+        schema.tables.add(table)
 
         // when
-        val sql = selectOne(Table(null, "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
+        val sql = selectOne(table, DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals(
@@ -75,9 +85,12 @@ class SqlTest {
         val config = defaultTestConfig()
         val pk = Column("FOO_ID", Integer::class.java, config, true)
         val name = Column("NAME", String::class.java, config)
+        val schema = Schema(null, ArrayList(), ArrayList())
+        val table = Table(schema, "FOO", pk, listOf(pk, name), defaultTestConfig())
+        schema.tables.add(table)
 
         // when
-        val sql = existsById(Table(null, "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
+        val sql = existsById(table, DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals(
@@ -95,9 +108,12 @@ class SqlTest {
         val config = defaultTestConfig()
         val pk = Column("FOO_ID", Integer::class.java, config, true)
         val name = Column("NAME", String::class.java, config)
+        val schema = Schema(null, ArrayList(), ArrayList())
+        val table = Table(schema, "FOO", pk, listOf(pk, name), defaultTestConfig())
+        schema.tables.add(table)
 
         // when
-        val sql = delete(Table(null, "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
+        val sql = delete(table, DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals(
@@ -113,9 +129,12 @@ class SqlTest {
         val config = defaultTestConfig()
         val pk = Column("FOO_ID", Integer::class.java, config, true)
         val name = Column("NAME", String::class.java, config)
+        val schema = Schema("public", ArrayList(), ArrayList())
+        val table = Table(schema, "FOO", pk, listOf(pk, name), defaultTestConfig())
+        schema.tables.add(table)
 
         // when
-        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.MYSQL)
+        val sql = selectMany(table, DatabaseDialect.MYSQL)
 
         // then
         assertEquals(
@@ -133,9 +152,12 @@ class SqlTest {
         val config = defaultTestConfig()
         val pk = Column("FOO_ID", Integer::class.java, config, true)
         val name = Column("NAME", String::class.java, config)
+        val schema = Schema("public", ArrayList(), ArrayList())
+        val table = Table(schema, "FOO", pk, listOf(pk, name), defaultTestConfig())
+        schema.tables.add(table)
 
         // when
-        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.POSTGRES)
+        val sql = selectMany(table, DatabaseDialect.POSTGRES)
 
         // then
         assertEquals(
@@ -153,9 +175,12 @@ class SqlTest {
         val config = defaultTestConfig()
         val pk = Column("FOO_ID", Integer::class.java, config, true)
         val name = Column("NAME", String::class.java, config)
+        val schema = Schema("public", ArrayList(), ArrayList())
+        val table = Table(schema, "FOO", pk, listOf(pk, name), defaultTestConfig())
+        schema.tables.add(table)
 
         // when
-        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.ORACLE)
+        val sql = selectMany(table, DatabaseDialect.ORACLE)
 
         // then
         assertEquals(
@@ -173,9 +198,12 @@ class SqlTest {
         val config = defaultTestConfig()
         val pk = Column("FOO_ID", Integer::class.java, config, true)
         val name = Column("NAME", String::class.java, config)
+        val schema = Schema("public", ArrayList(), ArrayList())
+        val table = Table(schema, "FOO", pk, listOf(pk, name), defaultTestConfig())
+        schema.tables.add(table)
 
         // when
-        val sql = selectMany(Table("public", "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
+        val sql = selectMany(table, DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals(
@@ -192,9 +220,12 @@ class SqlTest {
         val config = defaultTestConfig()
         val pk = Column("FOO_ID", Integer::class.java, config, true)
         val name = Column("NAME", String::class.java, config)
+        val schema = Schema(null, ArrayList(), ArrayList())
+        val table = Table(schema, "FOO", pk, listOf(pk, name), defaultTestConfig())
+        schema.tables.add(table)
 
         // when
-        val sql = count(Table(null, "FOO", pk, listOf(pk, name), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
+        val sql = count(table, DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals("\"SELECT COUNT(*) FROM FOO\"", sql)

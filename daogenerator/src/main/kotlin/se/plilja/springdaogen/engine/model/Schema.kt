@@ -17,12 +17,13 @@ import java.util.*
 
 
 data class Schema(
-        val tables: List<Table>,
-        val views: List<View>
+        val schemaName: String?,
+        val tables: MutableList<Table>,
+        val views: MutableList<View>
 )
 
 interface TableOrView {
-    val schemaName: String? // TODO should this be lifted to the schema object?
+    var schema: Schema
     val name: String
     val columns: List<Column>
     val config: Config
@@ -49,7 +50,7 @@ interface TableOrView {
 }
 
 data class View(
-        override val schemaName: String?,
+        override var schema: Schema,
         override val name: String,
         override val columns: List<Column>,
         override val config: Config
@@ -61,7 +62,7 @@ data class View(
 }
 
 data class Table(
-        override val schemaName: String?,
+        override var schema: Schema,
         override val name: String,
         val primaryKey: Column,
         override val columns: List<Column>,

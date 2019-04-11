@@ -292,7 +292,7 @@ fun count(tableOrView: TableOrView, databaseDialect: DatabaseDialect): String {
 
 fun formatTable(tableOrView: TableOrView, databaseDialect: DatabaseDialect): String {
     val identifier = formatIdentifier(tableOrView.name, databaseDialect)
-    val schemaName = tableOrView.schemaName
+    val schemaName = tableOrView.schema.schemaName
     val schema = if (schemaName != null) {
         "${formatIdentifier(schemaName, databaseDialect)}."
     } else {

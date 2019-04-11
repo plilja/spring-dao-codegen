@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test
 import se.plilja.springdaogen.config.Config
 import se.plilja.springdaogen.engine.model.Column
 import se.plilja.springdaogen.engine.model.DatabaseDialect
+import se.plilja.springdaogen.engine.model.Schema
 import se.plilja.springdaogen.engine.model.Table
 import kotlin.test.assertEquals
 
@@ -29,7 +30,9 @@ class EntityGeneratorTest {
                         false
                 )
         val pk = Column("ID", Integer::class.java, config, true)
-        val table = Table("dbo", "Table", pk, listOf(pk), config)
+        val schema = Schema("dbo", ArrayList(), ArrayList())
+        val table = Table(schema, "Table", pk, listOf(pk), config)
+        schema.tables.add(table)
 
         // when
         val res = generateEntity(config, table)
@@ -88,7 +91,9 @@ public class Table implements BaseEntity<Integer> {
                 )
         val pk = Column("TABLE_ID", Integer::class.java, config, true)
         val name = Column("NAME", String::class.java, config)
-        val table = Table("dbo", "TABLE", pk, listOf(pk, name), config)
+        val schema = Schema("dbo", ArrayList(), ArrayList())
+        val table = Table(schema, "TABLE", pk, listOf(pk, name), config)
+        schema.tables.add(table)
 
         // when
         val res = generateEntity(config, table)

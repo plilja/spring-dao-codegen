@@ -15,10 +15,11 @@ import java.time.OffsetDateTime
 import java.util.*
 import java.util.regex.Pattern
 import javax.sql.DataSource
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 
-fun readSchema(config: Config, dataSource: DataSource): Schema {
+fun readSchema(config: Config, dataSource: DataSource): List<Schema> {
     val schemaFilter = if (config.schemas.isEmpty()) {
         IncludeAll()
     } else {
@@ -38,14 +39,15 @@ fun readSchema(config: Config, dataSource: DataSource): Schema {
             .toOptions()
     val catalog = SchemaCrawlerUtility.getCatalog(dataSource.connection, options)
     println("Done crawling schema.")
-    return catalogToSchema(catalog, config)
+    return catalogToSchemas(catalog, config)
 }
 
 private fun regularExpressionFromList(rules: List<String>) =
         Pattern.compile("(?i)" + rules.map { r -> ".*\\.?$r" }.joinToString("|"))
 
-fun catalogToSchema(catalog: Catalog, config: Config): Schema {
+fun catalogToSchemas(catalog: Catalog, config: Config): List<Schema> {
     println("Found these tables: ${catalog.tables.map { it.name }.joinToString(", ")}.")
+    val schemas = ArrayList<Schema>()
     val tablesMap = HashMap<schemacrawler.schema.Table, TableOrView>()
     val columnsMap = HashMap<schemacrawler.schema.Column, Column>()
     val filteredTables = catalog.tables
@@ -57,18 +59,21 @@ fun catalogToSchema(catalog: Catalog, config: Config): Schema {
     val filteredViews = catalog.tables
             .filter { it.tableType.isView }
             .filter { config.featureGenerateQueryApi } // Views are only supported if query API is being generated
-    filteredTables.forEach { convertTable(it, config, tablesMap, columnsMap) }
-    filteredViews.forEach { convertView(it, config, tablesMap, columnsMap) }
+    for (tableOrView in filteredTables + filteredViews) {
+        if (schemas.none { it.schemaName == tableOrView.schema?.name }) {
+            schemas.add(Schema(tableOrView.schema?.name, ArrayList(), ArrayList()))
+        }
+    }
+    filteredTables.forEach { convertTable(it, config, schemas, tablesMap, columnsMap) }
+    filteredViews.forEach { convertView(it, config, schemas, tablesMap, columnsMap) }
     setForeignKeys(catalog, tablesMap, columnsMap)
-    return Schema(
-            tablesMap.values.filter { it is Table }.map { it as Table }.toList(),
-            tablesMap.values.filter { it is View }.map { it as View }.toList()
-    )
+    return schemas
 }
 
 fun convertTable(
         table: schemacrawler.schema.Table,
         config: Config,
+        schemas: List<Schema>,
         tablesMap: HashMap<schemacrawler.schema.Table, TableOrView>,
         columnsMap: HashMap<schemacrawler.schema.Column, Column>
 ) {
@@ -78,35 +83,40 @@ fun convertTable(
     val sortedColumns =
             table.columns.sortedBy { c -> if (c.isPartOfPrimaryKey) "-${c.name.toLowerCase()}" else c.name.toLowerCase() } // Primary keys first, then other columns in alphabetic order
 
+    val schema = schemas.first { it.schemaName == table.schema?.name }
     val convertedTable = Table(
-            table.schema?.name,
+            schema,
             table.name,
             columnsMap[table.primaryKey.columns[0]]!!,
             sortedColumns.map { columnsMap[it]!! },
             config
     )
+    schema.tables.add(convertedTable)
     tablesMap[table] = convertedTable
 }
 
 fun convertView(
-        table: schemacrawler.schema.Table,
+        view: schemacrawler.schema.Table,
         config: Config,
+        schemas: List<Schema>,
         tablesMap: HashMap<schemacrawler.schema.Table, TableOrView>,
         columnsMap: HashMap<schemacrawler.schema.Column, Column>
 ) {
-    for (column in table.columns) {
-        columnsMap[column] = convertColumn(table, column, config)
+    for (column in view.columns) {
+        columnsMap[column] = convertColumn(view, column, config)
     }
     val sortedColumns =
-            table.columns.sortedBy { it.name.toLowerCase() }
+            view.columns.sortedBy { it.name.toLowerCase() }
 
-    val convertedTable = View(
-            table.schema?.name,
-            table.name,
+    val schema = schemas.first { it.schemaName == view.schema?.name }
+    val convertedView = View(
+            schema,
+            view.name,
             sortedColumns.map { columnsMap[it]!! },
             config
     )
-    tablesMap[table] = convertedTable
+    schema.views.add(convertedView)
+    tablesMap[view] = convertedView
 }
 
 fun setForeignKeys(

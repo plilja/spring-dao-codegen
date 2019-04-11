@@ -28,6 +28,11 @@ varchar10 VARCHAR(10),
 xml CLOB,
 PRIMARY KEY(id));
 
+CREATE TABLE IF NOT EXISTS test_schema.color_enum_postgres (
+id VARCHAR(10) NOT NULL,
+hex VARCHAR(10) NOT NULL,
+PRIMARY KEY(id));
+
 CREATE TABLE IF NOT EXISTS test_schema.one_column_generated_id_postgres (
 id IDENTITY NOT NULL,
 PRIMARY KEY(id));
@@ -46,11 +51,6 @@ counter BIGINT,
 created_at TIMESTAMP NOT NULL,
 created_by VARCHAR(50) NOT NULL,
 PRIMARY KEY(baz_id));
-
-CREATE TABLE IF NOT EXISTS test_schema.color_enum_postgres (
-id VARCHAR(10) NOT NULL,
-hex VARCHAR(10) NOT NULL,
-PRIMARY KEY(id));
 
 ALTER TABLE test_schema.baz_postgres
 ADD FOREIGN KEY (color)

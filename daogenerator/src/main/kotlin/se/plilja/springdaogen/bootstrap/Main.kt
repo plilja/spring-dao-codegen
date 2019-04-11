@@ -24,10 +24,10 @@ fun main(args: Array<String>) {
     println("Starting...")
     val config = readConfig(args)
     val dataSource = getDataSource(config)
-    val schema = readSchema(config, dataSource)
-    writeDaos(config, schema, dataSource)
+    val schemas = readSchema(config, dataSource)
+    writeDaos(config, schemas, dataSource)
     copyFrameworkClasses(config)
-    writeTestDdl(config, schema, dataSource)
+    writeTestDdl(config, schemas, dataSource)
     close(dataSource)
     println("Done.")
 }
@@ -42,8 +42,8 @@ fun initLogging(args: Array<String>) {
     }
 }
 
-private fun writeDaos(config: Config, schema: Schema, dataSource: DataSource) {
-    val classes = generateCode(config, schema, dataSource)
+private fun writeDaos(config: Config, schemas: List<Schema>, dataSource: DataSource) {
+    val classes = generateCode(config, schemas, dataSource)
     for (classGenerator in classes) {
         val dir = File(classGenerator.getOutputFolder())
         dir.mkdirs()
@@ -100,9 +100,9 @@ fun copyFrameworkClasses(config: Config) {
  * Writes test sql-files if configured that creates an
  * H2-database to be used for testing.
  */
-fun writeTestDdl(config: Config, schema: Schema, dataSource: DataSource) {
+fun writeTestDdl(config: Config, schemas: List<Schema>, dataSource: DataSource) {
     if (config.featureGenerateTestDdl) {
-        val ddl = toH2Ddl(config, schema, dataSource)
+        val ddl = toH2Ddl(config, schemas, dataSource)
         File(config.testResourceFolder).mkdirs()
         File(config.testResourceFolder + "/" + config.testDdlFileName).writeText(ddl)
     }

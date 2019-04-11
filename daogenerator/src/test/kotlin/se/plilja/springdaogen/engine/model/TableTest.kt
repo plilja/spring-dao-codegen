@@ -9,7 +9,9 @@ class TableTest {
     fun getEntityName() {
         val config = defaultTestConfig().copy(entityPrefix = "", entitySuffix = "")
         val pk = Column("id", Int::class.java, config, true)
-        val table = Table("entityfoo", "Table", pk, listOf(pk), config)
+        val schema = Schema("entityfoo", ArrayList(), ArrayList())
+        val table = Table(schema, "Table", pk, listOf(pk), config)
+        schema.tables.add(table)
 
         assertEquals("Table", table.entityName())
         assertEquals("Table", table.copy(name = "TABLE").entityName())
@@ -24,7 +26,9 @@ class TableTest {
     fun getRepositoryName() {
         val config = defaultTestConfig().copy(daoPrefix = "", daoSuffix = "")
         val pk = Column("id", Int::class.java, config, true)
-        val table = Table("entityfoo", "Table", pk, listOf(pk), config)
+        val schema = Schema("entityfoo", ArrayList(), ArrayList())
+        val table = Table(schema, "Table", pk, listOf(pk), config)
+        schema.tables.add(table)
 
         assertEquals("Table", table.daoName())
         assertEquals("Table", table.copy(name = "TABLE").daoName())

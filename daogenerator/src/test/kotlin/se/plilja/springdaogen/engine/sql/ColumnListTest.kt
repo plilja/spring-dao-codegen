@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test
 import se.plilja.springdaogen.config.defaultTestConfig
 import se.plilja.springdaogen.engine.model.Column
 import se.plilja.springdaogen.engine.model.DatabaseDialect
+import se.plilja.springdaogen.engine.model.Schema
 import se.plilja.springdaogen.engine.model.Table
 import kotlin.test.assertEquals
 
@@ -15,9 +16,12 @@ class ColumnListTest {
         val pk = Column("FOO_ID", Integer::class.java, config, true)
         val name = Column("NAME", String::class.java, config)
         val age = Column("AGE", Integer::class.java, config)
+        val schema = Schema("public", ArrayList(), ArrayList())
+        val table = Table(schema, "FOO", pk, listOf(pk, name, age), defaultTestConfig())
+        schema.tables.add(table)
 
         // when
-        val res = columnsList(Table("public", "FOO", pk, listOf(pk, name, age), defaultTestConfig()), DatabaseDialect.MSSQL_SERVER)
+        val res = columnsList(table, DatabaseDialect.MSSQL_SERVER)
 
         // then
         assertEquals("\" FOO_ID, NAME, AGE \"", res)
@@ -39,10 +43,13 @@ class ColumnListTest {
         val j = Column("j", Integer::class.java, config)
         val k = Column("k", Integer::class.java, config)
         val l = Column("l", Integer::class.java, config)
+        val schema = Schema("public", ArrayList(), ArrayList())
+        val table = Table(schema, "FOO", pk, listOf(pk, a, b, c, d, e, f, g, h, i, j, k, l), defaultTestConfig())
+        schema.tables.add(table)
 
         // when
         val res = columnsList(
-                Table("public", "FOO", pk, listOf(pk, a, b, c, d, e, f, g, h, i, j, k, l), defaultTestConfig()),
+                table,
             DatabaseDialect.MYSQL
         )
 

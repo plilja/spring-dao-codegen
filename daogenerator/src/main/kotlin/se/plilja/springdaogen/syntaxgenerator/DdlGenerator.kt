@@ -13,11 +13,10 @@ import java.time.OffsetDateTime
 import javax.sql.DataSource
 
 
-fun toH2Ddl(config: Config, schema: Schema, dataSource: DataSource): String {
-    val schemaNames = schema.tables
-        .filter { it.schemaName != null }
-        .map { it.schemaName }
-        .toSet()
+fun toH2Ddl(config: Config, schemas: List<Schema>, dataSource: DataSource): String {
+    val schemaNames = schemas
+            .map { it.schemaName }
+            .filter { it != null }
     var res = ""
     for (schemaName in schemaNames) {
         if (schemaName != "public") {
@@ -27,8 +26,8 @@ fun toH2Ddl(config: Config, schema: Schema, dataSource: DataSource): String {
     }
     res += "\n"
     res += "\n"
-    for (table in schema.tables) {
-        res += "CREATE TABLE IF NOT EXISTS ${formatIdentifier(table.schemaName, table.name)} (\n"
+    for (table in schemas.flatMap { it.tables }) {
+        res += "CREATE TABLE IF NOT EXISTS ${formatIdentifier(table.schema.schemaName, table.name)} (\n"
         for (column in table.columns) {
             val maybeNotNull = if (!column.nullable) " NOT NULL" else ""
             res += "${column.name} ${dataType(column)}$maybeNotNull,\n"
@@ -37,12 +36,12 @@ fun toH2Ddl(config: Config, schema: Schema, dataSource: DataSource): String {
         res += ");\n"
         res += "\n"
     }
-    for (table in schema.tables) {
+    for (table in schemas.flatMap { it.tables }) {
         for (column in table.columns) {
             val references = column.references
             if (references != null) {
-                val table_ = formatIdentifier(table.schemaName, table.name)
-                val refTable = formatIdentifier(references.first.schemaName, references.first.name)
+                val table_ = formatIdentifier(table.schema.schemaName, table.name)
+                val refTable = formatIdentifier(references.first.schema.schemaName, references.first.name)
                 res += """
                     ALTER TABLE $table_
                     ADD FOREIGN KEY (${column.name})
@@ -53,10 +52,10 @@ fun toH2Ddl(config: Config, schema: Schema, dataSource: DataSource): String {
         }
     }
     res += "\n"
-    for (table in schema.tables) {
+    for (table in schemas.flatMap { it.tables }) {
         if (table.isEnum()) {
             val rows = selectRows(dataSource, table, config)
-            val t = formatIdentifier(table.schemaName, table.name)
+            val t = formatIdentifier(table.schema.schemaName, table.name)
             for (row in rows) {
                 val columns = table.columns.map { it.name }.joinToString(", ")
                 val values = table.columns.map { extractValue(row[it.name], it) }.joinToString(", ")
