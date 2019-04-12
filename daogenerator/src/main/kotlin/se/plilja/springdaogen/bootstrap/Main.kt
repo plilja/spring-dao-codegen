@@ -8,6 +8,7 @@ import se.plilja.springdaogen.config.JavaVersion
 import se.plilja.springdaogen.copyable.*
 import se.plilja.springdaogen.engine.dao.generateCode
 import se.plilja.springdaogen.engine.model.Schema
+import se.plilja.springdaogen.engine.model.TableContents
 import se.plilja.springdaogen.syntaxgenerator.toH2Ddl
 import java.io.File
 import java.util.logging.LogManager
@@ -25,9 +26,10 @@ fun main(args: Array<String>) {
     val config = readConfig(args)
     val dataSource = getDataSource(config)
     val schemas = readSchema(config, dataSource)
-    writeDaos(config, schemas, dataSource)
+    val tableContents = TableContentsFromDb(dataSource)
+    writeDaos(config, schemas, tableContents)
     copyFrameworkClasses(config)
-    writeTestDdl(config, schemas, dataSource)
+    writeTestDdl(config, schemas, tableContents)
     close(dataSource)
     println("Done.")
 }
@@ -42,8 +44,8 @@ fun initLogging(args: Array<String>) {
     }
 }
 
-private fun writeDaos(config: Config, schemas: List<Schema>, dataSource: DataSource) {
-    val classes = generateCode(config, schemas, dataSource)
+private fun writeDaos(config: Config, schemas: List<Schema>, tableContents: TableContents) {
+    val classes = generateCode(config, schemas, tableContents)
     for (classGenerator in classes) {
         val dir = File(classGenerator.getOutputFolder())
         dir.mkdirs()
@@ -100,9 +102,9 @@ fun copyFrameworkClasses(config: Config) {
  * Writes test sql-files if configured that creates an
  * H2-database to be used for testing.
  */
-fun writeTestDdl(config: Config, schemas: List<Schema>, dataSource: DataSource) {
+fun writeTestDdl(config: Config, schemas: List<Schema>, tableContents: TableContents) {
     if (config.featureGenerateTestDdl) {
-        val ddl = toH2Ddl(config, schemas, dataSource)
+        val ddl = toH2Ddl(config, schemas, tableContents)
         File(config.testResourceFolder).mkdirs()
         File(config.testResourceFolder + "/" + config.testDdlFileName).writeText(ddl)
     }

@@ -109,40 +109,40 @@ data class Column(
 
     fun isChangedAtColumn(): Boolean {
         val types = listOf(
-            LocalDate::class.java,
-            LocalDateTime::class.java
+                LocalDate::class.java,
+                LocalDateTime::class.java
         )
         return config.changedAtColumnNames.contains(name.toUpperCase()) && javaType in types
     }
 
     fun isCreatedAtColumn(): Boolean {
         val types = listOf(
-            LocalDate::class.java,
-            LocalDateTime::class.java
+                LocalDate::class.java,
+                LocalDateTime::class.java
         )
         return config.createdAtColumnNames.contains(name.toUpperCase()) && javaType in types
     }
 
     fun isCreatedByColumn(): Boolean {
         val types = listOf(
-            String::class.java
+                String::class.java
         )
         return config.createdByColumnNames.contains(name.toUpperCase()) && javaType in types
     }
 
     fun isChangedByColumn(): Boolean {
         val types = listOf(
-            String::class.java
+                String::class.java
         )
         return config.changedByColumnNames.contains(name.toUpperCase()) && javaType in types
     }
 
     fun isVersionColumn(): Boolean {
         val types = listOf(
-            java.lang.Integer::class.java,
-            java.lang.Long::class.java,
-            java.lang.Short::class.java,
-            java.lang.Byte::class.java
+                java.lang.Integer::class.java,
+                java.lang.Long::class.java,
+                java.lang.Short::class.java,
+                java.lang.Byte::class.java
         )
         return config.versionColumnNames.contains(name.toUpperCase()) && javaType in types
     }
@@ -300,14 +300,14 @@ data class Column(
 
 fun isReservedJavaKeyword(s: String): Boolean {
     return s in setOf(
-        "abstract", "assert", "boolean", "break", "byte", "case", "catch",
-        "char", "class", "const", "continue", "default", "double", "do",
-        "else", "enum", "extends", "false", "final", "finally", "float",
-        "for", "goto", "if", "implements", "import", "instanceof", "int",
-        "interface", "long", "native", "new", "null", "package", "private",
-        "protected", "public", "return", "short", "static", "strictfp",
-        "super", "switch", "synchronized", "this", "throw", "throws",
-        "transient", "true", "try", "void", "volatile", "while"
+            "abstract", "assert", "boolean", "break", "byte", "case", "catch",
+            "char", "class", "const", "continue", "default", "double", "do",
+            "else", "enum", "extends", "false", "final", "finally", "float",
+            "for", "goto", "if", "implements", "import", "instanceof", "int",
+            "interface", "long", "native", "new", "null", "package", "private",
+            "protected", "public", "return", "short", "static", "strictfp",
+            "super", "switch", "synchronized", "this", "throw", "throws",
+            "transient", "true", "try", "void", "volatile", "while"
     )
 }
 

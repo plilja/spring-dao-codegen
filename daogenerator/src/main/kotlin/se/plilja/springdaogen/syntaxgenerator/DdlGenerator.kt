@@ -1,19 +1,18 @@
 package se.plilja.springdaogen.syntaxgenerator
 
 import se.plilja.springdaogen.config.Config
-import se.plilja.springdaogen.engine.dao.selectRows
 import se.plilja.springdaogen.engine.model.Column
 import se.plilja.springdaogen.engine.model.Schema
+import se.plilja.springdaogen.engine.model.TableContents
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.OffsetDateTime
-import javax.sql.DataSource
 
 
-fun toH2Ddl(config: Config, schemas: List<Schema>, dataSource: DataSource): String {
+fun toH2Ddl(config: Config, schemas: List<Schema>, tableContents: TableContents): String {
     val schemaNames = schemas
             .map { it.schemaName }
             .filter { it != null }
@@ -54,7 +53,7 @@ fun toH2Ddl(config: Config, schemas: List<Schema>, dataSource: DataSource): Stri
     res += "\n"
     for (table in schemas.flatMap { it.tables }) {
         if (table.isEnum()) {
-            val rows = selectRows(dataSource, table, config)
+            val rows = tableContents.getContents(config, table)
             val t = formatIdentifier(table.schema.schemaName, table.name)
             for (row in rows) {
                 val columns = table.columns.map { it.name }.joinToString(", ")
