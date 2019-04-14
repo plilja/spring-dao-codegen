@@ -3,7 +3,7 @@ package se.plilja.springdaogen.copyable
 
 fun columnClass(_package: String): Pair<String, String> {
     return Pair(
-        "Column", """
+            "Column", """
 package $_package;
 
 import java.math.BigDecimal;

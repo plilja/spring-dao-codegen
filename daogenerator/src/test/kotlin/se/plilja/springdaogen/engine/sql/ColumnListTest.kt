@@ -50,7 +50,7 @@ class ColumnListTest {
         // when
         val res = columnsList(
                 table,
-            DatabaseDialect.MYSQL
+                DatabaseDialect.MYSQL
         )
 
         // then

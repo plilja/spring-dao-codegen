@@ -6,7 +6,7 @@ import se.plilja.springdaogen.engine.model.TableOrView
 import se.plilja.springdaogen.engine.sql.formatIdentifier
 
 
-fun columnConstantInitializer(tableOrView: TableOrView, column: Column, config: Config) : Pair<String, String> {
+fun columnConstantInitializer(tableOrView: TableOrView, column: Column, config: Config): Pair<String, String> {
     val name = column.name
     val escapedName = formatIdentifier(name, config.databaseDialect)
     val extra = if (name != escapedName) {

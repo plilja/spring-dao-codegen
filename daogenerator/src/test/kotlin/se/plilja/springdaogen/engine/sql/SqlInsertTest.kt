@@ -25,7 +25,7 @@ class SqlInsertTest {
 
         // then
         assertEquals(
-            """
+                """
             |"INSERT INTO public.FOO (" +
             |"NAME, " +
             |"AGE" +
@@ -111,7 +111,7 @@ class SqlInsertTest {
 
         // then
         assertEquals(
-            """
+                """
             |"INSERT INTO \"public\".foo (" +
             |"foo_id" +
             |") " +

@@ -9,9 +9,9 @@ fun camelCase(s: String): String {
         s
     } else {
         lowerCaseFirst(
-            s.split('_', ' ').map { capitalizeFirst(it.toLowerCase()) }.joinToString(
-                ""
-            )
+                s.split('_', ' ').map { capitalizeFirst(it.toLowerCase()) }.joinToString(
+                        ""
+                )
         )
     }
 }
@@ -36,7 +36,7 @@ fun snakeCase(s: String): String {
                     parts.add(part)
                 }
                 part = "$c"
-            } else if (c != ' '){
+            } else if (c != ' ') {
                 part += c
             }
             wasSpace = c == ' '

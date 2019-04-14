@@ -3,7 +3,7 @@ package se.plilja.springdaogen.copyable
 
 fun queryItem(_package: String): Pair<String, String> {
     return Pair(
-        "QueryItem", """
+            "QueryItem", """
 package $_package;
 
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;

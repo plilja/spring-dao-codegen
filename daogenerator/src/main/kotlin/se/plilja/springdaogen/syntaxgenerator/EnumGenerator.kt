@@ -2,9 +2,9 @@ package se.plilja.springdaogen.syntaxgenerator
 
 
 class EnumGenerator(
-    name: String,
-    packageName: String,
-    sourceBaseFolder: String
+        name: String,
+        packageName: String,
+        sourceBaseFolder: String
 ) : AbstractClassGenerator(name, packageName, sourceBaseFolder) {
 
     private val enumValues = ArrayList<String>()
@@ -22,8 +22,8 @@ class EnumGenerator(
         val enumValuesDecl = enumValues.joinToString(",\n") + ";"
 
         val fieldsDeclaration =
-            fields.map { "${it.annotations.joinToString { "$it\n" }}private final ${it.type} ${it.name};" }
-                .joinToString("\n")
+                fields.map { "${it.annotations.joinToString { "$it\n" }}private final ${it.type} ${it.name};" }
+                        .joinToString("\n")
 
         val allArgsConstructor = """$name(${fields.map { "${it.type} ${it.name}" }.joinToString(", ")}) {
                 ${fields.map { "this.${it.name} = ${it.name};" }.joinToString("\n")}
@@ -34,19 +34,19 @@ class EnumGenerator(
         val classClose = "}\n"
 
         val classParts = listOf(
-            packageDeclaration,
-            importsDeclaration,
-            classHeader,
-            enumValuesDecl,
-            fieldsDeclaration,
-            allArgsConstructor,
-            gettersAndSetters,
-            joinedCustomMethods,
-            classClose
+                packageDeclaration,
+                importsDeclaration,
+                classHeader,
+                enumValuesDecl,
+                fieldsDeclaration,
+                allArgsConstructor,
+                gettersAndSetters,
+                joinedCustomMethods,
+                classClose
         )
         return rightTrimLines(indent(classParts.filter { !it.trim().isEmpty() }
-            .joinToString("\n\n")
-            .replace("    ", "")))
+                .joinToString("\n\n")
+                .replace("    ", "")))
 
     }
 }

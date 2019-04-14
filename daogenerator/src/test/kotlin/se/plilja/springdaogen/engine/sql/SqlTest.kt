@@ -25,7 +25,7 @@ class SqlTest {
 
         // then
         assertEquals(
-            """
+                """
             |"UPDATE public.FOO SET " +
             |"NAME = :NAME, " +
             |"AGE = :AGE " +
@@ -48,7 +48,7 @@ class SqlTest {
 
         // then
         assertEquals(
-            """
+                """
             |"SELECT " +
             |ALL_COLUMNS +
             |"FROM public.FOO " +
@@ -71,7 +71,7 @@ class SqlTest {
 
         // then
         assertEquals(
-            """
+                """
             |"SELECT " +
             |ALL_COLUMNS +
             |"FROM FOO " +
@@ -94,7 +94,7 @@ class SqlTest {
 
         // then
         assertEquals(
-            """
+                """
             |"SELECT " +
             |"COUNT(*) " +
             |"FROM FOO " +
@@ -117,7 +117,7 @@ class SqlTest {
 
         // then
         assertEquals(
-            """
+                """
             |"DELETE FROM FOO " +
             |"WHERE FOO_ID IN (:ids)"
         """.trimMargin(), sql
@@ -138,7 +138,7 @@ class SqlTest {
 
         // then
         assertEquals(
-            """
+                """
             |"SELECT " +
             |ALL_COLUMNS +
             |"FROM public.FOO " +
@@ -161,7 +161,7 @@ class SqlTest {
 
         // then
         assertEquals(
-            """
+                """
             |"SELECT " +
             |ALL_COLUMNS +
             |"FROM public.\"FOO\" " +
@@ -184,7 +184,7 @@ class SqlTest {
 
         // then
         assertEquals(
-            """
+                """
             |"SELECT " +
             |ALL_COLUMNS +
             |"FROM \"public\".FOO " +
@@ -207,7 +207,7 @@ class SqlTest {
 
         // then
         assertEquals(
-            """
+                """
             |"SELECT TOP %d " +
             |ALL_COLUMNS +
             |"FROM public.FOO "

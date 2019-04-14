@@ -3,7 +3,7 @@ package se.plilja.springdaogen.copyable
 
 fun currentUserProvider(_package: String): Pair<String, String> {
     return Pair(
-        "CurrentUserProvider", """
+            "CurrentUserProvider", """
 package $_package;
 
 /**

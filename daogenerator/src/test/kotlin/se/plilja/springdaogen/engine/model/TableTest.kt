@@ -18,7 +18,7 @@ class TableTest {
         assertEquals("Table", table.copy(name = "table").entityName())
         assertEquals("TableSuffix", table.copy(config = config.copy(entitySuffix = "Suffix")).entityName())
         assertEquals("PrefixTable", table.copy(config = config.copy(entityPrefix = "Prefix")).entityName())
-        assertEquals("PrefixTable", table.copy(name = "table", config = config.copy(entityPrefix =  "Prefix")).entityName())
+        assertEquals("PrefixTable", table.copy(name = "table", config = config.copy(entityPrefix = "Prefix")).entityName())
         assertEquals("PrefixTableSuffix", table.copy(config = config.copy(entityPrefix = "Prefix", entitySuffix = "Suffix")).entityName())
     }
 
@@ -37,8 +37,8 @@ class TableTest {
         assertEquals("PrefixTable", table.copy(config = config.copy(daoPrefix = "Prefix")).daoName())
         assertEquals("PrefixTable", table.copy(name = "table", config = config.copy(daoPrefix = "Prefix")).daoName())
         assertEquals(
-            "PrefixTableSuffix",
-            table.copy(config = config.copy(daoPrefix = "Prefix", daoSuffix = "Suffix")).daoName()
+                "PrefixTableSuffix",
+                table.copy(config = config.copy(daoPrefix = "Prefix", daoSuffix = "Suffix")).daoName()
         )
     }
 }

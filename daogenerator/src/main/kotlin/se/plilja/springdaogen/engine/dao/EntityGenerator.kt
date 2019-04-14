@@ -88,7 +88,7 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
             ""
         }
         g.addCustomMethod(
-            """
+                """
         |   $maybeJsonIgnore
         |   @Override
         |   public ${table.primaryKey.typeName()} getId() {
@@ -97,7 +97,7 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
     """.trimMargin()
         )
         g.addCustomMethod(
-            """
+                """
         |   $maybeJsonIgnore
         |   @Override
         |   public void setId(${table.primaryKey.typeName()} id) {
@@ -132,9 +132,9 @@ fun generateEntity(config: Config, table: Table): ClassGenerator {
 }
 
 private fun generatedChangeTracking(
-    table: Table,
-    g: ClassGenerator,
-    config: Config
+        table: Table,
+        g: ClassGenerator,
+        config: Config
 ) {
     val createdAtColumn = table.createdAtColumn()
     if (createdAtColumn != null) {
@@ -142,14 +142,14 @@ private fun generatedChangeTracking(
         g.addImplements("CreatedAtTracked<${createdAtColumn.typeName()}>")
         if (!config.featuresUseLombok || createdAtColumn.getter() != "getCreatedAt") {
             val maybeJsonIgnore =
-                if (config.featureGenerateJacksonAnnotations && createdAtColumn.getter() != "getCreatedAt") {
-                    g.addImport(JsonIgnore::class.java)
-                    "@JsonIgnore"
-                } else {
-                    ""
-                }
+                    if (config.featureGenerateJacksonAnnotations && createdAtColumn.getter() != "getCreatedAt") {
+                        g.addImport(JsonIgnore::class.java)
+                        "@JsonIgnore"
+                    } else {
+                        ""
+                    }
             g.addCustomMethod(
-                """
+                    """
             |   $maybeJsonIgnore
             |   @Override
             |   public ${createdAtColumn.typeName()} getCreatedAt() {
@@ -160,7 +160,7 @@ private fun generatedChangeTracking(
         }
         if (!config.featuresUseLombok && createdAtColumn.setter() == "setCreatedAt") {
             g.addCustomMethod(
-                """
+                    """
             |   public void ${createdAtColumn.setter()}(${createdAtColumn.typeName()} value) {
             |       this.${createdAtColumn.fieldName()} = value;
             |   }
@@ -169,7 +169,7 @@ private fun generatedChangeTracking(
         }
 
         g.addCustomMethod(
-            """
+                """
         |   @Override
         |   public void setCreatedNow() {
         |       ${createdAtColumn.fieldName()} = ${if (createdAtColumn.rawType() == LocalDate::class.java) "LocalDate.now()" else "LocalDateTime.now()"};
@@ -184,14 +184,14 @@ private fun generatedChangeTracking(
         g.addImplements("ChangedAtTracked<${changedAtColumn.typeName()}>")
         if (!config.featuresUseLombok || changedAtColumn.getter() != "getChangedAt") {
             val maybeJsonIgnore =
-                if (config.featureGenerateJacksonAnnotations && changedAtColumn.getter() != "getChangedAt") {
-                    g.addImport(JsonIgnore::class.java)
-                    "@JsonIgnore"
-                } else {
-                    ""
-                }
+                    if (config.featureGenerateJacksonAnnotations && changedAtColumn.getter() != "getChangedAt") {
+                        g.addImport(JsonIgnore::class.java)
+                        "@JsonIgnore"
+                    } else {
+                        ""
+                    }
             g.addCustomMethod(
-                """
+                    """
             |   $maybeJsonIgnore
             |   @Override
             |   public ${changedAtColumn.typeName()} getChangedAt() {
@@ -202,7 +202,7 @@ private fun generatedChangeTracking(
         }
         if (!config.featuresUseLombok && changedAtColumn.setter() == "setChangedAt") {
             g.addCustomMethod(
-                """
+                    """
             |   public void ${changedAtColumn.setter()}(${changedAtColumn.typeName()} value) {
             |       this.${changedAtColumn.fieldName()} = value;
             |   }
@@ -211,7 +211,7 @@ private fun generatedChangeTracking(
         }
 
         g.addCustomMethod(
-            """
+                """
         |   @Override
         |   public void setChangedNow() {
         |       ${changedAtColumn.fieldName()} = ${if (changedAtColumn.rawType() == LocalDate::class.java) "LocalDate.now()" else "LocalDateTime.now()"};
@@ -226,14 +226,14 @@ private fun generatedChangeTracking(
         g.addImplements("CreatedByTracked")
         if (!config.featuresUseLombok || createdByColumn.getter() != "getCreatedBy") {
             val maybeJsonIgnore =
-                if (config.featureGenerateJacksonAnnotations && createdByColumn.getter() != "getCreatedBy") {
-                    g.addImport(JsonIgnore::class.java)
-                    "@JsonIgnore"
-                } else {
-                    ""
-                }
+                    if (config.featureGenerateJacksonAnnotations && createdByColumn.getter() != "getCreatedBy") {
+                        g.addImport(JsonIgnore::class.java)
+                        "@JsonIgnore"
+                    } else {
+                        ""
+                    }
             g.addCustomMethod(
-                """
+                    """
             |   $maybeJsonIgnore
             |   @Override
             |   public String getCreatedBy() {
@@ -242,7 +242,7 @@ private fun generatedChangeTracking(
             """.trimMargin()
             )
             g.addCustomMethod(
-                """
+                    """
             |   $maybeJsonIgnore
             |   @Override
             |   public void setCreatedBy(String value) {
@@ -259,14 +259,14 @@ private fun generatedChangeTracking(
         g.addImplements("ChangedByTracked")
         if (!config.featuresUseLombok || changedByColumn.getter() != "getChangedBy") {
             val maybeJsonIgnore =
-                if (config.featureGenerateJacksonAnnotations && changedByColumn.getter() != "getChangedBy") {
-                    g.addImport(JsonIgnore::class.java)
-                    "@JsonIgnore"
-                } else {
-                    ""
-                }
+                    if (config.featureGenerateJacksonAnnotations && changedByColumn.getter() != "getChangedBy") {
+                        g.addImport(JsonIgnore::class.java)
+                        "@JsonIgnore"
+                    } else {
+                        ""
+                    }
             g.addCustomMethod(
-                """
+                    """
             |   $maybeJsonIgnore
             |   @Override
             |   public String getChangedBy() {
@@ -275,7 +275,7 @@ private fun generatedChangeTracking(
             """.trimMargin()
             )
             g.addCustomMethod(
-                """
+                    """
             |   $maybeJsonIgnore
             |   @Override
             |   public void setChangedBy(String value) {
@@ -299,7 +299,7 @@ private fun generatedChangeTracking(
                         ""
                     }
             g.addCustomMethod(
-                """
+                    """
             |   @Override$maybeJsonIgnore
             |   public ${versionColumn.typeName()} getVersion() {
             |       return ${versionColumn.fieldName()};
@@ -308,7 +308,7 @@ private fun generatedChangeTracking(
             )
 
             g.addCustomMethod(
-                """
+                    """
             |   @Override
             |   public void setVersion(${versionColumn.typeName()} value) {
             |       this.${versionColumn.fieldName()} = value;

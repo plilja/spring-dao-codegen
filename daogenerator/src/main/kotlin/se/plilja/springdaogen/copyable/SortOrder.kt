@@ -1,9 +1,9 @@
 package se.plilja.springdaogen.copyable
 
 
-fun sortOrder(_package: String) : Pair<String, String> {
+fun sortOrder(_package: String): Pair<String, String> {
     return Pair(
-        "SortOrder", """
+            "SortOrder", """
 package $_package;
 
 public class SortOrder<E> {

@@ -12,7 +12,7 @@ fun frameworkExceptions(_package: String): List<Pair<String, String>> {
 
 fun databaseException(_package: String): Pair<String, String> {
     return Pair(
-        "DatabaseException", """
+            "DatabaseException", """
 package $_package;
 
 /**
@@ -33,7 +33,7 @@ public class DatabaseException extends RuntimeException {
 
 fun tooManyRowsAvailableException(_package: String): Pair<String, String> {
     return Pair(
-        "TooManyRowsAvailableException", """
+            "TooManyRowsAvailableException", """
 package $_package;
 
 /**
@@ -61,7 +61,7 @@ public class TooManyRowsAvailableException extends DatabaseException {
 
 fun tooManyRowsUpdatedException(_package: String): Pair<String, String> {
     return Pair(
-        "TooManyRowsUpdatedException", """
+            "TooManyRowsUpdatedException", """
 package $_package;
 
 /**
@@ -85,7 +85,7 @@ public class TooManyRowsUpdatedException extends DatabaseException {
 
 fun noRowsUpdatedException(_package: String): Pair<String, String> {
     return Pair(
-        "NoRowsUpdatedException", """
+            "NoRowsUpdatedException", """
 package $_package;
 
 /**

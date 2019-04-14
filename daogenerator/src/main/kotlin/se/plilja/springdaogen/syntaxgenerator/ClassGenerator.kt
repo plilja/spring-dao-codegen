@@ -2,9 +2,9 @@ package se.plilja.springdaogen.syntaxgenerator
 
 
 class ClassGenerator(
-    name: String,
-    packageName: String,
-    sourceBaseFolder: String
+        name: String,
+        packageName: String,
+        sourceBaseFolder: String
 ) : AbstractClassGenerator(name, packageName, sourceBaseFolder) {
 
     private val constants = ArrayList<Pair<Field, String>>()
@@ -43,34 +43,34 @@ class ClassGenerator(
         val joinedClassAnnotation = classAnnotations.joinToString("\n")
         val implementsDecl = if (implements.isEmpty()) "" else " implements " + implements.joinToString(", ")
         val classHeader =
-            "public${if (isAbstract) " abstract" else ""}${if (isFinal) " final" else ""} class $name${if (extends != null) " extends $extends" else ""}$implementsDecl {"
+                "public${if (isAbstract) " abstract" else ""}${if (isFinal) " final" else ""} class $name${if (extends != null) " extends $extends" else ""}$implementsDecl {"
         val classDeclaration =
-            if (joinedClassAnnotation.isEmpty()) {
-                classHeader
-            } else {
-                joinedClassAnnotation + "\n" + classHeader
-            }
+                if (joinedClassAnnotation.isEmpty()) {
+                    classHeader
+                } else {
+                    joinedClassAnnotation + "\n" + classHeader
+                }
         val constantsDeclaration =
-            constants.map { "    ${it.first.getVisibility()} static final ${it.first.type} ${it.first.name} = ${it.second};" }
-                .joinToString("\n\n")
+                constants.map { "    ${it.first.getVisibility()} static final ${it.first.type} ${it.first.name} = ${it.second};" }
+                        .joinToString("\n\n")
         val fieldsDeclaration =
-            fields.map { "${it.annotations.map { "$it\n" }.joinToString("")}private ${it.type} ${it.name};" }
-                .joinToString("\n")
+                fields.map { "${it.annotations.map { "$it\n" }.joinToString("")}private ${it.type} ${it.name};" }
+                        .joinToString("\n")
 
         val noArgsConstructor =
-            if (!hideConstructors and customConstructors.isEmpty())
-                """${if (isConstantsClass) "private" else "public"} $name() {
+                if (!hideConstructors and customConstructors.isEmpty())
+                    """${if (isConstantsClass) "private" else "public"} $name() {
                 }"""
-            else
-                ""
+                else
+                    ""
 
         val allArgsConstructor =
-            if (!hideConstructors and !isConstantsClass and customConstructors.isEmpty() and !fields.isEmpty())
-                """public $name(${fields.map { "${it.type} ${it.name}" }.joinToString(", ")}) {
+                if (!hideConstructors and !isConstantsClass and customConstructors.isEmpty() and !fields.isEmpty())
+                    """public $name(${fields.map { "${it.type} ${it.name}" }.joinToString(", ")}) {
                 ${fields.map { "this.${it.name} = ${it.name};" }.joinToString("\n")}
             }"""
-            else
-                ""
+                else
+                    ""
 
         val joinedCustomConstructors = customConstructors.joinToString("\n\n")
 
@@ -79,21 +79,21 @@ class ClassGenerator(
         val classClose = "}\n"
 
         val classParts = listOf(
-            packageDeclaration,
-            importsDeclaration,
-            classDeclaration,
-            constantsDeclaration,
-            fieldsDeclaration,
-            noArgsConstructor,
-            allArgsConstructor,
-            joinedCustomConstructors,
-            gettersAndSetters,
-            joinedCustomMethods,
-            classClose
+                packageDeclaration,
+                importsDeclaration,
+                classDeclaration,
+                constantsDeclaration,
+                fieldsDeclaration,
+                noArgsConstructor,
+                allArgsConstructor,
+                joinedCustomConstructors,
+                gettersAndSetters,
+                joinedCustomMethods,
+                classClose
         )
         return rightTrimLines(indent(classParts.filter { !it.trim().isEmpty() }
-            .joinToString("\n\n")
-            .replace("    ", "")))
+                .joinToString("\n\n")
+                .replace("    ", "")))
 
     }
 

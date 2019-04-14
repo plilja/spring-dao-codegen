@@ -5,7 +5,7 @@ import se.plilja.springdaogen.config.Config
 
 fun dao(_package: String, config: Config): Pair<String, String> {
     return Pair(
-        "Dao", """
+            "Dao", """
 package $_package;
 
 import org.springframework.dao.EmptyResultDataAccessException;

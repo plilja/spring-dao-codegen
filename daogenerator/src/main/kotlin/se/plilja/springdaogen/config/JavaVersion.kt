@@ -7,7 +7,8 @@ enum class JavaVersion(val version: String) {
 
     companion object {
         fun fromVersionNumber(version: String): JavaVersion {
-            return JavaVersion.values().firstOrNull { it.version == version } ?: throw IllegalArgumentException("Supported Java versions are 1.8 and 11")
+            return JavaVersion.values().firstOrNull { it.version == version }
+                    ?: throw IllegalArgumentException("Supported Java versions are 1.8 and 11")
         }
     }
 

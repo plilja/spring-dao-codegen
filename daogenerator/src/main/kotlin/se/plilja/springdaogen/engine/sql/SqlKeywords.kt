@@ -18,8 +18,8 @@ class SqlKeywords {
 
         private fun readKeyWords(fileName: String): List<String> {
             return SqlKeywords::class.java.getResource(fileName).readText().lines()
-                .map { it.trim() }
-                .map { it.toUpperCase() }
+                    .map { it.trim() }
+                    .map { it.toUpperCase() }
         }
     }
 }

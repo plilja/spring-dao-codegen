@@ -151,7 +151,7 @@ public abstract class Foo {
     fun `static lambda constant with try catch`() {
         val g = ClassGenerator("Foo", "se.plilja.test", "")
         g.addPrivateConstant(
-            "rowMapper", "RowMapper<Foo>", """private static final RowMapper<DataTypesOracle> ROW_MAPPER = (rs, i) -> {
+                "rowMapper", "RowMapper<Foo>", """private static final RowMapper<DataTypesOracle> ROW_MAPPER = (rs, i) -> {
             try {
                 Foo r = new Foo();
                 r.setBlob(rs.getObject("BLOB") != null ? rs.getBlob("BLOB").getBinaryStream().readAllBytes() : null);

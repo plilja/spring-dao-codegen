@@ -15,7 +15,7 @@ import java.util.*
 fun generateEnums(config: Config, table: Table, tableContents: List<Map<String, Any>>): EnumGenerator {
 
     val nameColumn = table.columns
-        .first { config.enumNameColumnRegexp.matches(it.name) }
+            .first { config.enumNameColumnRegexp.matches(it.name) }
 
     val g = EnumGenerator(table.entityName(), config.entityOutputPackage, config.entityOutputFolder)
     g.addImplements("BaseDatabaseEnum<${table.primaryKey.typeName()}>")
@@ -47,15 +47,15 @@ fun generateEnums(config: Config, table: Table, tableContents: List<Map<String, 
         val rowContent = enumValue.value.second
         var init = "${snakeCase(name).toUpperCase()}("
         init += table.columns
-            .filter { it != nameColumn || it == table.primaryKey }
-            .map { getValueAsJavaCode(it, rowContent, g) }
-            .joinToString(", ")
+                .filter { it != nameColumn || it == table.primaryKey }
+                .map { getValueAsJavaCode(it, rowContent, g) }
+                .joinToString(", ")
         init += ")"
         g.addEnumValue(init)
     }
 
     g.addCustomMethod(
-        """
+            """
         @Override
         public ${table.primaryKey.typeName()} getId() {
            return id;
@@ -63,7 +63,7 @@ fun generateEnums(config: Config, table: Table, tableContents: List<Map<String, 
     """.trimIndent()
     )
     g.addCustomMethod(
-        """
+            """
         public static ${table.entityName()} fromId(${table.primaryKey.typeName()} id) {
            if (id != null) {
                for (${table.entityName()} value : values()) {

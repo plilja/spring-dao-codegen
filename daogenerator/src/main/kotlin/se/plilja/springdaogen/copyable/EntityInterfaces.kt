@@ -13,7 +13,7 @@ fun entityInterfaces(_package: String): List<Pair<String, String>> {
 
 fun createdByTracked(_package: String): Pair<String, String> {
     return Pair(
-        "CreatedByTracked", """
+            "CreatedByTracked", """
 package $_package;
 
 /**
@@ -31,7 +31,7 @@ public interface CreatedByTracked {
 
 fun changedByTracked(_package: String): Pair<String, String> {
     return Pair(
-        "ChangedByTracked", """
+            "ChangedByTracked", """
 package $_package;
 
 /**
@@ -49,7 +49,7 @@ public interface ChangedByTracked {
 
 fun createdAtTracked(_package: String): Pair<String, String> {
     return Pair(
-        "CreatedAtTracked", """
+            "CreatedAtTracked", """
 package $_package;
 
 /**
@@ -70,7 +70,7 @@ public interface CreatedAtTracked<T> {
 
 fun changedAtTracked(_package: String): Pair<String, String> {
     return Pair(
-        "ChangedAtTracked", """
+            "ChangedAtTracked", """
 package $_package;
 
 /**
@@ -91,7 +91,7 @@ public interface ChangedAtTracked<T> {
 
 fun versionTracked(_package: String): Pair<String, String> {
     return Pair(
-        "VersionTracked", """
+            "VersionTracked", """
 package $_package;
 
 /**

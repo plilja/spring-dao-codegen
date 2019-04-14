@@ -112,11 +112,11 @@ fun writeTestDdl(config: Config, schemas: List<Schema>, tableContents: TableCont
 
 fun getDataSource(config: Config): DataSource {
     return DataSourceBuilder.create()
-        .url(config.databaseUrl)
-        .driverClassName(config.databaseDriver)
-        .username(config.databaseUser)
-        .password(config.databasePassword)
-        .build()
+            .url(config.databaseUrl)
+            .driverClassName(config.databaseDriver)
+            .username(config.databaseUser)
+            .password(config.databasePassword)
+            .build()
 }
 
 fun close(dataSource: DataSource) {

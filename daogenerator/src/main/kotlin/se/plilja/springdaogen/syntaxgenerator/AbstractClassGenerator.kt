@@ -96,11 +96,11 @@ fun rightTrimLines(s: String): String {
 }
 
 data class Field(
-    val name: String,
-    val type: String,
-    val private: Boolean,
-    val readOnly: Boolean,
-    val annotations: List<String>
+        val name: String,
+        val type: String,
+        val private: Boolean,
+        val readOnly: Boolean,
+        val annotations: List<String>
 ) {
     fun getVisibility(): String {
         return if (private) {
