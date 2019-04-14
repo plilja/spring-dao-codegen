@@ -1,6 +1,5 @@
 package se.plilja.springdaogen.syntaxgenerator
 
-import se.plilja.springdaogen.config.Config
 import se.plilja.springdaogen.engine.model.Column
 import se.plilja.springdaogen.engine.model.Schema
 import se.plilja.springdaogen.engine.model.TableContents
@@ -12,7 +11,7 @@ import java.time.LocalTime
 import java.time.OffsetDateTime
 
 
-fun toH2Ddl(config: Config, schemas: List<Schema>, tableContents: TableContents): String {
+fun toH2Ddl(schemas: List<Schema>, tableContents: TableContents): String {
     val schemaNames = schemas
             .map { it.schemaName }
             .filter { it != null }
@@ -53,7 +52,7 @@ fun toH2Ddl(config: Config, schemas: List<Schema>, tableContents: TableContents)
     res += "\n"
     for (table in schemas.flatMap { it.tables }) {
         if (table.isEnum()) {
-            val rows = tableContents.getContents(config, table)
+            val rows = tableContents.getContents(table)
             val t = formatIdentifier(table.schema.schemaName, table.name)
             for (row in rows) {
                 val columns = table.columns.map { it.name }.joinToString(", ")

@@ -26,7 +26,7 @@ fun main(args: Array<String>) {
     val config = readConfig(args)
     val dataSource = getDataSource(config)
     val schemas = readSchema(config, dataSource)
-    val tableContents = TableContentsFromDb(dataSource)
+    val tableContents = TableContentsFromDb(config, dataSource)
     writeDaos(config, schemas, tableContents)
     copyFrameworkClasses(config)
     writeTestDdl(config, schemas, tableContents)
@@ -104,7 +104,7 @@ fun copyFrameworkClasses(config: Config) {
  */
 fun writeTestDdl(config: Config, schemas: List<Schema>, tableContents: TableContents) {
     if (config.featureGenerateTestDdl) {
-        val ddl = toH2Ddl(config, schemas, tableContents)
+        val ddl = toH2Ddl(schemas, tableContents)
         File(config.testResourceFolder).mkdirs()
         File(config.testResourceFolder + "/" + config.testDdlFileName).writeText(ddl)
     }

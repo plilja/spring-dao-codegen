@@ -10,7 +10,7 @@ fun generateCode(config: Config, schemas: List<Schema>, tableContents: TableCont
         schema.tables.flatMap { table ->
         val list = ArrayList<AbstractClassGenerator>()
         if (table.isEnum()) {
-            val rows = tableContents.getContents(config, table)
+            val rows = tableContents.getContents(table)
             list.add(generateEnums(config, table, rows))
         } else {
             list.add(generateDao(config, table))
