@@ -97,7 +97,7 @@ private class ConfigReader(file: File) {
                 changedByColumnNames = getListProperty("entity.changed_by_name").map { it.toUpperCase() },
                 versionColumnNames = getListProperty("entity.version_name").map { it.toUpperCase() },
                 javaVersion = JavaVersion.fromVersionNumber(properties.getProperty("java.version", "11")),
-                enumTables = getListProperty("enum.tables"),
+                enumTables = getListProperty("enum.tables").map { it.toUpperCase() },
                 enumTablesRegexp = Regex(properties.getProperty("enum.table_regex", "^$"), RegexOption.IGNORE_CASE),
                 enumNameColumnRegexp = Regex(
                         properties.getProperty("enum.name_column_regex", "^$"),

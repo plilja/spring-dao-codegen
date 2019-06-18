@@ -29,7 +29,7 @@ interface TableOrView {
     val config: Config
 
     fun isEnum(): Boolean {
-        return name in config.enumTables || config.enumTablesRegexp.matches(name)
+        return name.toUpperCase() in config.enumTables || config.enumTablesRegexp.matches(name)
     }
 
     fun entityName(): String {
