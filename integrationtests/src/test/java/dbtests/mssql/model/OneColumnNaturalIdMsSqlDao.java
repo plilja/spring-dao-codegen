@@ -3,9 +3,6 @@ package dbtests.mssql.model;
 import dbtests.framework.Column;
 import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
-import java.sql.Types;
-import java.util.Arrays;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -13,12 +10,16 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Types;
+import java.util.Arrays;
+import java.util.List;
+
 @Repository
 public class OneColumnNaturalIdMsSqlDao extends Dao<OneColumnNaturalIdMsSqlEntity, String> {
 
     public static final Column.StringColumn<OneColumnNaturalIdMsSqlEntity> COLUMN_ID = new Column.StringColumn<>("id", "id");
 
-    public static final List<Column<OneColumnNaturalIdMsSqlEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(
+    private static final List<Column<OneColumnNaturalIdMsSqlEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID);
 
     private static final String ALL_COLUMNS = " id ";

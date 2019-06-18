@@ -3,16 +3,16 @@ package dbtests.mysql.model;
 import dbtests.framework.Column;
 import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
-import java.sql.Types;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
+
+import java.sql.Types;
+import java.util.Arrays;
+import java.util.List;
 
 @Repository
 public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
@@ -33,7 +33,7 @@ public class MBazMysqlRepo extends Dao<MBazMysql, Integer> {
 
     public static final Column.IntColumn<MBazMysql> COLUMN_VERSION = new Column.IntColumn<>("version", "version");
 
-    public static final List<Column<MBazMysql, ?>> ALL_COLUMNS_LIST = Arrays.asList(
+    private static final List<Column<MBazMysql, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID,
             COLUMN_CHANGED_AT,
             COLUMN_CHANGED_BY,

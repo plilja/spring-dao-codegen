@@ -4,21 +4,19 @@ import dbtests.framework.Column;
 import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.Types;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
+
+import java.io.IOException;
+import java.math.BigInteger;
+import java.sql.Types;
+import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
 
 @Repository
 public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
@@ -77,7 +75,7 @@ public class MDataTypesMysqlRepo extends Dao<MDataTypesMysql, Long> {
 
     public static final Column.IntColumn<MDataTypesMysql> COLUMN_YEAR = new Column.IntColumn<>("year", "`year`", "year");
 
-    public static final List<Column<MDataTypesMysql, ?>> ALL_COLUMNS_LIST = Arrays.asList(
+    private static final List<Column<MDataTypesMysql, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID,
             COLUMN_BIGINT,
             COLUMN_BIT,

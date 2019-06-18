@@ -3,22 +3,20 @@ package dbtests.postgres.model;
 import dbtests.framework.Column;
 import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.Types;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
+
+import java.math.BigInteger;
+import java.sql.Types;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 
 @Repository
 public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
@@ -71,7 +69,7 @@ public class DataTypesPostgresDao extends Dao<DataTypesPostgresEntity, Long> {
 
     public static final Column.StringColumn<DataTypesPostgresEntity> COLUMN_XML = new Column.StringColumn<>("xml", "xml");
 
-    public static final List<Column<DataTypesPostgresEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(
+    private static final List<Column<DataTypesPostgresEntity, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID,
             COLUMN_BIGINT,
             COLUMN_BOOLEAN_B,

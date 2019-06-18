@@ -4,21 +4,19 @@ import dbtests.framework.Column;
 import dbtests.framework.CurrentUserProvider;
 import dbtests.framework.Dao;
 import dbtests.framework.DatabaseException;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.sql.Types;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.util.Arrays;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Repository;
+
+import java.io.IOException;
+import java.math.BigInteger;
+import java.sql.Types;
+import java.time.OffsetDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 @Repository
 public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
@@ -59,7 +57,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
 
     public static final Column.StringColumn<DataTypesOracle> COLUMN_VARCHAR2 = new Column.StringColumn<>("VARCHAR2", "\"VARCHAR2\"", "varchar2");
 
-    public static final List<Column<DataTypesOracle, ?>> ALL_COLUMNS_LIST = Arrays.asList(
+    private static final List<Column<DataTypesOracle, ?>> ALL_COLUMNS_LIST = Arrays.asList(
             COLUMN_ID,
             COLUMN_BINARY_DOUBLE,
             COLUMN_BINARY_FLOAT,
