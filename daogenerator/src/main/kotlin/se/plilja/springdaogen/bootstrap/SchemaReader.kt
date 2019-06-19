@@ -153,8 +153,7 @@ fun convertColumn(table: schemacrawler.schema.Table, column: schemacrawler.schem
 
 
 fun resolveType(column: schemacrawler.schema.Column, config: Config): Pair<Class<out Any>, JDBCType?> {
-    val isOracle = config.databaseDialect in listOf(DatabaseDialect.ORACLE, DatabaseDialect.ORACLE12)
-    if (isOracle) {
+    if (isOracle(config)) {
         if (column.type.name == "BINARY_DOUBLE") {
             return Pair(java.lang.Double::class.java, JDBCType.DOUBLE)
         } else if (column.type.name == "BINARY_FLOAT") {
@@ -197,7 +196,7 @@ fun resolveType(column: schemacrawler.schema.Column, config: Config): Pair<Class
     if (jdbcType == null && config.databaseDialect == DatabaseDialect.MSSQL_SERVER && column.type.name.toLowerCase() == "datetimeoffset") {
         return Pair(OffsetDateTime::class.java, JDBCType.TIMESTAMP_WITH_TIMEZONE)
     }
-    if ((jdbcType == JDBCType.TIMESTAMP || (jdbcType == null && isOracle)) &&
+    if ((jdbcType == JDBCType.TIMESTAMP || (jdbcType == null && isOracle(config))) &&
             (column.type.name.toLowerCase().contains("tz") || column.type.name.toLowerCase().contains("zone"))
     ) {
         return Pair(OffsetDateTime::class.java, JDBCType.TIMESTAMP_WITH_TIMEZONE)
@@ -224,7 +223,16 @@ fun resolveType(column: schemacrawler.schema.Column, config: Config): Pair<Class
     return Pair(javaType, jdbcType)
 }
 
+private fun isOracle(config: Config): Boolean {
+    return config.databaseDialect in listOf(DatabaseDialect.ORACLE, DatabaseDialect.ORACLE12)
+}
+
 fun isGenerated(table: schemacrawler.schema.Table, column: schemacrawler.schema.Column, config: Config): Boolean {
+    if (config.databaseDialect == DatabaseDialect.ORACLE12 && column.defaultValue?.endsWith(".nextval") == true) {
+        // Oracle column doesn't get isAutoIncremented correctly set in ORACLE12 and
+        // in earlier versions of Oracle there is no identity columns.
+        return true
+    }
     return column.isAutoIncremented ||
             (column.isPartOfPrimaryKey && config.hasGeneratedPrimaryKeysOverride.contains(table.name))
 }
