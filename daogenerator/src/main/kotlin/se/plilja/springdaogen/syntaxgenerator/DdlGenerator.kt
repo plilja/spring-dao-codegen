@@ -93,6 +93,9 @@ private fun dataType(column: Column): String {
             }
         }
     }
+    if (column.isClobLike()) {
+        return "CLOB"
+    }
     return when (column.rawType()) {
         java.lang.Integer::class.java -> "INTEGER"
         LocalDate::class.java -> "DATE"
@@ -106,6 +109,7 @@ private fun dataType(column: Column): String {
         java.lang.Long::class.java -> "BIGINT"
         java.lang.Boolean::class.java -> "BOOLEAN"
         java.util.UUID::class.java -> "UUID"
+        java.sql.Clob::class.java -> "CLOB"
         java.lang.String::class.java -> {
             return if (column.size == Integer.MAX_VALUE) {
                 "CLOB"
