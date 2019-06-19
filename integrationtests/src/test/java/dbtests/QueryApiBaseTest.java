@@ -479,6 +479,62 @@ public abstract class QueryApiBaseTest<Entity extends BaseEntity<Integer>, Repo 
     }
 
     @Test
+    void queryWithInEmptyList() {
+        var entity1 = newEntity("Phil");
+        setColor(entity1, "GREEN");
+        getRepo().save(entity1);
+
+        var entity2 = newEntity("David");
+        getRepo().save(entity2);
+
+        var entity3 = newEntity("David");
+        setColor(entity3, "BLUE");
+        getRepo().save(entity3);
+
+        var entity4 = newEntity("Chris");
+        getRepo().save(entity4);
+
+        // when
+        List<Entity> result = getRepo().findAllOrderBy(
+                in(getNameColumn(), List.of()),
+                asc(getNameColumn())
+        );
+
+        // then
+        assertEquals(List.of(), result);
+    }
+
+    @Test
+    void queryWithNotInEmptyList() {
+        var entity1 = newEntity("Phil");
+        setColor(entity1, "GREEN");
+        getRepo().save(entity1);
+
+        var entity2 = newEntity("David");
+        getRepo().save(entity2);
+
+        var entity3 = newEntity("David");
+        setColor(entity3, "BLUE");
+        getRepo().save(entity3);
+
+        var entity4 = newEntity("Chris");
+        getRepo().save(entity4);
+
+        // when
+        List<Entity> result = getRepo().findAllOrderBy(
+                notIn(getIdColumn(), List.of()),
+                asc(getIdColumn())
+        );
+
+        // then
+        assertEquals(4, result.size());
+        assertEquals(entity1.getId(), result.get(0).getId());
+        assertEquals(entity2.getId(), result.get(1).getId());
+        assertEquals(entity3.getId(), result.get(2).getId());
+        assertEquals(entity4.getId(), result.get(3).getId());
+    }
+
+    @Test
     void shouldRespectMaxSelectCount() {
         for (int i = 1; i <= 10; i++) {
             var entity = newEntity(String.format("Name %d", i));

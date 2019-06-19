@@ -43,9 +43,13 @@ public abstract class QueryItem<Entity> {
 
         @Override
         protected String getClause(MapSqlParameterSource params, Supplier<String> paramNameGenerator) {
-            String param = paramNameGenerator.get();
-            params.addValue(param, values);
-            return String.format("%s IN (:%s)", column.getEscapedColumnName(), param);
+            if (values.isEmpty()) {
+                return "1 <> 1";
+            } else {
+                String param = paramNameGenerator.get();
+                params.addValue(param, values);
+                return String.format("%s IN (:%s)", column.getEscapedColumnName(), param);
+            }
         }
     }
 
@@ -60,9 +64,13 @@ public abstract class QueryItem<Entity> {
 
         @Override
         protected String getClause(MapSqlParameterSource params, Supplier<String> paramNameGenerator) {
-            String param = paramNameGenerator.get();
-            params.addValue(param, values);
-            return String.format("%s NOT IN (:%s)", column.getEscapedColumnName(), param);
+            if (values.isEmpty()) {
+                return "1 = 1";
+            } else {
+                String param = paramNameGenerator.get();
+                params.addValue(param, values);
+                return String.format("%s NOT IN (:%s)", column.getEscapedColumnName(), param);
+            }
         }
     }
 
