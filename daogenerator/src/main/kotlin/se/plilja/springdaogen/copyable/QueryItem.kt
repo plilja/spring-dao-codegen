@@ -9,6 +9,7 @@ package $_package;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public abstract class QueryItem<Entity> {
@@ -29,6 +30,20 @@ public abstract class QueryItem<Entity> {
             String q1 = clause1.getClause(params, paramNameGenerator);
             String q2 = clause2.getClause(params, paramNameGenerator);
             return String.format("((%s) OR (%s))", q1, q2);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Or)) return false;
+            Or<?> or = (Or<?>) o;
+            return Objects.equals(clause1, or.clause1) &&
+                    Objects.equals(clause2, or.clause2);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(clause1, clause2);
         }
     }
 
@@ -51,6 +66,20 @@ public abstract class QueryItem<Entity> {
                 return String.format("%s IN (:%s)", column.getEscapedColumnName(), param);
             }
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof In)) return false;
+            In<?, ?> in = (In<?, ?>) o;
+            return Objects.equals(column, in.column) &&
+                    Objects.equals(values, in.values);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(column, values);
+        }
     }
 
     private static class NotIn<Entity, ValueType> extends QueryItem<Entity> {
@@ -71,6 +100,20 @@ public abstract class QueryItem<Entity> {
                 params.addValue(param, values);
                 return String.format("%s NOT IN (:%s)", column.getEscapedColumnName(), param);
             }
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof NotIn)) return false;
+            NotIn<?, ?> notIn = (NotIn<?, ?>) o;
+            return Objects.equals(column, notIn.column) &&
+                    Objects.equals(values, notIn.values);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(column, values);
         }
     }
 
@@ -114,6 +157,22 @@ public abstract class QueryItem<Entity> {
             assert clause != null;
             return clause;
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof ComparisonQueryItem)) return false;
+            ComparisonQueryItem<?, ?> that = (ComparisonQueryItem<?, ?>) o;
+            return includeNulls == that.includeNulls &&
+                    Objects.equals(column, that.column) &&
+                    Objects.equals(value, that.value) &&
+                    operator == that.operator;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(column, value, operator, includeNulls);
+        }
     }
 
     private static class LikeQueryItem<Entity> extends QueryItem<Entity> {
@@ -139,6 +198,21 @@ public abstract class QueryItem<Entity> {
             return String.format("%s LIKE :%s", column.getEscapedColumnName(), param);
         }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof LikeQueryItem)) return false;
+            LikeQueryItem<?> that = (LikeQueryItem<?>) o;
+            return Objects.equals(column, that.column) &&
+                    Objects.equals(value, that.value) &&
+                    Objects.equals(ending, that.ending) &&
+                    Objects.equals(beginning, that.beginning);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(column, value, ending, beginning);
+        }
     }
 
     public static <Entity, ValueType> QueryItem<Entity> eq(Column<Entity, ValueType> column, ValueType value) {
