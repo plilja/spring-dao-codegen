@@ -29,6 +29,8 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
 
     public static final Column<DataTypesOracle, byte[]> COLUMN_BLOB = new Column<>("BLOB", "blob", byte[].class);
 
+    public static final Column.BooleanColumn<DataTypesOracle> COLUMN_BOOLEAN_NUMBER = new Column.BooleanColumn<>("BOOLEAN_NUMBER", "booleanNumber");
+
     public static final Column.StringColumn<DataTypesOracle> COLUMN_CHAR1 = new Column.StringColumn<>("CHAR1", "char1");
 
     public static final Column.StringColumn<DataTypesOracle> COLUMN_CHAR10 = new Column.StringColumn<>("CHAR10", "char10");
@@ -62,6 +64,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
             COLUMN_BINARY_DOUBLE,
             COLUMN_BINARY_FLOAT,
             COLUMN_BLOB,
+            COLUMN_BOOLEAN_NUMBER,
             COLUMN_CHAR1,
             COLUMN_CHAR10,
             COLUMN_CLOB,
@@ -77,10 +80,10 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
             COLUMN_VARCHAR,
             COLUMN_VARCHAR2);
 
-    private static final String ALL_COLUMNS = " ID, BINARY_DOUBLE, BINARY_FLOAT, BLOB, CHAR1, " +
-            " CHAR10, CLOB, \"DATE\", NLOB, NUMBER_EIGHTEEN_ZERO, " +
-            " NUMBER_NINE_ZERO, NUMBER_NINETEEN_ZERO, NUMBER_TEN_TWO, NUMBER_TEN_ZERO, TIMESTAMP, " +
-            " TIMESTAMP_TZ, \"VARCHAR\", \"VARCHAR2\" ";
+    private static final String ALL_COLUMNS = " ID, BINARY_DOUBLE, BINARY_FLOAT, BLOB, BOOLEAN_NUMBER, " +
+            " CHAR1, CHAR10, CLOB, \"DATE\", NLOB, " +
+            " NUMBER_EIGHTEEN_ZERO, NUMBER_NINE_ZERO, NUMBER_NINETEEN_ZERO, NUMBER_TEN_TWO, NUMBER_TEN_ZERO, " +
+            " TIMESTAMP, TIMESTAMP_TZ, \"VARCHAR\", \"VARCHAR2\" ";
 
     private static final RowMapper<DataTypesOracle> ROW_MAPPER = (rs, i) -> {
         try {
@@ -89,6 +92,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
             r.setBinaryDouble(rs.getDouble("BINARY_DOUBLE"));
             r.setBinaryFloat(rs.getFloat("BINARY_FLOAT"));
             r.setBlob(rs.getBlob("BLOB").getBinaryStream().readAllBytes());
+            r.setBooleanNumber(rs.getBoolean("BOOLEAN_NUMBER"));
             r.setChar1(rs.getString("CHAR1"));
             r.setChar10(rs.getString("CHAR10"));
             r.setClob(rs.getClob("CLOB").getSubString(1, (int) rs.getClob("CLOB").length()));
@@ -121,6 +125,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
         m.addValue("BINARY_DOUBLE", o.getBinaryDouble(), Types.DOUBLE);
         m.addValue("BINARY_FLOAT", o.getBinaryFloat(), Types.REAL);
         m.addValue("BLOB", o.getBlob());
+        m.addValue("BOOLEAN_NUMBER", o.getBooleanNumber(), Types.BOOLEAN);
         m.addValue("CHAR1", o.getChar1(), Types.CHAR);
         m.addValue("CHAR10", o.getChar10(), Types.CHAR);
         m.addValue("CLOB", o.getClob(), Types.CLOB);
@@ -174,6 +179,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
                 "BINARY_DOUBLE, " +
                 "BINARY_FLOAT, " +
                 "BLOB, " +
+                "BOOLEAN_NUMBER, " +
                 "CHAR1, " +
                 "CHAR10, " +
                 "CLOB, " +
@@ -194,6 +200,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
                 ":BINARY_DOUBLE, " +
                 ":BINARY_FLOAT, " +
                 ":BLOB, " +
+                ":BOOLEAN_NUMBER, " +
                 ":CHAR1, " +
                 ":CHAR10, " +
                 ":CLOB, " +
@@ -217,6 +224,7 @@ public class DataTypesOracleRepository extends Dao<DataTypesOracle, String> {
                 "BINARY_DOUBLE = :BINARY_DOUBLE, " +
                 "BINARY_FLOAT = :BINARY_FLOAT, " +
                 "BLOB = :BLOB, " +
+                "BOOLEAN_NUMBER = :BOOLEAN_NUMBER, " +
                 "CHAR1 = :CHAR1, " +
                 "CHAR10 = :CHAR10, " +
                 "CLOB = :CLOB, " +

@@ -20,6 +20,7 @@ import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ContextConfiguration(classes = {OracleITConfig.class})
 @ExtendWith(SpringExtension.class)
@@ -45,6 +46,7 @@ public class OracleDataTypesIT {
         r.setBinaryDouble(0.7);
         r.setBinaryFloat(0.4F);
         r.setBlob(new byte[]{1, 2, 3});
+        r.setBooleanNumber(true);
         r.setChar1("A");
         r.setChar10("ABCDEFGHI");
         r.setClob("a clob...");
@@ -69,6 +71,7 @@ public class OracleDataTypesIT {
         assertEquals(r.getBinaryDouble(), r2.getBinaryDouble(), 1e-10);
         assertEquals(r.getBinaryFloat(), r2.getBinaryFloat(), 1e-10);
         assertArrayEquals(r.getBlob(), r2.getBlob());
+        assertTrue(r.getBooleanNumber());
         assertEquals(r.getChar1(), r2.getChar1());
         assertEquals(r.getChar10(), r2.getChar10().strip()); // Gets padded by DB
         assertEquals(r.getClob(), r2.getClob());

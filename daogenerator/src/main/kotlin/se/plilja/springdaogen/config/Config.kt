@@ -45,7 +45,8 @@ data class Config(
         val featureGenerateJavaxValidation: Boolean = false,
         val featureGenerateJacksonAnnotations: Boolean = false,
         val featureGenerateQueryApi: Boolean = false,
-        val featureGenerateChangeTracking: Boolean = false
+        val featureGenerateChangeTracking: Boolean = false,
+        val oracleNumberOneIsBoolean: Boolean = false
 ) {
 
     companion object {
@@ -81,6 +82,7 @@ private class ConfigReader(file: File) {
                 schemas = getListProperty("database.schemas"),
                 includeTables = getListProperty("database.include_tables"),
                 excludeTables = getListProperty("database.exclude_tables"),
+                oracleNumberOneIsBoolean = properties.getProperty("database.oracle_number_one_is_boolean", "false") == "true",
                 daosAreAbstract = properties.getProperty("dao.generate_abstract", "false") == "true",
                 hasGeneratedPrimaryKeysOverride = getListProperty("generated_primary_keys_override"),
                 entityPrefix = properties.getProperty("entity.output_prefix", ""),

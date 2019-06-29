@@ -162,6 +162,7 @@ fun resolveType(column: schemacrawler.schema.Column, config: Config): Pair<Class
             // These doesn't get cleanly mapped by Schemacrawler for some reason
             return when {
                 column.decimalDigits > 0 -> Pair(BigDecimal::class.java, JDBCType.NUMERIC)
+                column.size == 1 && config.oracleNumberOneIsBoolean -> Pair(java.lang.Boolean::class.java, JDBCType.BOOLEAN)
                 column.size < 10 -> Pair(java.lang.Integer::class.java, JDBCType.INTEGER)
                 column.size < 19 -> Pair(java.lang.Long::class.java, JDBCType.BIGINT)
                 else -> Pair(BigInteger::class.java, JDBCType.NUMERIC)

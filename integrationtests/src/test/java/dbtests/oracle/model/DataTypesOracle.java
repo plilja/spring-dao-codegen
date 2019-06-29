@@ -1,13 +1,14 @@
 package dbtests.oracle.model;
 
 import dbtests.framework.BaseEntity;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 public class DataTypesOracle implements BaseEntity<String> {
 
@@ -19,6 +20,8 @@ public class DataTypesOracle implements BaseEntity<String> {
     private Float binaryFloat;
     @NotNull
     private byte[] blob;
+    @NotNull
+    private Boolean booleanNumber;
     @NotNull
     @Size(max = 1)
     private String char1;
@@ -55,11 +58,12 @@ public class DataTypesOracle implements BaseEntity<String> {
     public DataTypesOracle() {
     }
 
-    public DataTypesOracle(String id, Double binaryDouble, Float binaryFloat, byte[] blob, String char1, String char10, String clob, LocalDate date, String nlob, Long numberEighteenZero, Integer numberNineZero, BigInteger numberNineteenZero, BigDecimal numberTenTwo, Long numberTenZero, LocalDateTime timestamp, OffsetDateTime timestampTz, String varchar, String varchar2) {
+    public DataTypesOracle(String id, Double binaryDouble, Float binaryFloat, byte[] blob, Boolean booleanNumber, String char1, String char10, String clob, LocalDate date, String nlob, Long numberEighteenZero, Integer numberNineZero, BigInteger numberNineteenZero, BigDecimal numberTenTwo, Long numberTenZero, LocalDateTime timestamp, OffsetDateTime timestampTz, String varchar, String varchar2) {
         this.id = id;
         this.binaryDouble = binaryDouble;
         this.binaryFloat = binaryFloat;
         this.blob = blob;
+        this.booleanNumber = booleanNumber;
         this.char1 = char1;
         this.char10 = char10;
         this.clob = clob;
@@ -98,6 +102,14 @@ public class DataTypesOracle implements BaseEntity<String> {
 
     public void setBlob(byte[] blob) {
         this.blob = blob;
+    }
+
+    public Boolean getBooleanNumber() {
+        return booleanNumber;
+    }
+
+    public void setBooleanNumber(Boolean booleanNumber) {
+        this.booleanNumber = booleanNumber;
     }
 
     public String getChar1() {
