@@ -260,6 +260,16 @@ public abstract class BaseIntegrationTest<
     }
 
     @Test
+    void deleteAllWithEmptyInput() {
+        Entity entity1 = newEntity("Bar1");
+        getRepo().save(entity1);
+
+        getRepo().deleteAll(List.of());
+
+        assertTrue(getRepo().exists(entity1.getId()));
+    }
+
+    @Test
     void getOneNonExistingThrowsException() {
         assertThrows(EmptyResultDataAccessException.class, () -> {
             getRepo().getOne(4711);

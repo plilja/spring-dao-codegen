@@ -212,6 +212,9 @@ public abstract class Dao<T extends BaseEntity<ID>, ID> {
         for (T object : objects) {
             ids.add(object.getId());
         }
+        if (ids.isEmpty()) {
+            return;
+        }
         params.put("ids", ids);
         int updated = jdbcTemplate.update(sql, params);
         if (updated > ids.size()) {

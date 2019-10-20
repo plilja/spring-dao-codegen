@@ -259,6 +259,9 @@ ${if (config.featureGenerateQueryApi) """
         for (T object : objects) {
             ids.add(object.getId());
         }
+        if (ids.isEmpty()) {
+            return;
+        }
         params.put("ids", ids);
         int updated = jdbcTemplate.update(sql, params);
         if (updated > ids.size()) {
