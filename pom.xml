@@ -6,7 +6,7 @@
 
     <groupId>se.plilja.springdaogen</groupId>
     <artifactId>springdaogen</artifactId>
-    <version>${revision}</version>
+    <version>1.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
     <modules>
@@ -16,7 +16,6 @@
     </modules>
 
     <properties>
-        <revision>0.9.0</revision>
         <spring.boot.version>2.0.2.RELEASE</spring.boot.version>
     </properties>
 

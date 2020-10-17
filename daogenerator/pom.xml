@@ -6,10 +6,10 @@
     <parent>
         <groupId>se.plilja.springdaogen</groupId>
         <artifactId>springdaogen</artifactId>
-        <version>${revision}</version>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <version>${revision}</version>
+    <version>1.0-SNAPSHOT</version>
     <artifactId>daogenerator</artifactId>
     <packaging>jar</packaging>
 

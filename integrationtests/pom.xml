@@ -6,10 +6,10 @@
     <parent>
         <groupId>se.plilja.springdaogen</groupId>
         <artifactId>springdaogen</artifactId>
-        <version>${revision}</version>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <version>${revision}</version>
+    <version>1.0-SNAPSHOT</version>
     <artifactId>integrationtests</artifactId>
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
@@ -127,8 +127,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
+                    <source>11</source>
+                    <target>11</target>
                 </configuration>
             </plugin>
         </plugins>
