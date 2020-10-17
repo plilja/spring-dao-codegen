@@ -23,7 +23,7 @@
         <profile>
             <id>oracle</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <!-- This Oracle driver must (annoyingly) be downloaded from Oracle's homepage and
                  installed locally to your local maven repo. If you don't intend
